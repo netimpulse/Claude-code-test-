@@ -1,8 +1,7 @@
 {
-  "_comment": "Diese Datei wird von Claude bei jedem neuen Block / jeder neuen Section ueberschrieben. Sie enthaelt immer den aktuell zu testenden Block mit realistischen Dummy-Settings.",
   "sections": {
     "main": {
-      "type": "main-page",
+      "type": "page",
       "settings": {}
     }
   },
