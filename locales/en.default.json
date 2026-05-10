@@ -48,5 +48,11 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "theme_store": {
+    "search_label": "Search themes",
+    "clear_search": "Clear search",
+    "filter_label": "Filters",
+    "empty": "No themes match this filter yet."
   }
 }

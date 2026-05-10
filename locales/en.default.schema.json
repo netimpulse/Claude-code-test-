@@ -72,6 +72,34 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
-    },
+    }
+  },
+  "theme_store": {
+    "name": "Theme store",
+    "heading_label": "Heading",
+    "search_placeholder_label": "Search placeholder",
+    "categories_heading_label": "Categories heading",
+    "all_label": "\"All\" entry label",
+    "features_heading_label": "Features heading",
+    "appearance": "Appearance",
+    "color_scheme": "Color scheme",
+    "scheme_default": "Default",
+    "scheme_inverse": "Inverse",
+    "section_background": "Section background",
+    "card_background": "Card background",
+    "text_color": "Text color",
+    "muted_color": "Muted text color",
+    "accent_color": "Accent color",
+    "card_radius": "Card corner radius",
+    "block_category": "Category",
+    "block_category_collection": "Collection",
+    "block_category_label": "Custom label",
+    "block_category_label_info": "Leave empty to use the collection title.",
+    "block_feature": "Feature",
+    "block_feature_text": "Feature text",
+    "search_label": "Search themes",
+    "clear_search": "Clear search",
+    "filter_label": "Filters",
+    "empty": "No themes match this filter yet."
   }
 }

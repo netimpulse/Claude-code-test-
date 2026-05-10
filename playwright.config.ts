@@ -28,4 +28,14 @@ export default defineConfig({
     baseURL,
     storageState: "playwright/.auth/storefront.json",
     screenshot: "only-on-failure",
-    video: "retain-on-failure"
+    video: "retain-on-failure",
+    trace: "retain-on-failure",
+    ignoreHTTPSErrors: true,
+  },
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
+});

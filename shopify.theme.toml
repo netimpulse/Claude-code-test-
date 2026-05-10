@@ -12,14 +12,32 @@
 [environments.development]
 store = "dev-store-4ogqgshg.myshopify.com"
 theme = "145381884019"
+# Fuer den Dev-Push ignorieren wir nur reinen Tooling-Kram. Die QA-Templates
+# muessen mit, sonst zeigt /pages/qa-block-test eine leere Page.
+ignore = [
+  "tests/**",
+  "playwright.config.ts",
+  "playwright/**",
+  "package.json",
+  "package-lock.json",
+  "qa-screenshots/**",
+  ".env*",
+  "node_modules/**"
+]
 
-# Production-Block wird pro Kundenshop ergaenzt:
+# Production-Block wird pro Kundenshop ergaenzt. Hier QA-Pfade extra mit
+# ignorieren, damit Test-Templates nie in den Kundenshop kommen.
 # [environments.production]
 # store = "kunde-x.myshopify.com"
 # theme = "__PROD_THEME_ID__"
-
-ignore = [
-  "templates/page.qa-*.json",
-  "tests/**",
-  "playwright.config.ts",
-  "
+# ignore = [
+#   "templates/page.qa-*.json",
+#   "tests/**",
+#   "playwright.config.ts",
+#   "playwright/**",
+#   "package.json",
+#   "package-lock.json",
+#   "qa-screenshots/**",
+#   ".env*",
+#   "node_modules/**"
+# ]

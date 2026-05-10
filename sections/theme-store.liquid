@@ -1,0 +1,685 @@
+{% comment %}
+  Theme Store layout:
+  - Header bar with predictive search (fuzzy / typo-tolerant)
+  - Sidebar with category filter (rendered from `category` blocks) plus
+    a built-in "All" entry that aggregates products from every linked
+    collection. Optional `feature` blocks render a static feature list.
+  - Product grid for the active category
+
+  Filtering happens client-side via JS reading ?cat=<handle>:
+  - Liquid renders every product once with a data-cats attribute listing
+    every collection handle the product belongs to (dedupe by product id).
+  - JS toggles visibility based on the active category and updates URL
+    via history.pushState — no page reload.
+{% endcomment %}
+
+{%- liquid
+  assign render_limit = 50
+-%}
+
+<section
+  class="theme-store color-scheme-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="theme-store"
+  style="
+    --ts-accent: {{ section.settings.accent_color }};
+    --ts-radius: {{ section.settings.card_radius }}px;
+    --ts-bg-card: {{ section.settings.card_background }};
+    --ts-text: {{ section.settings.text_color }};
+    --ts-muted: {{ section.settings.muted_color }};
+    --ts-bg: {{ section.settings.section_background }};
+  "
+>
+  <div class="theme-store__inner">
+    {% if section.settings.heading != blank %}
+      <h2 class="theme-store__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="theme-store__searchbar" data-ts-search-root>
+      <label for="ts-search-{{ section.id }}" class="theme-store__sr-only">
+        {{ 'theme_store.search_label' | t | default: 'Search themes' }}
+      </label>
+      <div class="theme-store__search-input-wrap">
+        <svg class="theme-store__search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input
+          id="ts-search-{{ section.id }}"
+          class="theme-store__search-input"
+          type="search"
+          name="q"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="{{ section.settings.search_placeholder | escape }}"
+          data-ts-search-input
+          aria-controls="ts-search-results-{{ section.id }}"
+          aria-expanded="false"
+        >
+        <button
+          type="button"
+          class="theme-store__search-clear"
+          data-ts-search-clear
+          aria-label="{{ 'theme_store.clear_search' | t | default: 'Clear search' }}"
+          hidden
+        >×</button>
+      </div>
+      <div
+        id="ts-search-results-{{ section.id }}"
+        class="theme-store__search-results"
+        role="listbox"
+        data-ts-search-results
+        hidden
+      ></div>
+    </div>
+
+    <div class="theme-store__grid">
+      <aside class="theme-store__sidebar" aria-label="{{ 'theme_store.filter_label' | t | default: 'Filters' }}">
+        <button
+          type="button"
+          class="theme-store__sidebar-toggle"
+          data-ts-sidebar-toggle
+          aria-expanded="false"
+          aria-controls="ts-sidebar-panel-{{ section.id }}"
+        >
+          <span>{{ 'theme_store.filter_label' | t | default: 'Filters' }}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="18" height="18">
+            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div id="ts-sidebar-panel-{{ section.id }}" class="theme-store__sidebar-panel" data-ts-sidebar-panel>
+          {% if section.settings.categories_heading != blank %}
+            <h3 class="theme-store__sidebar-heading">{{ section.settings.categories_heading }}</h3>
+          {% endif %}
+
+          {%- comment -%}
+            Build a unique list of products + remember which collections each one belongs to.
+            We pre-walk all category blocks so the sidebar counts and the JS catalog stay in sync.
+          {%- endcomment -%}
+          {%- assign seen_ids = '' -%}
+          {%- assign total_count = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'category' and block.settings.collection != blank -%}
+              {%- assign coll = block.settings.collection -%}
+              {%- for p in coll.products limit: render_limit -%}
+                {%- assign marker = '|' | append: p.id | append: '|' -%}
+                {%- unless seen_ids contains marker -%}
+                  {%- assign seen_ids = seen_ids | append: marker -%}
+                  {%- assign total_count = total_count | plus: 1 -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          <ul class="theme-store__cat-list">
+            <li>
+              <a
+                href="{{ request.path }}"
+                class="theme-store__cat-item is-active"
+                data-ts-cat="all"
+                aria-current="true"
+              >
+                <span class="theme-store__cat-name">{{ section.settings.all_label | default: 'All themes' }}</span>
+                <span class="theme-store__cat-count">{{ total_count }}</span>
+              </a>
+            </li>
+
+            {% for block in section.blocks %}
+              {% if block.type == 'category' and block.settings.collection != blank %}
+                {%- assign c = block.settings.collection -%}
+                <li {{ block.shopify_attributes }}>
+                  <a
+                    href="{{ request.path }}?cat={{ c.handle }}"
+                    class="theme-store__cat-item"
+                    data-ts-cat="{{ c.handle }}"
+                    aria-current="false"
+                  >
+                    <span class="theme-store__cat-name">{{ block.settings.label | default: c.title }}</span>
+                    <span class="theme-store__cat-count">{{ c.products_count }}</span>
+                  </a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+
+          {%- assign has_features = false -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'feature' -%}{%- assign has_features = true -%}{%- endif -%}
+          {%- endfor -%}
+
+          {% if has_features %}
+            {% if section.settings.features_heading != blank %}
+              <h3 class="theme-store__sidebar-heading theme-store__sidebar-heading--secondary">
+                {{ section.settings.features_heading }}
+              </h3>
+            {% endif %}
+            <ul class="theme-store__feature-list">
+              {% for block in section.blocks %}
+                {% if block.type == 'feature' %}
+                  <li class="theme-store__feature-item" {{ block.shopify_attributes }}>
+                    {{ block.settings.text }}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      </aside>
+
+      <div class="theme-store__products">
+        {%- comment -%}
+          Render every product once. data-cats is a space-separated list of every
+          collection handle the product belongs to, so JS can show/hide for
+          single-cat filters and "all" lets everything through.
+        {%- endcomment -%}
+        {%- assign rendered_ids = '' -%}
+        {%- assign visible_count = 0 -%}
+        <ul class="theme-store__product-grid" data-ts-product-grid>
+          {% for block in section.blocks %}
+            {% if block.type == 'category' and block.settings.collection != blank %}
+              {%- assign coll = block.settings.collection -%}
+              {% for product in coll.products limit: render_limit %}
+                {%- assign marker = '|' | append: product.id | append: '|' -%}
+                {%- unless rendered_ids contains marker -%}
+                  {%- assign rendered_ids = rendered_ids | append: marker -%}
+                  {%- assign visible_count = visible_count | plus: 1 -%}
+
+                  {%- comment -%} Collect every collection this product belongs to (within section) {%- endcomment -%}
+                  {%- assign cats = '' -%}
+                  {%- for b2 in section.blocks -%}
+                    {%- if b2.type == 'category' and b2.settings.collection != blank -%}
+                      {%- assign c2 = b2.settings.collection -%}
+                      {%- for p2 in c2.products limit: render_limit -%}
+                        {%- if p2.id == product.id -%}
+                          {%- assign cats = cats | append: c2.handle | append: ' ' -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  <li
+                    class="theme-store__product"
+                    data-ts-product
+                    data-product-id="{{ product.id }}"
+                    data-product-handle="{{ product.handle }}"
+                    data-cats="{{ cats | strip }}"
+                  >
+                    <a class="theme-store__product-link" href="{{ product.url }}">
+                      <div class="theme-store__product-media">
+                        {% if product.featured_image %}
+                          {% render 'image',
+                            image: product.featured_image,
+                            class: 'theme-store__product-img',
+                            width: 600,
+                            height: 400,
+                            crop: 'center'
+                          %}
+                        {% else %}
+                          <div class="theme-store__product-placeholder" aria-hidden="true"></div>
+                        {% endif %}
+                      </div>
+                      <div class="theme-store__product-body">
+                        <h3 class="theme-store__product-title">{{ product.title | escape }}</h3>
+                        {% if product.type != blank %}
+                          <p class="theme-store__product-type">{{ product.type | escape }}</p>
+                        {% endif %}
+                        <p class="theme-store__product-price">{{ product.price | money }}</p>
+                      </div>
+                    </a>
+                  </li>
+                {%- endunless -%}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        </ul>
+
+        <p class="theme-store__empty" data-ts-empty hidden>
+          {{ 'theme_store.empty' | t | default: 'No themes match this filter yet.' }}
+        </p>
+
+        {% if visible_count == 0 %}
+          <p class="theme-store__empty">
+            {{ 'theme_store.empty' | t | default: 'No themes match this filter yet.' }}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%} Inline JSON catalog for predictive search fuzzy matching {%- endcomment -%}
+<script type="application/json" data-ts-catalog="{{ section.id }}">
+  [
+    {%- assign first_p = true -%}
+    {%- assign catalog_seen = '' -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'category' and block.settings.collection != blank -%}
+        {%- assign coll = block.settings.collection -%}
+        {%- for p in coll.products limit: render_limit -%}
+          {%- assign marker = '|' | append: p.id | append: '|' -%}
+          {%- unless catalog_seen contains marker -%}
+            {%- assign catalog_seen = catalog_seen | append: marker -%}
+            {%- unless first_p -%},{%- endunless -%}
+            {%- assign first_p = false -%}
+            {%- if p.featured_image -%}
+              {%- assign img_src = p.featured_image | image_url: width: 200 -%}
+            {%- else -%}
+              {%- assign img_src = '' -%}
+            {%- endif -%}
+            {
+              "id": {{ p.id | json }},
+              "title": {{ p.title | json }},
+              "type": {{ p.type | default: '' | json }},
+              "url": {{ p.url | json }},
+              "price": {{ p.price | money | json }},
+              "img": {{ img_src | json }},
+              "vendor": {{ p.vendor | json }},
+              "tags": {{ p.tags | json }}
+            }
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+</script>
+
+<script src="{{ 'theme-store.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .theme-store {
+    --ts-gap: 1.25rem;
+    background: var(--ts-bg, transparent);
+    color: var(--ts-text, var(--color-foreground, #333));
+    padding: clamp(1rem, 4vw, 3rem) var(--page-margin, 20px);
+  }
+  .theme-store *,
+  .theme-store *::before,
+  .theme-store *::after { box-sizing: border-box; }
+  .theme-store__inner {
+    max-width: var(--page-width, 90rem);
+    margin: 0 auto;
+  }
+  .theme-store__sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .theme-store__heading {
+    margin: 0 0 1rem;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 700;
+  }
+
+  /* --- Search bar --- */
+  .theme-store__searchbar {
+    position: relative;
+    margin-bottom: var(--ts-gap);
+  }
+  .theme-store__search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .theme-store__search-icon {
+    position: absolute;
+    left: 14px;
+    width: 20px;
+    height: 20px;
+    color: var(--ts-muted, #888);
+    pointer-events: none;
+  }
+  .theme-store__search-input {
+    width: 100%;
+    padding: 0.85rem 2.5rem 0.85rem 2.75rem;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ts-text, inherit);
+    background: var(--ts-bg-card, #fff);
+    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 12%, transparent);
+    border-radius: var(--ts-radius, 12px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .theme-store__search-input:focus {
+    outline: none;
+    border-color: var(--ts-accent, #4a7cff);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ts-accent, #4a7cff) 22%, transparent);
+  }
+  .theme-store__search-clear {
+    position: absolute;
+    right: 10px;
+    width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    font-size: 1.4rem; line-height: 1;
+    color: var(--ts-muted, #888);
+    cursor: pointer;
+  }
+  .theme-store__search-clear:hover { background: color-mix(in srgb, var(--ts-text, #333) 8%, transparent); }
+
+  .theme-store__search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    z-index: 30;
+    max-height: 60vh;
+    overflow: auto;
+    background: var(--ts-bg-card, #fff);
+    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 10%, transparent);
+    border-radius: var(--ts-radius, 12px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  }
+  .theme-store__search-results[hidden] { display: none; }
+  .theme-store__search-result {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--ts-text, #333) 6%, transparent);
+  }
+  .theme-store__search-result:last-child { border-bottom: 0; }
+  .theme-store__search-result:hover,
+  .theme-store__search-result.is-focused {
+    background: color-mix(in srgb, var(--ts-accent, #4a7cff) 8%, transparent);
+  }
+  .theme-store__search-result-img {
+    width: 48px; height: 36px; object-fit: cover; border-radius: 6px;
+    background: color-mix(in srgb, var(--ts-text, #333) 6%, transparent);
+  }
+  .theme-store__search-result-title { font-weight: 600; font-size: 0.95rem; }
+  .theme-store__search-result-meta { font-size: 0.8rem; color: var(--ts-muted, #888); }
+  .theme-store__search-result-price { font-size: 0.9rem; font-weight: 600; }
+  .theme-store__search-empty,
+  .theme-store__search-suggest {
+    padding: 0.85rem 1rem;
+    color: var(--ts-muted, #888);
+    font-size: 0.9rem;
+  }
+  .theme-store__search-suggest button {
+    background: none; border: 0; padding: 0; margin: 0;
+    color: var(--ts-accent, #4a7cff);
+    font: inherit; cursor: pointer; text-decoration: underline;
+  }
+
+  /* --- Layout: mobile first, sidebar collapses --- */
+  .theme-store__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--ts-gap);
+  }
+  .theme-store__sidebar {
+    background: var(--ts-bg-card, #fff);
+    border-radius: var(--ts-radius, 12px);
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 8%, transparent);
+  }
+  .theme-store__sidebar-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    background: none; border: 0; padding: 0;
+    font: inherit; font-weight: 600; font-size: 1rem;
+    color: inherit; cursor: pointer;
+  }
+  .theme-store__sidebar-toggle svg { transition: transform .2s ease; }
+  .theme-store__sidebar-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .theme-store__sidebar-panel {
+    display: none;
+    margin-top: 0.85rem;
+  }
+  .theme-store__sidebar-panel.is-open { display: block; }
+
+  .theme-store__sidebar-heading {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  .theme-store__sidebar-heading--secondary { margin-top: 1.25rem; }
+
+  .theme-store__cat-list,
+  .theme-store__feature-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .theme-store__cat-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+    transition: background .12s ease;
+  }
+  .theme-store__cat-item:hover { background: color-mix(in srgb, var(--ts-text, #333) 6%, transparent); }
+  .theme-store__cat-item.is-active {
+    background: color-mix(in srgb, var(--ts-accent, #4a7cff) 14%, transparent);
+    font-weight: 600;
+  }
+  .theme-store__cat-count {
+    font-variant-numeric: tabular-nums;
+    color: var(--ts-muted, #888);
+    font-size: 0.9rem;
+  }
+  .theme-store__cat-item.is-active .theme-store__cat-count { color: inherit; }
+
+  .theme-store__feature-item {
+    padding: 0.4rem 0.7rem;
+    color: var(--ts-muted, #666);
+    font-size: 0.95rem;
+  }
+
+  /* --- Product grid --- */
+  .theme-store__products { min-width: 0; }
+  .theme-store__product-grid {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--ts-gap);
+  }
+  .theme-store__product {
+    background: var(--ts-bg-card, #fff);
+    border-radius: var(--ts-radius, 12px);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 8%, transparent);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .theme-store__product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  }
+  .theme-store__product[hidden] { display: none; }
+  .theme-store__product-link {
+    display: flex; flex-direction: column;
+    color: inherit; text-decoration: none;
+    height: 100%;
+  }
+  .theme-store__product-media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--ts-text, #333) 5%, transparent);
+  }
+  .theme-store__product-img,
+  .theme-store__product-placeholder {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .theme-store__product-body { padding: 0.9rem 1rem 1.1rem; }
+  .theme-store__product-title {
+    margin: 0 0 0.15rem; font-size: 1.05rem; font-weight: 700;
+  }
+  .theme-store__product-type {
+    margin: 0 0 0.5rem; color: var(--ts-muted, #666); font-size: 0.9rem;
+  }
+  .theme-store__product-price {
+    margin: 0; font-weight: 700;
+  }
+  .theme-store__empty {
+    padding: 2rem; text-align: center; color: var(--ts-muted, #666);
+  }
+
+  /* --- Tablet+ --- */
+  @media (min-width: 750px) {
+    .theme-store__product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* --- Desktop: sidebar visible by default --- */
+  @media (min-width: 990px) {
+    .theme-store__grid {
+      grid-template-columns: 250px minmax(0, 1fr);
+      align-items: start;
+    }
+    .theme-store__sidebar-toggle { display: none; }
+    .theme-store__sidebar-panel { display: block; margin-top: 0; }
+    .theme-store__product-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:theme_store.name",
+  "tag": "section",
+  "class": "shopify-section--theme-store",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:theme_store.heading_label",
+      "default": "Theme Store"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "t:theme_store.search_placeholder_label",
+      "default": "Search themes…"
+    },
+    {
+      "type": "text",
+      "id": "categories_heading",
+      "label": "t:theme_store.categories_heading_label",
+      "default": "Categories"
+    },
+    {
+      "type": "text",
+      "id": "all_label",
+      "label": "t:theme_store.all_label",
+      "default": "All themes"
+    },
+    {
+      "type": "text",
+      "id": "features_heading",
+      "label": "t:theme_store.features_heading_label",
+      "default": "Features"
+    },
+    {
+      "type": "header",
+      "content": "t:theme_store.appearance"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:theme_store.color_scheme",
+      "default": "default",
+      "options": [
+        { "value": "default", "label": "t:theme_store.scheme_default" },
+        { "value": "inverse", "label": "t:theme_store.scheme_inverse" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "t:theme_store.section_background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "t:theme_store.card_background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:theme_store.text_color",
+      "default": "#1F2328"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "t:theme_store.muted_color",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:theme_store.accent_color",
+      "default": "#4A7CFF"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "t:theme_store.card_radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "t:theme_store.block_category",
+      "limit": 20,
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:theme_store.block_category_collection"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:theme_store.block_category_label",
+          "info": "t:theme_store.block_category_label_info"
+        }
+      ]
+    },
+    {
+      "type": "feature",
+      "name": "t:theme_store.block_feature",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:theme_store.block_feature_text",
+          "default": "Mobile optimized"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:theme_store.name",
+      "category": "t:general.section",
+      "blocks": [
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "feature", "settings": { "text": "Mobile optimized" } },
+        { "type": "feature", "settings": { "text": "SEO friendly" } },
+        { "type": "feature", "settings": { "text": "Theme editor compatible" } },
+        { "type": "feature", "settings": { "text": "Fast load times" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
