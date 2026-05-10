@@ -1,0 +1,30 @@
+# Shopify CLI – Theme-Konfiguration
+#
+# Beim ersten "shopify theme push --unpublished -e development" wird das
+# Theme im Dev-Store neu angelegt. Die zurueckgegebene Theme-ID muss hier
+# einmalig eingetragen werden. Danach kann Claude/CLI immer dasselbe
+# Dev-Theme aktualisieren statt jedes Mal ein neues zu erzeugen.
+
+[environments.development]
+store = "dev-store-4ogqgshg.myshopify.com"
+# theme = "__THEME_ID__"   # nach erstem Push hier eintragen
+
+# Production-Block wird pro Kundenshop ergaenzt:
+# [environments.production]
+# store = "kunde-x.myshopify.com"
+# theme = "__PROD_THEME_ID__"
+
+ignore = [
+  "templates/page.qa-*.json",
+  "tests/**",
+  "playwright.config.ts",
+  "qa-screenshots/**",
+  "playwright-report/**",
+  "test-results/**",
+  "package.json",
+  "package-lock.json",
+  "node_modules/**",
+  "README.md",
+  ".env*",
+  ".gitignore"
+]
