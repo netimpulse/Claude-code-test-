@@ -7,7 +7,7 @@
 
 [environments.development]
 store = "dev-store-4ogqgshg.myshopify.com"
-# theme = "__THEME_ID__"   # nach erstem Push hier eintragen
+theme = "145380638835"
 
 # Production-Block wird pro Kundenshop ergaenzt:
 # [environments.production]

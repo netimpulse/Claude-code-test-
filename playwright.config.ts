@@ -14,7 +14,7 @@ import { defineConfig, devices } from "@playwright/test";
  * tests/global-setup.ts und wird via storageState an alle Tests vererbt.
  */
 const baseURL =
-  "https://dev-store-4ogqgshg.myshopify.com/pages/qa-block-test?preview_theme_id=__THEME_ID__";
+  "https://dev-store-4ogqgshg.myshopify.com/pages/qa-block-test?preview_theme_id=145380638835";
 
 export default defineConfig({
   testDir: "./tests",
