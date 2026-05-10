@@ -1,13 +1,17 @@
 # Shopify CLI – Theme-Konfiguration
 #
-# Beim ersten "shopify theme push --unpublished -e development" wird das
-# Theme im Dev-Store neu angelegt. Die zurueckgegebene Theme-ID muss hier
-# einmalig eingetragen werden. Danach kann Claude/CLI immer dasselbe
-# Dev-Theme aktualisieren statt jedes Mal ein neues zu erzeugen.
+# Das development-Environment zeigt auf das QA-Preview-Theme im Dev-Store.
+# Dieses Theme ist NICHT an die GitHub-Integration gebunden — es wird
+# ausschliesslich via Shopify CLI aus dem aktuellen Branch heraus aktualisiert,
+# damit der QA-Workflow auch dann funktioniert, wenn Claude Code Web seine
+# Aenderungen erst auf einer PR-Branch hat (also bevor sie in main gemerged sind).
+#
+# Das GitHub-verbundene Theme bleibt unberuehrt und bildet weiterhin den
+# aktuellen Stand von main ab.
 
 [environments.development]
 store = "dev-store-4ogqgshg.myshopify.com"
-theme = "145380638835"
+theme = "145381884019"
 
 # Production-Block wird pro Kundenshop ergaenzt:
 # [environments.production]
@@ -18,13 +22,4 @@ ignore = [
   "templates/page.qa-*.json",
   "tests/**",
   "playwright.config.ts",
-  "qa-screenshots/**",
-  "playwright-report/**",
-  "test-results/**",
-  "package.json",
-  "package-lock.json",
-  "node_modules/**",
-  "README.md",
-  ".env*",
-  ".gitignore"
-]
+  "
