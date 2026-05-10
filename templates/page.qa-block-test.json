@@ -1,9 +1,66 @@
 {
   "sections": {
-    "main": {
-      "type": "page",
-      "settings": {}
+    "qa": {
+      "type": "theme-store",
+      "settings": {
+        "heading": "Theme Store",
+        "search_placeholder": "Search themes…",
+        "categories_heading": "Categories",
+        "all_label": "All themes",
+        "features_heading": "Features",
+        "color_scheme": "default",
+        "section_background": "#F4EFE7",
+        "card_background": "#FFFFFF",
+        "text_color": "#1F2328",
+        "muted_color": "#6B7280",
+        "accent_color": "#4A7CFF",
+        "card_radius": 14
+      },
+      "blocks": {
+        "cat_fashion": {
+          "type": "category",
+          "settings": { "collection": "fashion", "label": "Fashion" }
+        },
+        "cat_handwerk": {
+          "type": "category",
+          "settings": { "collection": "handwerk", "label": "Handwerk" }
+        },
+        "cat_business": {
+          "type": "category",
+          "settings": { "collection": "business", "label": "Business" }
+        },
+        "cat_shopify": {
+          "type": "category",
+          "settings": { "collection": "shopify", "label": "Shopify" }
+        },
+        "feat_mobile": {
+          "type": "feature",
+          "settings": { "text": "Mobile optimized" }
+        },
+        "feat_seo": {
+          "type": "feature",
+          "settings": { "text": "SEO friendly" }
+        },
+        "feat_editor": {
+          "type": "feature",
+          "settings": { "text": "Theme editor compatible" }
+        },
+        "feat_fast": {
+          "type": "feature",
+          "settings": { "text": "Fast load times" }
+        }
+      },
+      "block_order": [
+        "cat_fashion",
+        "cat_handwerk",
+        "cat_business",
+        "cat_shopify",
+        "feat_mobile",
+        "feat_seo",
+        "feat_editor",
+        "feat_fast"
+      ]
     }
   },
-  "order": ["main"]
+  "order": ["qa"]
 }

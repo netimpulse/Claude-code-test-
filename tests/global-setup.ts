@@ -31,7 +31,7 @@ export default async function globalSetup(_config: FullConfig) {
   const statePath = path.join(authDir, "storefront.json");
 
   const browser = await chromium.launch();
-  const context = await browser.newContext();
+  const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const page = await context.newPage();
 
   await page.goto(`${STORE_BASE}/password`, { waitUntil: "networkidle" });
