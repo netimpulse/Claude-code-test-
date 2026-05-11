@@ -1,20 +1,66 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "cart",
-      "settings": {}
+      "settings": {
+        "heading": "Dein Warenkorb",
+        "subtitle_suffix": "digital · sofort startklar",
+        "checkout_label": "Zur Kasse",
+        "empty_text": "Dein Warenkorb ist leer.",
+        "color_scheme": "scheme-1",
+        "card_radius": 14
+      },
+      "blocks": {
+        "discount": {
+          "type": "discount_code",
+          "settings": {
+            "visible": true,
+            "label": "Rabattcode",
+            "placeholder": "Code eingeben",
+            "button_label": "Anwenden"
+          }
+        },
+        "trust_ssl": {
+          "type": "trust_badge",
+          "settings": { "visible": true, "icon": "lock",    "text": "SSL-gesichert" }
+        },
+        "trust_money_back": {
+          "type": "trust_badge",
+          "settings": { "visible": true, "icon": "refresh", "text": "30-Tage Geld-zurück" }
+        },
+        "payments": {
+          "type": "payment_methods",
+          "settings": {
+            "visible": true,
+            "show_sepa": true,
+            "show_paypal": true,
+            "show_klarna": false,
+            "show_invoice": true,
+            "show_visa": false,
+            "show_mastercard": false,
+            "show_amex": false,
+            "show_apple_pay": false,
+            "show_google_pay": false,
+            "show_shop_pay": false
+          }
+        },
+        "continue": {
+          "type": "continue_link",
+          "settings": {
+            "visible": true,
+            "label": "Weiter stöbern",
+            "url": "/collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "discount",
+        "trust_ssl",
+        "trust_money_back",
+        "payments",
+        "continue"
+      ]
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main"]
 }

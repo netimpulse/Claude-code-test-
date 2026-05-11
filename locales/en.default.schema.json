@@ -110,5 +110,8 @@
     "clear_search": "Clear search",
     "filter_label": "Filters",
     "empty": "No themes match this filter yet."
+  },
+  "cart": {
+    "name": "Cart"
   }
 }
