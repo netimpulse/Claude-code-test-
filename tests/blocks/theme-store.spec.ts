@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { QA, withTheme } from "../fixtures";
 
 /**
  * Block-spezifische Tests fuer sections/theme-store.liquid.
@@ -7,7 +8,7 @@ import { test, expect } from "@playwright/test";
  */
 test.describe("Theme Store – Section", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("", { waitUntil: "networkidle" });
+    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
   });
 
   test("Renders search bar, sidebar with categories, and product grid", async ({ page }) => {
@@ -73,7 +74,7 @@ test.describe("Theme Store – Section", () => {
 
   test("Mobile sidebar toggle expands and collapses", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 800 });
-    await page.goto("", { waitUntil: "networkidle" });
+    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
 
     const root = page.locator("[data-section-type='theme-store']").first();
     const toggle = root.locator("[data-ts-sidebar-toggle]");
@@ -91,9 +92,35 @@ test.describe("Theme Store – Section", () => {
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 
+  test("Color scheme + font pickers feed inline CSS variables", async ({ page }) => {
+    const root = page.locator("[data-section-type='theme-store']").first();
+
+    const vars = await root.evaluate((el) => {
+      const cs = getComputedStyle(el as HTMLElement);
+      return {
+        accent: cs.getPropertyValue("--ts-accent").trim(),
+        bg: cs.getPropertyValue("--ts-bg").trim(),
+        text: cs.getPropertyValue("--ts-text").trim(),
+        headingFont: cs.getPropertyValue("--ts-heading-font").trim(),
+        bodyFont: cs.getPropertyValue("--ts-body-font").trim(),
+      };
+    });
+
+    expect(vars.accent).toMatch(/^#[0-9A-Fa-f]{3,8}$|^rgb/i);
+    expect(vars.bg).toMatch(/^#[0-9A-Fa-f]{3,8}$|^rgb/i);
+    expect(vars.text).toMatch(/^#[0-9A-Fa-f]{3,8}$|^rgb/i);
+    expect(vars.headingFont.length).toBeGreaterThan(0);
+    expect(vars.bodyFont.length).toBeGreaterThan(0);
+
+    const headingFamily = await root.locator(".theme-store__heading").first().evaluate(
+      (el) => getComputedStyle(el).fontFamily
+    );
+    expect(headingFamily.length).toBeGreaterThan(0);
+  });
+
   test("No horizontal scroll at 320px viewport", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
-    await page.goto("", { waitUntil: "networkidle" });
+    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
 
     const overflow = await page.evaluate(() => {
       return document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;

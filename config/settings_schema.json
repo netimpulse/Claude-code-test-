@@ -77,6 +77,102 @@
         "unit": "px",
         "label": "t:labels.input_corner_radius",
         "default": 4
+      },
+      {
+        "type": "color_scheme_group",
+        "id": "color_schemes",
+        "definition": [
+          {
+            "type": "color",
+            "id": "background",
+            "label": "t:labels.background",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "background_card",
+            "label": "t:labels.card_background",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "text",
+            "label": "t:labels.text",
+            "default": "#1F2328"
+          },
+          {
+            "type": "color",
+            "id": "muted",
+            "label": "t:labels.muted_text",
+            "default": "#6B7280"
+          },
+          {
+            "type": "color",
+            "id": "accent",
+            "label": "t:labels.accent",
+            "default": "#4A7CFF"
+          },
+          {
+            "type": "color",
+            "id": "primary_button",
+            "label": "Primary button",
+            "default": "#4A7CFF"
+          },
+          {
+            "type": "color",
+            "id": "on_primary_button",
+            "label": "Primary button text",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "primary_button_border",
+            "label": "Primary button border",
+            "default": "#4A7CFF"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button",
+            "label": "Secondary button",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "on_secondary_button",
+            "label": "Secondary button text",
+            "default": "#1F2328"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button_border",
+            "label": "Secondary button border",
+            "default": "#1F2328"
+          },
+          {
+            "type": "color",
+            "id": "links",
+            "label": "Links",
+            "default": "#4A7CFF"
+          },
+          {
+            "type": "color",
+            "id": "icons",
+            "label": "Icons",
+            "default": "#1F2328"
+          }
+        ],
+        "role": {
+          "background": "background",
+          "text": "text",
+          "links": "links",
+          "icons": "icons",
+          "primary_button": "primary_button",
+          "on_primary_button": "on_primary_button",
+          "primary_button_border": "primary_button_border",
+          "secondary_button": "secondary_button",
+          "on_secondary_button": "on_secondary_button",
+          "secondary_button_border": "secondary_button_border"
+        }
       }
     ]
   }

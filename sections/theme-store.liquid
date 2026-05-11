@@ -15,19 +15,32 @@
 
 {%- liquid
   assign render_limit = 50
+  assign scheme = section.settings.color_scheme
+  assign heading_font = section.settings.heading_font
+  assign body_font = section.settings.body_font
 -%}
 
+{% style %}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} .theme-store {
+    --ts-heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --ts-body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
+  }
+{% endstyle %}
+
 <section
-  class="theme-store color-scheme-{{ section.settings.color_scheme }}"
+  class="theme-store color-{{ scheme.id }}"
   data-section-id="{{ section.id }}"
   data-section-type="theme-store"
   style="
-    --ts-accent: {{ section.settings.accent_color }};
+    --ts-accent: {{ scheme.settings.accent }};
     --ts-radius: {{ section.settings.card_radius }}px;
-    --ts-bg-card: {{ section.settings.card_background }};
-    --ts-text: {{ section.settings.text_color }};
-    --ts-muted: {{ section.settings.muted_color }};
-    --ts-bg: {{ section.settings.section_background }};
+    --ts-bg-card: {{ scheme.settings.background_card }};
+    --ts-text: {{ scheme.settings.text }};
+    --ts-muted: {{ scheme.settings.muted }};
+    --ts-bg: {{ scheme.settings.background }};
   "
 >
   <div class="theme-store__inner">
@@ -292,6 +305,12 @@
     background: var(--ts-bg, transparent);
     color: var(--ts-text, var(--color-foreground, #333));
     padding: clamp(1rem, 4vw, 3rem) var(--page-margin, 20px);
+    font-family: var(--ts-body-font, inherit);
+  }
+  .theme-store__heading,
+  .theme-store__sidebar-heading,
+  .theme-store__product-title {
+    font-family: var(--ts-heading-font, inherit);
   }
   .theme-store *,
   .theme-store *::before,
@@ -583,44 +602,30 @@
       "content": "t:theme_store.appearance"
     },
     {
-      "type": "select",
+      "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:theme_store.color_scheme",
-      "default": "default",
-      "options": [
-        { "value": "default", "label": "t:theme_store.scheme_default" },
-        { "value": "inverse", "label": "t:theme_store.scheme_inverse" }
-      ]
+      "default": "scheme-1"
     },
     {
-      "type": "color",
-      "id": "section_background",
-      "label": "t:theme_store.section_background",
-      "default": "#FFFFFF"
+      "type": "header",
+      "content": "t:theme_store.typography"
     },
     {
-      "type": "color",
-      "id": "card_background",
-      "label": "t:theme_store.card_background",
-      "default": "#FFFFFF"
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "t:theme_store.heading_font",
+      "default": "work_sans_n7"
     },
     {
-      "type": "color",
-      "id": "text_color",
-      "label": "t:theme_store.text_color",
-      "default": "#1F2328"
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "t:theme_store.body_font",
+      "default": "work_sans_n4"
     },
     {
-      "type": "color",
-      "id": "muted_color",
-      "label": "t:theme_store.muted_color",
-      "default": "#6B7280"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "t:theme_store.accent_color",
-      "default": "#4A7CFF"
+      "type": "header",
+      "content": "t:theme_store.shape"
     },
     {
       "type": "range",
