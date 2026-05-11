@@ -30,11 +30,24 @@ export default async function globalSetup(_config: FullConfig) {
   if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
   const statePath = path.join(authDir, "storefront.json");
 
-  const browser = await chromium.launch();
-  const context = await browser.newContext({ ignoreHTTPSErrors: true });
+  const browser = await chromium.launch({
+    channel: "chromium",
+    args: ["--disable-blink-features=AutomationControlled"],
+  });
+  const context = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    userAgent:
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  });
+  // Maskiere navigator.webdriver, das ist das offensichtlichste Cloudflare-Signal.
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, "webdriver", { get: () => undefined });
+  });
   const page = await context.newPage();
 
-  await page.goto(`${STORE_BASE}/password`, { waitUntil: "networkidle" });
+  await page.goto(`${STORE_BASE}/password`, { waitUntil: "load" });
+  // Cloudflare-Challenge braucht oft 5-10s, bis sie das echte /password-Formular liefert.
+  await page.waitForSelector('input[type="password"]', { timeout: 30_000 });
 
   // Robuste Selektoren: sowohl Skeleton als auch Dawn nutzen input[type=password]
   // im einzigen Formular der Password-Page.

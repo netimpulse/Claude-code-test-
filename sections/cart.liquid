@@ -1,37 +1,709 @@
 {% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
+  Cart page section ("Dein Warenkorb").
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
+  Fixed parts (always rendered):
+    - Heading + auto subtitle (item count + "digital · sofort startklar")
+    - Line items with image fallback, qty controls, remove link, line price
+    - Summary: subtotal, applied discount lines, total
+    - Checkout button
+    - Empty state
+
+  Configurable blocks (visibility toggle per block):
+    - discount_code   (1x)   — label + placeholder editable
+    - payment_methods (1x)   — individual toggles per method
+    - continue_link   (1x)   — label + URL
+    - trust_badge     (many) — icon (preset) + text, sortable
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+{%- liquid
+  assign item_count = cart.item_count
+  assign scheme = section.settings.color_scheme
+  assign accent = scheme.settings.accent | default: '#1F2328'
+-%}
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+<section
+  class="cart-page"
+  data-section-id="{{ section.id }}"
+  data-section-type="cart"
+  style="
+    --cart-accent: {{ accent }};
+    --cart-bg: {{ scheme.settings.background | default: '#F4EFE7' }};
+    --cart-bg-card: {{ scheme.settings.background_card | default: '#FFFFFF' }};
+    --cart-text: {{ scheme.settings.text | default: '#1F2328' }};
+    --cart-muted: {{ scheme.settings.muted | default: '#6B7280' }};
+    --cart-radius: {{ section.settings.card_radius | default: 14 }}px;
+  "
+>
+  <div class="cart-page__inner">
+    <header class="cart-page__header">
+      <h1 class="cart-page__title">{{ section.settings.heading | default: 'Dein Warenkorb' }}</h1>
+      {%- if item_count > 0 -%}
+        <p class="cart-page__subtitle">
+          {{ item_count }}
+          {%- if item_count == 1 %} Position{% else %} Positionen{% endif -%}
+          {%- if section.settings.subtitle_suffix != blank %} · {{ section.settings.subtitle_suffix }}{%- endif -%}
+        </p>
+      {%- endif -%}
+    </header>
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+    {%- if item_count == 0 -%}
+      <div class="cart-page__empty" data-cart-empty>
+        <p class="cart-page__empty-text">{{ section.settings.empty_text | default: 'Dein Warenkorb ist leer.' }}</p>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'continue_link' and block.settings.visible -%}
+            <a class="cart-page__continue" href="{{ block.settings.url | default: '/collections/all' }}" {{ block.shopify_attributes }}>
+              ← {{ block.settings.label | default: 'Weiter stöbern' }}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <form action="{{ routes.cart_url }}" method="post" class="cart-page__form" data-cart-form novalidate>
+        <div class="cart-page__card">
+          <ul class="cart-items" data-cart-items>
+            {%- for item in cart.items -%}
+              <li class="cart-item" data-cart-item data-line="{{ forloop.index }}" data-variant-id="{{ item.variant_id }}">
+                <a class="cart-item__media" href="{{ item.url }}" aria-hidden="true" tabindex="-1">
+                  {%- if item.image -%}
+                    {{ item.image | image_url: width: 120 | image_tag: loading: 'lazy', class: 'cart-item__img', alt: item.product.title | escape }}
+                  {%- else -%}
+                    <span class="cart-item__placeholder" role="img" aria-label="{{ item.product.title | escape }}">
+                      <svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true" focusable="false">
+                        <rect x="8" y="14" width="32" height="22" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M14 22 L20 28 L28 18 L34 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  {%- endif -%}
+                </a>
+
+                <div class="cart-item__body">
+                  <a class="cart-item__title-link" href="{{ item.url }}">
+                    <h2 class="cart-item__title">{{ item.product.title }}</h2>
+                  </a>
+                  {%- if item.variant.title != 'Default Title' and item.product.has_only_default_variant == false -%}
+                    <p class="cart-item__variant">{{ item.variant.title }}</p>
+                  {%- elsif item.product.description != blank -%}
+                    <p class="cart-item__variant">{{ item.product.description | strip_html | truncate: 60 }}</p>
+                  {%- endif -%}
+
+                  <div class="cart-item__controls">
+                    <div class="cart-qty" data-cart-qty>
+                      <button type="button" class="cart-qty__btn" data-cart-qty-decrement aria-label="Menge verringern">−</button>
+                      <input
+                        type="number"
+                        name="updates[]"
+                        class="cart-qty__input"
+                        min="1"
+                        value="{{ item.quantity }}"
+                        data-cart-qty-input
+                        aria-label="Menge"
+                      >
+                      <button type="button" class="cart-qty__btn" data-cart-qty-increment aria-label="Menge erhöhen">+</button>
+                    </div>
+                    <a class="cart-item__remove" href="{{ item.url_to_remove }}" data-cart-item-remove>Entfernen</a>
+                  </div>
+                </div>
+
+                <div class="cart-item__price" data-cart-item-price>
+                  {{ item.final_line_price | money_without_trailing_zeros }}
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          <div class="cart-summary" data-cart-summary>
+            <div class="cart-summary__row">
+              <span>Zwischensumme</span>
+              <span data-cart-subtotal>{{ cart.items_subtotal_price | money }}</span>
+            </div>
+
+            {%- if cart.cart_level_discount_applications.size > 0 -%}
+              {%- for discount in cart.cart_level_discount_applications -%}
+                <div class="cart-summary__row cart-summary__row--discount">
+                  <span>
+                    Rabatt
+                    <code class="cart-summary__code">{{ discount.title }}</code>
+                  </span>
+                  <span>− {{ discount.total_allocated_amount | money }}</span>
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+
+            <div class="cart-summary__row cart-summary__row--total">
+              <span>Gesamt <small class="cart-summary__tax">inkl. MwSt.</small></span>
+              <span data-cart-total>{{ cart.total_price | money }}</span>
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Discount code block (1x slot) {%- endcomment -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'discount_code' and block.settings.visible -%}
+            <div class="cart-discount" data-cart-discount {{ block.shopify_attributes }}>
+              <label class="cart-discount__label" for="cart-discount-{{ section.id }}">
+                {{ block.settings.label | default: 'Rabattcode' }}
+              </label>
+              <div class="cart-discount__row">
+                <input
+                  id="cart-discount-{{ section.id }}"
+                  name="discount"
+                  type="text"
+                  class="cart-discount__input"
+                  placeholder="{{ block.settings.placeholder | default: 'Code eingeben' | escape }}"
+                  autocomplete="off"
+                  spellcheck="false"
+                  data-cart-discount-input
+                >
+                <button type="submit" name="checkout" class="cart-discount__apply" data-cart-discount-apply>
+                  {{ block.settings.button_label | default: 'Anwenden' }}
+                </button>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        <button type="submit" name="checkout" class="cart-page__checkout" data-cart-checkout>
+          {{ section.settings.checkout_label | default: 'Zur Kasse' }} →
+        </button>
+
+        <div class="cart-page__meta">
+          {%- comment -%} Continue browsing block {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'continue_link' and block.settings.visible -%}
+              <a class="cart-page__continue" href="{{ block.settings.url | default: '/collections/all' }}" {{ block.shopify_attributes }}>
+                ← {{ block.settings.label | default: 'Weiter stöbern' }}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- comment -%} Trust badges row (collect all visible trust_badge blocks) {%- endcomment -%}
+          {%- assign visible_badges = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'trust_badge' and block.settings.visible -%}
+              {%- assign visible_badges = visible_badges | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if visible_badges > 0 -%}
+            <ul class="cart-badges" data-cart-trust-badges>
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'trust_badge' and block.settings.visible -%}
+                  <li class="cart-badge" {{ block.shopify_attributes }}>
+                    {%- case block.settings.icon -%}
+                      {%- when 'lock' -%}
+                        <svg class="cart-badge__icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 7V5a4 4 0 1 1 8 0v2h1v8H3V7h1zm2 0h4V5a2 2 0 0 0-4 0v2z" fill="currentColor"/></svg>
+                      {%- when 'check' -%}
+                        <svg class="cart-badge__icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M13.5 4 6 11.5 2.5 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      {%- when 'refresh' -%}
+                        <svg class="cart-badge__icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 8a5 5 0 0 1 9-3V3l3 3-3 3V7a3 3 0 0 0-6 1H3zm10 0a5 5 0 0 1-9 3v2l-3-3 3-3v2a3 3 0 0 0 6-1h3z" fill="currentColor"/></svg>
+                      {%- when 'shield' -%}
+                        <svg class="cart-badge__icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 1 2 3v5c0 3.5 2.5 6 6 7 3.5-1 6-3.5 6-7V3L8 1z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m5.5 8 2 2 3.5-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      {%- when 'truck' -%}
+                        <svg class="cart-badge__icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M1 4h8v7H1zm8 2h4l2 2v3h-6zM3.5 13a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm9 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+                    {%- endcase -%}
+                    <span class="cart-badge__text">{{ block.settings.text | default: 'Trust badge' }}</span>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          {%- comment -%} Payment methods block (1x slot) {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'payment_methods' and block.settings.visible -%}
+              {%- assign methods = '' -%}
+              {%- if block.settings.show_sepa -%}{%- assign methods = methods | append: 'SEPA|' -%}{%- endif -%}
+              {%- if block.settings.show_paypal -%}{%- assign methods = methods | append: 'PayPal|' -%}{%- endif -%}
+              {%- if block.settings.show_klarna -%}{%- assign methods = methods | append: 'Klarna|' -%}{%- endif -%}
+              {%- if block.settings.show_invoice -%}{%- assign methods = methods | append: 'Rechnung|' -%}{%- endif -%}
+              {%- if block.settings.show_visa -%}{%- assign methods = methods | append: 'Visa|' -%}{%- endif -%}
+              {%- if block.settings.show_mastercard -%}{%- assign methods = methods | append: 'Mastercard|' -%}{%- endif -%}
+              {%- if block.settings.show_amex -%}{%- assign methods = methods | append: 'AmEx|' -%}{%- endif -%}
+              {%- if block.settings.show_apple_pay -%}{%- assign methods = methods | append: 'Apple Pay|' -%}{%- endif -%}
+              {%- if block.settings.show_google_pay -%}{%- assign methods = methods | append: 'Google Pay|' -%}{%- endif -%}
+              {%- if block.settings.show_shop_pay -%}{%- assign methods = methods | append: 'Shop Pay|' -%}{%- endif -%}
+
+              {%- if methods != blank -%}
+                <ul class="cart-payments" data-cart-payments {{ block.shopify_attributes }}>
+                  {%- assign method_list = methods | split: '|' -%}
+                  {%- for m in method_list -%}
+                    {%- if m != blank -%}
+                      <li class="cart-payment">{{ m }}</li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .cart-page {
+    background: var(--cart-bg, #F4EFE7);
+    color: var(--cart-text, #1F2328);
+    padding: clamp(2rem, 6vw, 4rem) var(--page-margin, 20px);
+    min-height: 60vh;
+  }
+  .cart-page *,
+  .cart-page *::before,
+  .cart-page *::after { box-sizing: border-box; }
+  .cart-page__inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .cart-page__header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .cart-page__title {
+    margin: 0 0 .35rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+  .cart-page__subtitle {
+    margin: 0;
+    color: var(--cart-muted, #6B7280);
+    font-size: .95rem;
+  }
+
+  .cart-page__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cart-page__card {
+    background: var(--cart-bg-card, #FFFFFF);
+    border-radius: var(--cart-radius, 14px);
+    padding: 1rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+  }
+
+  /* Line items */
+  .cart-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .cart-item {
+    display: grid;
+    grid-template-columns: 64px minmax(0,1fr) auto;
+    gap: .85rem;
+    align-items: center;
+    padding: .5rem 0 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--cart-text) 10%, transparent);
+  }
+  .cart-item:last-child { border-bottom: 0; padding-bottom: .5rem; }
+
+  .cart-item__media {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--cart-text) 6%, transparent);
+    display: grid; place-items: center;
+    color: var(--cart-muted, #6B7280);
+  }
+  .cart-item__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cart-item__placeholder { display: grid; place-items: center; width: 100%; height: 100%; }
+
+  .cart-item__body { min-width: 0; }
+  .cart-item__title-link { color: inherit; text-decoration: none; }
+  .cart-item__title {
+    margin: 0 0 .15rem;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .cart-item__variant {
+    margin: 0 0 .45rem;
+    color: var(--cart-muted, #6B7280);
+    font-size: .85rem;
+  }
+  .cart-item__controls {
+    display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+  }
+  .cart-qty {
+    display: inline-flex; align-items: center;
+    border: 1px solid color-mix(in srgb, var(--cart-text) 16%, transparent);
+    border-radius: 999px;
+    padding: 2px;
+    background: var(--cart-bg-card, #FFFFFF);
+  }
+  .cart-qty__btn {
+    width: 28px; height: 28px;
+    border: 0; background: transparent;
+    color: inherit;
+    border-radius: 999px;
+    font: inherit; font-size: 1.1rem; line-height: 1;
+    cursor: pointer;
+  }
+  .cart-qty__btn:hover { background: color-mix(in srgb, var(--cart-text) 8%, transparent); }
+  .cart-qty__input {
+    width: 32px;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    color: inherit;
+    font: inherit; font-size: .95rem;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .cart-qty__input::-webkit-outer-spin-button,
+  .cart-qty__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .cart-item__remove {
+    color: var(--cart-muted, #6B7280);
+    font-size: .85rem;
+    text-decoration: underline;
+  }
+  .cart-item__remove:hover { color: var(--cart-text); }
+
+  .cart-item__price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+
+  /* Summary */
+  .cart-summary {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--cart-text) 10%, transparent);
+    display: flex; flex-direction: column; gap: .35rem;
+  }
+  .cart-summary__row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: .95rem;
+    color: var(--cart-muted, #6B7280);
+  }
+  .cart-summary__row--discount { color: var(--cart-text); }
+  .cart-summary__code {
+    display: inline-block;
+    margin-left: .35rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--cart-text) 8%, transparent);
+    color: var(--cart-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .8rem;
+  }
+  .cart-summary__row--total {
+    margin-top: .5rem;
+    color: var(--cart-text);
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+  .cart-summary__tax {
+    margin-left: .35rem;
+    color: var(--cart-muted, #6B7280);
+    font-weight: 400;
+    font-size: .8rem;
+  }
+
+  /* Discount block */
+  .cart-discount {
+    background: var(--cart-bg-card, #FFFFFF);
+    border-radius: var(--cart-radius, 14px);
+    padding: .85rem 1rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  .cart-discount__label {
+    display: block;
+    margin-bottom: .35rem;
+    font-size: .85rem;
+    color: var(--cart-muted, #6B7280);
+  }
+  .cart-discount__row { display: flex; gap: .5rem; }
+  .cart-discount__input {
+    flex: 1;
+    padding: .65rem .85rem;
+    border: 1px solid color-mix(in srgb, var(--cart-text) 16%, transparent);
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+  }
+  .cart-discount__input:focus {
+    outline: none;
+    border-color: var(--cart-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cart-accent) 22%, transparent);
+  }
+  .cart-discount__apply {
+    padding: 0 1rem;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--cart-text) 30%, transparent);
+    border-radius: 10px;
+    color: var(--cart-text);
+    font: inherit; font-weight: 600;
+    cursor: pointer;
+  }
+  .cart-discount__apply:hover {
+    background: color-mix(in srgb, var(--cart-text) 6%, transparent);
+  }
+
+  /* Checkout button */
+  .cart-page__checkout {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: var(--cart-text, #1F2328);
+    color: var(--cart-bg-card, #FFFFFF);
+    border: 0;
+    border-radius: var(--cart-radius, 14px);
+    font: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .cart-page__checkout:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+  }
+
+  /* Meta footer */
+  .cart-page__meta {
+    display: flex; flex-direction: column; align-items: center; gap: .85rem;
+    margin-top: .5rem;
+    text-align: center;
+  }
+  .cart-page__continue {
+    color: var(--cart-muted, #6B7280);
+    text-decoration: none;
+    font-size: .9rem;
+  }
+  .cart-page__continue:hover { color: var(--cart-text); text-decoration: underline; }
+
+  .cart-badges,
+  .cart-payments {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: .25rem .85rem;
+    color: var(--cart-muted, #6B7280);
+    font-size: .85rem;
+  }
+  .cart-badge,
+  .cart-payment {
+    display: inline-flex; align-items: center; gap: .35rem;
+  }
+  .cart-badge + .cart-badge::before,
+  .cart-payment + .cart-payment::before {
+    content: "·";
+    margin-right: .55rem;
+    color: color-mix(in srgb, var(--cart-text) 25%, transparent);
+  }
+  .cart-badge__icon { flex: 0 0 auto; }
+
+  /* Empty state */
+  .cart-page__empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: var(--cart-bg-card, #FFFFFF);
+    border-radius: var(--cart-radius, 14px);
+  }
+  .cart-page__empty-text {
+    margin: 0 0 1rem;
+    color: var(--cart-muted, #6B7280);
+  }
+
+  /* Mobile tweaks */
+  @media (max-width: 540px) {
+    .cart-item {
+      grid-template-columns: 56px minmax(0,1fr);
+      grid-template-areas:
+        "media body"
+        "price price";
+      row-gap: .35rem;
+    }
+    .cart-item__media { grid-area: media; width: 56px; height: 56px; }
+    .cart-item__body  { grid-area: body; }
+    .cart-item__price { grid-area: price; text-align: right; }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.cart",
-  "settings": []
+  "name": "t:cart.name",
+  "tag": "section",
+  "class": "shopify-section--cart",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Dein Warenkorb"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_suffix",
+      "label": "Subtitle suffix",
+      "info": "Wird hinter '{n} Positionen' angehängt, z. B. 'digital · sofort startklar'.",
+      "default": "digital · sofort startklar"
+    },
+    {
+      "type": "text",
+      "id": "checkout_label",
+      "label": "Checkout button label",
+      "default": "Zur Kasse"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty cart message",
+      "default": "Dein Warenkorb ist leer."
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "blocks": [
+    {
+      "type": "discount_code",
+      "name": "Rabattcode",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "visible",
+          "label": "Sichtbar",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Rabattcode"
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "Placeholder",
+          "default": "Code eingeben"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button-Text",
+          "default": "Anwenden"
+        }
+      ]
+    },
+    {
+      "type": "payment_methods",
+      "name": "Zahlungsmethoden",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "visible",
+          "label": "Sichtbar",
+          "default": true
+        },
+        { "type": "header", "content": "Methoden" },
+        { "type": "checkbox", "id": "show_sepa",        "label": "SEPA",        "default": true  },
+        { "type": "checkbox", "id": "show_paypal",      "label": "PayPal",      "default": true  },
+        { "type": "checkbox", "id": "show_klarna",      "label": "Klarna",      "default": false },
+        { "type": "checkbox", "id": "show_invoice",     "label": "Rechnung",    "default": true  },
+        { "type": "checkbox", "id": "show_visa",        "label": "Visa",        "default": false },
+        { "type": "checkbox", "id": "show_mastercard",  "label": "Mastercard",  "default": false },
+        { "type": "checkbox", "id": "show_amex",        "label": "AmEx",        "default": false },
+        { "type": "checkbox", "id": "show_apple_pay",   "label": "Apple Pay",   "default": false },
+        { "type": "checkbox", "id": "show_google_pay",  "label": "Google Pay",  "default": false },
+        { "type": "checkbox", "id": "show_shop_pay",    "label": "Shop Pay",    "default": false }
+      ]
+    },
+    {
+      "type": "trust_badge",
+      "name": "Trust-Badge",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "visible",
+          "label": "Sichtbar",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "lock",
+          "options": [
+            { "value": "none",    "label": "Keins" },
+            { "value": "lock",    "label": "Schloss (SSL)" },
+            { "value": "check",   "label": "Häkchen" },
+            { "value": "refresh", "label": "Pfeil-Refresh (Rückgabe)" },
+            { "value": "shield",  "label": "Schild" },
+            { "value": "truck",   "label": "Truck (Versand)" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "SSL-gesichert"
+        }
+      ]
+    },
+    {
+      "type": "continue_link",
+      "name": "Weiter stöbern",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "visible",
+          "label": "Sichtbar",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Weiter stöbern"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Ziel-URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:cart.name",
+      "blocks": [
+        { "type": "discount_code" },
+        { "type": "trust_badge", "settings": { "icon": "lock",    "text": "SSL-gesichert" } },
+        { "type": "trust_badge", "settings": { "icon": "refresh", "text": "30-Tage Geld-zurück" } },
+        { "type": "payment_methods" },
+        { "type": "continue_link" }
+      ]
+    }
+  ]
 }
 {% endschema %}
