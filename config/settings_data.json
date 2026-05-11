@@ -8,5 +8,42 @@
  * ------------------------------------------------------------
  */
 {
-  "current": {}
+  "current": {
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#FFFFFF",
+          "background_card": "#FFFFFF",
+          "text": "#1F2328",
+          "muted": "#6B7280",
+          "accent": "#4A7CFF",
+          "primary_button": "#4A7CFF",
+          "on_primary_button": "#FFFFFF",
+          "primary_button_border": "#4A7CFF",
+          "secondary_button": "#FFFFFF",
+          "on_secondary_button": "#1F2328",
+          "secondary_button_border": "#1F2328",
+          "links": "#4A7CFF",
+          "icons": "#1F2328"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#1F2328",
+          "background_card": "#2A2F36",
+          "text": "#FFFFFF",
+          "muted": "#A0A6AE",
+          "accent": "#7FA9FF",
+          "primary_button": "#7FA9FF",
+          "on_primary_button": "#1F2328",
+          "primary_button_border": "#7FA9FF",
+          "secondary_button": "#1F2328",
+          "on_secondary_button": "#FFFFFF",
+          "secondary_button_border": "#FFFFFF",
+          "links": "#7FA9FF",
+          "icons": "#FFFFFF"
+        }
+      }
+    }
+  }
 }

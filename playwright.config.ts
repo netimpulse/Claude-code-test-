@@ -22,6 +22,7 @@ export default defineConfig({
   use: {
     baseURL: "https://dev-store-4ogqgshg.myshopify.com",
     storageState: "playwright/.auth/storefront.json",
+    ignoreHTTPSErrors: true,
     screenshot: "only-on-failure",
     video: "retain-on-failure",
     trace: "retain-on-failure",
@@ -29,4 +30,7 @@ export default defineConfig({
   projects: [
     {
       name: "desktop",
-      use: { ...devices["Desktop Chrome"], viewport: { widt
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
+    },
+  ],
+});

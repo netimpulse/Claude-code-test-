@@ -8,12 +8,9 @@
         "categories_heading": "Categories",
         "all_label": "All themes",
         "features_heading": "Features",
-        "color_scheme": "default",
-        "section_background": "#F4EFE7",
-        "card_background": "#FFFFFF",
-        "text_color": "#1F2328",
-        "muted_color": "#6B7280",
-        "accent_color": "#4A7CFF",
+        "color_scheme": "scheme-1",
+        "heading_font": "work_sans_n4",
+        "body_font": "work_sans_n4",
         "card_radius": 14
       },
       "blocks": {
