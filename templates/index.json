@@ -12,9 +12,81 @@
     "main": {
       "type": "hello-world",
       "settings": {}
+    },
+    "theme_store_EcNgjF": {
+      "type": "theme-store",
+      "blocks": {
+        "category_dNiNTD": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "label": ""
+          }
+        },
+        "category_E6qcFx": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "label": ""
+          }
+        },
+        "category_6jEAzw": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "label": ""
+          }
+        },
+        "feature_4GME4C": {
+          "type": "feature",
+          "settings": {
+            "text": "Mobile optimized"
+          }
+        },
+        "feature_ATGGwX": {
+          "type": "feature",
+          "settings": {
+            "text": "SEO friendly"
+          }
+        },
+        "feature_Y6gULB": {
+          "type": "feature",
+          "settings": {
+            "text": "Theme editor compatible"
+          }
+        },
+        "feature_Gwb3eH": {
+          "type": "feature",
+          "settings": {
+            "text": "Fast load times"
+          }
+        }
+      },
+      "block_order": [
+        "category_dNiNTD",
+        "category_E6qcFx",
+        "category_6jEAzw",
+        "feature_4GME4C",
+        "feature_ATGGwX",
+        "feature_Y6gULB",
+        "feature_Gwb3eH"
+      ],
+      "name": "t:theme_store.name",
+      "settings": {
+        "heading": "Theme Store",
+        "search_placeholder": "Search themes…",
+        "categories_heading": "Categories",
+        "all_label": "All themes",
+        "features_heading": "Features",
+        "color_scheme": "scheme-2",
+        "heading_font": "work_sans_n7",
+        "body_font": "work_sans_n4",
+        "card_radius": 14
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "theme_store_EcNgjF"
   ]
 }
