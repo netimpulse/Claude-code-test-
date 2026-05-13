@@ -1,0 +1,471 @@
+{% comment %}
+  Pricing Tiers — generischer 3-Tier-SaaS-Block.
+
+  Architektur nach shopify-liquid Skill:
+  - Tiers als Shopify-Blocks (type "tier") — Editor kann sie verschieben,
+    duplizieren, einzeln ausblenden. Limit 3 reicht fuer das Pattern.
+  - Section-Settings: Heading, Subtitle, Toggle-Verhalten (default period,
+    show toggle), Shopify-native color_scheme, Card-Radius.
+  - Block-Settings pro Tier: Name, monatlicher + jaehrlicher Preis,
+    Waehrungs-Symbol, Billing-Einheit, Description, Feature-Liste
+    (multiline_text — eine Feature pro Zeile), CTA (Label + URL),
+    Highlighted-Flag, Badge-Text.
+  - Vanilla-JS fuer den Period-Toggle, kein Framework, keine externen Libs.
+  - {% stylesheet %} fuer statisches CSS, kein inline <style>.
+  - Mobile-first responsive, 1-col → 3-col Grid ab 750px.
+
+  Original-Vorlage konnte nicht aus netimpulse/neue-seite- gezogen werden
+  (Repo 404 + GitHub-MCP auf claude-code-test- beschraenkt); das hier ist
+  daher ein sauberer SaaS-Default, skill-clean von Grund auf aufgebaut.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign default_period = section.settings.default_period | default: 'monthly'
+  assign show_toggle = section.settings.show_toggle
+-%}
+
+<section
+  class="pricing-tiers"
+  data-section-id="{{ section.id }}"
+  data-section-type="pricing-tiers"
+  data-default-period="{{ default_period }}"
+  style="
+    --pt-bg: {{ scheme.settings.background | default: '#FFFFFF' }};
+    --pt-bg-card: {{ scheme.settings.background_card | default: '#FFFFFF' }};
+    --pt-text: {{ scheme.settings.text | default: '#1F2328' }};
+    --pt-muted: {{ scheme.settings.muted | default: '#6B7280' }};
+    --pt-accent: {{ scheme.settings.accent | default: '#4A7CFF' }};
+    --pt-on-accent: {{ scheme.settings.on_primary_button | default: '#FFFFFF' }};
+    --pt-radius: {{ section.settings.card_radius | default: 16 }}px;
+  "
+>
+  <div class="pricing-tiers__inner">
+    {%- if section.settings.heading != blank or section.settings.subtitle != blank -%}
+      <header class="pricing-tiers__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="pricing-tiers__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="pricing-tiers__subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if show_toggle -%}
+      <div class="pricing-tiers__toggle" role="group" aria-label="Abrechnungszeitraum" data-pricing-toggle>
+        <button
+          type="button"
+          class="pricing-tiers__toggle-btn"
+          data-period="monthly"
+          aria-pressed="{% if default_period == 'monthly' %}true{% else %}false{% endif %}"
+        >
+          {{ section.settings.label_monthly | default: 'Monatlich' | escape }}
+        </button>
+        <button
+          type="button"
+          class="pricing-tiers__toggle-btn"
+          data-period="yearly"
+          aria-pressed="{% if default_period == 'yearly' %}true{% else %}false{% endif %}"
+        >
+          {{ section.settings.label_yearly | default: 'Jährlich' | escape }}
+          {%- if section.settings.yearly_savings_label != blank -%}
+            <span class="pricing-tiers__savings">{{ section.settings.yearly_savings_label | escape }}</span>
+          {%- endif -%}
+        </button>
+      </div>
+    {%- endif -%}
+
+    <ul class="pricing-tiers__list" role="list" data-pricing-list>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'tier' -%}
+          {%- assign features = block.settings.features | newline_to_br | split: '<br />' -%}
+          <li
+            class="pricing-tier{% if block.settings.is_highlighted %} pricing-tier--highlight{% endif %}"
+            data-pricing-tier
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.is_highlighted and block.settings.badge_text != blank -%}
+              <span class="pricing-tier__badge">{{ block.settings.badge_text | escape }}</span>
+            {%- endif -%}
+
+            <h3 class="pricing-tier__name">{{ block.settings.name | escape }}</h3>
+
+            {%- if block.settings.description != blank -%}
+              <p class="pricing-tier__description">{{ block.settings.description | escape }}</p>
+            {%- endif -%}
+
+            <div class="pricing-tier__price" data-pricing-price>
+              <span class="pricing-tier__currency">{{ block.settings.currency | default: '€' | escape }}</span>
+              <span
+                class="pricing-tier__amount"
+                data-pricing-amount
+                data-monthly="{{ block.settings.price_monthly | escape }}"
+                data-yearly="{{ block.settings.price_yearly | escape }}"
+              >{% if default_period == 'yearly' %}{{ block.settings.price_yearly | escape }}{% else %}{{ block.settings.price_monthly | escape }}{% endif %}</span>
+              {%- if block.settings.billing_unit != blank -%}
+                <span class="pricing-tier__unit">/ {{ block.settings.billing_unit | escape }}</span>
+              {%- endif -%}
+            </div>
+
+            {%- if features.size > 0 -%}
+              <ul class="pricing-tier__features" role="list">
+                {%- for feature in features -%}
+                  {%- assign feature_clean = feature | strip | strip_html -%}
+                  {%- if feature_clean != blank -%}
+                    <li class="pricing-tier__feature">
+                      <svg class="pricing-tier__check" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+                        <path d="M13.5 4 6 11.5 2.5 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span>{{ feature_clean | escape }}</span>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+
+            {%- if block.settings.cta_label != blank -%}
+              <a class="pricing-tier__cta" href="{{ block.settings.cta_url | default: '#' }}">
+                {{ block.settings.cta_label | escape }}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+<script src="{{ 'pricing-tiers.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .pricing-tiers {
+    background: var(--pt-bg);
+    color: var(--pt-text);
+    padding: clamp(2.5rem, 6vw, 5rem) var(--page-margin, 20px);
+  }
+  .pricing-tiers *,
+  .pricing-tiers *::before,
+  .pricing-tiers *::after { box-sizing: border-box; }
+  .pricing-tiers__inner {
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+  }
+
+  .pricing-tiers__header {
+    text-align: center;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .pricing-tiers__heading {
+    margin: 0 0 .5rem;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .pricing-tiers__subtitle {
+    margin: 0 auto;
+    max-width: 56ch;
+    color: var(--pt-muted);
+    font-size: 1.05rem;
+  }
+
+  /* Toggle */
+  .pricing-tiers__toggle {
+    display: inline-flex;
+    margin: 0 auto 2rem;
+    padding: 4px;
+    background: color-mix(in srgb, var(--pt-text) 6%, transparent);
+    border-radius: 999px;
+    text-align: center;
+  }
+  .pricing-tiers__toggle-btn {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: .55rem 1.1rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--pt-text);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .pricing-tiers__toggle-btn[aria-pressed="true"] {
+    background: var(--pt-bg-card);
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+  }
+  .pricing-tiers__savings {
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--pt-accent) 18%, transparent);
+    color: var(--pt-accent);
+  }
+
+  /* Toggle wrap (center horizontally) */
+  .pricing-tiers__toggle {
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Tier list — 1 column mobile, 3 columns ≥ 750px */
+  .pricing-tiers__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Tier card */
+  .pricing-tier {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem 1.5rem;
+    background: var(--pt-bg-card);
+    border: 1px solid color-mix(in srgb, var(--pt-text) 10%, transparent);
+    border-radius: var(--pt-radius);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .pricing-tier:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  }
+
+  .pricing-tier--highlight {
+    border-color: var(--pt-accent);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--pt-accent) 18%, transparent);
+    transform: translateY(-2px);
+  }
+  .pricing-tier__badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 10px;
+    background: var(--pt-accent);
+    color: var(--pt-on-accent);
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .pricing-tier__name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .pricing-tier__description {
+    margin: 0;
+    color: var(--pt-muted);
+    font-size: .95rem;
+    line-height: 1.4;
+  }
+
+  .pricing-tier__price {
+    display: flex;
+    align-items: baseline;
+    gap: .25rem;
+    margin: .25rem 0 .5rem;
+  }
+  .pricing-tier__currency {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--pt-muted);
+  }
+  .pricing-tier__amount {
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .pricing-tier__unit {
+    margin-left: .25rem;
+    font-size: .9rem;
+    color: var(--pt-muted);
+  }
+
+  .pricing-tier__features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    flex: 1 1 auto;
+  }
+  .pricing-tier__feature {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: .55rem;
+    align-items: start;
+    font-size: .95rem;
+    line-height: 1.4;
+  }
+  .pricing-tier__check {
+    color: var(--pt-accent);
+    margin-top: .2rem;
+  }
+
+  .pricing-tier__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .85rem 1.25rem;
+    margin-top: .5rem;
+    background: color-mix(in srgb, var(--pt-text) 6%, transparent);
+    color: var(--pt-text);
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background .15s ease, color .15s ease, transform .12s ease;
+  }
+  .pricing-tier__cta:hover {
+    background: color-mix(in srgb, var(--pt-text) 12%, transparent);
+  }
+  .pricing-tier--highlight .pricing-tier__cta {
+    background: var(--pt-accent);
+    color: var(--pt-on-accent);
+  }
+  .pricing-tier--highlight .pricing-tier__cta:hover {
+    filter: brightness(.96);
+  }
+  .pricing-tier__cta:active { transform: scale(.98); }
+
+  /* Tablet + desktop */
+  @media (min-width: 750px) {
+    .pricing-tiers__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 1.5rem;
+    }
+    .pricing-tier { padding: 2.25rem 1.75rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pricing Tiers",
+  "tag": "section",
+  "class": "shopify-section--pricing-tiers",
+  "settings": [
+    { "type": "header", "content": "Header" },
+    { "type": "text", "id": "heading",  "label": "Heading",  "default": "Wähle deinen Plan" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Transparente Preise, monatlich kündbar." },
+
+    { "type": "header", "content": "Billing toggle" },
+    { "type": "checkbox", "id": "show_toggle", "label": "Toggle anzeigen", "default": true },
+    {
+      "type": "select",
+      "id": "default_period",
+      "label": "Standard-Zeitraum",
+      "default": "monthly",
+      "options": [
+        { "value": "monthly", "label": "Monatlich" },
+        { "value": "yearly",  "label": "Jährlich"  }
+      ]
+    },
+    { "type": "text", "id": "label_monthly", "label": "Label: monatlich", "default": "Monatlich" },
+    { "type": "text", "id": "label_yearly",  "label": "Label: jährlich",  "default": "Jährlich" },
+    { "type": "text", "id": "yearly_savings_label", "label": "Spar-Badge (z. B. \"−20 %\")", "default": "−20 %" },
+
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 0, "max": 32, "step": 1, "unit": "px", "default": 16 }
+  ],
+  "blocks": [
+    {
+      "type": "tier",
+      "name": "Tier",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Plan" },
+        { "type": "text", "id": "description", "label": "Description" },
+        { "type": "checkbox", "id": "is_highlighted", "label": "Hervorgehoben (mittlerer Tier)", "default": false },
+        { "type": "text", "id": "badge_text", "label": "Badge-Text", "default": "Beliebt", "info": "Nur sichtbar wenn 'Hervorgehoben' an ist." },
+
+        { "type": "header", "content": "Preis" },
+        { "type": "text", "id": "currency", "label": "Währungssymbol", "default": "€" },
+        { "type": "text", "id": "price_monthly", "label": "Preis (monatlich)", "default": "19" },
+        { "type": "text", "id": "price_yearly",  "label": "Preis (jährlich, pro Monat berechnet)", "default": "15" },
+        { "type": "text", "id": "billing_unit",  "label": "Einheit",  "default": "Monat", "info": "Z. B. 'Monat', 'User/Monat', 'Lizenz'." },
+
+        { "type": "header", "content": "Features" },
+        {
+          "type": "textarea",
+          "id": "features",
+          "label": "Features (eine pro Zeile)",
+          "default": "Feature 1\nFeature 2\nFeature 3"
+        },
+
+        { "type": "header", "content": "CTA" },
+        { "type": "text", "id": "cta_label", "label": "Button-Text", "default": "Plan wählen" },
+        { "type": "url",  "id": "cta_url",   "label": "Button-Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pricing Tiers",
+      "category": "Pricing",
+      "blocks": [
+        {
+          "type": "tier",
+          "settings": {
+            "name": "Starter",
+            "description": "Für Einsteiger und kleine Projekte.",
+            "is_highlighted": false,
+            "currency": "€",
+            "price_monthly": "9",
+            "price_yearly": "7",
+            "billing_unit": "Monat",
+            "features": "1 Projekt\n10 GB Speicher\nE-Mail-Support",
+            "cta_label": "Starter wählen"
+          }
+        },
+        {
+          "type": "tier",
+          "settings": {
+            "name": "Pro",
+            "description": "Für wachsende Teams.",
+            "is_highlighted": true,
+            "badge_text": "Beliebt",
+            "currency": "€",
+            "price_monthly": "29",
+            "price_yearly": "24",
+            "billing_unit": "Monat",
+            "features": "Unbegrenzte Projekte\n100 GB Speicher\nPrioritäts-Support\nTeam-Funktionen",
+            "cta_label": "Pro wählen"
+          }
+        },
+        {
+          "type": "tier",
+          "settings": {
+            "name": "Enterprise",
+            "description": "Für komplexe Anforderungen.",
+            "is_highlighted": false,
+            "currency": "€",
+            "price_monthly": "99",
+            "price_yearly": "79",
+            "billing_unit": "Monat",
+            "features": "Alle Pro-Features\nDedizierter Account-Manager\nSLA & Custom Onboarding\nSSO & Audit-Logs",
+            "cta_label": "Sales kontaktieren"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
