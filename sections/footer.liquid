@@ -69,6 +69,33 @@
                 {%- if block.settings.text != blank -%}
                   <div class="footer__text rte">{{ block.settings.text }}</div>
                 {%- endif -%}
+                {%- render 'footer-social-links', block: block -%}
+
+              {%- when 'policies' -%}
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                {%- assign policy_aria = block.settings.heading | default: 'footer.legal_label' | t -%}
+                <nav aria-label="{{ policy_aria | escape }}">
+                  <ul class="footer__menu-list" role="list">
+                    {%- for policy in shop.policies -%}
+                      {%- if policy != blank -%}
+                        <li>
+                          <a href="{{ policy.url }}" class="footer__menu-link">{{ policy.title | escape }}</a>
+                        </li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- if block.settings.extra_menu != blank and block.settings.extra_menu.links.size > 0 -%}
+                      {%- for link in block.settings.extra_menu.links -%}
+                        <li>
+                          <a href="{{ link.url }}" class="footer__menu-link"{% if link.current %} aria-current="page"{% endif %}>
+                            {{- link.title | escape -}}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    {%- endif -%}
+                  </ul>
+                </nav>
 
               {%- when 'menu' -%}
                 {%- if block.settings.heading != blank -%}
@@ -186,57 +213,7 @@
                 {%- if block.settings.heading != blank -%}
                   <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
                 {%- endif -%}
-                <ul class="footer__social-list" role="list">
-                  {%- if block.settings.facebook != blank -%}
-                    <li>
-                      <a href="{{ block.settings.facebook }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.facebook' | t }}">
-                        {%- render 'footer-social-icon', name: 'facebook' -%}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  {%- if block.settings.instagram != blank -%}
-                    <li>
-                      <a href="{{ block.settings.instagram }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.instagram' | t }}">
-                        {%- render 'footer-social-icon', name: 'instagram' -%}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  {%- if block.settings.tiktok != blank -%}
-                    <li>
-                      <a href="{{ block.settings.tiktok }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.tiktok' | t }}">
-                        {%- render 'footer-social-icon', name: 'tiktok' -%}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  {%- if block.settings.youtube != blank -%}
-                    <li>
-                      <a href="{{ block.settings.youtube }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.youtube' | t }}">
-                        {%- render 'footer-social-icon', name: 'youtube' -%}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  {%- if block.settings.twitter != blank -%}
-                    <li>
-                      <a href="{{ block.settings.twitter }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.twitter' | t }}">
-                        {%- render 'footer-social-icon', name: 'twitter' -%}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  {%- if block.settings.pinterest != blank -%}
-                    <li>
-                      <a href="{{ block.settings.pinterest }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.pinterest' | t }}">
-                        {%- render 'footer-social-icon', name: 'pinterest' -%}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                  {%- if block.settings.linkedin != blank -%}
-                    <li>
-                      <a href="{{ block.settings.linkedin }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.linkedin' | t }}">
-                        {%- render 'footer-social-icon', name: 'linkedin' -%}
-                      </a>
-                    </li>
-                  {%- endif -%}
-                </ul>
+                {%- render 'footer-social-links', block: block -%}
 
             {%- endcase -%}
           </div>
@@ -453,11 +430,16 @@
       "type": "checkbox",
       "id": "show_payment_icons",
       "label": "t:labels.show_payment_icons",
+      "info": "t:footer.show_payment_icons_info",
       "default": true
     },
     {
       "type": "header",
       "content": "t:footer.localization_header"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:footer.localization_info"
     },
     {
       "type": "checkbox",
@@ -595,6 +577,40 @@
           "id": "text",
           "label": "t:footer.blocks.shared.text_label",
           "default": "<p>Add a short description of your brand here.</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:footer.blocks.social.name"
+        },
+        { "type": "url", "id": "facebook",  "label": "Facebook" },
+        { "type": "url", "id": "instagram", "label": "Instagram" },
+        { "type": "url", "id": "linkedin",  "label": "LinkedIn" },
+        { "type": "url", "id": "tiktok",    "label": "TikTok" },
+        { "type": "url", "id": "youtube",   "label": "YouTube" },
+        { "type": "url", "id": "twitter",   "label": "X (Twitter)" },
+        { "type": "url", "id": "pinterest", "label": "Pinterest" }
+      ]
+    },
+    {
+      "type": "policies",
+      "name": "t:footer.blocks.policies.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:footer.blocks.shared.heading_label",
+          "default": "Service"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:footer.blocks.policies.info"
+        },
+        {
+          "type": "link_list",
+          "id": "extra_menu",
+          "label": "t:footer.blocks.policies.extra_label",
+          "info": "t:footer.blocks.policies.extra_info"
         }
       ]
     },

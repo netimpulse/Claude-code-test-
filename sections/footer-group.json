@@ -5,86 +5,74 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "logo": {
+        "brand": {
           "type": "logo_text",
           "settings": {
-            "logo_width": 140,
-            "heading": "",
-            "text": "<p>Add a short description of your brand here.</p>"
-          }
-        },
-        "shop_menu": {
-          "type": "menu",
-          "settings": {
-            "heading": "Shop",
-            "menu": "footer"
-          }
-        },
-        "info_menu": {
-          "type": "menu",
-          "settings": {
-            "heading": "Information",
-            "menu": "main-menu"
+            "logo_width": 160,
+            "heading": "findling",
+            "text": "<p>Performance SEO für Unternehmen im E-Commerce</p>",
+            "facebook": "",
+            "instagram": "",
+            "linkedin": "",
+            "tiktok": "",
+            "youtube": "",
+            "twitter": "",
+            "pinterest": ""
           }
         },
         "contact": {
           "type": "contact",
           "settings": {
-            "heading": "Contact",
-            "address": "<p>Your street 1<br>12345 City</p>",
-            "phone": "",
-            "email": "",
+            "heading": "Kontakt",
+            "address": "",
+            "phone": "+49 (0) 7971 - 919 111 0",
+            "email": "hallo@findling.de",
             "hours": ""
           }
         },
-        "newsletter": {
-          "type": "newsletter",
+        "service": {
+          "type": "policies",
           "settings": {
-            "heading": "Newsletter",
-            "subtext": "<p>Get updates on new products, sales, and stories.</p>",
-            "placeholder": "",
-            "button_label": "",
-            "success_text": ""
+            "heading": "Service",
+            "extra_menu": ""
           }
         },
-        "social": {
-          "type": "social",
+        "pages": {
+          "type": "menu",
           "settings": {
-            "heading": "Follow us",
-            "facebook": "",
-            "instagram": "",
-            "tiktok": "",
-            "youtube": "",
-            "twitter": "",
-            "pinterest": "",
-            "linkedin": ""
+            "heading": "Seiten",
+            "menu": "footer"
           }
         }
       },
       "block_order": [
-        "logo",
-        "shop_menu",
-        "info_menu",
+        "brand",
         "contact",
-        "newsletter",
-        "social"
+        "service",
+        "pages"
       ],
       "settings": {
         "content_alignment": "left",
-        "column_min_width": 240,
-        "column_gap": 40,
+        "column_min_width": 200,
+        "column_gap": 56,
         "menu": "",
-        "show_policies": true,
-        "copyright_text": "",
+        "show_policies": false,
+        "copyright_text": "Copyright © {shop} {year}",
         "show_powered_by": false,
         "show_payment_icons": true,
         "show_locale_selector": true,
         "show_currency_selector": true,
-        "heading_size": 14,
-        "show_top_border": true,
+        "background_color": "#0a0a0a",
+        "text_color": "#cfcfcf",
+        "heading_color": "#f6e6c8",
+        "link_color": "#ffffff",
+        "accent_color": "#f6e6c8",
+        "border_color": "#2a2a2a",
+        "heading_size": 16,
+        "show_top_border": false,
         "border_width": 1,
-        "padding_top": 64,
-        "padding_bottom": 32
+        "padding_top": 96,
+        "padding_bottom": 40
       }
     }
   },

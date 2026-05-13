@@ -1,0 +1,79 @@
+{%- comment -%}
+  Renders the social icon row for any block that has
+  facebook/instagram/tiktok/youtube/twitter/pinterest/linkedin URL settings.
+  Accepts:
+    - block: the block object whose settings to read
+{%- endcomment -%}
+
+{%- liquid
+  assign has_social = false
+  if block.settings.facebook != blank
+    assign has_social = true
+  elsif block.settings.instagram != blank
+    assign has_social = true
+  elsif block.settings.tiktok != blank
+    assign has_social = true
+  elsif block.settings.youtube != blank
+    assign has_social = true
+  elsif block.settings.twitter != blank
+    assign has_social = true
+  elsif block.settings.pinterest != blank
+    assign has_social = true
+  elsif block.settings.linkedin != blank
+    assign has_social = true
+  endif
+-%}
+
+{%- if has_social -%}
+  <ul class="footer__social-list" role="list">
+    {%- if block.settings.facebook != blank -%}
+      <li>
+        <a href="{{ block.settings.facebook }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.facebook' | t }}">
+          {%- render 'footer-social-icon', name: 'facebook' -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if block.settings.instagram != blank -%}
+      <li>
+        <a href="{{ block.settings.instagram }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.instagram' | t }}">
+          {%- render 'footer-social-icon', name: 'instagram' -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if block.settings.tiktok != blank -%}
+      <li>
+        <a href="{{ block.settings.tiktok }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.tiktok' | t }}">
+          {%- render 'footer-social-icon', name: 'tiktok' -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if block.settings.youtube != blank -%}
+      <li>
+        <a href="{{ block.settings.youtube }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.youtube' | t }}">
+          {%- render 'footer-social-icon', name: 'youtube' -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if block.settings.twitter != blank -%}
+      <li>
+        <a href="{{ block.settings.twitter }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.twitter' | t }}">
+          {%- render 'footer-social-icon', name: 'twitter' -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if block.settings.pinterest != blank -%}
+      <li>
+        <a href="{{ block.settings.pinterest }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.pinterest' | t }}">
+          {%- render 'footer-social-icon', name: 'pinterest' -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if block.settings.linkedin != blank -%}
+      <li>
+        <a href="{{ block.settings.linkedin }}" class="footer__social-link" rel="noopener" target="_blank" aria-label="{{ 'footer.social.linkedin' | t }}">
+          {%- render 'footer-social-icon', name: 'linkedin' -%}
+        </a>
+      </li>
+    {%- endif -%}
+  </ul>
+{%- endif -%}

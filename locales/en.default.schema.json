@@ -166,8 +166,10 @@
     "legal_info": "Privacy, terms and refund policies set in Shopify Admin → Settings → Policies appear automatically when enabled below.",
     "legal_menu_label": "Additional legal menu",
     "legal_menu_info": "Optional. Add a menu to show links like Imprint, FAQ or Cookies next to the shop policies.",
-    "show_policies_label": "Show shop policies",
-    "show_policies_info": "Shows Privacy policy, Terms of service, Refund policy, Shipping policy and Subscription policy from your Shopify settings.",
+    "show_policies_label": "Show shop policies in bottom bar",
+    "show_policies_info": "Shows Privacy policy, Terms of service, Refund policy, Shipping policy and Subscription policy from your Shopify settings as small links next to the copyright.",
+    "show_payment_icons_info": "Visible only when payment providers are activated in Shopify Admin → Settings → Payments.",
+    "localization_info": "Selectors only appear when more than one language or country/region is published in Shopify Admin → Settings → Markets.",
     "bottom_bar_header": "Bottom bar",
     "copyright_label": "Copyright text",
     "copyright_info": "Use {year} for the current year and {shop} for your store name. Leave empty for a default.",
@@ -223,6 +225,12 @@
       },
       "social": {
         "name": "Social media"
+      },
+      "policies": {
+        "name": "Shop policies",
+        "info": "Automatically lists your filled-in Shopify policies (Imprint/Legal notice, Privacy, Terms, Shipping, Refund, Subscription). Edit them in Shopify Admin → Settings → Policies.",
+        "extra_label": "Extra links",
+        "extra_info": "Optional menu for non-policy links you want in the same column, e.g. an FAQ or cookie settings page."
       }
     }
   },
