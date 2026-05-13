@@ -1,78 +1,21 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
     "footer": {
       "type": "footer",
-      "blocks": {
-        "brand": {
-          "type": "logo_text",
-          "settings": {
-            "logo_width": 160,
-            "heading": "findling",
-            "text": "<p>Performance SEO für Unternehmen im E-Commerce</p>",
-            "facebook": "",
-            "instagram": "",
-            "linkedin": "",
-            "tiktok": "",
-            "youtube": "",
-            "twitter": "",
-            "pinterest": ""
-          }
-        },
-        "contact": {
-          "type": "contact",
-          "settings": {
-            "heading": "Kontakt",
-            "address": "",
-            "phone": "+49 (0) 7971 - 919 111 0",
-            "email": "hallo@findling.de",
-            "hours": ""
-          }
-        },
-        "service": {
-          "type": "policies",
-          "settings": {
-            "heading": "Service",
-            "extra_menu": ""
-          }
-        },
-        "pages": {
-          "type": "menu",
-          "settings": {
-            "heading": "Seiten",
-            "menu": "footer"
-          }
-        }
-      },
-      "block_order": [
-        "brand",
-        "contact",
-        "service",
-        "pages"
-      ],
       "settings": {
-        "content_alignment": "left",
-        "column_min_width": 200,
-        "column_gap": 56,
         "menu": "",
-        "show_policies": false,
-        "copyright_text": "Copyright © {shop} {year}",
-        "show_powered_by": false,
-        "show_payment_icons": true,
-        "show_locale_selector": true,
-        "show_currency_selector": true,
-        "background_color": "#0a0a0a",
-        "text_color": "#cfcfcf",
-        "heading_color": "#f6e6c8",
-        "link_color": "#ffffff",
-        "accent_color": "#f6e6c8",
-        "border_color": "#2a2a2a",
-        "heading_size": 16,
-        "show_top_border": false,
-        "border_width": 1,
-        "padding_top": 96,
-        "padding_bottom": 40
+        "show_payment_icons": true
       }
     }
   },
