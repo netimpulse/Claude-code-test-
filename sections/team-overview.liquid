@@ -27,6 +27,13 @@
     --to-padding-top: {{ section.settings.padding_top }}px;
     --to-padding-bottom: {{ section.settings.padding_bottom }}px;
     --to-cols: {{ cols }};
+    {%- if scheme.settings.background != blank -%}
+      --to-bg: {{ scheme.settings.background }};
+      --to-text: {{ scheme.settings.text }};
+      --to-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --to-line: {{ scheme.settings.text | color_modify: 'alpha', 0.14 }};
+      --to-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.24 }};
+    {%- endif -%}
   }
 {% endstyle %}
 

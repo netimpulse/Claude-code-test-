@@ -3,6 +3,8 @@
    ============================================================ */
 
 .team-overview {
+  /* Fallbacks if no color_scheme is set */
+  --to-bg: transparent;
   --to-text: rgb(var(--color-foreground, 20 35 47));
   --to-muted: rgba(20, 35, 47, 0.62);
   --to-line: rgba(20, 35, 47, 0.14);
@@ -13,6 +15,7 @@
   padding: var(--to-padding-top, 72px) clamp(1rem, 3vw, 2rem) var(--to-padding-bottom, 72px);
   font-family: var(--font-body-family, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif);
   color: var(--to-text);
+  background: var(--to-bg);
   -webkit-font-smoothing: antialiased;
 }
 

@@ -23,6 +23,13 @@
     --so-accent-glow: {{ accent | color_modify: 'alpha', 0.32 }};
     --so-padding-top: {{ section.settings.padding_top }}px;
     --so-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --so-bg: {{ scheme.settings.background }};
+      --so-text: {{ scheme.settings.text }};
+      --so-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --so-line: {{ scheme.settings.text | color_modify: 'alpha', 0.14 }};
+      --so-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.24 }};
+    {%- endif -%}
   }
 {% endstyle %}
 
