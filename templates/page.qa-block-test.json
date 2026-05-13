@@ -9,6 +9,120 @@
  */
 {
   "sections": {
+    "services_overview": {
+      "type": "services-overview",
+      "settings": {
+        "eyebrow": "Leistungsübersicht",
+        "heading": "Marketing-Leistungen, die sich klar auswählen und direkt verstehen lassen.",
+        "intro": "Statt verstreuter Einzelkarten: eine kompakte, interaktive Übersicht. Klick eine Leistung an – sie rotiert sichtbar in den Fokus und wird unten sowie rechts ausführlich erklärt.",
+        "core_mark": "NI",
+        "core_label": "Digitales Wachstum als System",
+        "primary_label": "Mehr zur Leistung",
+        "primary_url": "",
+        "secondary_label": "Projekt anfragen",
+        "secondary_url": "",
+        "enable_autoplay": true,
+        "autoplay_interval": 7,
+        "color_scheme": "scheme-1",
+        "accent_color": "#df6c3d",
+        "padding_top": 56,
+        "padding_bottom": 56
+      },
+      "blocks": {
+        "svc_strategie": {
+          "type": "service",
+          "settings": {
+            "icon": "compass",
+            "tab_label": "Strategie",
+            "kicker": "01 · Strategie",
+            "title": "Strategie & Beratung",
+            "focus_text": "Positionierung, Zielgruppen und klare Wachstumsrichtung.",
+            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design nicht nebeneinanderlaufen, sondern gemeinsam auf Wachstum einzahlen.</p>",
+            "benefit_1": "Digitale Positionierung und Angebotsstruktur",
+            "benefit_2": "Customer Journey und Conversion-Potenziale",
+            "benefit_3": "Klare Prioritäten statt beliebiger Einzelmaßnahmen"
+          }
+        },
+        "svc_webdesign": {
+          "type": "service",
+          "settings": {
+            "icon": "layout",
+            "tab_label": "Webdesign",
+            "kicker": "02 · Design",
+            "title": "Webdesign & UX",
+            "focus_text": "Websites, die hochwertig wirken und logisch zum Abschluss führen.",
+            "description": "<p>Wir gestalten Seiten mit starker visueller Führung, moderner Markenwirkung und einer Nutzerführung, die nicht nur gut aussieht, sondern gezielt zur Anfrage oder zum Kauf leitet.</p>",
+            "benefit_1": "Individuelle Seitenarchitektur statt Standard-Layout",
+            "benefit_2": "Klare Nutzerführung auf Desktop und Mobile",
+            "benefit_3": "Designsystem für konsistente Markenwirkung"
+          }
+        },
+        "svc_shopify": {
+          "type": "service",
+          "settings": {
+            "icon": "bag",
+            "tab_label": "Shopify",
+            "kicker": "03 · Entwicklung",
+            "title": "Shopify & Entwicklung",
+            "focus_text": "Performante Shops und flexible Systeme, die im Alltag funktionieren.",
+            "description": "<p>Von individuellen Shopify-Sektionen bis zu kompletten Store-Strukturen entwickeln wir Lösungen, die sauber pflegbar, schnell und auf echte Geschäftsziele ausgerichtet sind.</p>",
+            "benefit_1": "Custom Sections und flexible Theme-Editor-Steuerung",
+            "benefit_2": "Saubere technische Umsetzung mit Fokus auf Performance",
+            "benefit_3": "Strukturen, die später ohne Chaos erweitert werden können"
+          }
+        },
+        "svc_seo": {
+          "type": "service",
+          "settings": {
+            "icon": "search",
+            "tab_label": "SEO / GEO",
+            "kicker": "04 · Sichtbarkeit",
+            "title": "SEO & GEO",
+            "focus_text": "Sichtbarkeit in Suchmaschinen und in KI-getriebenen Antworten.",
+            "description": "<p>Wir schaffen technische, strukturelle und inhaltliche Grundlagen, damit Ihre Website bei klassischen Suchen ebenso überzeugt wie in neuen KI-gestützten Such- und Antwortsystemen.</p>",
+            "benefit_1": "Technisches SEO und saubere Informationsarchitektur",
+            "benefit_2": "Content-Strukturen für relevante Suchintentionen",
+            "benefit_3": "GEO-orientierte Aufbereitung von Expertise und Entitäten"
+          }
+        },
+        "svc_ads": {
+          "type": "service",
+          "settings": {
+            "icon": "chart",
+            "tab_label": "Google Ads",
+            "kicker": "05 · Performance",
+            "title": "Google Ads & Performance",
+            "focus_text": "Kampagnen, die nicht nur Klicks, sondern wirtschaftliche Ergebnisse liefern.",
+            "description": "<p>Wir entwickeln und optimieren Kampagnen entlang von Marge, Nachfrage und Nutzerintention. Der Fokus liegt auf nachvollziehbarer Steuerung statt blindem Budgetverbrauch.</p>",
+            "benefit_1": "Such-, Shopping- und Performance-Strukturen mit Zielbezug",
+            "benefit_2": "Budgetsteuerung nach Wirtschaftlichkeit",
+            "benefit_3": "Kontinuierliche Auswertung und Verbesserung"
+          }
+        },
+        "svc_content": {
+          "type": "service",
+          "settings": {
+            "icon": "quote",
+            "tab_label": "Content",
+            "kicker": "06 · Kommunikation",
+            "title": "Content & Storytelling",
+            "focus_text": "Inhalte, die Kompetenz zeigen und Angebote verständlich machen.",
+            "description": "<p>Wir übersetzen Leistungen in eine klare, hochwertige Kommunikation – für Landingpages, Websites und Kampagnen. So entsteht Vertrauen, bevor der erste Kontakt stattfindet.</p>",
+            "benefit_1": "Präzise Botschaften statt austauschbarer Werbetexte",
+            "benefit_2": "Leistungsseiten mit klarer Argumentationslinie",
+            "benefit_3": "Content, der Design und Conversion unterstützt"
+          }
+        }
+      },
+      "block_order": [
+        "svc_strategie",
+        "svc_webdesign",
+        "svc_shopify",
+        "svc_seo",
+        "svc_ads",
+        "svc_content"
+      ]
+    },
     "qa": {
       "type": "theme-store",
       "settings": {
@@ -68,5 +182,5 @@
       ]
     }
   },
-  "order": ["qa"]
+  "order": ["services_overview", "qa"]
 }
