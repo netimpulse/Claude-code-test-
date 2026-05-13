@@ -1,0 +1,696 @@
+{% comment %}
+  SQE Header — Skeleton-kompatibler Re-Build des SQE-2 Headers.
+
+  Improvements gegenueber SQE-2 v10:
+    - {% stylesheet %} + externes JS statt inline <style>/<script>
+    - Shopify-natives color_scheme statt 4 einzelner color settings
+    - keine Dawn-Snippet-Dependencies (header-drawer, cart-notification …)
+    - sauberer sticky-Mechanismus auf einer einzigen JS-Datei
+    - eingebauter Predictive-Search (Produkte + Seiten + Blog-Artikel) mit
+      Typo-Toleranz (Levenshtein) und verwandten Treffern
+    - section.id-Scoped CSS via custom properties statt class.NAME-{{ section.id }}
+    - shopify:section:load / unload / select hooks fuer Editor-Live-Edit
+
+  Behaelt die SQE-spezifischen Position-Feintuning-Slider (logo_pos_x/y,
+  menu_nudge_x, menu_pos_y, actions_pos_x/y, etc.) — das war der USP der
+  Original-Section.
+{% endcomment %}
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign scheme = section.settings.color_scheme
+  assign sticky = section.settings.sticky_header_type
+  assign nav_align = section.settings.nav_alignment
+  assign show_search = section.settings.show_search
+  assign show_account = section.settings.show_account
+  assign show_cart = section.settings.show_cart
+  assign show_cta = section.settings.show_cta
+  assign cta_text = section.settings.cta_text
+  assign cta_link = section.settings.cta_link
+
+  assign menu_weight = '400'
+  if section.settings.menu_bold
+    assign menu_weight = '700'
+  endif
+-%}
+
+<section
+  id="shopify-section-{{ section.id }}-inner"
+  class="sqe-header"
+  data-section-id="{{ section.id }}"
+  data-section-type="sqe-header"
+  data-sticky="{{ sticky }}"
+  data-nav-align="{{ nav_align }}"
+  data-border="{{ section.settings.show_border }}"
+  style="
+    --sqe-bg: {{ scheme.settings.background | default: '#FFFFFF' }};
+    --sqe-text: {{ scheme.settings.text | default: '#1F3A5F' }};
+    --sqe-muted: {{ scheme.settings.muted | default: '#6B7280' }};
+    --sqe-accent: {{ scheme.settings.accent | default: '#F2B705' }};
+    --sqe-on-accent: {{ scheme.settings.on_primary_button | default: '#1F3A5F' }};
+    --sqe-h: {{ section.settings.header_height }}px;
+    --sqe-menu-size: {{ section.settings.menu_font_size }}px;
+    --sqe-menu-weight: {{ menu_weight }};
+    --sqe-cta-size: {{ section.settings.cta_font_size }}px;
+    --sqe-logo-x: {{ section.settings.logo_pos_x }}%;
+    --sqe-logo-y: {{ section.settings.logo_pos_y }}px;
+    --sqe-menu-nudge-x: {{ section.settings.menu_nudge_x }}px;
+    --sqe-menu-nudge-y: {{ section.settings.menu_pos_y }}px;
+    --sqe-actions-x: {{ section.settings.actions_pos_x }}%;
+    --sqe-actions-y: {{ section.settings.actions_pos_y }}px;
+    --sqe-search-x: {{ section.settings.search_pos_x }}px;
+    --sqe-search-y: {{ section.settings.search_pos_y }}px;
+    --sqe-account-x: {{ section.settings.account_pos_x }}px;
+    --sqe-account-y: {{ section.settings.account_pos_y }}px;
+    --sqe-cart-x: {{ section.settings.cart_pos_x }}px;
+    --sqe-cart-y: {{ section.settings.cart_pos_y }}px;
+    --sqe-cta-x: {{ section.settings.cta_pos_x }}px;
+    --sqe-cta-y: {{ section.settings.cta_pos_y }}px;
+    --sqe-hamburger-x: {{ section.settings.hamburger_pos_x }}%;
+    --sqe-hamburger-y: {{ section.settings.hamburger_pos_y }}px;
+    --sqe-mobile-logo: {{ section.settings.mobile_logo_size }}px;
+    --sqe-mobile-icon: {{ section.settings.mobile_icon_size }}px;
+  "
+>
+  <div class="sqe-header__inner">
+    <button
+      type="button"
+      class="sqe-header__hamburger"
+      aria-label="Menu"
+      aria-expanded="false"
+      aria-controls="sqe-drawer-{{ section.id }}"
+      data-sqe-drawer-toggle
+    >
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="7"  x2="20" y2="7"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="17" x2="20" y2="17"/>
+      </svg>
+    </button>
+
+    <div class="sqe-header__logo">
+      {%- if request.page_type == 'index' -%}<h1 class="sqe-header__h1">{%- endif -%}
+      <a href="{{ routes.root_url }}" class="sqe-header__logo-link" aria-label="{{ shop.name | escape }}">
+        {%- if settings.logo != blank -%}
+          {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+          {{ settings.logo | image_url: width: 600 | image_tag:
+              widths: '160, 240, 320, 480, 600',
+              sizes: '(max-width: 750px) 30vw, 240px',
+              class: 'sqe-header__logo-img',
+              alt: logo_alt,
+              preload: true
+          }}
+        {%- else -%}
+          <span class="sqe-header__logo-text">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+      {%- if request.page_type == 'index' -%}</h1>{%- endif -%}
+    </div>
+
+    <nav class="sqe-header__nav" aria-label="Main navigation">
+      {%- if menu != blank -%}
+        <ul class="sqe-header__nav-list" role="list">
+          {%- for link in menu.links -%}
+            <li class="sqe-header__nav-item{% if link.current %} is-active{% endif %}{% if link.links.size > 0 %} has-children{% endif %}">
+              <a class="sqe-header__nav-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
+                {{ link.title | escape }}
+              </a>
+              {%- if link.links.size > 0 -%}
+                <ul class="sqe-header__dropdown" role="list">
+                  {%- for child in link.links -%}
+                    <li>
+                      <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>
+                        {{ child.title | escape }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </nav>
+
+    <div class="sqe-header__actions">
+      {%- if show_search -%}
+        <button
+          type="button"
+          class="sqe-header__icon sqe-header__icon--search"
+          aria-label="Suchen"
+          aria-expanded="false"
+          aria-controls="sqe-search-{{ section.id }}"
+          data-sqe-search-toggle
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+      {%- if show_account and shop.customer_accounts_enabled -%}
+        <a
+          href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+          class="sqe-header__icon sqe-header__icon--account"
+          rel="nofollow"
+          aria-label="{% if customer %}Account{% else %}Log in{% endif %}"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </a>
+      {%- endif -%}
+
+      {%- if show_cart -%}
+        <a href="{{ routes.cart_url }}" class="sqe-header__icon sqe-header__icon--cart" aria-label="Cart">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          {%- if cart.item_count > 0 -%}
+            <span class="sqe-header__cart-count" data-cart-count aria-hidden="true">{{ cart.item_count }}</span>
+            <span class="visually-hidden">{{ cart.item_count }} items in cart</span>
+          {%- else -%}
+            <span class="sqe-header__cart-count" data-cart-count aria-hidden="true" hidden>0</span>
+          {%- endif -%}
+        </a>
+      {%- endif -%}
+
+      {%- if show_cta and cta_text != blank -%}
+        <a href="{{ cta_link | default: '#' }}" class="sqe-header__cta">
+          {{ cta_text | escape }}
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if show_search -%}
+      <div class="sqe-header__search" id="sqe-search-{{ section.id }}" data-sqe-search hidden>
+        <form action="{{ routes.search_url }}" method="get" role="search" data-sqe-search-form>
+          <input type="hidden" name="options[prefix]" value="last">
+          <input type="hidden" name="type" value="product,page,article">
+          <div class="sqe-search__input-wrap">
+            <svg class="sqe-search__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input
+              type="search"
+              name="q"
+              class="sqe-search__input"
+              placeholder="Suchen…"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-label="Search"
+              aria-controls="sqe-search-results-{{ section.id }}"
+              aria-expanded="false"
+              data-sqe-search-input
+            >
+            <button type="button" class="sqe-search__close" data-sqe-search-close aria-label="Close">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+              </svg>
+            </button>
+          </div>
+          <div
+            id="sqe-search-results-{{ section.id }}"
+            class="sqe-search__results"
+            role="listbox"
+            data-sqe-search-results
+            hidden
+          ></div>
+        </form>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if menu != blank -%}
+    <div id="sqe-drawer-{{ section.id }}" class="sqe-header__drawer" data-sqe-drawer hidden>
+      <ul class="sqe-header__drawer-list" role="list">
+        {%- for link in menu.links -%}
+          <li>
+            <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            {%- if link.links.size > 0 -%}
+              <ul role="list">
+                {%- for child in link.links -%}
+                  <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+        {%- if show_cta and cta_text != blank -%}
+          <li><a class="sqe-header__drawer-cta" href="{{ cta_link | default: '#' }}">{{ cta_text | escape }}</a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</section>
+
+<script src="{{ 'sqe-header.js' | asset_url }}" defer="defer"></script>
+{%- if show_search -%}
+  <script src="{{ 'sqe-predictive-search.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{% style %}
+  /* Section-id scoped sticky rules — must live in {% raw %}{% style %}{% endraw %} because they contain Liquid. */
+  #shopify-section-{{ section.id }}.is-sticky {
+    position: sticky;
+    top: 0;
+    transition: transform .2s ease;
+  }
+  #shopify-section-{{ section.id }}.is-hidden { transform: translateY(-100%); }
+{% endstyle %}
+
+{% stylesheet %}
+  .sqe-header {
+    background: var(--sqe-bg);
+    color: var(--sqe-text);
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 30;
+    font-weight: 400;
+  }
+  .sqe-header *,
+  .sqe-header *::before,
+  .sqe-header *::after { box-sizing: border-box; }
+  .sqe-header[data-border="true"] { border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent); }
+
+  .sqe-header__inner {
+    height: var(--sqe-h);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Logo — absolute so X/Y nudge is consistent on desktop */
+  .sqe-header__logo {
+    position: absolute;
+    left: var(--sqe-logo-x);
+    top: 50%;
+    transform: translateY(-50%) translateY(var(--sqe-logo-y));
+    z-index: 5;
+  }
+  .sqe-header__h1 { margin: 0; padding: 0; font-size: inherit; font-weight: inherit; }
+  .sqe-header__logo-link {
+    display: flex; align-items: center;
+    color: inherit; text-decoration: none;
+  }
+  .sqe-header__logo-img {
+    max-height: calc(var(--sqe-h) - 20px);
+    width: auto; height: auto; display: block;
+  }
+  .sqe-header__logo-text {
+    font-weight: 700;
+    font-size: 1.4rem;
+    white-space: nowrap;
+  }
+
+  /* Nav */
+  .sqe-header__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 4;
+    display: flex;
+  }
+  .sqe-header[data-nav-align="left"] .sqe-header__nav {
+    left: 2rem;
+    transform: translateY(-50%) translate(var(--sqe-menu-nudge-x), var(--sqe-menu-nudge-y));
+  }
+  .sqe-header[data-nav-align="center"] .sqe-header__nav {
+    left: 50%;
+    transform: translate(-50%, -50%) translate(var(--sqe-menu-nudge-x), var(--sqe-menu-nudge-y));
+  }
+  .sqe-header[data-nav-align="right"] .sqe-header__nav {
+    right: calc(var(--sqe-actions-x) + 180px);
+    transform: translateY(-50%) translate(var(--sqe-menu-nudge-x), var(--sqe-menu-nudge-y));
+  }
+  .sqe-header__nav-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; align-items: center; gap: 2rem;
+  }
+  .sqe-header__nav-link {
+    color: inherit;
+    text-decoration: none;
+    font-size: var(--sqe-menu-size);
+    font-weight: var(--sqe-menu-weight);
+    line-height: 1;
+    padding: .25rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .sqe-header__nav-link:hover { color: var(--sqe-accent); }
+  .sqe-header__nav-item.is-active > .sqe-header__nav-link {
+    color: var(--sqe-accent);
+    border-bottom-color: var(--sqe-accent);
+  }
+  .sqe-header__nav-item { position: relative; }
+  .sqe-header__dropdown {
+    list-style: none; padding: .5rem 0; margin: 0;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 200px;
+    background: var(--sqe-bg);
+    border: 1px solid color-mix(in srgb, var(--sqe-text) 8%, transparent);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    opacity: 0; pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity .15s ease, transform .15s ease;
+  }
+  .sqe-header__dropdown li a {
+    display: block;
+    padding: .5rem 1rem;
+    color: inherit; text-decoration: none;
+    font-size: calc(var(--sqe-menu-size) - 1px);
+  }
+  .sqe-header__dropdown li a:hover { color: var(--sqe-accent); }
+  .sqe-header__nav-item.has-children:hover .sqe-header__dropdown,
+  .sqe-header__nav-item.has-children:focus-within .sqe-header__dropdown {
+    opacity: 1; pointer-events: auto; transform: translateY(0);
+  }
+
+  /* Actions */
+  .sqe-header__actions {
+    position: absolute;
+    top: 50%;
+    right: var(--sqe-actions-x);
+    transform: translateY(-50%) translateY(var(--sqe-actions-y));
+    display: flex; align-items: center; gap: .85rem;
+    z-index: 5;
+  }
+  .sqe-header__icon {
+    display: inline-grid; place-items: center;
+    width: 38px; height: 38px;
+    background: none; border: 0; color: inherit;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .sqe-header__icon:hover { background: color-mix(in srgb, var(--sqe-text) 6%, transparent); color: var(--sqe-accent); }
+  .sqe-header__icon--search { transform: translate(var(--sqe-search-x), var(--sqe-search-y)); }
+  .sqe-header__icon--account { transform: translate(var(--sqe-account-x), var(--sqe-account-y)); position: relative; }
+  .sqe-header__icon--cart { transform: translate(var(--sqe-cart-x), var(--sqe-cart-y)); position: relative; }
+  .sqe-header__cart-count {
+    position: absolute;
+    top: 2px; right: 2px;
+    min-width: 18px; height: 18px;
+    padding: 0 5px;
+    display: grid; place-items: center;
+    background: var(--sqe-accent);
+    color: var(--sqe-on-accent);
+    border-radius: 9px;
+    font-size: 11px; font-weight: 700; line-height: 1;
+  }
+  .sqe-header__cart-count[hidden] { display: none; }
+
+  .sqe-header__cta {
+    display: inline-flex; align-items: center; gap: .35rem;
+    padding: .6rem 1rem;
+    background: var(--sqe-accent);
+    color: var(--sqe-on-accent);
+    border-radius: 999px;
+    font-size: var(--sqe-cta-size);
+    font-weight: 700;
+    text-decoration: none;
+    transition: filter .15s ease, transform .12s ease;
+    transform: translate(var(--sqe-cta-x), var(--sqe-cta-y));
+  }
+  .sqe-header__cta:hover { filter: brightness(.96); }
+  .sqe-header__cta:active { transform: translate(var(--sqe-cta-x), var(--sqe-cta-y)) scale(.98); }
+
+  /* Hamburger (mobile only) */
+  .sqe-header__hamburger {
+    display: none;
+    position: absolute;
+    left: var(--sqe-hamburger-x);
+    top: 50%;
+    transform: translateY(-50%) translateY(var(--sqe-hamburger-y));
+    width: var(--sqe-mobile-icon); height: var(--sqe-mobile-icon);
+    background: none; border: 0; color: inherit;
+    cursor: pointer;
+    z-index: 6;
+  }
+
+  /* Inline search */
+  .sqe-header__search {
+    position: absolute;
+    inset: 0 0 auto 0;
+    background: var(--sqe-bg);
+    padding: .85rem 2rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
+    z-index: 20;
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  }
+  .sqe-header__search[hidden] { display: none; }
+  .sqe-search__input-wrap {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .sqe-search__icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--sqe-muted); pointer-events: none; }
+  .sqe-search__input {
+    width: 100%;
+    padding: .9rem 3rem .9rem 2.75rem;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--sqe-text);
+    background: color-mix(in srgb, var(--sqe-text) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
+    border-radius: 12px;
+  }
+  .sqe-search__input:focus {
+    outline: none;
+    border-color: var(--sqe-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sqe-accent) 25%, transparent);
+  }
+  .sqe-search__close {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px;
+    display: grid; place-items: center;
+    background: none; border: 0; color: var(--sqe-muted);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .sqe-search__close:hover { background: color-mix(in srgb, var(--sqe-text) 8%, transparent); color: var(--sqe-text); }
+
+  .sqe-search__results {
+    margin: .75rem auto 0;
+    max-width: 800px;
+    background: var(--sqe-bg);
+    border: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
+    border-radius: 12px;
+    overflow: hidden;
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+  }
+  .sqe-search__results[hidden] { display: none; }
+  .sqe-search-group { padding: .5rem .25rem; }
+  .sqe-search-group__heading {
+    margin: 0;
+    padding: .35rem .85rem;
+    font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--sqe-muted);
+  }
+  .sqe-search-result {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: center;
+    gap: .75rem;
+    padding: .55rem .85rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 8px;
+  }
+  .sqe-search-result + .sqe-search-result { border-top: 1px solid color-mix(in srgb, var(--sqe-text) 6%, transparent); }
+  .sqe-search-result:hover,
+  .sqe-search-result.is-focused {
+    background: color-mix(in srgb, var(--sqe-accent) 10%, transparent);
+  }
+  .sqe-search-result__media {
+    width: 44px; height: 44px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--sqe-text) 6%, transparent);
+  }
+  .sqe-search-result__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sqe-search-result__title { font-weight: 600; font-size: .95rem; }
+  .sqe-search-result__meta { font-size: .8rem; color: var(--sqe-muted); }
+  .sqe-search-result__price { font-size: .9rem; font-weight: 700; white-space: nowrap; }
+  .sqe-search-result mark {
+    background: color-mix(in srgb, var(--sqe-accent) 35%, transparent);
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+  .sqe-search-empty,
+  .sqe-search-typo {
+    padding: 1rem 1rem;
+    color: var(--sqe-muted);
+    font-size: .9rem;
+  }
+  .sqe-search-typo button {
+    background: none; border: 0; padding: 0;
+    color: var(--sqe-accent);
+    font: inherit; cursor: pointer; text-decoration: underline;
+  }
+
+  /* Drawer (mobile) */
+  .sqe-header__drawer {
+    position: absolute;
+    inset: 100% 0 auto 0;
+    background: var(--sqe-bg);
+    border-top: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
+    padding: .5rem 1rem 1rem;
+    z-index: 15;
+  }
+  .sqe-header__drawer[hidden] { display: none; }
+  .sqe-header__drawer-list { list-style: none; padding: 0; margin: 0; }
+  .sqe-header__drawer-list a {
+    display: block; padding: .65rem .5rem;
+    color: inherit; text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 6%, transparent);
+  }
+  .sqe-header__drawer-list a[aria-current="page"] { color: var(--sqe-accent); font-weight: 600; }
+  .sqe-header__drawer-list ul { list-style: none; padding: 0 0 0 1rem; margin: 0; }
+  .sqe-header__drawer-list ul a { font-size: .9rem; color: var(--sqe-muted); }
+  .sqe-header__drawer-cta {
+    margin-top: .75rem;
+    display: inline-block;
+    background: var(--sqe-accent) !important;
+    color: var(--sqe-on-accent) !important;
+    border: 0 !important;
+    border-radius: 999px;
+    padding: .65rem 1.25rem !important;
+    font-weight: 700;
+  }
+
+  /* Sticky modes live in the section-scoped style block above (needs Liquid). */
+
+  /* Mobile */
+  @media (max-width: 989px) {
+    .sqe-header__inner { padding: 0 1rem; }
+    .sqe-header__nav { display: none; }
+    .sqe-header__hamburger { display: grid; place-items: center; }
+    .sqe-header__logo { left: 50%; transform: translate(-50%, -50%); }
+    .sqe-header__logo-img,
+    .sqe-header__logo-text { max-height: var(--sqe-mobile-logo); font-size: 1.1rem; }
+    .sqe-header__actions { right: 1rem; gap: .25rem; }
+    .sqe-header__icon { width: var(--sqe-mobile-icon); height: var(--sqe-mobile-icon); }
+    .sqe-header__cta { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "SQE Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "header", "content": "Navigation" },
+    { "type": "link_list", "id": "menu", "default": "main-menu", "label": "Menu" },
+    {
+      "type": "select",
+      "id": "nav_alignment",
+      "label": "Menu alignment",
+      "default": "center",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sticky_header_type",
+      "label": "Sticky header",
+      "default": "on-scroll-up",
+      "options": [
+        { "value": "none",          "label": "None" },
+        { "value": "on-scroll-up",  "label": "On scroll up" },
+        { "value": "always",        "label": "Always sticky" }
+      ]
+    },
+
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "range",
+      "id": "header_height",
+      "label": "Header height",
+      "min": 50, "max": 120, "step": 5, "unit": "px",
+      "default": 80
+    },
+    { "type": "checkbox", "id": "show_border", "label": "Bottom border", "default": true },
+
+    { "type": "header", "content": "Menu typography" },
+    {
+      "type": "range",
+      "id": "menu_font_size",
+      "label": "Menu font size",
+      "min": 10, "max": 22, "step": 1, "unit": "px",
+      "default": 15
+    },
+    { "type": "checkbox", "id": "menu_bold", "label": "Bold", "default": true },
+
+    { "type": "header", "content": "CTA button" },
+    { "type": "checkbox", "id": "show_cta", "label": "Show CTA", "default": true },
+    { "type": "text", "id": "cta_text", "label": "Text", "default": "Get a Quote" },
+    { "type": "url", "id": "cta_link", "label": "Link" },
+    {
+      "type": "range",
+      "id": "cta_font_size",
+      "label": "Font size",
+      "min": 10, "max": 22, "step": 1, "unit": "px",
+      "default": 14
+    },
+
+    { "type": "header", "content": "Icon toggles" },
+    { "type": "checkbox", "id": "show_search",  "label": "Search icon",  "default": true },
+    { "type": "checkbox", "id": "show_account", "label": "Account icon", "default": true },
+    { "type": "checkbox", "id": "show_cart",    "label": "Cart icon",    "default": true },
+
+    { "type": "header", "content": "Logo position" },
+    { "type": "range", "id": "logo_pos_x", "label": "Logo X", "min": 0, "max": 90, "step": 1, "unit": "%",  "default": 2 },
+    { "type": "range", "id": "logo_pos_y", "label": "Logo Y", "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+
+    { "type": "header", "content": "Menu fine-tune" },
+    { "type": "range", "id": "menu_nudge_x", "label": "Menu X nudge", "min": -49, "max": 49, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "menu_pos_y",   "label": "Menu Y nudge", "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+
+    { "type": "header", "content": "Actions position" },
+    { "type": "range", "id": "actions_pos_x", "label": "Actions X (from right)", "min": 0, "max": 90, "step": 1, "unit": "%", "default": 2 },
+    { "type": "range", "id": "actions_pos_y", "label": "Actions Y", "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+
+    { "type": "header", "content": "Icon fine-tuning" },
+    { "type": "range", "id": "search_pos_x",  "label": "Search X nudge",  "min": -30, "max": 30, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "search_pos_y",  "label": "Search Y nudge",  "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "account_pos_x", "label": "Account X nudge", "min": -30, "max": 30, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "account_pos_y", "label": "Account Y nudge", "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "cart_pos_x",    "label": "Cart X nudge",    "min": -30, "max": 30, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "cart_pos_y",    "label": "Cart Y nudge",    "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "cta_pos_x",     "label": "CTA X nudge",     "min": -30, "max": 30, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "cta_pos_y",     "label": "CTA Y nudge",     "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+
+    { "type": "header", "content": "Hamburger position" },
+    { "type": "range", "id": "hamburger_pos_x", "label": "Hamburger X", "min": 0, "max": 90, "step": 1, "unit": "%",  "default": 2 },
+    { "type": "range", "id": "hamburger_pos_y", "label": "Hamburger Y", "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+
+    { "type": "header", "content": "Mobile settings" },
+    { "type": "range", "id": "mobile_logo_size", "label": "Mobile logo height", "min": 20, "max": 50, "step": 2, "unit": "px", "default": 36 },
+    { "type": "range", "id": "mobile_icon_size", "label": "Mobile icon size",   "min": 30, "max": 48, "step": 2, "unit": "px", "default": 38 }
+  ],
+  "presets": [
+    { "name": "SQE Header", "category": "Header" }
+  ]
+}
+{% endschema %}

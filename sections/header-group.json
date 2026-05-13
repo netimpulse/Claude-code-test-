@@ -12,7 +12,7 @@
   "name": "t:general.header",
   "sections": {
     "header": {
-      "type": "header",
+      "type": "sqe-header",
       "settings": {}
     }
   },

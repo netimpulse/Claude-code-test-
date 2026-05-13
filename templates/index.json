@@ -83,10 +83,15 @@
         "body_font": "work_sans_n4",
         "card_radius": 14
       }
+    },
+    "sticky_buy_bar": {
+      "type": "sticky-buy-bar",
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "theme_store_EcNgjF"
+    "theme_store_EcNgjF",
+    "sticky_buy_bar"
   ]
 }
