@@ -157,6 +157,75 @@
     "cta_override_header": "Per-service CTA (optional)",
     "cta_override_info": "Override the section-wide primary CTA for this service."
   },
+  "footer": {
+    "layout_header": "Layout",
+    "column_min_width_label": "Minimum column width",
+    "column_min_width_info": "Columns auto-fit. Smaller values fit more columns per row.",
+    "column_gap_label": "Space between columns",
+    "legal_header": "Legal & policies",
+    "legal_info": "Privacy, terms and refund policies set in Shopify Admin → Settings → Policies appear automatically when enabled below.",
+    "legal_menu_label": "Additional legal menu",
+    "legal_menu_info": "Optional. Add a menu to show links like Imprint, FAQ or Cookies next to the shop policies.",
+    "show_policies_label": "Show shop policies",
+    "show_policies_info": "Shows Privacy policy, Terms of service, Refund policy, Shipping policy and Subscription policy from your Shopify settings.",
+    "bottom_bar_header": "Bottom bar",
+    "copyright_label": "Copyright text",
+    "copyright_info": "Use {year} for the current year and {shop} for your store name. Leave empty for a default.",
+    "show_powered_by_label": "Show \"Powered by Shopify\"",
+    "localization_header": "Country/region & language",
+    "show_locale_label": "Show language selector",
+    "show_currency_label": "Show country/currency selector",
+    "appearance_header": "Appearance",
+    "background_color_label": "Background color",
+    "color_override_info": "Leave empty to use the color scheme above.",
+    "text_color_label": "Body text color",
+    "heading_color_label": "Heading color",
+    "link_color_label": "Link color",
+    "accent_color_label": "Accent (hover) color",
+    "accent_color_info": "Used on link hover and primary buttons.",
+    "heading_size_label": "Column heading size",
+    "show_top_border_label": "Show top border",
+    "border_color_label": "Border color",
+    "border_width_label": "Border width",
+    "spacing_header": "Spacing",
+    "padding_top_label": "Top padding",
+    "padding_bottom_label": "Bottom padding",
+    "blocks": {
+      "shared": {
+        "heading_label": "Heading",
+        "text_label": "Text"
+      },
+      "logo_text": {
+        "name": "Logo & description",
+        "logo_label": "Logo",
+        "logo_width_label": "Logo width",
+        "heading_info": "Shown instead of the logo when no image is set."
+      },
+      "menu": {
+        "name": "Menu",
+        "info": "Link list from Shopify Admin → Online Store → Navigation."
+      },
+      "text": {
+        "name": "Text"
+      },
+      "contact": {
+        "name": "Contact",
+        "address_label": "Address",
+        "phone_label": "Phone",
+        "email_label": "Email",
+        "hours_label": "Opening hours"
+      },
+      "newsletter": {
+        "name": "Newsletter signup",
+        "placeholder_label": "Input placeholder",
+        "button_label": "Button label",
+        "success_label": "Success message"
+      },
+      "social": {
+        "name": "Social media"
+      }
+    }
+  },
   "team_overview": {
     "name": "Team overview",
     "heading_label": "Heading",

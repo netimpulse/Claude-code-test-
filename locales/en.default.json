@@ -65,5 +65,29 @@
   "team_overview": {
     "more_about": "More about",
     "add_members": "Add team-member blocks to get started."
+  },
+  "footer": {
+    "menu_label": "Footer menu",
+    "legal_label": "Legal",
+    "payment_label": "Payment methods",
+    "newsletter": {
+      "email_label": "Email",
+      "placeholder": "Enter your email",
+      "button": "Subscribe",
+      "success": "Thanks for subscribing."
+    },
+    "localization": {
+      "language_label": "Language",
+      "country_label": "Country/region"
+    },
+    "social": {
+      "facebook": "Follow us on Facebook",
+      "instagram": "Follow us on Instagram",
+      "tiktok": "Follow us on TikTok",
+      "youtube": "Follow us on YouTube",
+      "twitter": "Follow us on X",
+      "pinterest": "Follow us on Pinterest",
+      "linkedin": "Follow us on LinkedIn"
+    }
   }
 }
