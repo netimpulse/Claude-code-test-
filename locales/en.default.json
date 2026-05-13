@@ -54,5 +54,12 @@
     "clear_search": "Clear search",
     "filter_label": "Filters",
     "empty": "No themes match this filter yet."
+  },
+  "services_overview": {
+    "tabs_label": "Choose a service",
+    "in_focus": "In focus",
+    "previous": "Previous service",
+    "next": "Next service",
+    "add_services": "Add services blocks to get started."
   }
 }
