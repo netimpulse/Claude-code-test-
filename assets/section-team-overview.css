@@ -82,7 +82,7 @@
 .team-overview__media {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   border-radius: var(--to-card-radius);
   overflow: hidden;
   background: var(--to-card-bg, #e9efee);
@@ -102,7 +102,7 @@
 
 .team-overview__initials {
   font-weight: 800;
-  font-size: clamp(5rem, 12vw, 10rem);
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
   line-height: 1;
   letter-spacing: -0.06em;
   /* Slight lighten/darken on the card colour for a faded look */
