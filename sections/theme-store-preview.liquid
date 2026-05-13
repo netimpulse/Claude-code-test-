@@ -183,18 +183,20 @@
   /* --- Header: intro left, arrows right --- */
   .tsp__header {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: 1rem 1.5rem;
     margin-bottom: 1.5rem;
   }
-  .tsp__intro { min-width: 0; }
+  .tsp__intro { min-width: 0; flex: 1 1 auto; }
   .tsp__heading {
     margin: 0 0 0.4rem;
-    font-size: clamp(1.75rem, 4vw, 2.75rem);
-    line-height: 1.1;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    line-height: 1.15;
     font-weight: 700;
     letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
   }
   .tsp__heading-accent {
     font-style: italic;
@@ -240,11 +242,12 @@
     margin: 0;
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(220px, 1fr);
+    grid-auto-columns: minmax(min(220px, 100%), 1fr);
     gap: 1rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
+    max-width: 100%;
   }
   .tsp__track::-webkit-scrollbar { display: none; }
 
