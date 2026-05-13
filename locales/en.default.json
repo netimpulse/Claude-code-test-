@@ -61,5 +61,9 @@
     "previous": "Previous service",
     "next": "Next service",
     "add_services": "Add services blocks to get started."
+  },
+  "team_overview": {
+    "more_about": "More about",
+    "add_members": "Add team-member blocks to get started."
   }
 }

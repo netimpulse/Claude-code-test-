@@ -1,0 +1,328 @@
+{% comment %}
+  Team Overview
+  ----------------------------------------------------------------
+  Grid of team-member cards. Each card shows a photo (or large
+  initials as fallback) on a colored panel, with role, name, bio
+  and up to three tag pills below.
+
+  - 1–4 columns, configurable per breakpoint.
+  - Numbering is automatic; can be hidden via section setting.
+  - Card panel colour is per-block so each card can have its own
+    accent without touching the global colour scheme.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign cols = section.settings.columns_desktop
+  assign show_numbers = section.settings.show_numbers
+-%}
+
+{{ 'section-team-overview.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .team-overview {
+    --to-accent: {{ accent }};
+    --to-accent-soft: {{ accent | color_modify: 'alpha', 0.18 }};
+    --to-padding-top: {{ section.settings.padding_top }}px;
+    --to-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --to-cols: {{ cols }};
+  }
+{% endstyle %}
+
+<section
+  class="team-overview color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="team-heading-{{ section.id }}"{% endif %}
+>
+  <div class="team-overview__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 id="team-heading-{{ section.id }}" class="team-overview__heading">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.intro != blank -%}
+      <p class="team-overview__intro">{{ section.settings.intro }}</p>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="team-overview__grid" role="list">
+        {%- for block in section.blocks -%}
+          {%- assign initials = block.settings.initials -%}
+          {%- if initials == blank and block.settings.name != blank -%}
+            {%- assign parts = block.settings.name | split: ' ' -%}
+            {%- assign first = parts | first | slice: 0, 1 -%}
+            {%- assign last = parts | last | slice: 0, 1 -%}
+            {%- if parts.size > 1 -%}
+              {%- assign initials = first | append: last -%}
+            {%- else -%}
+              {%- assign initials = first -%}
+            {%- endif -%}
+          {%- endif -%}
+
+          <li class="team-overview__card" {{ block.shopify_attributes }}>
+            <div
+              class="team-overview__media"
+              style="--to-card-bg: {{ block.settings.card_color }};"
+            >
+              {%- if show_numbers -%}
+                <span class="team-overview__number" aria-hidden="true">
+                  {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                </span>
+              {%- endif -%}
+
+              {%- if block.settings.photo != blank -%}
+                {%- assign photo_alt = block.settings.photo.alt | default: block.settings.name | escape -%}
+                {{
+                  block.settings.photo
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                    widths: '300, 450, 600, 800, 1100',
+                    alt: photo_alt,
+                    class: 'team-overview__photo'
+                }}
+              {%- elsif initials != blank -%}
+                <span class="team-overview__initials" aria-hidden="true">{{ initials | upcase | escape }}</span>
+              {%- endif -%}
+
+              {%- if block.settings.details_url != blank -%}
+                <a
+                  class="team-overview__info"
+                  href="{{ block.settings.details_url }}"
+                  aria-label="{{ 'team_overview.more_about' | t | default: 'More about' }} {{ block.settings.name | escape }}"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 11v6M12 7.5h.01" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                  </svg>
+                </a>
+              {%- endif -%}
+            </div>
+
+            <div class="team-overview__body">
+              {%- if block.settings.role != blank -%}
+                <p class="team-overview__role">{{ block.settings.role | escape }}</p>
+              {%- endif -%}
+              {%- if block.settings.name != blank -%}
+                <h3 class="team-overview__name">{{ block.settings.name | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.bio != blank -%}
+                <p class="team-overview__bio">{{ block.settings.bio | escape | newline_to_br }}</p>
+              {%- endif -%}
+
+              {%- assign has_tags = false -%}
+              {%- if block.settings.tag_1 != blank or block.settings.tag_2 != blank or block.settings.tag_3 != blank -%}
+                {%- assign has_tags = true -%}
+              {%- endif -%}
+              {%- if has_tags -%}
+                <ul class="team-overview__tags" role="list">
+                  {%- if block.settings.tag_1 != blank -%}<li class="team-overview__tag">{{ block.settings.tag_1 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.tag_2 != blank -%}<li class="team-overview__tag">{{ block.settings.tag_2 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.tag_3 != blank -%}<li class="team-overview__tag">{{ block.settings.tag_3 | escape }}</li>{%- endif -%}
+                </ul>
+              {%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p class="team-overview__placeholder">
+        {{ 'team_overview.add_members' | t | default: 'Add team-member blocks to get started.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:team_overview.name",
+  "tag": "section",
+  "class": "shopify-section--team-overview",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:team_overview.heading_label",
+      "default": "Das Team"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "t:team_overview.intro_label"
+    },
+    {
+      "type": "header",
+      "content": "t:team_overview.layout_header"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "t:team_overview.columns_label",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "t:team_overview.show_numbers_label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:team_overview.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:team_overview.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:team_overview.accent_color_label",
+      "default": "#1f4f4a"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:team_overview.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:team_overview.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "member",
+      "name": "t:team_overview.block_member",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "t:team_overview.photo_label",
+          "info": "t:team_overview.photo_info"
+        },
+        {
+          "type": "text",
+          "id": "initials",
+          "label": "t:team_overview.initials_label",
+          "info": "t:team_overview.initials_info"
+        },
+        {
+          "type": "color",
+          "id": "card_color",
+          "label": "t:team_overview.card_color_label",
+          "default": "#e9efee"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "t:team_overview.role_label",
+          "default": "Senior SEO Lead"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:team_overview.name_label",
+          "default": "Anna Schmid"
+        },
+        {
+          "type": "textarea",
+          "id": "bio",
+          "label": "t:team_overview.bio_label",
+          "default": "Baut Performance-Setups, die nicht nach drei Wochen wieder zerfallen. Lieblings-KPI: Deckungsbeitrag, nicht ROAS."
+        },
+        {
+          "type": "header",
+          "content": "t:team_overview.tags_header"
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "t:team_overview.tag_label",
+          "default": "Google Ads"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "t:team_overview.tag_label"
+        },
+        {
+          "type": "text",
+          "id": "tag_3",
+          "label": "t:team_overview.tag_label"
+        },
+        {
+          "type": "url",
+          "id": "details_url",
+          "label": "t:team_overview.details_url_label",
+          "info": "t:team_overview.details_url_info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:team_overview.name",
+      "category": "t:general.section",
+      "blocks": [
+        {
+          "type": "member",
+          "settings": {
+            "card_color": "#1f4f4a",
+            "role": "Co-Founder · SEA & GEO",
+            "name": "Anna Schmid",
+            "bio": "Baut Performance-Setups, die nicht nach drei Wochen wieder zerfallen. Lieblings-KPI: Deckungsbeitrag, nicht ROAS.",
+            "tag_1": "Google Ads",
+            "tag_2": "Meta",
+            "tag_3": "GA4"
+          }
+        },
+        {
+          "type": "member",
+          "settings": {
+            "card_color": "#dde7e4",
+            "role": "Senior SEO Lead",
+            "name": "David Kogler",
+            "bio": "Technische SEO mit Schwerpunkt auf E-Commerce. Hat schon Shops mit 200k URLs umgezogen, ohne Rankings zu verlieren.",
+            "tag_1": "Tech SEO",
+            "tag_2": "Shopify",
+            "tag_3": "Logfiles"
+          }
+        },
+        {
+          "type": "member",
+          "settings": {
+            "card_color": "#e9eef0",
+            "role": "Content & Strategy",
+            "name": "Lena Reuter",
+            "bio": "Schreibt Briefings, die Redakteure tatsächlich lesen wollen. Verbindet Suchintention mit echter Recherche.",
+            "tag_1": "Content Ops",
+            "tag_2": "Editorial",
+            "tag_3": "Intent"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

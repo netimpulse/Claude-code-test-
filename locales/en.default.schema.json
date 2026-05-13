@@ -156,5 +156,31 @@
     "benefit_label": "Benefit",
     "cta_override_header": "Per-service CTA (optional)",
     "cta_override_info": "Override the section-wide primary CTA for this service."
+  },
+  "team_overview": {
+    "name": "Team overview",
+    "heading_label": "Heading",
+    "intro_label": "Intro",
+    "layout_header": "Layout",
+    "columns_label": "Columns on desktop",
+    "show_numbers_label": "Show card numbers",
+    "appearance_header": "Appearance",
+    "color_scheme_label": "Color scheme",
+    "accent_color_label": "Accent color (role text)",
+    "padding_top_label": "Top padding",
+    "padding_bottom_label": "Bottom padding",
+    "block_member": "Team member",
+    "photo_label": "Photo",
+    "photo_info": "If empty, the initials below are shown instead.",
+    "initials_label": "Initials",
+    "initials_info": "2–3 letters, e.g. \"AS\". Auto-derived from the name when empty.",
+    "card_color_label": "Card background color",
+    "role_label": "Role",
+    "name_label": "Name",
+    "bio_label": "Short bio",
+    "tags_header": "Tags (max 3)",
+    "tag_label": "Tag",
+    "details_url_label": "Details link (optional)",
+    "details_url_info": "When set, an info icon appears in the corner of the card."
   }
 }
