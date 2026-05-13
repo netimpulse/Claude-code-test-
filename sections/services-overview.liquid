@@ -35,7 +35,7 @@
   aria-labelledby="services-heading-{{ section.id }}"
 >
   <div class="services-overview__inner">
-    <header class="services-overview__head">
+    <div class="services-overview__head">
       <div class="services-overview__head-main">
         {%- if section.settings.eyebrow != blank -%}
           <div class="services-overview__eyebrow">{{ section.settings.eyebrow | escape }}</div>
@@ -49,7 +49,7 @@
       {%- if section.settings.intro != blank -%}
         <p class="services-overview__intro">{{ section.settings.intro }}</p>
       {%- endif -%}
-    </header>
+    </div>
 
     {%- if block_count > 0 -%}
       <services-overview
