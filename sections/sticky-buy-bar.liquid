@@ -1,0 +1,344 @@
+{% comment %}
+  Sticky-Buy-Bar — floating bottom bar for a single product.
+  Add via Theme Editor to any JSON-Template (index, product, page, …).
+
+  Editor settings:
+    - product             product picker
+    - variant_id          optional, falls back to first available variant
+    - title / subtitle    optional override, otherwise product.title + description excerpt
+    - button_label        Add-to-Cart label
+    - trigger             immediate | scroll_offset | intersection
+    - scroll_offset_px    used when trigger = scroll_offset
+    - intersection_selector  CSS selector for trigger = intersection
+    - show_on_mobile / show_on_desktop  visibility toggles
+    - dismissable         shows close button + remembers via sessionStorage
+    - color_scheme        Shopify-native color scheme
+
+  Behaviour:
+    - Click on CTA → POST /cart/add.js (no reload), fires `cart:added`
+      CustomEvent on document, updates any visible cart-count badge.
+    - Dismiss button hides the bar and writes
+      `stickyBuyBar:dismissed:<section.id>` to sessionStorage.
+{% endcomment %}
+
+{%- liquid
+  assign product = section.settings.product
+  if product == blank
+    assign product = all_products['qa-test-produkt']
+  endif
+  if section.settings.variant_id != blank
+    assign variant_lookup = section.settings.variant_id | times: 1
+    for v in product.variants
+      if v.id == variant_lookup
+        assign variant = v
+      endif
+    endfor
+  endif
+  unless variant
+    assign variant = product.selected_or_first_available_variant
+  endunless
+  assign scheme = section.settings.color_scheme
+  assign should_render = false
+  if product != blank and variant != blank
+    assign should_render = true
+  endif
+-%}
+
+{% if should_render %}
+  <aside
+    class="sticky-buy-bar
+      {% unless section.settings.show_on_mobile %} sticky-buy-bar--hide-mobile{% endunless %}
+      {% unless section.settings.show_on_desktop %} sticky-buy-bar--hide-desktop{% endunless %}"
+    data-section-id="{{ section.id }}"
+    data-section-type="sticky-buy-bar"
+    data-trigger="{{ section.settings.trigger }}"
+    data-scroll-offset="{{ section.settings.scroll_offset_px }}"
+    data-intersection-selector="{{ section.settings.intersection_selector | escape }}"
+    data-dismissable="{% if section.settings.dismissable %}true{% else %}false{% endif %}"
+    data-variant-id="{{ variant.id }}"
+    role="region"
+    aria-label="{{ section.settings.aria_label | default: 'Add to cart' | escape }}"
+    hidden
+    style="
+      --sbb-bg: {{ scheme.settings.background | default: '#1F2328' }};
+      --sbb-text: {{ scheme.settings.text | default: '#FFFFFF' }};
+      --sbb-muted: {{ scheme.settings.muted | default: '#9AA3AE' }};
+      --sbb-accent: {{ scheme.settings.accent | default: '#B6E4D9' }};
+      --sbb-on-accent: {{ scheme.settings.on_primary_button | default: '#1F2328' }};
+      --sbb-radius: {{ section.settings.card_radius | default: 14 }}px;
+    "
+  >
+    <div class="sticky-buy-bar__inner">
+      <div class="sticky-buy-bar__info">
+        <p class="sticky-buy-bar__title">
+          {{ section.settings.title | default: product.title }}
+        </p>
+        {%- assign subtitle = section.settings.subtitle -%}
+        {%- if subtitle == blank and product.description != blank -%}
+          {%- assign subtitle = product.description | strip_html | truncate: 60 -%}
+        {%- endif -%}
+        {%- if subtitle != blank -%}
+          <p class="sticky-buy-bar__subtitle">{{ subtitle }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="sticky-buy-bar__price" data-sticky-buy-bar-price>
+        {{ variant.price | money_without_trailing_zeros }}
+      </div>
+
+      <button
+        type="button"
+        class="sticky-buy-bar__cta"
+        data-sticky-buy-bar-cta
+        data-loading-label="…"
+        data-success-label="Im Warenkorb ✓"
+      >
+        <span class="sticky-buy-bar__cta-label">
+          {{ section.settings.button_label | default: 'In den Warenkorb' }}
+        </span>
+        <span class="sticky-buy-bar__cta-arrow" aria-hidden="true">→</span>
+      </button>
+
+      {% if section.settings.dismissable %}
+        <button
+          type="button"
+          class="sticky-buy-bar__dismiss"
+          data-sticky-buy-bar-dismiss
+          aria-label="Schließen"
+        >×</button>
+      {% endif %}
+    </div>
+  </aside>
+
+  <script src="{{ 'sticky-buy-bar.js' | asset_url }}" defer="defer"></script>
+{% endif %}
+
+{% stylesheet %}
+  .sticky-buy-bar {
+    position: fixed;
+    left: 50%;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    transform: translate(-50%, 24px);
+    width: min(720px, calc(100% - 24px));
+    z-index: 90;
+    background: var(--sbb-bg, #1F2328);
+    color: var(--sbb-text, #FFFFFF);
+    border-radius: var(--sbb-radius, 14px);
+    box-shadow: 0 12px 32px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.08);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .25s ease, opacity .25s ease;
+    font: inherit;
+  }
+  .sticky-buy-bar[hidden] { display: none; }
+  .sticky-buy-bar.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+  }
+  .sticky-buy-bar *,
+  .sticky-buy-bar *::before,
+  .sticky-buy-bar *::after { box-sizing: border-box; }
+
+  .sticky-buy-bar__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: .75rem .85rem .75rem 1.1rem;
+  }
+
+  .sticky-buy-bar__info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sticky-buy-bar__title {
+    margin: 0;
+    font-size: .95rem;
+    font-weight: 700;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sticky-buy-bar__subtitle {
+    margin: 0;
+    color: var(--sbb-muted, #9AA3AE);
+    font-size: .8rem;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sticky-buy-bar__price {
+    font-size: 1.05rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .sticky-buy-bar__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .65rem 1rem;
+    background: var(--sbb-accent, #B6E4D9);
+    color: var(--sbb-on-accent, #1F2328);
+    border: 0;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter .15s ease, transform .12s ease;
+  }
+  .sticky-buy-bar__cta:hover { filter: brightness(.96); }
+  .sticky-buy-bar__cta:active { transform: scale(.98); }
+  .sticky-buy-bar__cta.is-loading { opacity: .7; cursor: progress; }
+  .sticky-buy-bar__cta.is-success {
+    background: color-mix(in srgb, var(--sbb-accent) 60%, white 40%);
+  }
+
+  .sticky-buy-bar__dismiss {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    background: var(--sbb-bg);
+    color: var(--sbb-text);
+    border: 1px solid color-mix(in srgb, var(--sbb-text) 25%, transparent);
+    border-radius: 50%;
+    font-size: 1.1rem; line-height: 1;
+    cursor: pointer;
+  }
+  .sticky-buy-bar__dismiss:hover { background: color-mix(in srgb, var(--sbb-text) 12%, var(--sbb-bg)); }
+
+  @media (max-width: 749px) {
+    .sticky-buy-bar--hide-mobile { display: none !important; }
+    .sticky-buy-bar__inner {
+      grid-template-columns: minmax(0,1fr) auto;
+      grid-template-areas:
+        "info  price"
+        "cta   cta";
+      gap: .5rem .75rem;
+    }
+    .sticky-buy-bar__info  { grid-area: info; }
+    .sticky-buy-bar__price { grid-area: price; text-align: right; }
+    .sticky-buy-bar__cta   { grid-area: cta; justify-content: center; padding: .75rem; }
+  }
+  @media (min-width: 750px) {
+    .sticky-buy-bar--hide-desktop { display: none !important; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sticky Buy Bar",
+  "tag": "section",
+  "class": "shopify-section--sticky-buy-bar",
+  "settings": [
+    { "type": "header", "content": "Produkt" },
+    { "type": "product", "id": "product", "label": "Produkt" },
+    {
+      "type": "text",
+      "id": "variant_id",
+      "label": "Varianten-ID (optional)",
+      "info": "Leer lassen → erste verfügbare Variante."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel-Override",
+      "info": "Leer lassen → Produkttitel."
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "info": "Leer lassen → Kurzbeschreibung."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button-Text",
+      "default": "In den Warenkorb"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "ARIA-Label (a11y)",
+      "default": "Schnellkauf"
+    },
+    { "type": "header", "content": "Sichtbarkeit" },
+    {
+      "type": "select",
+      "id": "trigger",
+      "label": "Trigger",
+      "default": "immediate",
+      "options": [
+        { "value": "immediate",    "label": "Sofort sichtbar" },
+        { "value": "scroll_offset","label": "Nach X px Scroll" },
+        { "value": "intersection", "label": "IntersectionObserver auf Selektor" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "scroll_offset_px",
+      "label": "Scroll-Offset (px)",
+      "min": 0,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "default": 400,
+      "info": "Nur relevant bei Trigger = Scroll."
+    },
+    {
+      "type": "text",
+      "id": "intersection_selector",
+      "label": "CSS-Selektor",
+      "info": "Nur relevant bei Trigger = IntersectionObserver. Bar erscheint, sobald das Element aus dem Viewport scrollt.",
+      "default": ".shopify-section--cart, [data-pricing-block]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_mobile",
+      "label": "Auf Mobile zeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_desktop",
+      "label": "Auf Desktop zeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissable",
+      "label": "Schließbar (mit Persistenz in sessionStorage)",
+      "default": true
+    },
+    { "type": "header", "content": "Appearance" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Buy Bar"
+    }
+  ]
+}
+{% endschema %}
