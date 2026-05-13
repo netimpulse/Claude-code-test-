@@ -85,5 +85,8 @@
     "add_cards": "Add card blocks in the theme editor to fill the carousel.",
     "prev": "Previous slide",
     "next": "Next slide"
+  },
+  "services_spotlight": {
+    "add_services": "Add services blocks to get started."
   }
 }
