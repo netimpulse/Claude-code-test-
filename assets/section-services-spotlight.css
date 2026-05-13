@@ -1,0 +1,386 @@
+/* ============================================================
+   Services Spotlight — calmer orbit variant
+   ------------------------------------------------------------
+   - Single column, blends into the page (full-width root, no
+     card framing).
+   - Tabs row removed; orbit nodes carry permanent labels.
+   - Center is text-only and shows the active title.
+   - Active node is bigger and accent-coloured; others are
+     smaller and dimmed so the eye knows where to land first.
+   ============================================================ */
+
+.services-spotlight {
+  /* Fallbacks if no color_scheme is set */
+  --ssp-bg: transparent;
+  --ssp-text: rgb(var(--color-foreground, 20 35 47));
+  --ssp-muted: rgba(20, 35, 47, 0.62);
+  --ssp-line: rgba(20, 35, 47, 0.12);
+  --ssp-line-strong: rgba(20, 35, 47, 0.2);
+  --ssp-ring-size: min(60vw, 560px);
+
+  position: relative;
+  padding: var(--ssp-padding-top, 72px) clamp(1rem, 3vw, 2rem) var(--ssp-padding-bottom, 72px);
+  font-family: var(--font-body-family, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif);
+  color: var(--ssp-text);
+  background: var(--ssp-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.services-spotlight *,
+.services-spotlight *::before,
+.services-spotlight *::after { box-sizing: border-box; }
+
+services-spotlight { display: block; }
+
+.services-spotlight__inner {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ---------- Heading ---------- */
+.services-spotlight__heading {
+  margin: 0 auto 56px;
+  font-size: clamp(2rem, 3.4vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  text-align: center;
+  max-width: 880px;
+}
+
+/* ---------- Stage ---------- */
+.services-spotlight__stage {
+  position: relative;
+}
+
+/* The orbit area itself — the rings + center + nodes live here.
+   We pad the wrapper enough so node labels fit outside the
+   visual ring without clipping. */
+.services-spotlight__orbit {
+  width: var(--ssp-ring-size);
+  height: var(--ssp-ring-size);
+  margin: 0 auto 48px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+.services-spotlight__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--ssp-line);
+  pointer-events: none;
+}
+
+.services-spotlight__ring--inner {
+  inset: 22%;
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+.services-spotlight__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.services-spotlight__connector {
+  stroke: var(--ssp-accent);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 6;
+  fill: none;
+  opacity: 0.45;
+  transition: opacity 350ms ease;
+}
+
+/* ---------- Center text ---------- */
+.services-spotlight__center {
+  position: relative;
+  z-index: 3;
+  max-width: 60%;
+  text-align: center;
+  pointer-events: none;
+}
+
+.services-spotlight__center-eyebrow {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ssp-accent);
+  margin-bottom: 10px;
+}
+
+.services-spotlight__center-title {
+  font-size: clamp(1.15rem, 1.9vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  transition: opacity 280ms ease;
+}
+
+.services-spotlight__center-title.is-fading {
+  opacity: 0;
+}
+
+/* ---------- Nodes ---------- */
+.services-spotlight__node {
+  --x: 0px;
+  --y: 0px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(58px, 6vw, 78px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(0.86);
+  border-radius: 50%;
+  border: 1px solid var(--ssp-line-strong);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ssp-text);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 4;
+  font: inherit;
+  padding: 0;
+  opacity: 0.55;
+  transition:
+    transform 1100ms cubic-bezier(0.22, 0.85, 0.18, 1),
+    background 400ms ease,
+    color 400ms ease,
+    border-color 400ms ease,
+    box-shadow 400ms ease,
+    opacity 400ms ease;
+  box-shadow: 0 12px 24px rgba(18, 35, 47, 0.06);
+}
+
+.services-spotlight__node:hover {
+  opacity: 0.95;
+  border-color: var(--ssp-accent-glow);
+  box-shadow: 0 16px 32px rgba(18, 35, 47, 0.1);
+}
+
+.services-spotlight__node:focus-visible {
+  outline: 2px solid var(--ssp-accent);
+  outline-offset: 4px;
+  opacity: 1;
+}
+
+.services-spotlight__node.is-active {
+  transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(1.35);
+  background: var(--ssp-accent);
+  border-color: var(--ssp-accent);
+  color: #fff;
+  opacity: 1;
+  box-shadow: 0 24px 48px var(--ssp-accent-glow);
+  z-index: 5;
+}
+
+.services-spotlight__node-icon {
+  width: clamp(22px, 2.4vw, 32px);
+  height: clamp(22px, 2.4vw, 32px);
+  display: grid;
+  place-items: center;
+}
+
+.services-spotlight__node-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Permanent label below each node */
+.services-spotlight__node-label {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 110px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ssp-muted);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: color 300ms ease, opacity 300ms ease;
+}
+
+.services-spotlight__node.is-active .services-spotlight__node-label {
+  /* Hide the active label — the same title is already in the center */
+  opacity: 0;
+}
+
+/* ---------- Description below ---------- */
+.services-spotlight__details {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.services-spotlight__panel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+.services-spotlight__panel.is-active {
+  display: flex;
+  animation: ssp-swap 460ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes ssp-swap {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.services-spotlight__text {
+  margin: 0;
+  color: var(--ssp-muted);
+  font-size: clamp(1rem, 1.4vw, 1.1rem);
+  line-height: 1.7;
+}
+
+.services-spotlight__text p { margin: 0 0 0.6em; }
+.services-spotlight__text p:last-child { margin-bottom: 0; }
+
+.services-spotlight__benefits {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: grid;
+  gap: 10px;
+  text-align: left;
+  width: 100%;
+  max-width: 520px;
+}
+
+.services-spotlight__benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--ssp-text);
+  line-height: 1.5;
+  font-weight: 500;
+  font-size: 0.96rem;
+}
+
+.services-spotlight__benefits li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ssp-accent);
+  flex: none;
+  margin-top: 8px;
+  box-shadow: 0 0 0 5px var(--ssp-accent-soft);
+}
+
+.services-spotlight__actions {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.services-spotlight__btn {
+  min-height: 50px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.services-spotlight__btn--primary {
+  color: #fff;
+  background: var(--ssp-text);
+  box-shadow: 0 14px 28px rgba(19, 38, 52, 0.14);
+}
+
+.services-spotlight__btn--secondary {
+  color: var(--ssp-text);
+  border-color: var(--ssp-line-strong);
+  background: transparent;
+}
+
+.services-spotlight__btn:hover { transform: translateY(-2px); }
+.services-spotlight__btn--primary:hover { box-shadow: 0 18px 36px rgba(19, 38, 52, 0.2); }
+.services-spotlight__btn--secondary:hover { border-color: var(--ssp-accent-glow); }
+
+.services-spotlight__btn:focus-visible {
+  outline: 2px solid var(--ssp-accent);
+  outline-offset: 3px;
+}
+
+.services-spotlight__placeholder {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--ssp-muted);
+}
+
+.services-spotlight__sr-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 760px) {
+  .services-spotlight {
+    --ssp-ring-size: min(86vw, 420px);
+  }
+  .services-spotlight__heading {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    margin-bottom: 32px;
+  }
+  .services-spotlight__node {
+    width: 52px;
+  }
+  .services-spotlight__node-label {
+    font-size: 0.66rem;
+    max-width: 80px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .services-spotlight__center {
+    max-width: 70%;
+  }
+  .services-spotlight__actions { width: 100%; }
+  .services-spotlight__btn { flex: 1 1 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services-spotlight *,
+  .services-spotlight *::before,
+  .services-spotlight *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

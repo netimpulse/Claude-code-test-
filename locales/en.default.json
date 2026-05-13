@@ -65,5 +65,8 @@
   "team_overview": {
     "more_about": "More about",
     "add_members": "Add team-member blocks to get started."
+  },
+  "services_spotlight": {
+    "add_services": "Add services blocks to get started."
   }
 }

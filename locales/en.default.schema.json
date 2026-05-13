@@ -182,5 +182,30 @@
     "tag_label": "Tag",
     "details_url_label": "Details link (optional)",
     "details_url_info": "When set, an info icon appears in the corner of the card."
+  },
+  "services_spotlight": {
+    "name": "Services spotlight",
+    "heading_label": "Heading",
+    "center_eyebrow_label": "Center eyebrow",
+    "actions_header": "Default CTAs",
+    "primary_label_label": "Primary CTA label",
+    "primary_url_label": "Primary CTA link",
+    "secondary_label_label": "Secondary CTA label",
+    "secondary_url_label": "Secondary CTA link",
+    "appearance_header": "Appearance",
+    "color_scheme_label": "Color scheme",
+    "accent_color_label": "Accent color",
+    "padding_top_label": "Top padding",
+    "padding_bottom_label": "Bottom padding",
+    "block_service": "Service",
+    "icon_label": "Icon",
+    "label_label": "Label under node",
+    "label_info": "Short label shown beneath the orbit node. Falls back to the title.",
+    "title_label": "Title (shown in the center when active)",
+    "description_label": "Description",
+    "benefits_header": "Benefits",
+    "benefit_label": "Benefit",
+    "cta_override_header": "Per-service CTA (optional)",
+    "cta_override_info": "Override the section-wide primary CTA for this service."
   }
 }
