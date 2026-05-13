@@ -1,13 +1,10 @@
 {% comment %}
   Interactive Services Overview
   ----------------------------------------------------------------
-  A circular "orbit" of service blocks: clicking any service rotates
-  the ring so the chosen one slides into a focus rail below, with a
-  detail panel on the right. Keyboard nav (arrows), prev/next buttons
-  and gentle autoplay are wired in services-overview.js.
-
-  Blocks: up to 8 services, each with icon, title, short focus text,
-  long description, three benefits and an optional kicker.
+  Centered heading at the top, tabs below, the orbit on its own in
+  the middle and the active service's description flowing below.
+  Clicking any tab or node rotates the chosen service into the
+  bottom slot of the ring and reveals its description.
 {% endcomment %}
 
 {%- liquid
@@ -35,21 +32,11 @@
   aria-labelledby="services-heading-{{ section.id }}"
 >
   <div class="services-overview__inner">
-    <div class="services-overview__head">
-      <div class="services-overview__head-main">
-        {%- if section.settings.eyebrow != blank -%}
-          <div class="services-overview__eyebrow">{{ section.settings.eyebrow | escape }}</div>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 id="services-heading-{{ section.id }}" class="services-overview__heading">
-            {{ section.settings.heading }}
-          </h2>
-        {%- endif -%}
-      </div>
-      {%- if section.settings.intro != blank -%}
-        <p class="services-overview__intro">{{ section.settings.intro }}</p>
-      {%- endif -%}
-    </div>
+    {%- if section.settings.heading != blank -%}
+      <h2 id="services-heading-{{ section.id }}" class="services-overview__heading">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
 
     {%- if block_count > 0 -%}
       <services-overview
@@ -75,138 +62,100 @@
           {%- endfor -%}
         </nav>
 
-        <div class="services-overview__stage">
-          <div class="services-overview__orbit-column">
-            <div class="services-overview__orbit" data-orbit>
-              <svg class="services-overview__orbit-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-                <line class="services-overview__connector" data-connector x1="50" y1="50" x2="50" y2="50"></line>
-                <circle class="services-overview__pulse" cx="50" cy="50" r="5"></circle>
+        <div class="services-overview__orbit-column">
+          <div class="services-overview__orbit" data-orbit>
+            <svg class="services-overview__orbit-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <line class="services-overview__connector" data-connector x1="50" y1="50" x2="50" y2="50"></line>
+              <circle class="services-overview__pulse" cx="50" cy="50" r="5"></circle>
+            </svg>
+
+            <div class="services-overview__ring services-overview__ring--inner" aria-hidden="true"></div>
+
+            <div class="services-overview__core" aria-hidden="true">
+              <svg class="services-overview__core-progress" viewBox="0 0 100 100" focusable="false">
+                <circle data-progress cx="50" cy="50" r="48"></circle>
               </svg>
-
-              <div class="services-overview__ring services-overview__ring--inner" aria-hidden="true"></div>
-
-              <div class="services-overview__core" aria-hidden="true">
-                <svg class="services-overview__core-progress" viewBox="0 0 100 100" focusable="false">
-                  <circle data-progress cx="50" cy="50" r="48"></circle>
-                </svg>
-                <div class="services-overview__core-inner">
-                  {%- if section.settings.core_mark != blank -%}
-                    <div class="services-overview__core-mark">{{ section.settings.core_mark | escape }}</div>
-                  {%- endif -%}
-                  {%- if section.settings.core_label != blank -%}
-                    <div class="services-overview__core-label">{{ section.settings.core_label | escape }}</div>
-                  {%- endif -%}
-                </div>
+              <div class="services-overview__core-inner">
+                {%- if section.settings.core_mark != blank -%}
+                  <div class="services-overview__core-mark">{{ section.settings.core_mark | escape }}</div>
+                {%- endif -%}
+                {%- if section.settings.core_label != blank -%}
+                  <div class="services-overview__core-label">{{ section.settings.core_label | escape }}</div>
+                {%- endif -%}
               </div>
-
-              {%- for block in section.blocks -%}
-                <button
-                  type="button"
-                  class="services-overview__node"
-                  data-node
-                  data-index="{{ forloop.index0 }}"
-                  data-short="{{ block.settings.tab_label | default: block.settings.title | escape }}"
-                  aria-label="{{ block.settings.title | escape }}"
-                  tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
-                  {{ block.shopify_attributes }}
-                >
-                  <span class="services-overview__node-icon">
-                    {%- render 'services-overview-icon', name: block.settings.icon -%}
-                  </span>
-                </button>
-              {%- endfor -%}
             </div>
 
-            <article class="services-overview__focus" aria-live="polite">
-              <div class="services-overview__focus-badge" data-focus-badge aria-hidden="true">
-                {%- assign first_block = section.blocks[0] -%}
-                {%- render 'services-overview-icon', name: first_block.settings.icon -%}
-              </div>
-              <div class="services-overview__focus-copy">
-                <small>{{ 'services_overview.in_focus' | t | default: 'In focus' }}</small>
-                <h3 data-focus-title>{{ first_block.settings.title | escape }}</h3>
-                <p data-focus-text>{{ first_block.settings.focus_text | escape }}</p>
-              </div>
-              <div class="services-overview__nav">
-                <button
-                  type="button"
-                  class="services-overview__nav-btn"
-                  data-prev
-                  aria-label="{{ 'services_overview.previous' | t | default: 'Previous service' }}"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <button
-                  type="button"
-                  class="services-overview__nav-btn"
-                  data-next
-                  aria-label="{{ 'services_overview.next' | t | default: 'Next service' }}"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-              </div>
-            </article>
-          </div>
-
-          <aside class="services-overview__details">
             {%- for block in section.blocks -%}
-              {%- assign kicker = block.settings.kicker -%}
-              {%- if kicker == blank -%}
-                {%- assign kicker = forloop.index | prepend: '0' | slice: -2, 2 | append: ' · ' | append: block.settings.title -%}
-              {%- endif -%}
-              <article
-                class="services-overview__panel{% if forloop.first %} is-active{% endif %}"
-                data-panel
+              <button
+                type="button"
+                class="services-overview__node"
+                data-node
                 data-index="{{ forloop.index0 }}"
-                role="tabpanel"
-                aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+                data-short="{{ block.settings.tab_label | default: block.settings.title | escape }}"
+                aria-label="{{ block.settings.title | escape }}"
+                tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
                 {{ block.shopify_attributes }}
               >
-                <div class="services-overview__panel-top">
-                  <div class="services-overview__kicker">{{ kicker | escape }}</div>
-                  <h3 class="services-overview__panel-title">{{ block.settings.title | escape }}</h3>
-                  {%- if block.settings.description != blank -%}
-                    <p class="services-overview__panel-text">{{ block.settings.description }}</p>
-                  {%- endif -%}
-                  {%- assign has_benefits = false -%}
-                  {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank or block.settings.benefit_3 != blank -%}
-                    {%- assign has_benefits = true -%}
-                  {%- endif -%}
-                  {%- if has_benefits -%}
-                    <ul class="services-overview__benefits">
-                      {%- if block.settings.benefit_1 != blank -%}<li>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
-                      {%- if block.settings.benefit_2 != blank -%}<li>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
-                      {%- if block.settings.benefit_3 != blank -%}<li>{{ block.settings.benefit_3 | escape }}</li>{%- endif -%}
-                    </ul>
-                  {%- endif -%}
-                </div>
-
-                {%- assign primary_label = block.settings.primary_label | default: section.settings.primary_label -%}
-                {%- assign primary_url = block.settings.primary_url | default: section.settings.primary_url -%}
-                {%- assign secondary_label = section.settings.secondary_label -%}
-                {%- assign secondary_url = section.settings.secondary_url -%}
-                {%- if primary_label != blank or secondary_label != blank -%}
-                  <div class="services-overview__actions">
-                    {%- if primary_label != blank -%}
-                      <a class="services-overview__btn services-overview__btn--primary" href="{{ primary_url | default: '#' }}">
-                        {{ primary_label | escape }}
-                        <span aria-hidden="true">→</span>
-                      </a>
-                    {%- endif -%}
-                    {%- if secondary_label != blank -%}
-                      <a class="services-overview__btn services-overview__btn--secondary" href="{{ secondary_url | default: '#' }}">
-                        {{ secondary_label | escape }}
-                      </a>
-                    {%- endif -%}
-                  </div>
-                {%- endif -%}
-
-                <div class="services-overview__counter" aria-hidden="true">
-                  {{ forloop.index | prepend: '0' | slice: -2, 2 }}
-                </div>
-              </article>
+                <span class="services-overview__node-icon">
+                  {%- render 'services-overview-icon', name: block.settings.icon -%}
+                </span>
+              </button>
             {%- endfor -%}
-          </aside>
+          </div>
+        </div>
+
+        <div class="services-overview__details" aria-live="polite">
+          {%- for block in section.blocks -%}
+            {%- assign kicker = block.settings.kicker -%}
+            {%- if kicker == blank -%}
+              {%- assign kicker = forloop.index | prepend: '0' | slice: -2, 2 | append: ' · ' | append: block.settings.title -%}
+            {%- endif -%}
+            <article
+              class="services-overview__panel{% if forloop.first %} is-active{% endif %}"
+              data-panel
+              data-index="{{ forloop.index0 }}"
+              role="tabpanel"
+              aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="services-overview__kicker">{{ kicker | escape }}</div>
+              <h3 class="services-overview__panel-title">{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.description != blank -%}
+                <div class="services-overview__panel-text">{{ block.settings.description }}</div>
+              {%- endif -%}
+              {%- assign has_benefits = false -%}
+              {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank or block.settings.benefit_3 != blank -%}
+                {%- assign has_benefits = true -%}
+              {%- endif -%}
+              {%- if has_benefits -%}
+                <ul class="services-overview__benefits">
+                  {%- if block.settings.benefit_1 != blank -%}<li>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.benefit_2 != blank -%}<li>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.benefit_3 != blank -%}<li>{{ block.settings.benefit_3 | escape }}</li>{%- endif -%}
+                </ul>
+              {%- endif -%}
+
+              {%- assign primary_label = block.settings.primary_label | default: section.settings.primary_label -%}
+              {%- assign primary_url = block.settings.primary_url | default: section.settings.primary_url -%}
+              {%- assign secondary_label = section.settings.secondary_label -%}
+              {%- assign secondary_url = section.settings.secondary_url -%}
+              {%- if primary_label != blank or secondary_label != blank -%}
+                <div class="services-overview__actions">
+                  {%- if primary_label != blank -%}
+                    <a class="services-overview__btn services-overview__btn--primary" href="{{ primary_url | default: '#' }}">
+                      {{ primary_label | escape }}
+                      <span aria-hidden="true">→</span>
+                    </a>
+                  {%- endif -%}
+                  {%- if secondary_label != blank -%}
+                    <a class="services-overview__btn services-overview__btn--secondary" href="{{ secondary_url | default: '#' }}">
+                      {{ secondary_label | escape }}
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
         </div>
 
         <p class="services-overview__sr-live" data-live aria-live="polite"></p>
@@ -228,22 +177,10 @@
   "class": "shopify-section--services-overview",
   "settings": [
     {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "t:services_overview.eyebrow_label",
-      "default": "Leistungsübersicht"
-    },
-    {
       "type": "textarea",
       "id": "heading",
       "label": "t:services_overview.heading_label",
-      "default": "Marketing-Leistungen, die sich klar auswählen und direkt verstehen lassen."
-    },
-    {
-      "type": "textarea",
-      "id": "intro",
-      "label": "t:services_overview.intro_label",
-      "default": "Statt verstreuter Einzelkarten: eine kompakte, interaktive Übersicht. Klick eine Leistung an – sie rotiert sichtbar in den Fokus und wird unten sowie rechts ausführlich erklärt."
+      "default": "Unsere Leistungen"
     },
     {
       "type": "header",
@@ -328,20 +265,20 @@
       "id": "padding_top",
       "label": "t:services_overview.padding_top_label",
       "min": 0,
-      "max": 120,
+      "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 56
+      "default": 72
     },
     {
       "type": "range",
       "id": "padding_bottom",
       "label": "t:services_overview.padding_bottom_label",
       "min": 0,
-      "max": 120,
+      "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 56
+      "default": 72
     }
   ],
   "blocks": [
@@ -383,12 +320,6 @@
           "id": "title",
           "label": "t:services_overview.title_label",
           "default": "Strategie & Beratung"
-        },
-        {
-          "type": "textarea",
-          "id": "focus_text",
-          "label": "t:services_overview.focus_label",
-          "default": "Positionierung, Zielgruppen und klare Wachstumsrichtung."
         },
         {
           "type": "richtext",
@@ -448,7 +379,6 @@
             "tab_label": "Strategie",
             "kicker": "01 · Strategie",
             "title": "Strategie & Beratung",
-            "focus_text": "Positionierung, Zielgruppen und klare Wachstumsrichtung.",
             "benefit_1": "Digitale Positionierung und Angebotsstruktur",
             "benefit_2": "Customer Journey und Conversion-Potenziale",
             "benefit_3": "Klare Prioritäten statt beliebiger Einzelmaßnahmen"
@@ -461,7 +391,6 @@
             "tab_label": "Webdesign",
             "kicker": "02 · Design",
             "title": "Webdesign & UX",
-            "focus_text": "Websites, die hochwertig wirken und logisch zum Abschluss führen.",
             "benefit_1": "Individuelle Seitenarchitektur statt Standard-Layout",
             "benefit_2": "Klare Nutzerführung auf Desktop und Mobile",
             "benefit_3": "Designsystem für konsistente Markenwirkung"
@@ -474,7 +403,6 @@
             "tab_label": "Shopify",
             "kicker": "03 · Entwicklung",
             "title": "Shopify & Entwicklung",
-            "focus_text": "Performante Shops und flexible Systeme, die im Alltag funktionieren.",
             "benefit_1": "Custom Sections und flexible Theme-Editor-Steuerung",
             "benefit_2": "Saubere technische Umsetzung mit Fokus auf Performance",
             "benefit_3": "Strukturen, die später ohne Chaos erweitert werden können"
@@ -487,7 +415,6 @@
             "tab_label": "SEO / GEO",
             "kicker": "04 · Sichtbarkeit",
             "title": "SEO & GEO",
-            "focus_text": "Sichtbarkeit in Suchmaschinen und in KI-getriebenen Antworten.",
             "benefit_1": "Technisches SEO und saubere Informationsarchitektur",
             "benefit_2": "Content-Strukturen für relevante Suchintentionen",
             "benefit_3": "GEO-orientierte Aufbereitung von Expertise und Entitäten"
@@ -500,7 +427,6 @@
             "tab_label": "Google Ads",
             "kicker": "05 · Performance",
             "title": "Google Ads & Performance",
-            "focus_text": "Kampagnen, die nicht nur Klicks, sondern wirtschaftliche Ergebnisse liefern.",
             "benefit_1": "Such-, Shopping- und Performance-Strukturen mit Zielbezug",
             "benefit_2": "Budgetsteuerung nach Wirtschaftlichkeit",
             "benefit_3": "Kontinuierliche Auswertung und Verbesserung"
@@ -513,7 +439,6 @@
             "tab_label": "Content",
             "kicker": "06 · Kommunikation",
             "title": "Content & Storytelling",
-            "focus_text": "Inhalte, die Kompetenz zeigen und Angebote verständlich machen.",
             "benefit_1": "Präzise Botschaften statt austauschbarer Werbetexte",
             "benefit_2": "Leistungsseiten mit klarer Argumentationslinie",
             "benefit_3": "Content, der Design und Conversion unterstützt"

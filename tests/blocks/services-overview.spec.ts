@@ -9,22 +9,18 @@ test.describe("Services Overview", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "load" });
     await passChallenge(page);
-    // Wait for the custom element to upgrade and set up nodes.
     await page.waitForSelector("services-overview [data-node].is-active", { timeout: 15_000 });
   });
 
   test("Renders heading, tabs, orbit nodes and detail panel", async ({ page }) => {
     const section = page.locator(".services-overview").first();
     await expect(section).toBeVisible();
-
     await expect(section.locator(".services-overview__heading")).toBeVisible();
 
-    // Six service blocks → six tabs and six nodes.
     await expect(section.locator(".services-overview__tab")).toHaveCount(6);
     await expect(section.locator("[data-node]")).toHaveCount(6);
     await expect(section.locator("[data-panel]")).toHaveCount(6);
 
-    // Exactly one panel is active by default.
     await expect(section.locator("[data-panel].is-active")).toHaveCount(1);
     await expect(section.locator("[data-panel][data-index='0']")).toHaveClass(/is-active/);
   });
@@ -49,23 +45,27 @@ test.describe("Services Overview", () => {
     await expect(section.locator("[data-panel][data-index='2']")).toHaveClass(/is-active/);
   });
 
-  test("Prev/Next buttons cycle through services", async ({ page }) => {
+  test("Heading is centered and intro/eyebrow are absent", async ({ page }) => {
     const section = page.locator(".services-overview").first();
-    const next = section.locator("[data-next]");
-    const prev = section.locator("[data-prev]");
+    await expect(section.locator(".services-overview__eyebrow")).toHaveCount(0);
+    await expect(section.locator(".services-overview__intro")).toHaveCount(0);
 
-    await next.click();
-    await expect(section.locator("[data-panel][data-index='1']")).toHaveClass(/is-active/);
+    const textAlign = await section
+      .locator(".services-overview__heading")
+      .evaluate((el) => getComputedStyle(el).textAlign);
+    expect(textAlign).toBe("center");
+  });
 
-    await next.click();
-    await expect(section.locator("[data-panel][data-index='2']")).toHaveClass(/is-active/);
-
-    await prev.click();
-    await expect(section.locator("[data-panel][data-index='1']")).toHaveClass(/is-active/);
+  test("Description sits below the orbit", async ({ page }) => {
+    const section = page.locator(".services-overview").first();
+    const orbitBox = await section.locator(".services-overview__orbit").boundingBox();
+    const panelBox = await section.locator("[data-panel].is-active").boundingBox();
+    expect(orbitBox && panelBox).toBeTruthy();
+    expect(panelBox!.y).toBeGreaterThan(orbitBox!.y + orbitBox!.height - 10);
   });
 
   test("Captures desktop + mobile screenshot", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 1100 });
+    await page.setViewportSize({ width: 1280, height: 1200 });
     await page.waitForTimeout(400);
     await page.screenshot({
       path: "qa-screenshots/services-overview-desktop.png",

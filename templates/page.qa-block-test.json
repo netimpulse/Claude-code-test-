@@ -12,9 +12,7 @@
     "services_overview": {
       "type": "services-overview",
       "settings": {
-        "eyebrow": "Leistungsübersicht",
-        "heading": "Marketing-Leistungen, die sich klar auswählen und direkt verstehen lassen.",
-        "intro": "Statt verstreuter Einzelkarten: eine kompakte, interaktive Übersicht. Klick eine Leistung an – sie rotiert sichtbar in den Fokus und wird unten sowie rechts ausführlich erklärt.",
+        "heading": "Unsere Leistungen",
         "core_mark": "NI",
         "core_label": "Digitales Wachstum als System",
         "primary_label": "Mehr zur Leistung",
@@ -25,8 +23,8 @@
         "autoplay_interval": 7,
         "color_scheme": "scheme-1",
         "accent_color": "#df6c3d",
-        "padding_top": 56,
-        "padding_bottom": 56
+        "padding_top": 72,
+        "padding_bottom": 72
       },
       "blocks": {
         "svc_strategie": {
