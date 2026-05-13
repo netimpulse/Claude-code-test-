@@ -1,21 +1,90 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "logo": {
+          "type": "logo_text",
+          "settings": {
+            "logo_width": 140,
+            "heading": "",
+            "text": "<p>Add a short description of your brand here.</p>"
+          }
+        },
+        "shop_menu": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "footer"
+          }
+        },
+        "info_menu": {
+          "type": "menu",
+          "settings": {
+            "heading": "Information",
+            "menu": "main-menu"
+          }
+        },
+        "contact": {
+          "type": "contact",
+          "settings": {
+            "heading": "Contact",
+            "address": "<p>Your street 1<br>12345 City</p>",
+            "phone": "",
+            "email": "",
+            "hours": ""
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Newsletter",
+            "subtext": "<p>Get updates on new products, sales, and stories.</p>",
+            "placeholder": "",
+            "button_label": "",
+            "success_text": ""
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "heading": "Follow us",
+            "facebook": "",
+            "instagram": "",
+            "tiktok": "",
+            "youtube": "",
+            "twitter": "",
+            "pinterest": "",
+            "linkedin": ""
+          }
+        }
+      },
+      "block_order": [
+        "logo",
+        "shop_menu",
+        "info_menu",
+        "contact",
+        "newsletter",
+        "social"
+      ],
       "settings": {
+        "content_alignment": "left",
+        "column_min_width": 240,
+        "column_gap": 40,
         "menu": "",
-        "show_payment_icons": true
+        "show_policies": true,
+        "copyright_text": "",
+        "show_powered_by": false,
+        "show_payment_icons": true,
+        "show_locale_selector": true,
+        "show_currency_selector": true,
+        "heading_size": 14,
+        "show_top_border": true,
+        "border_width": 1,
+        "padding_top": 64,
+        "padding_bottom": 32
       }
     }
   },
