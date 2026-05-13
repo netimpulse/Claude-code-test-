@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interaktive Leistungsübersicht</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f5f1;
+      --surface: rgba(255, 255, 255, 0.82);
+      --surface-strong: #ffffff;
+      --text: #14232f;
+      --muted: #66737d;
+      --line: rgba(20, 35, 47, 0.12);
+      --line-strong: rgba(20, 35, 47, 0.2);
+      --accent: #df6c3d;
+      --accent-soft: rgba(223, 108, 61, 0.13);
+      --accent-glow: rgba(223, 108, 61, 0.32);
+      --dark: #132634;
+      --shadow: 0 30px 80px rgba(18, 35, 47, 0.12);
+      --radius-xl: 36px;
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --ring-size: min(60vw, 640px);
+      --orbit-radius: 0px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 12%, rgba(223, 108, 61, 0.09), transparent 25%),
+        radial-gradient(circle at 85% 18%, rgba(19, 38, 52, 0.08), transparent 28%),
+        linear-gradient(180deg, #fbfaf7 0%, var(--bg) 100%);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .services-section {
+      width: min(1280px, calc(100% - 48px));
+      margin: 42px auto;
+      padding: clamp(22px, 4vw, 48px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.62);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .services-section::before {
+      content: "";
+      position: absolute;
+      inset: auto -160px -220px auto;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(223, 108, 61, 0.15), transparent 68%);
+      pointer-events: none;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(280px, 580px) 1fr;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 34px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4.4vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+      max-width: 820px;
+      font-weight: 800;
+    }
+
+    .intro {
+      justify-self: end;
+      max-width: 420px;
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.4vw, 1.12rem);
+      line-height: 1.65;
+    }
+
+    /* ---------- Tabs ---------- */
+    .service-tabs {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 4;
+    }
+
+    .service-tab {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: 999px;
+      padding: 13px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, color 220ms ease, box-shadow 220ms ease;
+      min-height: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-tab:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      box-shadow: 0 16px 30px rgba(18, 35, 47, 0.08);
+    }
+
+    .service-tab:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .service-tab.active {
+      color: #fff;
+      border-color: var(--dark);
+      background: var(--dark);
+      box-shadow: 0 18px 40px rgba(19, 38, 52, 0.18);
+    }
+
+    .tab-index {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 800;
+      flex: none;
+      transition: background 220ms ease, color 220ms ease;
+    }
+
+    .service-tab.active .tab-index {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    /* ---------- Stage ---------- */
+    .interactive-stage {
+      display: grid;
+      grid-template-columns: minmax(420px, 1.05fr) minmax(320px, 0.95fr);
+      gap: clamp(24px, 4vw, 58px);
+      align-items: start;
+      position: relative;
+      z-index: 2;
+    }
+
+    .orbit-column {
+      display: grid;
+      place-items: start center;
+      position: relative;
+      padding-bottom: 200px;
+    }
+
+    @media (min-width: 1181px) {
+      .orbit-column { min-height: 720px; }
+    }
+
+    .orbit-wrap {
+      width: var(--ring-size);
+      height: var(--ring-size);
+      position: relative;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    .orbit-wrap::before,
+    .orbit-wrap::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      inset: 0;
+      border: 1px solid var(--line);
+    }
+
+    .orbit-wrap::after {
+      inset: 9%;
+      border-style: dashed;
+      opacity: 0.7;
+    }
+
+    .ring-3 {
+      position: absolute;
+      inset: 22%;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      pointer-events: none;
+    }
+
+    /* Connection SVG between center and active node */
+    .orbit-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .orbit-svg .connector {
+      stroke: var(--accent);
+      stroke-width: 1.5;
+      stroke-dasharray: 4 6;
+      fill: none;
+      opacity: 0.55;
+      transform-origin: center;
+      transition: transform 850ms cubic-bezier(.18,.85,.24,1), opacity 350ms ease;
+    }
+
+    .orbit-svg .pulse-ring {
+      stroke: var(--accent);
+      stroke-width: 1;
+      fill: none;
+      opacity: 0.35;
+      transform-origin: center;
+      animation: pulseRing 3.6s cubic-bezier(.18,.85,.24,1) infinite;
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.96); opacity: 0.4; }
+      60% { transform: scale(1.08); opacity: 0; }
+      100% { transform: scale(1.08); opacity: 0; }
+    }
+
+    .center-core {
+      width: clamp(154px, 17vw, 210px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.18), transparent 34%),
+        var(--dark);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      box-shadow: 0 26px 70px rgba(19, 38, 52, 0.24);
+      position: relative;
+      z-index: 5;
+      transition: transform 500ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .orbit-wrap:hover .center-core { transform: scale(1.02); }
+
+    .core-inner {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      padding: 18px;
+    }
+
+    .core-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      font-size: 1.05rem;
+    }
+
+    .core-label {
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.78);
+      max-width: 118px;
+      font-weight: 500;
+    }
+
+    .core-progress {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .core-progress circle {
+      fill: none;
+      stroke: rgba(223, 108, 61, 0.85);
+      stroke-width: 2;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: center;
+      transition: stroke-dashoffset 850ms cubic-bezier(.18,.85,.24,1);
+    }
+
+    /* ---------- Orbit Nodes ---------- */
+    .orbit-node {
+      --x: 0px;
+      --y: 0px;
+      --scale: 1;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: clamp(70px, 7.2vw, 96px);
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(var(--scale));
+      border-radius: 50%;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      z-index: 4;
+      transition:
+        transform 850ms cubic-bezier(.18,.85,.24,1),
+        background 350ms ease,
+        color 350ms ease,
+        border-color 350ms ease,
+        box-shadow 350ms ease;
+      box-shadow: 0 18px 36px rgba(18, 35, 47, 0.08);
+    }
+
+    .orbit-node:hover {
+      border-color: rgba(223, 108, 61, 0.48);
+      box-shadow: 0 20px 46px rgba(18, 35, 47, 0.14);
+    }
+
+    .orbit-node:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .orbit-node.active {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 28px 56px var(--accent-glow);
+    }
+
+    .orbit-node .node-icon {
+      width: clamp(28px, 3vw, 40px);
+      height: clamp(28px, 3vw, 40px);
+      display: grid;
+      place-items: center;
+    }
+
+    .orbit-node .node-icon svg {
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .orbit-node::after {
+      content: attr(data-short);
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 150px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 260ms ease, transform 260ms ease;
+      box-shadow: 0 14px 28px rgba(18, 35, 47, 0.08);
+    }
+
+    .orbit-node:hover::after,
+    .orbit-node:focus-visible::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(2px);
+    }
+
+    .orbit-node.active::after { opacity: 0; }
+
+    /* ---------- Focus rail (below orbit) ---------- */
+    .focus-rail {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(94%, 560px);
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      display: grid;
+      grid-template-columns: 82px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      box-shadow: 0 22px 60px rgba(18, 35, 47, 0.1);
+      z-index: 6;
+    }
+
+    .focus-badge {
+      width: 82px;
+      height: 82px;
+      border-radius: 24px;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 18px 40px var(--accent-glow);
+      transition: transform 450ms ease;
+    }
+
+    .focus-badge svg {
+      width: 38px;
+      height: 38px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .focus-copy small {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .focus-copy small::before {
+      content: "";
+      width: 18px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .focus-copy h2 {
+      margin: 0 0 6px;
+      font-size: clamp(1.18rem, 2vw, 1.6rem);
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+
+    .focus-copy p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .nav-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: border-color 220ms ease, background 220ms ease, color 220ms ease, transform 220ms ease;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .nav-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ---------- Details panel ---------- */
+    .details-column {
+      position: relative;
+      display: grid;
+      align-content: start;
+    }
+
+    .detail-panel {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 26px 70px rgba(18, 35, 47, 0.1);
+      padding: clamp(24px, 3vw, 38px);
+      min-height: 540px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .detail-panel::before {
+      content: "";
+      position: absolute;
+      inset: -88px -70px auto auto;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(223, 108, 61, 0.18), transparent 68%);
+      pointer-events: none;
+    }
+
+    .detail-top { position: relative; z-index: 2; }
+
+    .detail-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(223, 108, 61, 0.24);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    .detail-title {
+      margin: 0 0 16px;
+      font-size: clamp(1.9rem, 3.2vw, 3.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+      max-width: 640px;
+      font-weight: 800;
+    }
+
+    .detail-text {
+      margin: 0;
+      max-width: 560px;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.4vw, 1.08rem);
+      line-height: 1.72;
+    }
+
+    .benefit-list {
+      position: relative;
+      z-index: 2;
+      list-style: none;
+      padding: 0;
+      margin: 26px 0 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .benefit-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: var(--text);
+      line-height: 1.5;
+      font-weight: 500;
+      font-size: 0.96rem;
+    }
+
+    .benefit-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: none;
+      margin-top: 8px;
+      box-shadow: 0 0 0 5px rgba(223, 108, 61, 0.14);
+    }
+
+    .detail-actions {
+      position: relative;
+      z-index: 2;
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 52px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: var(--dark);
+      box-shadow: 0 18px 36px rgba(19, 38, 52, 0.18);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary:hover { box-shadow: 0 22px 42px rgba(19, 38, 52, 0.24); }
+    .btn-secondary:hover { border-color: rgba(223, 108, 61, 0.48); }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .detail-counter {
+      position: absolute;
+      right: 28px;
+      bottom: 18px;
+      font-size: clamp(4rem, 7vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.08em;
+      color: rgba(20, 35, 47, 0.06);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .swap { animation: swapIn 520ms cubic-bezier(.2,.8,.2,1); }
+
+    @keyframes swapIn {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1180px) {
+      .service-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .interactive-stage { grid-template-columns: 1fr; }
+      .orbit-column { padding-bottom: 200px; }
+    }
+
+    @media (max-width: 760px) {
+      :root { --ring-size: min(92vw, 460px); }
+
+      .services-section {
+        width: min(100% - 24px, 1280px);
+        margin: 12px auto;
+        padding: 20px;
+        border-radius: 28px;
+      }
+
+      .section-head {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .intro { justify-self: start; margin-bottom: 0; }
+
+      .service-tabs { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .service-tab { padding: 12px 14px; min-height: 48px; font-size: 0.88rem; }
+
+      .orbit-column { padding-bottom: 0; }
+
+      .orbit-wrap::after { inset: 12%; }
+      .ring-3 { inset: 24%; }
+
+      .orbit-node {
+        width: 64px;
+      }
+
+      .orbit-node::after { display: none; }
+
+      .center-core { width: 130px; }
+
+      .core-mark { width: 40px; height: 40px; font-size: 0.95rem; }
+      .core-label { font-size: 0.72rem; }
+
+      .focus-rail {
+        position: static;
+        transform: none;
+        width: 100%;
+        margin-top: 28px;
+        grid-template-columns: 64px 1fr;
+        padding: 14px;
+        gap: 14px;
+        border-radius: 22px;
+      }
+
+      .focus-badge {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+      }
+
+      .focus-badge svg { width: 30px; height: 30px; }
+
+      .nav-buttons {
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .nav-btn { width: 100%; height: 42px; border-radius: 999px; }
+
+      .detail-panel {
+        padding: 22px;
+        min-height: auto;
+      }
+
+      .detail-counter { right: 18px; bottom: 12px; }
+      .detail-actions { align-items: stretch; }
+      .btn { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <section class="services-section" aria-labelledby="leistungen-title">
+    <header class="section-head">
+      <div>
+        <div class="eyebrow">Leistungsübersicht</div>
+        <h1 id="leistungen-title">Marketing-Leistungen, die sich klar auswählen und direkt verstehen lassen.</h1>
+      </div>
+      <p class="intro">
+        Statt verstreuter Einzelkarten: eine kompakte, interaktive Übersicht. Klick eine Leistung an
+        – sie rotiert sichtbar in den Fokus und wird unten sowie rechts ausführlich erklärt.
+      </p>
+    </header>
+
+    <nav class="service-tabs" role="tablist" aria-label="Leistungen auswählen"></nav>
+
+    <div class="interactive-stage">
+      <div class="orbit-column">
+        <div class="orbit-wrap" id="orbitWrap" aria-label="Interaktiver Leistungsring">
+          <svg class="orbit-svg" id="orbitSvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <line class="connector" id="connector" x1="50" y1="50" x2="50" y2="50"></line>
+            <circle class="pulse-ring" id="pulseRing" cx="50" cy="50" r="5"></circle>
+          </svg>
+
+          <div class="ring-3"></div>
+
+          <div class="center-core" aria-hidden="true">
+            <svg class="core-progress" viewBox="0 0 100 100">
+              <circle id="coreProgress" cx="50" cy="50" r="48"></circle>
+            </svg>
+            <div class="core-inner">
+              <div class="core-mark">NI</div>
+              <div class="core-label">Digitales Wachstum als System</div>
+            </div>
+          </div>
+        </div>
+
+        <article class="focus-rail" aria-live="polite">
+          <div class="focus-badge" id="focusBadge" aria-hidden="true"></div>
+          <div class="focus-copy">
+            <small>Im Fokus</small>
+            <h2 id="focusTitle">Strategie &amp; Beratung</h2>
+            <p id="focusText">Positionierung, Zielgruppen und klare Wachstumsrichtung.</p>
+          </div>
+          <div class="nav-buttons">
+            <button class="nav-btn" id="prevBtn" type="button" aria-label="Vorherige Leistung">
+              <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="nav-btn" id="nextBtn" type="button" aria-label="Nächste Leistung">
+              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <aside class="details-column">
+        <article class="detail-panel" id="detailPanel" role="tabpanel" aria-live="polite">
+          <div class="detail-top">
+            <div class="detail-kicker" id="detailKicker">01 · Strategie</div>
+            <h2 class="detail-title" id="detailTitle">Strategie &amp; Beratung</h2>
+            <p class="detail-text" id="detailDescription">
+              Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO,
+              Ads und Design nicht nebeneinanderlaufen, sondern gemeinsam auf Wachstum einzahlen.
+            </p>
+            <ul class="benefit-list" id="benefitList"></ul>
+          </div>
+
+          <div class="detail-actions">
+            <a class="btn btn-primary" href="#">Mehr zur Leistung <span aria-hidden="true">→</span></a>
+            <a class="btn btn-secondary" href="#">Projekt anfragen</a>
+          </div>
+
+          <div class="detail-counter" id="detailCounter">01</div>
+        </article>
+      </aside>
+    </div>
+
+    <p class="sr-only" id="liveAnnounce" aria-live="polite"></p>
+  </section>
+
+  <script>
+    // SVG icon library — simple, consistent line icons
+    const ICONS = {
+      compass: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/></svg>',
+      layout:  '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>',
+      bag:     '<svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 1 1 6 0"/></svg>',
+      search:  '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+      chart:   '<svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-4 3 3 5-7"/></svg>',
+      quote:   '<svg viewBox="0 0 24 24"><path d="M7 7h4v6H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zM15 7h4v6h-4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M5 17h4M13 17h4"/></svg>'
+    };
+
+    const services = [
+      {
+        id: "strategie",
+        short: "Strategie",
+        icon: ICONS.compass,
+        tab: "Strategie",
+        kicker: "01 · Strategie",
+        title: "Strategie & Beratung",
+        focus: "Positionierung, Zielgruppen und klare Wachstumsrichtung.",
+        description:
+          "Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design nicht nebeneinanderlaufen, sondern gemeinsam auf Wachstum einzahlen.",
+        benefits: [
+          "Digitale Positionierung und Angebotsstruktur",
+          "Customer Journey und Conversion-Potenziale",
+          "Klare Prioritäten statt beliebiger Einzelmaßnahmen"
+        ]
+      },
+      {
+        id: "webdesign",
+        short: "Webdesign",
+        icon: ICONS.layout,
+        tab: "Webdesign",
+        kicker: "02 · Design",
+        title: "Webdesign & UX",
+        focus: "Websites, die hochwertig wirken und logisch zum Abschluss führen.",
+        description:
+          "Wir gestalten Seiten mit starker visueller Führung, moderner Markenwirkung und einer Nutzerführung, die nicht nur gut aussieht, sondern gezielt zur Anfrage oder zum Kauf leitet.",
+        benefits: [
+          "Individuelle Seitenarchitektur statt Standard-Layout",
+          "Klare Nutzerführung auf Desktop und Mobile",
+          "Designsystem für konsistente Markenwirkung"
+        ]
+      },
+      {
+        id: "shopify",
+        short: "Shopify",
+        icon: ICONS.bag,
+        tab: "Shopify",
+        kicker: "03 · Entwicklung",
+        title: "Shopify & Entwicklung",
+        focus: "Performante Shops und flexible Systeme, die im Alltag funktionieren.",
+        description:
+          "Von individuellen Shopify-Sektionen bis zu kompletten Store-Strukturen entwickeln wir Lösungen, die sauber pflegbar, schnell und auf echte Geschäftsziele ausgerichtet sind.",
+        benefits: [
+          "Custom Sections und flexible Theme-Editor-Steuerung",
+          "Saubere technische Umsetzung mit Fokus auf Performance",
+          "Strukturen, die später ohne Chaos erweitert werden können"
+        ]
+      },
+      {
+        id: "seo",
+        short: "SEO / GEO",
+        icon: ICONS.search,
+        tab: "SEO / GEO",
+        kicker: "04 · Sichtbarkeit",
+        title: "SEO & GEO",
+        focus: "Sichtbarkeit in Suchmaschinen und in KI-getriebenen Antworten.",
+        description:
+          "Wir schaffen technische, strukturelle und inhaltliche Grundlagen, damit Ihre Website bei klassischen Suchen ebenso überzeugt wie in neuen KI-gestützten Such- und Antwortsystemen.",
+        benefits: [
+          "Technisches SEO und saubere Informationsarchitektur",
+          "Content-Strukturen für relevante Suchintentionen",
+          "GEO-orientierte Aufbereitung von Expertise und Entitäten"
+        ]
+      },
+      {
+        id: "ads",
+        short: "Google Ads",
+        icon: ICONS.chart,
+        tab: "Google Ads",
+        kicker: "05 · Performance",
+        title: "Google Ads & Performance",
+        focus: "Kampagnen, die nicht nur Klicks, sondern wirtschaftliche Ergebnisse liefern.",
+        description:
+          "Wir entwickeln und optimieren Kampagnen entlang von Marge, Nachfrage und Nutzerintention. Der Fokus liegt auf nachvollziehbarer Steuerung statt blindem Budgetverbrauch.",
+        benefits: [
+          "Such-, Shopping- und Performance-Strukturen mit Zielbezug",
+          "Budgetsteuerung nach Wirtschaftlichkeit",
+          "Kontinuierliche Auswertung und Verbesserung"
+        ]
+      },
+      {
+        id: "content",
+        short: "Content",
+        icon: ICONS.quote,
+        tab: "Content",
+        kicker: "06 · Kommunikation",
+        title: "Content & Storytelling",
+        focus: "Inhalte, die Kompetenz zeigen und Angebote verständlich machen.",
+        description:
+          "Wir übersetzen Leistungen in eine klare, hochwertige Kommunikation – für Landingpages, Websites und Kampagnen. So entsteht Vertrauen, bevor der erste Kontakt stattfindet.",
+        benefits: [
+          "Präzise Botschaften statt austauschbarer Werbetexte",
+          "Leistungsseiten mit klarer Argumentationslinie",
+          "Content, der Design und Conversion unterstützt"
+        ]
+      }
+    ];
+
+    const tabContainer = document.querySelector(".service-tabs");
+    const orbitWrap = document.getElementById("orbitWrap");
+    const orbitSvg = document.getElementById("orbitSvg");
+    const connector = document.getElementById("connector");
+    const pulseRing = document.getElementById("pulseRing");
+    const coreProgress = document.getElementById("coreProgress");
+    const detailPanel = document.getElementById("detailPanel");
+    const focusBadge = document.getElementById("focusBadge");
+    const focusTitle = document.getElementById("focusTitle");
+    const focusText = document.getElementById("focusText");
+    const detailKicker = document.getElementById("detailKicker");
+    const detailTitle = document.getElementById("detailTitle");
+    const detailDescription = document.getElementById("detailDescription");
+    const benefitList = document.getElementById("benefitList");
+    const detailCounter = document.getElementById("detailCounter");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const liveAnnounce = document.getElementById("liveAnnounce");
+
+    const total = services.length;
+    const slotAngleDeg = 360 / total;
+    let activeIndex = 0;
+    const nodes = [];
+    const tabs = [];
+
+    // Build tabs + nodes
+    services.forEach((service, index) => {
+      const tab = document.createElement("button");
+      tab.className = "service-tab";
+      tab.type = "button";
+      tab.setAttribute("role", "tab");
+      tab.innerHTML = `<span class="tab-index">${String(index + 1).padStart(2, "0")}</span><span>${service.tab}</span>`;
+      tab.addEventListener("click", () => setActive(index));
+      tabContainer.appendChild(tab);
+      tabs.push(tab);
+
+      const node = document.createElement("button");
+      node.className = "orbit-node";
+      node.type = "button";
+      node.dataset.short = service.short;
+      node.setAttribute("aria-label", service.title);
+      node.innerHTML = `<span class="node-icon">${service.icon}</span>`;
+      node.addEventListener("click", () => setActive(index));
+      orbitWrap.appendChild(node);
+      nodes.push(node);
+    });
+
+    function getRadiusPx() {
+      const ringSize = orbitWrap.getBoundingClientRect().width;
+      // Slightly inside the dashed inner ring
+      return ringSize * 0.40;
+    }
+
+    function updateOrbit() {
+      const radius = getRadiusPx();
+      const ringSize = orbitWrap.getBoundingClientRect().width || 1;
+
+      nodes.forEach((node, index) => {
+        // Position so the active node lands at the bottom of the circle (90° in math = bottom in CSS)
+        const relative = ((index - activeIndex + total) % total);
+        const angleDeg = -90 + relative * slotAngleDeg + 180; // active at 90° => translate down
+        // Simpler: place active at bottom (angleRad = π/2 in screen coords),
+        // i.e. nodes go around starting from bottom and rotating clockwise.
+        const angleRad = (90 + relative * slotAngleDeg) * (Math.PI / 180);
+        const x = Math.cos(angleRad) * radius;
+        const y = Math.sin(angleRad) * radius;
+
+        const isActive = relative === 0;
+        node.style.setProperty("--x", `${x}px`);
+        node.style.setProperty("--y", `${y}px`);
+        node.style.setProperty("--scale", isActive ? "1.18" : "1");
+        node.classList.toggle("active", isActive);
+        node.setAttribute("aria-pressed", isActive ? "true" : "false");
+        node.setAttribute("tabindex", isActive ? "0" : "-1");
+
+        if (isActive) {
+          // Update connector line in SVG (viewBox 0..100)
+          const xPct = 50 + (x / ringSize) * 100;
+          const yPct = 50 + (y / ringSize) * 100;
+          connector.setAttribute("x2", xPct.toFixed(2));
+          connector.setAttribute("y2", yPct.toFixed(2));
+          connector.setAttribute("x1", "50");
+          connector.setAttribute("y1", "50");
+        }
+      });
+
+      // Update progress ring around the core
+      const circumference = 2 * Math.PI * 48;
+      const progress = (activeIndex + 1) / total;
+      coreProgress.style.strokeDasharray = `${circumference}`;
+      coreProgress.style.strokeDashoffset = `${circumference * (1 - progress)}`;
+    }
+
+    function renderContent() {
+      const service = services[activeIndex];
+      const count = String(activeIndex + 1).padStart(2, "0");
+
+      detailPanel.classList.remove("swap");
+      void detailPanel.offsetWidth;
+      detailPanel.classList.add("swap");
+
+      focusBadge.innerHTML = service.icon;
+      focusTitle.textContent = service.title;
+      focusText.textContent = service.focus;
+      detailKicker.textContent = service.kicker;
+      detailTitle.textContent = service.title;
+      detailDescription.textContent = service.description;
+      detailCounter.textContent = count;
+
+      benefitList.innerHTML = service.benefits
+        .map((benefit) => `<li>${benefit}</li>`)
+        .join("");
+
+      tabs.forEach((tab, index) => {
+        const isActive = index === activeIndex;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+
+      liveAnnounce.textContent = `${service.title} ausgewählt – Leistung ${activeIndex + 1} von ${total}.`;
+    }
+
+    function setActive(index) {
+      activeIndex = ((index % total) + total) % total;
+      updateOrbit();
+      renderContent();
+      restartAutoplay();
+    }
+
+    // Keyboard navigation
+    document.addEventListener("keydown", (e) => {
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        setActive(activeIndex + 1);
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        setActive(activeIndex - 1);
+      }
+    });
+
+    prevBtn.addEventListener("click", () => setActive(activeIndex - 1));
+    nextBtn.addEventListener("click", () => setActive(activeIndex + 1));
+
+    // Subtle autoplay — pauses on hover/focus/reduced-motion
+    let autoplayTimer = null;
+    const AUTOPLAY_MS = 6500;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function restartAutoplay() {
+      stopAutoplay();
+      if (prefersReducedMotion) return;
+      autoplayTimer = setTimeout(() => setActive(activeIndex + 1), AUTOPLAY_MS);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) {
+        clearTimeout(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    const stageEl = document.querySelector(".interactive-stage");
+    stageEl.addEventListener("mouseenter", stopAutoplay);
+    stageEl.addEventListener("mouseleave", restartAutoplay);
+    stageEl.addEventListener("focusin", stopAutoplay);
+    stageEl.addEventListener("focusout", restartAutoplay);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopAutoplay();
+      else restartAutoplay();
+    });
+
+    window.addEventListener("resize", updateOrbit);
+    setActive(0);
+  </script>
+</body>
+</html>
