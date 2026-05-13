@@ -10,6 +10,8 @@
    ============================================================ */
 
 .services-overview {
+  /* Fallbacks if no color_scheme is set */
+  --so-bg: transparent;
   --so-text: rgb(var(--color-foreground, 20 35 47));
   --so-muted: rgba(20, 35, 47, 0.62);
   --so-line: rgba(20, 35, 47, 0.12);
@@ -21,6 +23,7 @@
   padding: var(--so-padding-top, 72px) clamp(1rem, 3vw, 2rem) var(--so-padding-bottom, 72px);
   font-family: var(--font-body-family, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif);
   color: var(--so-text);
+  background: var(--so-bg);
   -webkit-font-smoothing: antialiased;
 }
 
