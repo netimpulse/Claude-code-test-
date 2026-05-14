@@ -16,13 +16,12 @@
         "subheading": "We help early-stage SaaS founders craft premium, investor-ready brands and product experiences.",
         "show_halftone": true,
         "show_pulse": true,
-        "carousel_tilt": -18,
-        "card_height": 380,
-        "auto_scroll": true,
-        "scroll_speed": 50,
+        "card_height": 320,
+        "card_step": 210,
+        "card_rotate": 32,
         "color_scheme": "scheme-1",
-        "padding_top": 96,
-        "padding_bottom": 96
+        "padding_top": 72,
+        "padding_bottom": 72
       },
       "blocks": {
         "card_1": { "type": "card", "settings": {} },

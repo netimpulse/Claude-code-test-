@@ -10,51 +10,83 @@ test.describe("Hero Float – Section", () => {
     await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
   });
 
-  test("Renders heading, subheading, halftone, and carousel", async ({ page }) => {
+  test("Renders heading, subheading, halftone (no dots), and carousel", async ({ page }) => {
     const root = page.locator("[data-section-type='hero-float']").first();
     await expect(root).toBeVisible();
 
     await expect(root.locator(".hero-float__heading")).toContainText("world-class");
     await expect(root.locator(".hero-float__subheading")).toBeVisible();
     await expect(root.locator(".hero-float__halftone")).toBeVisible();
-    await expect(root.locator(".hero-float__halftone-dots")).toBeVisible();
-    await expect(root.locator("[data-hf-track]")).toBeVisible();
+    // Dots removed — only rings + logo
+    await expect(root.locator(".hero-float__halftone-dots")).toHaveCount(0);
+    await expect(root.locator(".hero-float__halftone-ring")).toHaveCount(3);
+    await expect(root.locator("[data-hf-deck]")).toBeVisible();
   });
 
-  test("Halftone has 3 pulsing rings and the pulse class is applied by default", async ({ page }) => {
+  test("Pulse class is applied by default", async ({ page }) => {
     const root = page.locator("[data-section-type='hero-float']").first();
     await expect(root).toHaveClass(/hero-float--pulse/);
-
-    const rings = root.locator(".hero-float__halftone-ring");
-    await expect(rings).toHaveCount(3);
   });
 
-  test("Carousel renders cards doubled for seamless loop", async ({ page }) => {
+  test("Carousel renders 5 cards (no duplication)", async ({ page }) => {
     const root = page.locator("[data-section-type='hero-float']").first();
-    const cards = root.locator(".hero-float__card");
-    // 5 configured blocks * 2 for the duplicated set
-    await expect(cards).toHaveCount(10);
+    await expect(root.locator("[data-hf-card]")).toHaveCount(5);
   });
 
-  test("Track has 3D rotateY transform applied", async ({ page }) => {
+  test("Middle card starts active", async ({ page }) => {
     const root = page.locator("[data-section-type='hero-float']").first();
-    const transform = await root.locator("[data-hf-track]").evaluate(
-      (el) => getComputedStyle(el).transform
+    const active = root.locator("[data-hf-card].is-active");
+    await expect(active).toHaveCount(1);
+    await expect(active).toHaveAttribute("data-index", "2");
+  });
+
+  test("Next button advances active card; Prev moves back", async ({ page }) => {
+    const root = page.locator("[data-section-type='hero-float']").first();
+    const nextBtn = root.locator("[data-hf-next]");
+    const prevBtn = root.locator("[data-hf-prev]");
+
+    await nextBtn.click();
+    await expect(root.locator("[data-hf-card].is-active")).toHaveAttribute("data-index", "3");
+
+    await nextBtn.click();
+    await expect(root.locator("[data-hf-card].is-active")).toHaveAttribute("data-index", "4");
+
+    await prevBtn.click();
+    await expect(root.locator("[data-hf-card].is-active")).toHaveAttribute("data-index", "3");
+  });
+
+  test("Active card has zero rotation; neighbours are rotated", async ({ page }) => {
+    const root = page.locator("[data-section-type='hero-float']").first();
+    const cards = root.locator("[data-hf-card]");
+
+    const active = cards.filter({ has: page.locator(".is-active") }).or(
+      root.locator("[data-hf-card].is-active")
     );
-    // matrix3d -> 3D transform actually applied (not 'none')
-    expect(transform).not.toBe("none");
-    expect(transform).toContain("matrix");
+    const activeTransform = await root
+      .locator("[data-hf-card].is-active")
+      .evaluate((el) => (el as HTMLElement).style.transform);
+    expect(activeTransform).toContain("rotateY(0deg)");
+
+    // A card immediately next to the active one must have a non-zero rotation.
+    const activeIndex = parseInt(
+      (await root.locator("[data-hf-card].is-active").getAttribute("data-index")) || "0",
+      10
+    );
+    const neighbourTransform = await cards
+      .nth(activeIndex === 0 ? 1 : activeIndex - 1)
+      .evaluate((el) => (el as HTMLElement).style.transform);
+    expect(neighbourTransform).not.toContain("rotateY(0deg)");
+    expect(neighbourTransform).toMatch(/rotateY\(-?\d+deg\)/);
   });
 
-  test("Auto-scroll pauses on hover and resumes on mouseleave", async ({ page }) => {
+  test("Wrap-around works on Next from the last card", async ({ page }) => {
     const root = page.locator("[data-section-type='hero-float']").first();
-    await expect(root).toHaveClass(/hero-float--auto/);
-
-    await root.hover();
-    await expect(root).toHaveClass(/is-paused/);
-
-    await root.dispatchEvent("mouseleave");
-    await expect(root).not.toHaveClass(/is-paused/);
+    const nextBtn = root.locator("[data-hf-next]");
+    // Starts at index 2, hit next 3 times to wrap from 4 -> 0
+    await nextBtn.click(); // -> 3
+    await nextBtn.click(); // -> 4
+    await nextBtn.click(); // -> 0 (wrap)
+    await expect(root.locator("[data-hf-card].is-active")).toHaveAttribute("data-index", "0");
   });
 
   test("Section does not overflow horizontally at 320px viewport", async ({ page }) => {

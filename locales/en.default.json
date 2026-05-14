@@ -82,6 +82,8 @@
     "rating_count_prefix": "aus"
   },
   "hero_float": {
-    "add_cards": "Add card blocks in the theme editor to fill the carousel."
+    "add_cards": "Add card blocks in the theme editor to fill the carousel.",
+    "prev": "Previous slide",
+    "next": "Next slide"
   }
 }
