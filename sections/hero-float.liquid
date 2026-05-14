@@ -1,11 +1,11 @@
 {% comment %}
   Hero Float — combined hero section
   ----------------------------------------------------------------
-  - Headline + sub-headline (kept compact)
+  - Headline + sub-headline
   - Halftone logo: image_picker centered between pulsing radar rings
-    (no dot grid — pure rings)
-  - 3D cover-flow carousel: center card is locked, side cards rotate
-    away with depth. Prev/Next buttons + keyboard arrows.
+  - Continuously rotating 3D wheel of cards: each card sits on the
+    perimeter of a circle, deck rotates around Y axis indefinitely.
+    Cards facing the camera at any moment are the visual focus.
 {% endcomment %}
 
 {%- liquid
@@ -16,11 +16,10 @@
   assign show_halftone = section.settings.show_halftone
   assign show_pulse = section.settings.show_pulse
   assign card_height = section.settings.card_height
-  assign card_step = section.settings.card_step
-  assign card_rotate = section.settings.card_rotate
-  assign lock_position = section.settings.lock_position
+  assign wheel_radius = section.settings.wheel_radius
+  assign spin_speed = section.settings.spin_speed
+  assign spin_direction = section.settings.spin_direction
   assign auto_rotate = section.settings.auto_rotate
-  assign auto_rotate_seconds = section.settings.auto_rotate_seconds
 
   assign card_blocks_count = 0
   for block in section.blocks
@@ -28,23 +27,20 @@
       assign card_blocks_count = card_blocks_count | plus: 1
     endif
   endfor
-  assign initial_index = card_blocks_count | divided_by: 2
 -%}
 
 <section
-  class="hero-float full-width color-{{ scheme.id }}{% if show_pulse %} hero-float--pulse{% endif %}"
+  class="hero-float full-width color-{{ scheme.id }}{% if show_pulse %} hero-float--pulse{% endif %}{% if auto_rotate %} hero-float--spin{% endif %} hero-float--{{ spin_direction }}"
   data-section-id="{{ section.id }}"
   data-section-type="hero-float"
-  data-hf-step="{{ card_step }}"
-  data-hf-rotate="{{ card_rotate }}"
-  data-hf-lock="{{ lock_position }}"
-  data-hf-auto="{{ auto_rotate }}"
-  data-hf-auto-seconds="{{ auto_rotate_seconds }}"
-  data-hf-initial="{{ initial_index }}"
+  data-hf-radius="{{ wheel_radius }}"
+  data-hf-cards="{{ card_blocks_count }}"
   style="
     --hf-pad-top: {{ section.settings.padding_top }}px;
     --hf-pad-bottom: {{ section.settings.padding_bottom }}px;
     --hf-card-height: {{ card_height }}px;
+    --hf-radius: {{ wheel_radius }}px;
+    --hf-spin-speed: {{ spin_speed }}s;
   "
 >
   <div class="hero-float__inner">
@@ -83,20 +79,9 @@
     {%- endif -%}
 
     {%- if card_blocks_count > 0 -%}
-      <div class="hero-float__carousel" data-hf-carousel>
-        <button
-          type="button"
-          class="hero-float__nav hero-float__nav--prev"
-          data-hf-prev
-          aria-label="{{ 'hero_float.prev' | t | default: 'Previous slide' }}"
-        >
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-            <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-
-        <div class="hero-float__stage" data-hf-stage>
-          <ul class="hero-float__deck" data-hf-deck>
+      <div class="hero-float__stage" data-hf-stage>
+        <div class="hero-float__deck" data-hf-deck>
+          <ul class="hero-float__deck-list" data-hf-deck-list>
             {%- for block in section.blocks -%}
               {%- if block.type == 'card' -%}
                 <li
@@ -125,17 +110,6 @@
             {%- endfor -%}
           </ul>
         </div>
-
-        <button
-          type="button"
-          class="hero-float__nav hero-float__nav--next"
-          data-hf-next
-          aria-label="{{ 'hero_float.next' | t | default: 'Next slide' }}"
-        >
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-            <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
       </div>
     {%- else -%}
       <p class="hero-float__placeholder">
@@ -191,7 +165,7 @@
     color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 70%, transparent);
   }
 
-  /* --- Halftone logo with pulsing rings (no dots) --- */
+  /* --- Halftone logo with pulsing rings --- */
   .hero-float__halftone {
     position: relative;
     width: clamp(140px, 16vw, 200px);
@@ -234,53 +208,54 @@
     color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 55%, transparent);
   }
 
-  /* --- Cover-flow carousel --- */
-  .hero-float__carousel {
-    position: relative;
-    width: 100%;
-    margin-top: 0.5rem;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .hero-float__nav {
-    width: 44px;
-    height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-background, #fff);
-    color: var(--color-foreground, #1a1a1a);
-    border: 1px solid color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
-    border-radius: 999px;
-    cursor: pointer;
-    z-index: 5;
-    flex-shrink: 0;
-    transition: background-color .15s ease, transform .15s ease, opacity .15s ease;
-  }
-  .hero-float__nav:hover {
-    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 6%, transparent);
-  }
-  .hero-float__nav:active { transform: scale(0.95); }
-  .hero-float__nav[disabled] { opacity: 0.35; cursor: not-allowed; }
-
+  /* --- 3D wheel carousel --- */
   .hero-float__stage {
     position: relative;
     width: 100%;
-    height: calc(var(--hf-card-height, 320px) + 80px);
-    perspective: 1400px;
+    /* Enough height so the circle fits even at max radius + perspective */
+    height: calc(var(--hf-card-height, 360px) + 120px);
+    /* Perspective is intentionally large relative to radius so the scale
+       difference between front and back cards is subtle — all cards stay
+       similar in size, like a "filmed" rotating wheel rather than a fish-eye
+       view. */
+    perspective: 2600px;
     perspective-origin: 50% 55%;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
   }
 
   .hero-float__deck {
-    position: relative;
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    transform: translate3d(0, 0, 0) rotateY(0deg);
+  }
+  .hero-float--spin.hero-float--cw .hero-float__deck {
+    animation: hf-spin-cw var(--hf-spin-speed, 60s) linear infinite;
+  }
+  .hero-float--spin.hero-float--ccw .hero-float__deck {
+    animation: hf-spin-ccw var(--hf-spin-speed, 60s) linear infinite;
+  }
+  .hero-float.is-paused .hero-float__deck {
+    animation-play-state: paused;
+  }
+  @keyframes hf-spin-cw {
+    from { transform: rotateY(0deg); }
+    to   { transform: rotateY(-360deg); }
+  }
+  @keyframes hf-spin-ccw {
+    from { transform: rotateY(0deg); }
+    to   { transform: rotateY(360deg); }
+  }
+
+  .hero-float__deck-list {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -289,26 +264,21 @@
 
   .hero-float__card {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    height: var(--hf-card-height, 320px);
+    top: 0;
+    left: 0;
+    height: var(--hf-card-height, 360px);
     width: auto;
-    border-radius: 20px;
+    border-radius: 22px;
     overflow: hidden;
     background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 4%, transparent);
     box-shadow:
-      0 30px 60px -20px color-mix(in srgb, var(--color-foreground, #1a1a1a) 40%, transparent),
-      0 12px 24px -10px color-mix(in srgb, var(--color-foreground, #1a1a1a) 22%, transparent);
-    transform: translate(-50%, -50%) translate3d(0, 0, 0) rotateY(0deg);
-    transform-origin: center center;
-    transition: transform .65s cubic-bezier(0.2, 0.85, 0.3, 1),
-                opacity .45s ease,
-                filter .55s ease;
-    will-change: transform, filter;
+      0 28px 60px -20px color-mix(in srgb, var(--color-foreground, #1a1a1a) 35%, transparent),
+      0 10px 22px -10px color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
+    /* The card-angle CSS variable is set by JS per card based on its index */
+    transform: translate(-50%, -50%) rotateY(var(--card-angle, 0deg)) translateZ(var(--hf-radius, 600px));
+    transform-style: preserve-3d;
     backface-visibility: hidden;
-  }
-  .hero-float__card.is-active {
-    z-index: 20;
+    will-change: transform;
   }
 
   .hero-float__card-img,
@@ -320,11 +290,12 @@
     pointer-events: none;
   }
   .hero-float__card-placeholder {
-    width: calc(var(--hf-card-height, 320px) * 1.35);
+    width: calc(var(--hf-card-height, 360px) * 0.55);
     color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 25%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
+    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 3%, transparent);
   }
   .hero-float__card-placeholder-svg {
     width: 55%;
@@ -340,11 +311,16 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-float--pulse .hero-float__halftone-ring {
+    .hero-float--pulse .hero-float__halftone-ring,
+    .hero-float--spin .hero-float__deck {
       animation: none !important;
     }
-    .hero-float__card {
-      transition: none !important;
+  }
+
+  /* Mobile: shrink radius via CSS so the wheel fits the viewport */
+  @media (max-width: 749px) {
+    .hero-float {
+      --hf-radius: calc(min(var(--hf-radius-config, 600px), 50vw));
     }
   }
 {% endstylesheet %}
@@ -391,7 +367,44 @@
     },
     {
       "type": "header",
-      "content": "Cover-flow carousel"
+      "content": "3D wheel carousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Continuous rotation",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "spin_direction",
+      "label": "Direction",
+      "options": [
+        { "value": "cw", "label": "Clockwise" },
+        { "value": "ccw", "label": "Counter-clockwise" }
+      ],
+      "default": "cw"
+    },
+    {
+      "type": "range",
+      "id": "spin_speed",
+      "label": "Seconds per full revolution",
+      "min": 15,
+      "max": 180,
+      "step": 5,
+      "unit": "s",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "wheel_radius",
+      "label": "Wheel radius",
+      "info": "How far each card sits from the center axis. Smaller radius = cards stay clustered around the front; bigger = wider arc.",
+      "min": 250,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 420
     },
     {
       "type": "range",
@@ -401,56 +414,7 @@
       "max": 520,
       "step": 10,
       "unit": "px",
-      "default": 320
-    },
-    {
-      "type": "range",
-      "id": "card_step",
-      "label": "Spacing between cards",
-      "info": "Horizontal distance between neighbouring cards in pixels.",
-      "min": 120,
-      "max": 360,
-      "step": 10,
-      "unit": "px",
-      "default": 250
-    },
-    {
-      "type": "range",
-      "id": "card_rotate",
-      "label": "Side card rotation",
-      "info": "How much side cards tilt away from the active one (capped at 78° for far cards).",
-      "min": 0,
-      "max": 60,
-      "step": 1,
-      "unit": "°",
-      "default": 32
-    },
-    {
-      "type": "range",
-      "id": "lock_position",
-      "label": "Lock position",
-      "info": "Horizontal position of the active card within the carousel. 50 % = center; lower values push it left so more cards extend to the right.",
-      "min": 15,
-      "max": 85,
-      "step": 5,
-      "unit": "%",
-      "default": 35
-    },
-    {
-      "type": "checkbox",
-      "id": "auto_rotate",
-      "label": "Auto-rotate",
-      "default": false
-    },
-    {
-      "type": "range",
-      "id": "auto_rotate_seconds",
-      "label": "Auto-rotate interval",
-      "min": 2,
-      "max": 15,
-      "step": 1,
-      "unit": "s",
-      "default": 5
+      "default": 360
     },
     {
       "type": "header",
@@ -493,7 +457,7 @@
           "type": "image_picker",
           "id": "image",
           "label": "Card image",
-          "info": "Tall mockups (phone) or wide ones (laptop) — cards keep a fixed height and let width follow the image's aspect ratio."
+          "info": "Phone or laptop mockups both work — cards keep a fixed height and let width follow the image's aspect ratio."
         }
       ]
     }
@@ -503,6 +467,8 @@
       "name": "Hero float",
       "category": "Hero",
       "blocks": [
+        { "type": "card" },
+        { "type": "card" },
         { "type": "card" },
         { "type": "card" },
         { "type": "card" },

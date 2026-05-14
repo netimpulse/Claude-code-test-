@@ -16,26 +16,28 @@
         "subheading": "We help early-stage SaaS founders craft premium, investor-ready brands and product experiences.",
         "show_halftone": true,
         "show_pulse": true,
-        "card_height": 320,
-        "card_step": 250,
-        "card_rotate": 32,
-        "lock_position": 35,
-        "auto_rotate": false,
-        "auto_rotate_seconds": 5,
+        "auto_rotate": true,
+        "spin_direction": "cw",
+        "spin_speed": 60,
+        "wheel_radius": 420,
+        "card_height": 360,
         "color_scheme": "scheme-1",
         "padding_top": 72,
         "padding_bottom": 72
       },
       "blocks": {
-        "card_1": { "type": "card", "settings": {} },
-        "card_2": { "type": "card", "settings": {} },
-        "card_3": { "type": "card", "settings": {} },
-        "card_4": { "type": "card", "settings": {} },
-        "card_5": { "type": "card", "settings": {} },
-        "card_6": { "type": "card", "settings": {} },
-        "card_7": { "type": "card", "settings": {} }
+        "card_1":  { "type": "card", "settings": {} },
+        "card_2":  { "type": "card", "settings": {} },
+        "card_3":  { "type": "card", "settings": {} },
+        "card_4":  { "type": "card", "settings": {} },
+        "card_5":  { "type": "card", "settings": {} },
+        "card_6":  { "type": "card", "settings": {} },
+        "card_7":  { "type": "card", "settings": {} },
+        "card_8":  { "type": "card", "settings": {} },
+        "card_9":  { "type": "card", "settings": {} },
+        "card_10": { "type": "card", "settings": {} }
       },
-      "block_order": ["card_1", "card_2", "card_3", "card_4", "card_5", "card_6", "card_7"]
+      "block_order": ["card_1", "card_2", "card_3", "card_4", "card_5", "card_6", "card_7", "card_8", "card_9", "card_10"]
     },
     "services_overview": {
       "type": "services-overview",
