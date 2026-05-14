@@ -17,8 +17,11 @@
         "show_halftone": true,
         "show_pulse": true,
         "card_height": 320,
-        "card_step": 210,
+        "card_step": 250,
         "card_rotate": 32,
+        "lock_position": 35,
+        "auto_rotate": false,
+        "auto_rotate_seconds": 5,
         "color_scheme": "scheme-1",
         "padding_top": 72,
         "padding_bottom": 72

@@ -18,6 +18,9 @@
   assign card_height = section.settings.card_height
   assign card_step = section.settings.card_step
   assign card_rotate = section.settings.card_rotate
+  assign lock_position = section.settings.lock_position
+  assign auto_rotate = section.settings.auto_rotate
+  assign auto_rotate_seconds = section.settings.auto_rotate_seconds
 
   assign card_blocks_count = 0
   for block in section.blocks
@@ -34,6 +37,9 @@
   data-section-type="hero-float"
   data-hf-step="{{ card_step }}"
   data-hf-rotate="{{ card_rotate }}"
+  data-hf-lock="{{ lock_position }}"
+  data-hf-auto="{{ auto_rotate }}"
+  data-hf-auto-seconds="{{ auto_rotate_seconds }}"
   data-hf-initial="{{ initial_index }}"
   style="
     --hf-pad-top: {{ section.settings.padding_top }}px;
@@ -297,16 +303,12 @@
     transform-origin: center center;
     transition: transform .65s cubic-bezier(0.2, 0.85, 0.3, 1),
                 opacity .45s ease,
-                filter .45s ease;
-    will-change: transform;
+                filter .55s ease;
+    will-change: transform, filter;
     backface-visibility: hidden;
   }
   .hero-float__card.is-active {
     z-index: 20;
-    filter: none;
-  }
-  .hero-float__card:not(.is-active) {
-    filter: brightness(0.92) saturate(0.9);
   }
 
   .hero-float__card-img,
@@ -406,22 +408,49 @@
       "id": "card_step",
       "label": "Spacing between cards",
       "info": "Horizontal distance between neighbouring cards in pixels.",
-      "min": 100,
-      "max": 320,
+      "min": 120,
+      "max": 360,
       "step": 10,
       "unit": "px",
-      "default": 210
+      "default": 250
     },
     {
       "type": "range",
       "id": "card_rotate",
       "label": "Side card rotation",
-      "info": "How much side cards tilt away from the centered one.",
+      "info": "How much side cards tilt away from the active one (capped at 78° for far cards).",
       "min": 0,
       "max": 60,
       "step": 1,
       "unit": "°",
       "default": 32
+    },
+    {
+      "type": "range",
+      "id": "lock_position",
+      "label": "Lock position",
+      "info": "Horizontal position of the active card within the carousel. 50 % = center; lower values push it left so more cards extend to the right.",
+      "min": 15,
+      "max": 85,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Auto-rotate",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate_seconds",
+      "label": "Auto-rotate interval",
+      "min": 2,
+      "max": 15,
+      "step": 1,
+      "unit": "s",
+      "default": 5
     },
     {
       "type": "header",

@@ -55,6 +55,21 @@ test.describe("Hero Float – Section", () => {
     await expect(root.locator("[data-hf-card].is-active")).toHaveAttribute("data-index", "3");
   });
 
+  test("Far cards have blur applied; active card does not", async ({ page }) => {
+    const root = page.locator("[data-section-type='hero-float']").first();
+    const activeFilter = await root
+      .locator("[data-hf-card].is-active")
+      .evaluate((el) => (el as HTMLElement).style.filter);
+    expect(activeFilter).toContain("blur(0px)");
+
+    // With initial active = 2 and 5 cards, offsets are -2, -1, 0, +1, +2.
+    // Cards at offset ±2 (data-index 0 and 4) should have blur > 0.
+    const farFilter = await root
+      .locator("[data-hf-card][data-index='0']")
+      .evaluate((el) => (el as HTMLElement).style.filter);
+    expect(farFilter).toMatch(/blur\((?!0px)\d+(\.\d+)?px\)/);
+  });
+
   test("Active card has zero rotation; neighbours are rotated", async ({ page }) => {
     const root = page.locator("[data-section-type='hero-float']").first();
     const cards = root.locator("[data-hf-card]");
