@@ -152,13 +152,14 @@
           pointer = "auto";
         } else if (offset === -1) {
           // Edge peek on the far left — like the dark phone in the reference.
-          // Pushed slightly further left than one step, tilted to show its
-          // inner edge facing the active card.
-          tx = -this.step * 1.15 + this.lockShiftPx;
-          tz = -260;
-          ry = -60;
-          blur = 4;
-          opacity = 0.95;
+          // Strongly rotated so the card reads as an inner-side view rather
+          // than a forward-facing card, but not fully edge-on so the front
+          // is still recognisable.
+          tx = -this.step * 1.2 + this.lockShiftPx;
+          tz = -360;
+          ry = -72;
+          blur = 4.5;
+          opacity = 0.9;
           pointer = "auto";
         } else {
           // Hidden — outside the asymmetric visible window
