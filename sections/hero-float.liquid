@@ -3,9 +3,10 @@
   ----------------------------------------------------------------
   - Headline + sub-headline
   - Halftone logo: image_picker centered between pulsing radar rings
-  - Continuously rotating 3D wheel of cards: each card sits on the
-    perimeter of a circle, deck rotates around Y axis indefinitely.
-    Cards facing the camera at any moment are the visual focus.
+  - 3D wheel of cards on a circle in 3D space
+  - Rotation is JS-driven (continuous auto + drag to scrub in either
+    direction). Per-card depth-of-field blur/opacity computed from each
+    card's current world angle every frame.
 {% endcomment %}
 
 {%- liquid
@@ -27,8 +28,10 @@
       assign card_aspect_ratio = '0.5625'
     when 'square'
       assign card_aspect_ratio = '1'
+    when 'landscape_wide'
+      assign card_aspect_ratio = '1.78'
     when 'landscape'
-      assign card_aspect_ratio = '1.6'
+      assign card_aspect_ratio = '1.4'
     else
       assign card_aspect_ratio = '0.5625'
   endcase
@@ -41,11 +44,25 @@
   endfor
 -%}
 
+{% style %}
+  #shopify-section-{{ section.id }} .hero-float {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+    {%- endif -%}
+    {%- if scheme.settings.text != blank -%}
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
 <section
-  class="hero-float full-width color-{{ scheme.id }}{% if show_pulse %} hero-float--pulse{% endif %}{% if auto_rotate %} hero-float--spin{% endif %} hero-float--{{ spin_direction }}"
+  class="hero-float full-width color-{{ scheme.id }}{% if show_pulse %} hero-float--pulse{% endif %}"
   data-section-id="{{ section.id }}"
   data-section-type="hero-float"
   data-hf-radius="{{ wheel_radius }}"
+  data-hf-auto="{{ auto_rotate }}"
+  data-hf-direction="{{ spin_direction }}"
+  data-hf-speed="{{ spin_speed }}"
   data-hf-cards="{{ card_blocks_count }}"
   style="
     --hf-pad-top: {{ section.settings.padding_top }}px;
@@ -53,7 +70,6 @@
     --hf-card-height: {{ card_height }}px;
     --hf-card-aspect: {{ card_aspect_ratio }};
     --hf-radius: {{ wheel_radius }}px;
-    --hf-spin-speed: {{ spin_speed }}s;
   "
 >
   <div class="hero-float__inner">
@@ -97,21 +113,10 @@
           <ul class="hero-float__deck-list" data-hf-deck-list>
             {%- for block in section.blocks -%}
               {%- if block.type == 'card' -%}
-                {%- comment -%}
-                  Per-card aspect ratio. If the merchant uploaded an image,
-                  use its natural aspect so the mockup isn't cropped. If not,
-                  fall back to the section-wide aspect setting.
-                {%- endcomment -%}
-                {%- if block.settings.image != blank and block.settings.image.aspect_ratio != blank -%}
-                  {%- assign per_aspect = block.settings.image.aspect_ratio -%}
-                {%- else -%}
-                  {%- assign per_aspect = card_aspect_ratio -%}
-                {%- endif -%}
                 <li
                   class="hero-float__card"
                   data-hf-card
                   data-index="{{ forloop.index0 }}"
-                  style="--card-aspect: {{ per_aspect }};"
                   {{ block.shopify_attributes }}
                 >
                   {%- if block.settings.image != blank -%}
@@ -122,7 +127,8 @@
                       class: card_class,
                       widths: '320, 480, 640, 800',
                       sizes: 'auto',
-                      loading: 'lazy'
+                      loading: 'lazy',
+                      draggable: 'false'
                     }}
                   {%- else -%}
                     <div class="hero-float__card-placeholder" aria-hidden="true">
@@ -236,15 +242,17 @@
   .hero-float__stage {
     position: relative;
     width: 100%;
-    /* Enough height so the circle fits even at max radius + perspective */
     height: calc(var(--hf-card-height, 360px) + 120px);
-    /* Perspective is intentionally large relative to radius so the scale
-       difference between front and back cards is subtle — all cards stay
-       similar in size, like a "filmed" rotating wheel rather than a fish-eye
-       view. */
     perspective: 2600px;
     perspective-origin: 50% 55%;
     overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .hero-float.is-dragging .hero-float__stage {
+    cursor: grabbing;
   }
 
   .hero-float__deck {
@@ -254,24 +262,7 @@
     width: 0;
     height: 0;
     transform-style: preserve-3d;
-    transform: translate3d(0, 0, 0) rotateY(0deg);
-  }
-  .hero-float--spin.hero-float--cw .hero-float__deck {
-    animation: hf-spin-cw var(--hf-spin-speed, 60s) linear infinite;
-  }
-  .hero-float--spin.hero-float--ccw .hero-float__deck {
-    animation: hf-spin-ccw var(--hf-spin-speed, 60s) linear infinite;
-  }
-  .hero-float.is-paused .hero-float__deck {
-    animation-play-state: paused;
-  }
-  @keyframes hf-spin-cw {
-    from { transform: rotateY(0deg); }
-    to   { transform: rotateY(-360deg); }
-  }
-  @keyframes hf-spin-ccw {
-    from { transform: rotateY(0deg); }
-    to   { transform: rotateY(360deg); }
+    will-change: transform;
   }
 
   .hero-float__deck-list {
@@ -291,57 +282,18 @@
     top: 0;
     left: 0;
     height: var(--hf-card-height, 360px);
-    /* Width comes from the card's own aspect ratio (set per-block from the
-       uploaded image's natural aspect, with the section default as fallback). */
-    width: calc(var(--hf-card-height, 360px) * var(--card-aspect, var(--hf-card-aspect, 0.5625)));
+    /* Fixed width across all cards — uniform spacing on the wheel. */
+    width: calc(var(--hf-card-height, 360px) * var(--hf-card-aspect, 0.5625));
     border-radius: 22px;
     overflow: hidden;
     background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 4%, transparent);
     box-shadow:
       0 28px 60px -20px color-mix(in srgb, var(--color-foreground, #1a1a1a) 35%, transparent),
       0 10px 22px -10px color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
-    /* The card-angle CSS variable is set by JS per card based on its index */
+    /* Card-angle CSS variable set by JS per card based on its index */
     transform: translate(-50%, -50%) rotateY(var(--card-angle, 0deg)) translateZ(var(--hf-radius, 600px));
     transform-style: preserve-3d;
-    /* No backface-visibility:hidden — cards behind the front read as blurred
-       depth-of-field, not invisible. */
-    will-change: transform, filter, opacity;
-  }
-  /* Depth-of-field animation: each card cycles blur + opacity in sync with
-     the wheel rotation. JS sets per-card animation-delay so that:
-       front  (world angle 0°)   → blur 0, opacity 1
-       side   (world angle ±90°) → medium blur
-       back   (world angle 180°) → max blur, dim
-  */
-  .hero-float--spin .hero-float__card {
-    animation: hf-card-depth var(--hf-spin-speed, 60s) linear infinite;
-  }
-  .hero-float.is-paused .hero-float__card {
-    animation-play-state: paused;
-  }
-  @keyframes hf-card-depth {
-    /* Front: full sharpness, extended through the sides so cards stay crisp
-       longer in the visible front half. */
-    0%, 100% {
-      filter: blur(0px) brightness(1);
-      opacity: 1;
-    }
-    15%, 85% {
-      filter: blur(0px) brightness(0.99);
-      opacity: 0.98;
-    }
-    30%, 70% {
-      filter: blur(1.5px) brightness(0.94);
-      opacity: 0.9;
-    }
-    45%, 55% {
-      filter: blur(6px) brightness(0.85);
-      opacity: 0.7;
-    }
-    50% {
-      filter: blur(9px) brightness(0.8);
-      opacity: 0.55;
-    }
+    will-change: filter, opacity;
   }
 
   .hero-float__card-img,
@@ -351,6 +303,8 @@
     width: 100%;
     object-fit: cover;
     pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
   }
   .hero-float__card-placeholder {
     color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 25%, transparent);
@@ -373,16 +327,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-float--pulse .hero-float__halftone-ring,
-    .hero-float--spin .hero-float__deck {
+    .hero-float--pulse .hero-float__halftone-ring {
       animation: none !important;
-    }
-  }
-
-  /* Mobile: shrink radius via CSS so the wheel fits the viewport */
-  @media (max-width: 749px) {
-    .hero-float {
-      --hf-radius: calc(min(var(--hf-radius-config, 600px), 50vw));
     }
   }
 {% endstylesheet %}
@@ -461,7 +407,7 @@
       "type": "range",
       "id": "wheel_radius",
       "label": "Wheel radius",
-      "info": "How far each card sits from the center axis. Smaller radius = cards stay clustered around the front; bigger = wider arc.",
+      "info": "How far each card sits from the center axis.",
       "min": 250,
       "max": 800,
       "step": 10,
@@ -482,11 +428,12 @@
       "type": "select",
       "id": "card_aspect",
       "label": "Card aspect ratio",
-      "info": "Match this to the orientation of your uploaded mockups. Images are cover-cropped to fit.",
+      "info": "Used for every card so spacing on the wheel stays uniform. Images are cover-cropped to fit.",
       "options": [
-        { "value": "portrait", "label": "Portrait (9:16) — phones" },
-        { "value": "square", "label": "Square (1:1)" },
-        { "value": "landscape", "label": "Landscape (16:10) — laptops" }
+        { "value": "portrait", "label": "Portrait 9:16 — phones" },
+        { "value": "square", "label": "Square 1:1" },
+        { "value": "landscape", "label": "Landscape 7:5 — tablets / dashboards" },
+        { "value": "landscape_wide", "label": "Landscape 16:9 — laptops" }
       ],
       "default": "portrait"
     },
@@ -530,8 +477,7 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Card image",
-          "info": "Phone or laptop mockups both work — cards keep a fixed height and let width follow the image's aspect ratio."
+          "label": "Card image"
         }
       ]
     }

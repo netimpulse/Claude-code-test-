@@ -1,101 +1,174 @@
 /**
- * Hero Float — continuously rotating 3D wheel.
+ * Hero Float — 3D wheel with JS-driven rotation + drag.
  *
- * Each card sits on the perimeter of a circle in 3D space (angle = i × 360/N).
- * A CSS keyframe animation spins the deck around the Y axis forever.
- * JS only needs to:
- *   - calculate per-card --card-angle on init / when blocks change
- *   - pause on hover, focus, off-screen, and prefers-reduced-motion
+ * The deck rotates via requestAnimationFrame (not CSS) so we can:
+ *   - drag in either direction with pointer events
+ *   - pick up after a drag without resetting the keyframe clock
+ *   - compute each card's blur / opacity from its current world angle
+ *     instead of phase-offset animations
  *
  * Editor-safe: rebinds on shopify:section:load.
  */
 (function () {
   const SECTION_TYPE = "hero-float";
+  // 1 degree of rotation per 3 pixels of drag.
+  const DRAG_PX_PER_DEG = 3;
 
   class HeroWheel {
     constructor(root) {
       this.root = root;
+      this.stage = root.querySelector("[data-hf-stage]");
       this.deck = root.querySelector("[data-hf-deck]");
       this.cards = Array.from(root.querySelectorAll("[data-hf-card]"));
 
-      this._onEnter = () => this.root.classList.add("is-paused");
-      this._onLeave = () => this.root.classList.remove("is-paused");
-      this._onMotionChange = () => this._evalMotion();
+      this.radius = parseInt(root.dataset.hfRadius, 10) || 420;
+      this.autoEnabled = root.dataset.hfAuto === "true";
+      this.direction = root.dataset.hfDirection === "ccw" ? +1 : -1;
+      this.spinSeconds = parseFloat(root.dataset.hfSpeed) || 60;
+      this.degPerSec = (360 / this.spinSeconds) * this.direction;
 
-      this.layout();
+      this.wheelAngle = 0;
+      this.lastFrameTime = 0;
 
-      this.root.addEventListener("mouseenter", this._onEnter);
-      this.root.addEventListener("mouseleave", this._onLeave);
-      this.root.addEventListener("focusin", this._onEnter);
-      this.root.addEventListener("focusout", this._onLeave);
+      this.isDragging = false;
+      this.dragStartX = 0;
+      this.dragStartAngle = 0;
+      this.activePointerId = null;
 
-      this._motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      if (this._motionQuery.addEventListener) {
-        this._motionQuery.addEventListener("change", this._onMotionChange);
-      }
-      this._evalMotion();
+      this.isVisible = true;
+      this.reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
 
-      if ("IntersectionObserver" in window) {
-        this._io = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting) this.root.classList.remove("is-paused");
-          else this.root.classList.add("is-paused");
-        }, { threshold: 0 });
-        this._io.observe(this.root);
-      }
+      this._tick = this._tick.bind(this);
+      this._onPointerDown = this._onPointerDown.bind(this);
+      this._onPointerMove = this._onPointerMove.bind(this);
+      this._onPointerUp = this._onPointerUp.bind(this);
+
+      this._layoutCards();
+      this._bindEvents();
+      this._rafId = requestAnimationFrame(this._tick);
     }
 
-    layout() {
+    _layoutCards() {
       const n = this.cards.length;
       if (n === 0) return;
       const step = 360 / n;
-      const duration = this._getSpinDuration();
-      const direction = this.root.classList.contains("hero-float--ccw") ? "ccw" : "cw";
-
       this.cards.forEach((card, i) => {
         const angle = i * step;
+        card.dataset.cardAngle = String(angle);
         card.style.setProperty("--card-angle", `${angle}deg`);
-
-        // Synchronise the depth-of-field animation with the wheel rotation
-        // so each card is blurred when it's at the back and sharp at the
-        // front, regardless of when its keyframe cycle started.
-        //
-        // CW: world angle = X − 360 · t/D  → front at t = X·D/360
-        //   delay = (X/360 − 1) · D
-        // CCW: world angle = X + 360 · t/D → front at t = (360−X)·D/360
-        //   delay = −X/360 · D
-        const delaySeconds =
-          direction === "ccw"
-            ? -(angle / 360) * duration
-            : (angle / 360 - 1) * duration;
-        card.style.animationDelay = `${delaySeconds}s`;
       });
     }
 
-    _getSpinDuration() {
-      // Match the CSS var --hf-spin-speed used by the .hero-float__deck spin
-      // animation, defaulting to 60 if unparseable.
-      const raw = getComputedStyle(this.root)
-        .getPropertyValue("--hf-spin-speed")
-        .trim();
-      const parsed = parseFloat(raw);
-      return Number.isFinite(parsed) && parsed > 0 ? parsed : 60;
+    _bindEvents() {
+      if (this.stage) {
+        this.stage.addEventListener("pointerdown", this._onPointerDown);
+      }
+      window.addEventListener("pointermove", this._onPointerMove, { passive: true });
+      window.addEventListener("pointerup", this._onPointerUp);
+      window.addEventListener("pointercancel", this._onPointerUp);
+
+      if ("IntersectionObserver" in window) {
+        this._io = new IntersectionObserver(([entry]) => {
+          this.isVisible = entry.isIntersecting;
+        }, { threshold: 0 });
+        this._io.observe(this.root);
+      }
+
+      this._motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      this._onMotionChange = () => {
+        this.reduceMotion = this._motionQuery.matches;
+      };
+      if (this._motionQuery.addEventListener) {
+        this._motionQuery.addEventListener("change", this._onMotionChange);
+      }
     }
 
-    _evalMotion() {
-      if (this._motionQuery && this._motionQuery.matches) {
-        this.root.classList.add("is-paused");
+    _onPointerDown(e) {
+      // Only respond to primary pointer button.
+      if (e.button !== undefined && e.button !== 0) return;
+      this.isDragging = true;
+      this.dragStartX = e.clientX;
+      this.dragStartAngle = this.wheelAngle;
+      this.activePointerId = e.pointerId;
+      this.root.classList.add("is-dragging");
+      if (this.stage && this.stage.setPointerCapture) {
+        try { this.stage.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
+      }
+    }
+
+    _onPointerMove(e) {
+      if (!this.isDragging) return;
+      if (this.activePointerId !== null && e.pointerId !== this.activePointerId) return;
+      const dx = e.clientX - this.dragStartX;
+      this.wheelAngle = this.dragStartAngle - dx / DRAG_PX_PER_DEG;
+    }
+
+    _onPointerUp(e) {
+      if (!this.isDragging) return;
+      if (this.activePointerId !== null && e && e.pointerId !== this.activePointerId) return;
+      this.isDragging = false;
+      this.activePointerId = null;
+      this.root.classList.remove("is-dragging");
+    }
+
+    _tick(t) {
+      const dtSec = this.lastFrameTime ? (t - this.lastFrameTime) / 1000 : 0;
+      this.lastFrameTime = t;
+
+      if (!this.isDragging && this.autoEnabled && this.isVisible && !this.reduceMotion) {
+        this.wheelAngle += this.degPerSec * dtSec;
+      }
+
+      this._applyDeckTransform();
+      this._applyCardDepth();
+
+      this._rafId = requestAnimationFrame(this._tick);
+    }
+
+    _applyDeckTransform() {
+      this.deck.style.transform = `rotateY(${this.wheelAngle.toFixed(3)}deg)`;
+    }
+
+    _applyCardDepth() {
+      const wheel = this.wheelAngle;
+      for (let i = 0; i < this.cards.length; i++) {
+        const card = this.cards[i];
+        const cardAngle = parseFloat(card.dataset.cardAngle) || 0;
+        // World angle of the card (where it sits relative to the camera).
+        let world = (cardAngle + wheel) % 360;
+        if (world > 180) world -= 360;
+        if (world < -180) world += 360;
+        const t = Math.abs(world) / 180; // 0 = front, 1 = back
+
+        // Sharp front zone, then gradual blur into the back.
+        let blur;
+        if (t < 0.2) blur = 0;
+        else if (t < 0.5) blur = ((t - 0.2) / 0.3) * 2;
+        else if (t < 0.85) blur = 2 + ((t - 0.5) / 0.35) * 5;
+        else blur = 7 + ((t - 0.85) / 0.15) * 2;
+
+        const brightness = 1 - t * 0.2;
+        const opacity = 1 - t * 0.45;
+
+        card.style.filter = `blur(${blur.toFixed(2)}px) brightness(${brightness.toFixed(2)})`;
+        card.style.opacity = opacity.toFixed(2);
       }
     }
 
     destroy() {
-      this.root.removeEventListener("mouseenter", this._onEnter);
-      this.root.removeEventListener("mouseleave", this._onLeave);
-      this.root.removeEventListener("focusin", this._onEnter);
-      this.root.removeEventListener("focusout", this._onLeave);
+      if (this._rafId) cancelAnimationFrame(this._rafId);
+      if (this.stage) {
+        this.stage.removeEventListener("pointerdown", this._onPointerDown);
+      }
+      window.removeEventListener("pointermove", this._onPointerMove);
+      window.removeEventListener("pointerup", this._onPointerUp);
+      window.removeEventListener("pointercancel", this._onPointerUp);
+      if (this._io) this._io.disconnect();
       if (this._motionQuery && this._motionQuery.removeEventListener) {
         this._motionQuery.removeEventListener("change", this._onMotionChange);
       }
-      if (this._io) this._io.disconnect();
     }
   }
 
