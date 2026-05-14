@@ -277,8 +277,35 @@
     /* The card-angle CSS variable is set by JS per card based on its index */
     transform: translate(-50%, -50%) rotateY(var(--card-angle, 0deg)) translateZ(var(--hf-radius, 600px));
     transform-style: preserve-3d;
-    backface-visibility: hidden;
-    will-change: transform;
+    /* No backface-visibility:hidden — cards behind the front read as blurred
+       depth-of-field, not invisible. */
+    will-change: transform, filter, opacity;
+  }
+  /* Depth-of-field animation: each card cycles blur + opacity in sync with
+     the wheel rotation. JS sets per-card animation-delay so that:
+       front  (world angle 0°)   → blur 0, opacity 1
+       side   (world angle ±90°) → medium blur
+       back   (world angle 180°) → max blur, dim
+  */
+  .hero-float--spin .hero-float__card {
+    animation: hf-card-depth var(--hf-spin-speed, 60s) linear infinite;
+  }
+  .hero-float.is-paused .hero-float__card {
+    animation-play-state: paused;
+  }
+  @keyframes hf-card-depth {
+    0%, 100% {
+      filter: blur(0px) brightness(1);
+      opacity: 1;
+    }
+    25%, 75% {
+      filter: blur(3px) brightness(0.94);
+      opacity: 0.85;
+    }
+    50% {
+      filter: blur(9px) brightness(0.82);
+      opacity: 0.55;
+    }
   }
 
   .hero-float__card-img,

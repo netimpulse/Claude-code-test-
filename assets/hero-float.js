@@ -48,9 +48,37 @@
       const n = this.cards.length;
       if (n === 0) return;
       const step = 360 / n;
+      const duration = this._getSpinDuration();
+      const direction = this.root.classList.contains("hero-float--ccw") ? "ccw" : "cw";
+
       this.cards.forEach((card, i) => {
-        card.style.setProperty("--card-angle", `${i * step}deg`);
+        const angle = i * step;
+        card.style.setProperty("--card-angle", `${angle}deg`);
+
+        // Synchronise the depth-of-field animation with the wheel rotation
+        // so each card is blurred when it's at the back and sharp at the
+        // front, regardless of when its keyframe cycle started.
+        //
+        // CW: world angle = X − 360 · t/D  → front at t = X·D/360
+        //   delay = (X/360 − 1) · D
+        // CCW: world angle = X + 360 · t/D → front at t = (360−X)·D/360
+        //   delay = −X/360 · D
+        const delaySeconds =
+          direction === "ccw"
+            ? -(angle / 360) * duration
+            : (angle / 360 - 1) * duration;
+        card.style.animationDelay = `${delaySeconds}s`;
       });
+    }
+
+    _getSpinDuration() {
+      // Match the CSS var --hf-spin-speed used by the .hero-float__deck spin
+      // animation, defaulting to 60 if unparseable.
+      const raw = getComputedStyle(this.root)
+        .getPropertyValue("--hf-spin-speed")
+        .trim();
+      const parsed = parseFloat(raw);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 60;
     }
 
     _evalMotion() {
