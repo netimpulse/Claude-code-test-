@@ -21,6 +21,7 @@
         "spin_speed": 60,
         "wheel_radius": 420,
         "card_height": 360,
+        "card_aspect": "portrait",
         "color_scheme": "scheme-1",
         "padding_top": 72,
         "padding_bottom": 72

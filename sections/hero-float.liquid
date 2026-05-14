@@ -16,10 +16,22 @@
   assign show_halftone = section.settings.show_halftone
   assign show_pulse = section.settings.show_pulse
   assign card_height = section.settings.card_height
+  assign card_aspect = section.settings.card_aspect
   assign wheel_radius = section.settings.wheel_radius
   assign spin_speed = section.settings.spin_speed
   assign spin_direction = section.settings.spin_direction
   assign auto_rotate = section.settings.auto_rotate
+
+  case card_aspect
+    when 'portrait'
+      assign card_aspect_ratio = '0.5625'
+    when 'square'
+      assign card_aspect_ratio = '1'
+    when 'landscape'
+      assign card_aspect_ratio = '1.6'
+    else
+      assign card_aspect_ratio = '0.5625'
+  endcase
 
   assign card_blocks_count = 0
   for block in section.blocks
@@ -39,6 +51,7 @@
     --hf-pad-top: {{ section.settings.padding_top }}px;
     --hf-pad-bottom: {{ section.settings.padding_bottom }}px;
     --hf-card-height: {{ card_height }}px;
+    --hf-card-aspect: {{ card_aspect_ratio }};
     --hf-radius: {{ wheel_radius }}px;
     --hf-spin-speed: {{ spin_speed }}s;
   "
@@ -267,7 +280,9 @@
     top: 0;
     left: 0;
     height: var(--hf-card-height, 360px);
-    width: auto;
+    /* Fixed width via aspect ratio — guarantees uploaded images render in a
+       predictable box regardless of the image's natural dimensions. */
+    width: calc(var(--hf-card-height, 360px) * var(--hf-card-aspect, 0.5625));
     border-radius: 22px;
     overflow: hidden;
     background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 4%, transparent);
@@ -312,12 +327,11 @@
   .hero-float__card-placeholder {
     display: block;
     height: 100%;
-    width: auto;
+    width: 100%;
     object-fit: cover;
     pointer-events: none;
   }
   .hero-float__card-placeholder {
-    width: calc(var(--hf-card-height, 360px) * 0.55);
     color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 25%, transparent);
     display: flex;
     align-items: center;
@@ -442,6 +456,18 @@
       "step": 10,
       "unit": "px",
       "default": 360
+    },
+    {
+      "type": "select",
+      "id": "card_aspect",
+      "label": "Card aspect ratio",
+      "info": "Match this to the orientation of your uploaded mockups. Images are cover-cropped to fit.",
+      "options": [
+        { "value": "portrait", "label": "Portrait (9:16) — phones" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "landscape", "label": "Landscape (16:10) — laptops" }
+      ],
+      "default": "portrait"
     },
     {
       "type": "header",
