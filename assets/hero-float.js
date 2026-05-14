@@ -21,7 +21,8 @@
       this.deck = root.querySelector("[data-hf-deck]");
       this.cards = Array.from(root.querySelectorAll("[data-hf-card]"));
 
-      this.radius = parseInt(root.dataset.hfRadius, 10) || 420;
+      this.userRadius = parseInt(root.dataset.hfRadius, 10) || 420;
+      this.radius = this.userRadius;
       this.autoEnabled = root.dataset.hfAuto === "true";
       this.direction = root.dataset.hfDirection === "ccw" ? +1 : -1;
       this.spinSeconds = parseFloat(root.dataset.hfSpeed) || 60;
@@ -44,6 +45,7 @@
       this._onPointerDown = this._onPointerDown.bind(this);
       this._onPointerMove = this._onPointerMove.bind(this);
       this._onPointerUp = this._onPointerUp.bind(this);
+      this._onResize = () => this._updateRadius();
 
       this._layoutCards();
       this._bindEvents();
@@ -59,6 +61,30 @@
         card.dataset.cardAngle = String(angle);
         card.style.setProperty("--card-angle", `${angle}deg`);
       });
+      this._updateRadius();
+    }
+
+    /**
+     * Compute the smallest radius that keeps cards on the wheel from
+     * crashing into each other, then take max(userSetting, computedMin).
+     * Cards live at angle = 360/N apart on a circle, so the chord between
+     * adjacent card centers is 2·R·sin(π/N). To keep adjacent cards from
+     * overlapping more than ~15 %, we want chord ≈ cardWidth · 0.85.
+     */
+    _updateRadius() {
+      const n = this.cards.length;
+      if (n < 2) return;
+      const styles = getComputedStyle(this.root);
+      const cardH =
+        parseFloat(styles.getPropertyValue("--hf-card-height")) || 360;
+      const cardAspect =
+        parseFloat(styles.getPropertyValue("--hf-card-aspect")) || 0.5625;
+      const cardW = cardH * cardAspect;
+      const sinHalfStep = Math.sin(Math.PI / n);
+      if (sinHalfStep <= 0) return;
+      const minR = (cardW * 0.85) / (2 * sinHalfStep);
+      this.radius = Math.max(this.userRadius, minR);
+      this.root.style.setProperty("--hf-radius", `${Math.round(this.radius)}px`);
     }
 
     _bindEvents() {
@@ -75,6 +101,8 @@
         }, { threshold: 0 });
         this._io.observe(this.root);
       }
+
+      window.addEventListener("resize", this._onResize, { passive: true });
 
       this._motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
       this._onMotionChange = () => {
@@ -166,6 +194,7 @@
       window.removeEventListener("pointerup", this._onPointerUp);
       window.removeEventListener("pointercancel", this._onPointerUp);
       if (this._io) this._io.disconnect();
+      window.removeEventListener("resize", this._onResize);
       if (this._motionQuery && this._motionQuery.removeEventListener) {
         this._motionQuery.removeEventListener("change", this._onMotionChange);
       }
