@@ -70,5 +70,20 @@
   "team_overview": {
     "more_about": "More about",
     "add_members": "Add team-member blocks to get started."
+  },
+  "product_detail": {
+    "placeholder_title": "Product title",
+    "variant": "Variant",
+    "quantity": "Quantity",
+    "qty_decrease": "Decrease quantity",
+    "qty_increase": "Increase quantity",
+    "add_to_cart": "In den Warenkorb",
+    "sold_out": "Sold out",
+    "rating_count_prefix": "aus"
+  },
+  "hero_float": {
+    "add_cards": "Add card blocks in the theme editor to fill the carousel.",
+    "prev": "Previous slide",
+    "next": "Next slide"
   }
 }

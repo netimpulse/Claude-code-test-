@@ -1,0 +1,504 @@
+{% comment %}
+  Hero Float — combined hero section
+  ----------------------------------------------------------------
+  - Headline + sub-headline
+  - Halftone logo: image_picker centered between pulsing radar rings
+  - 3D wheel of cards on a circle in 3D space
+  - Rotation is JS-driven (continuous auto + drag to scrub in either
+    direction). Per-card depth-of-field blur/opacity computed from each
+    card's current world angle every frame.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+  assign halftone_image = section.settings.halftone_image
+  assign show_halftone = section.settings.show_halftone
+  assign show_pulse = section.settings.show_pulse
+  assign card_height = section.settings.card_height
+  assign card_aspect = section.settings.card_aspect
+  assign wheel_radius = section.settings.wheel_radius
+  assign spin_speed = section.settings.spin_speed
+  assign spin_direction = section.settings.spin_direction
+  assign auto_rotate = section.settings.auto_rotate
+
+  case card_aspect
+    when 'portrait'
+      assign card_aspect_ratio = '0.5625'
+    when 'square'
+      assign card_aspect_ratio = '1'
+    when 'landscape_wide'
+      assign card_aspect_ratio = '1.78'
+    when 'landscape'
+      assign card_aspect_ratio = '1.4'
+    else
+      assign card_aspect_ratio = '0.5625'
+  endcase
+
+  assign card_blocks_count = 0
+  for block in section.blocks
+    if block.type == 'card'
+      assign card_blocks_count = card_blocks_count | plus: 1
+    endif
+  endfor
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-float {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+    {%- endif -%}
+    {%- if scheme.settings.text != blank -%}
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="hero-float full-width color-{{ scheme.id }}{% if show_pulse %} hero-float--pulse{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-float"
+  data-hf-radius="{{ wheel_radius }}"
+  data-hf-auto="{{ auto_rotate }}"
+  data-hf-direction="{{ spin_direction }}"
+  data-hf-speed="{{ spin_speed }}"
+  data-hf-cards="{{ card_blocks_count }}"
+  style="
+    --hf-pad-top: {{ section.settings.padding_top }}px;
+    --hf-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hf-card-height: {{ card_height }}px;
+    --hf-card-aspect: {{ card_aspect_ratio }};
+    --hf-radius: {{ wheel_radius }}px;
+  "
+>
+  <div class="hero-float__inner">
+    <header class="hero-float__intro">
+      {%- if heading != blank -%}
+        <h1 class="hero-float__heading">{{ heading }}</h1>
+      {%- endif -%}
+      {%- if subheading != blank -%}
+        <p class="hero-float__subheading">{{ subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- if show_halftone -%}
+      <div class="hero-float__halftone" aria-hidden="true">
+        <span class="hero-float__halftone-ring"></span>
+        <span class="hero-float__halftone-ring"></span>
+        <span class="hero-float__halftone-ring"></span>
+        {%- if halftone_image != blank -%}
+          {%- capture logo_class -%}hero-float__halftone-logo{%- endcapture -%}
+          {%- assign logo_alt = halftone_image.alt | default: '' | escape -%}
+          {{ halftone_image | image_url: width: 320 | image_tag:
+            alt: logo_alt,
+            class: logo_class,
+            widths: '80, 120, 160, 240, 320',
+            sizes: '(min-width: 990px) 140px, 100px',
+            loading: 'lazy'
+          }}
+        {%- else -%}
+          <svg class="hero-float__halftone-logo hero-float__halftone-logo--placeholder" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="50" cy="50" r="14" fill="currentColor" opacity="0.18"/>
+            <circle cx="50" cy="50" r="5" fill="currentColor"/>
+          </svg>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if card_blocks_count > 0 -%}
+      <div class="hero-float__stage" data-hf-stage>
+        <div class="hero-float__deck" data-hf-deck>
+          <ul class="hero-float__deck-list" data-hf-deck-list>
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'card' -%}
+                <li
+                  class="hero-float__card"
+                  data-hf-card
+                  data-index="{{ forloop.index0 }}"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if block.settings.image != blank -%}
+                    {%- capture card_class -%}hero-float__card-img{%- endcapture -%}
+                    {%- assign card_alt = block.settings.image.alt | default: '' | escape -%}
+                    {{ block.settings.image | image_url: width: 800 | image_tag:
+                      alt: card_alt,
+                      class: card_class,
+                      widths: '320, 480, 640, 800',
+                      sizes: 'auto',
+                      loading: 'lazy',
+                      draggable: 'false'
+                    }}
+                  {%- else -%}
+                    <div class="hero-float__card-placeholder" aria-hidden="true">
+                      {{ 'product-1' | placeholder_svg_tag: 'hero-float__card-placeholder-svg' }}
+                    </div>
+                  {%- endif -%}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    {%- else -%}
+      <p class="hero-float__placeholder">
+        {{ 'hero_float.add_cards' | t | default: 'Add card blocks in the theme editor to fill the carousel.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'hero-float.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .hero-float {
+    position: relative;
+    background: var(--color-background, #fff);
+    color: var(--color-foreground, #1a1a1a);
+    padding: var(--hf-pad-top, 64px) var(--page-margin, 20px) var(--hf-pad-bottom, 64px);
+    overflow: hidden;
+  }
+  .hero-float *,
+  .hero-float *::before,
+  .hero-float *::after { box-sizing: border-box; }
+
+  .hero-float__inner {
+    max-width: var(--page-width, 90rem);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  /* --- Intro --- */
+  .hero-float__intro {
+    text-align: center;
+    max-width: 52rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .hero-float__heading {
+    margin: 0;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+  .hero-float__subheading {
+    margin: 0;
+    font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 70%, transparent);
+  }
+
+  /* --- Halftone logo with pulsing rings --- */
+  .hero-float__halftone {
+    position: relative;
+    width: clamp(140px, 16vw, 200px);
+    height: clamp(140px, 16vw, 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-foreground, #1a1a1a);
+    margin-top: 0.25rem;
+  }
+  .hero-float__halftone-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hero-float--pulse .hero-float__halftone-ring {
+    animation: hf-ring-ping 5s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+  }
+  .hero-float--pulse .hero-float__halftone-ring:nth-child(2) { animation-delay: 1.6s; }
+  .hero-float--pulse .hero-float__halftone-ring:nth-child(3) { animation-delay: 3.2s; }
+  @keyframes hf-ring-ping {
+    0%   { transform: scale(0.45); opacity: 0; }
+    20%  { opacity: 0.22; }
+    100% { transform: scale(1.3); opacity: 0; }
+  }
+
+  .hero-float__halftone-logo {
+    position: relative;
+    z-index: 2;
+    width: 60%;
+    max-width: 130px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .hero-float__halftone-logo--placeholder {
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 55%, transparent);
+  }
+
+  /* --- 3D wheel carousel --- */
+  .hero-float__stage {
+    position: relative;
+    width: 100%;
+    height: calc(var(--hf-card-height, 360px) + 120px);
+    perspective: 2600px;
+    perspective-origin: 50% 55%;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .hero-float.is-dragging .hero-float__stage {
+    cursor: grabbing;
+  }
+
+  .hero-float__deck {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  .hero-float__deck-list {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    transform-style: preserve-3d;
+  }
+
+  .hero-float__card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--hf-card-height, 360px);
+    /* Fixed width across all cards — uniform spacing on the wheel. */
+    width: calc(var(--hf-card-height, 360px) * var(--hf-card-aspect, 0.5625));
+    border-radius: 22px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 4%, transparent);
+    box-shadow:
+      0 28px 60px -20px color-mix(in srgb, var(--color-foreground, #1a1a1a) 35%, transparent),
+      0 10px 22px -10px color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
+    /* Card-angle CSS variable set by JS per card based on its index */
+    transform: translate(-50%, -50%) rotateY(var(--card-angle, 0deg)) translateZ(var(--hf-radius, 600px));
+    transform-style: preserve-3d;
+    will-change: filter, opacity;
+  }
+
+  .hero-float__card-img,
+  .hero-float__card-placeholder {
+    display: block;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+  .hero-float__card-placeholder {
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 25%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 3%, transparent);
+  }
+  .hero-float__card-placeholder-svg {
+    width: 55%;
+    height: 55%;
+  }
+
+  .hero-float__placeholder {
+    padding: 2rem;
+    text-align: center;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 60%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--color-foreground, #1a1a1a) 20%, transparent);
+    border-radius: 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-float--pulse .hero-float__halftone-ring {
+      animation: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero float",
+  "tag": "section",
+  "class": "shopify-section--hero-float",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designing world-class products in California"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sub-heading",
+      "default": "We help early-stage SaaS founders craft premium, investor-ready brands and product experiences."
+    },
+    {
+      "type": "header",
+      "content": "Halftone logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_halftone",
+      "label": "Show halftone logo",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "halftone_image",
+      "label": "Logo image",
+      "info": "PNG / SVG without text label. Sits centered between the pulsing rings."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pulse",
+      "label": "Pulse animation",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "3D wheel carousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Continuous rotation",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "spin_direction",
+      "label": "Direction",
+      "options": [
+        { "value": "cw", "label": "Clockwise" },
+        { "value": "ccw", "label": "Counter-clockwise" }
+      ],
+      "default": "cw"
+    },
+    {
+      "type": "range",
+      "id": "spin_speed",
+      "label": "Seconds per full revolution",
+      "min": 15,
+      "max": 180,
+      "step": 5,
+      "unit": "s",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "wheel_radius",
+      "label": "Wheel radius",
+      "info": "Minimum distance from each card to the center axis. The wheel auto-expands beyond this if the card size would otherwise cause overlap.",
+      "min": 250,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Card height",
+      "min": 240,
+      "max": 520,
+      "step": 10,
+      "unit": "px",
+      "default": 360
+    },
+    {
+      "type": "select",
+      "id": "card_aspect",
+      "label": "Card aspect ratio",
+      "info": "Used for every card so spacing on the wheel stays uniform. Images are cover-cropped to fit.",
+      "options": [
+        { "value": "portrait", "label": "Portrait 9:16 — phones" },
+        { "value": "square", "label": "Square 1:1" },
+        { "value": "landscape", "label": "Landscape 7:5 — tablets / dashboards" },
+        { "value": "landscape_wide", "label": "Landscape 16:9 — laptops" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero float",
+      "category": "Hero",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
