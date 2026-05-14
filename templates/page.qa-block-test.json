@@ -179,6 +179,26 @@
         "feat_fast"
       ]
     },
+    "theme_store_preview": {
+      "type": "theme-store-preview",
+      "settings": {
+        "heading": "Hier geht es zum Theme-Store.",
+        "heading_highlight": "Theme-Store",
+        "subheading": "Eine Auswahl unserer Premium-Themes.",
+        "collection": "fashion",
+        "products_to_show": 6,
+        "show_price": true,
+        "show_details": true,
+        "details_label": "Details",
+        "card_aspect": "4 / 3",
+        "card_radius": 14,
+        "cta_label": "Zum Theme-Store",
+        "cta_url": "/pages/qa-block-test",
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
     "team_overview": {
       "type": "team-overview",
       "settings": {
@@ -232,5 +252,5 @@
       "block_order": ["tm_anna", "tm_david", "tm_lena"]
     }
   },
-  "order": ["services_overview", "team_overview", "qa"]
+  "order": ["services_overview", "theme_store_preview", "team_overview", "qa"]
 }
