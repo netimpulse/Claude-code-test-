@@ -21,17 +21,12 @@
   assign scheme = section.settings.color_scheme
   assign media_size = section.settings.media_size | default: 70
   assign media_bg = section.settings.media_bg_color
-  assign media_eyebrow = section.settings.media_eyebrow
 
   if has_product
-    if media_eyebrow == blank
-      assign media_eyebrow = product.vendor | upcase
-    endif
-
-    assign price = current_variant.price
+    assign variant_price = current_variant.price
     assign compare_at = current_variant.compare_at_price
     assign on_sale = false
-    if compare_at != blank and compare_at > price
+    if compare_at != blank and compare_at > variant_price
       assign on_sale = true
     endif
   endif
@@ -60,10 +55,6 @@
       {%- comment -%} ---------- LEFT: media card ---------- {%- endcomment -%}
       <div class="product-detail__media">
         <div class="product-detail__media-card">
-          {%- if media_eyebrow != blank -%}
-            <p class="product-detail__media-eyebrow">— {{ media_eyebrow | escape }}</p>
-          {%- endif -%}
-
           <div class="product-detail__media-figure">
             {%- if has_product and product.featured_media != blank -%}
               {%- assign feat = product.featured_media -%}
@@ -87,38 +78,6 @@
               </div>
             {%- endif -%}
           </div>
-
-          {%- assign has_meta = false -%}
-          {%- for i in (1..4) -%}
-            {%- assign label_key = 'meta_' | append: i | append: '_label' -%}
-            {%- assign value_key = 'meta_' | append: i | append: '_value' -%}
-            {%- assign label_val = section.settings[label_key] -%}
-            {%- assign value_val = section.settings[value_key] -%}
-            {%- if label_val != blank or value_val != blank -%}
-              {%- assign has_meta = true -%}
-            {%- endif -%}
-          {%- endfor -%}
-
-          {%- if has_meta -%}
-            <ul class="product-detail__media-meta">
-              {%- for i in (1..4) -%}
-                {%- assign label_key = 'meta_' | append: i | append: '_label' -%}
-                {%- assign value_key = 'meta_' | append: i | append: '_value' -%}
-                {%- assign label_val = section.settings[label_key] -%}
-                {%- assign value_val = section.settings[value_key] -%}
-                {%- if label_val != blank or value_val != blank -%}
-                  <li class="product-detail__meta-item">
-                    {%- if label_val != blank -%}
-                      <span class="product-detail__meta-label">{{ label_val | escape }}</span>
-                    {%- endif -%}
-                    {%- if value_val != blank -%}
-                      <span class="product-detail__meta-value">{{ value_val | escape }}</span>
-                    {%- endif -%}
-                  </li>
-                {%- endif -%}
-              {%- endfor -%}
-            </ul>
-          {%- endif -%}
         </div>
       </div>
 
@@ -170,7 +129,7 @@
           <div class="product-detail__price-row">
             <span class="product-detail__price">
               {%- if has_product -%}
-                {{ price | money }}
+                {{ variant_price | money }}
               {%- else -%}
                 {{ 0 | money }}
               {%- endif -%}
@@ -386,24 +345,19 @@
     background: var(--pd-media-bg, #0e1a2b);
     color: #e9f1ef;
     border-radius: var(--pd-radius, 18px);
-    padding: 1.5rem clamp(1rem, 2vw, 2rem) 1.25rem;
-    display: flex;
-    flex-direction: column;
-    min-height: 320px;
-  }
-  .product-detail__media-eyebrow {
-    margin: 0 0 1rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, #e9f1ef 70%, transparent);
-  }
-  .product-detail__media-figure {
-    flex: 1 1 auto;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 0 1.5rem;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 100%;
+  }
+  .product-detail__media-figure {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .product-detail__media-img,
   .product-detail__media-placeholder {
@@ -418,34 +372,6 @@
     width: 100%;
     height: 100%;
     color: color-mix(in srgb, #e9f1ef 30%, transparent);
-  }
-
-  .product-detail__media-meta {
-    list-style: none;
-    padding: 1.25rem 0 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 1rem;
-    border-top: 1px solid color-mix(in srgb, #e9f1ef 18%, transparent);
-  }
-  .product-detail__meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    min-width: 0;
-  }
-  .product-detail__meta-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, #e9f1ef 60%, transparent);
-  }
-  .product-detail__meta-value {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #fff;
-    overflow-wrap: anywhere;
   }
 
   /* --- RIGHT: info column --- */
@@ -756,17 +682,10 @@
       "content": "Media card"
     },
     {
-      "type": "text",
-      "id": "media_eyebrow",
-      "label": "Media card eyebrow",
-      "info": "Small label inside the dark media card. Falls back to product vendor.",
-      "default": "NETIMPULSE · AUDIT-PAKET 01"
-    },
-    {
       "type": "range",
       "id": "media_size",
       "label": "Image size",
-      "info": "Image width inside the media card. Lower values give a smaller, more centered look.",
+      "info": "Image width inside the dark card. Lower values give a smaller, more centered look.",
       "min": 40,
       "max": 100,
       "step": 5,
@@ -778,54 +697,6 @@
       "id": "media_bg_color",
       "label": "Media card background",
       "default": "#0e1a2b"
-    },
-    {
-      "type": "text",
-      "id": "meta_1_label",
-      "label": "Meta 1 label",
-      "default": "Laufzeit"
-    },
-    {
-      "type": "text",
-      "id": "meta_1_value",
-      "label": "Meta 1 value",
-      "default": "30 Tage"
-    },
-    {
-      "type": "text",
-      "id": "meta_2_label",
-      "label": "Meta 2 label",
-      "default": "Format"
-    },
-    {
-      "type": "text",
-      "id": "meta_2_value",
-      "label": "Meta 2 value",
-      "default": "PDF + Live-Call"
-    },
-    {
-      "type": "text",
-      "id": "meta_3_label",
-      "label": "Meta 3 label",
-      "default": "Sprache"
-    },
-    {
-      "type": "text",
-      "id": "meta_3_value",
-      "label": "Meta 3 value",
-      "default": "DE / EN"
-    },
-    {
-      "type": "text",
-      "id": "meta_4_label",
-      "label": "Meta 4 label",
-      "default": "Start"
-    },
-    {
-      "type": "text",
-      "id": "meta_4_value",
-      "label": "Meta 4 value",
-      "default": "Sofort"
     },
     {
       "type": "header",

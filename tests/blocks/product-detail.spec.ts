@@ -23,13 +23,13 @@ test.describe("Product Detail – Section", () => {
     await expect(root.locator("[data-pd-add]")).toBeEnabled();
   });
 
-  test("Meta strip on dark card shows configured items", async ({ page }) => {
+  test("Media card contains only the figure (no meta strip, no eyebrow)", async ({ page }) => {
     const root = page.locator("[data-section-type='product-detail']").first();
-    const items = root.locator(".product-detail__meta-item");
-    await expect(items).toHaveCount(4);
-    await expect(items.nth(0)).toContainText("Laufzeit");
-    await expect(items.nth(0)).toContainText("30 Tage");
-    await expect(items.nth(3)).toContainText("Sofort");
+    const card = root.locator(".product-detail__media-card");
+    await expect(card).toBeVisible();
+    await expect(card.locator(".product-detail__media-figure")).toBeVisible();
+    await expect(root.locator(".product-detail__media-meta")).toHaveCount(0);
+    await expect(root.locator(".product-detail__media-eyebrow")).toHaveCount(0);
   });
 
   test("Qty +/- buttons increment and clamp at 1", async ({ page }) => {
