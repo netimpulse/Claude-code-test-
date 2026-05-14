@@ -82,7 +82,10 @@
         const isActive = offset === 0;
         const tx = offset * this.step;
         const tz = -abs * 180;
-        const ry = -offset * this.rotate;
+        // Outward (cylindrical) tilt: right-side cards rotate so their
+        // LEFT face turns toward the centered card, and vice versa for
+        // the left side — like cards arranged on the inside of a ring.
+        const ry = offset * this.rotate;
         const opacity = abs > 3 ? 0 : 1;
         const pointer = abs > 3 ? "none" : "auto";
 
