@@ -1,50 +1,1004 @@
 {% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
+  Product Detail Page (PDP)
+  ----------------------------------------------------------------
+  - 2-column layout: dark media card (left) + info column (right)
+  - Discount via Shopify-Standard: product.compare_at_price > price -> Strikethrough
+    + optional manual discount-code badge (links to /discount/<code>)
+  - Optional rating display + optional consultation CTA
+  - Sofortkauf button: AJAX add-to-cart -> /checkout
+  - nil-product safe (theme editor without product context)
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+  Docs: https://shopify.dev/docs/storefronts/themes/architecture/templates/product
 {% endcomment %}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
+{%- liquid
+  assign has_product = false
+  if product != blank and product.title != blank
+    assign has_product = true
+    assign current_variant = product.selected_or_first_available_variant
+  endif
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+  assign scheme = section.settings.color_scheme
+  assign media_size = section.settings.media_size | default: 70
+  assign media_bg = section.settings.media_bg_color
+  assign media_eyebrow = section.settings.media_eyebrow
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+  if has_product
+    if media_eyebrow == blank
+      assign media_eyebrow = product.vendor | upcase
+    endif
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+    assign price = current_variant.price
+    assign compare_at = current_variant.compare_at_price
+    assign on_sale = false
+    if compare_at != blank and compare_at > price
+      assign on_sale = true
+    endif
+  endif
 
-    <input type="text" name="quantity" min="1" value="1">
+  assign show_rating = section.settings.show_rating
+  assign show_consultation = section.settings.show_consultation_button
+  assign show_buy_now = section.settings.show_buy_now
+  assign show_discount_badge = section.settings.show_discount_badge
+  assign show_trust_strip = section.settings.show_trust_strip
+-%}
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+<section
+  class="product-detail full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="product-detail"
+  style="
+    --pd-pad-top: {{ section.settings.padding_top }}px;
+    --pd-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --pd-media-size: {{ media_size }}%;
+    --pd-media-bg: {{ media_bg }};
+    --pd-radius: {{ section.settings.card_radius }}px;
+  "
+>
+  <div class="product-detail__inner">
+    <product-detail class="product-detail__grid">
+      {%- comment -%} ---------- LEFT: media card ---------- {%- endcomment -%}
+      <div class="product-detail__media">
+        <div class="product-detail__media-card">
+          {%- if media_eyebrow != blank -%}
+            <p class="product-detail__media-eyebrow">— {{ media_eyebrow | escape }}</p>
+          {%- endif -%}
+
+          <div class="product-detail__media-figure">
+            {%- if has_product and product.featured_media != blank -%}
+              {%- assign feat = product.featured_media -%}
+              {%- if feat.media_type == 'image' -%}
+                {%- assign img_alt = feat.alt | default: product.title | escape -%}
+                {%- capture img_class -%}product-detail__media-img{%- endcapture -%}
+                {{ feat | image_url: width: 1200 | image_tag:
+                  alt: img_alt,
+                  class: img_class,
+                  widths: '320, 480, 640, 800, 1000, 1200',
+                  sizes: '(min-width: 990px) 40vw, 90vw',
+                  loading: 'eager',
+                  fetchpriority: 'high'
+                }}
+              {%- else -%}
+                {{ feat | media_tag: class: 'product-detail__media-img', image_size: '1200x' }}
+              {%- endif -%}
+            {%- else -%}
+              <div class="product-detail__media-placeholder" aria-hidden="true">
+                {{ 'product-1' | placeholder_svg_tag: 'product-detail__placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- assign has_meta = false -%}
+          {%- for i in (1..4) -%}
+            {%- assign label_key = 'meta_' | append: i | append: '_label' -%}
+            {%- assign value_key = 'meta_' | append: i | append: '_value' -%}
+            {%- assign label_val = section.settings[label_key] -%}
+            {%- assign value_val = section.settings[value_key] -%}
+            {%- if label_val != blank or value_val != blank -%}
+              {%- assign has_meta = true -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if has_meta -%}
+            <ul class="product-detail__media-meta">
+              {%- for i in (1..4) -%}
+                {%- assign label_key = 'meta_' | append: i | append: '_label' -%}
+                {%- assign value_key = 'meta_' | append: i | append: '_value' -%}
+                {%- assign label_val = section.settings[label_key] -%}
+                {%- assign value_val = section.settings[value_key] -%}
+                {%- if label_val != blank or value_val != blank -%}
+                  <li class="product-detail__meta-item">
+                    {%- if label_val != blank -%}
+                      <span class="product-detail__meta-label">{{ label_val | escape }}</span>
+                    {%- endif -%}
+                    {%- if value_val != blank -%}
+                      <span class="product-detail__meta-value">{{ value_val | escape }}</span>
+                    {%- endif -%}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- comment -%} ---------- RIGHT: info column ---------- {%- endcomment -%}
+      <div class="product-detail__info">
+        {%- if section.settings.eyebrow_label != blank -%}
+          <p class="product-detail__eyebrow">{{ section.settings.eyebrow_label | escape }}</p>
+        {%- endif -%}
+
+        <h1 class="product-detail__title">
+          {%- if has_product -%}
+            {{ product.title | escape }}
+          {%- else -%}
+            {{ 'product_detail.placeholder_title' | t | default: 'Product title' }}
+          {%- endif -%}
+        </h1>
+
+        {%- if has_product and product.description != blank -%}
+          <div class="product-detail__desc">{{ product.description }}</div>
+        {%- elsif section.settings.fallback_description != blank -%}
+          <div class="product-detail__desc">{{ section.settings.fallback_description }}</div>
+        {%- endif -%}
+
+        {%- if show_rating -%}
+          {%- assign rating_score = section.settings.rating_score | default: '4.9' -%}
+          {%- assign rating_int = rating_score | times: 1 | round -%}
+          <div class="product-detail__rating">
+            <span class="product-detail__rating-stars" aria-hidden="true">
+              {%- for i in (1..5) -%}
+                <svg viewBox="0 0 24 24" width="16" height="16" class="product-detail__star{% if forloop.index <= rating_int %} is-on{% endif %}">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.88-5-4.87 6.91-1.01L12 2z" fill="currentColor"/>
+                </svg>
+              {%- endfor -%}
+            </span>
+            <span class="product-detail__rating-value">{{ rating_score | escape }}</span>
+            {%- if section.settings.rating_count != blank -%}
+              <span class="product-detail__rating-count">
+                {{ 'product_detail.rating_count_prefix' | t | default: 'aus' }}
+                {{ section.settings.rating_count | escape }}
+              </span>
+            {%- endif -%}
+            {%- if section.settings.rating_extra_label != blank -%}
+              <span class="product-detail__rating-extra">· {{ section.settings.rating_extra_label | escape }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <div class="product-detail__pricing-card">
+          <div class="product-detail__price-row">
+            <span class="product-detail__price">
+              {%- if has_product -%}
+                {{ price | money }}
+              {%- else -%}
+                {{ 0 | money }}
+              {%- endif -%}
+            </span>
+            {%- if on_sale -%}
+              <span class="product-detail__price-compare">
+                <s>{{ compare_at | money }}</s>
+              </span>
+            {%- endif -%}
+            {%- if show_discount_badge and section.settings.discount_code != blank -%}
+              {%- assign badge_url = section.settings.discount_url -%}
+              {%- if badge_url == blank -%}
+                {%- capture badge_url -%}{{ routes.root_url }}discount/{{ section.settings.discount_code }}{%- endcapture -%}
+              {%- endif -%}
+              <a class="product-detail__discount-badge" href="{{ badge_url }}">
+                <span class="product-detail__discount-code">{{ section.settings.discount_code | escape }}</span>
+                {%- if section.settings.discount_value != blank -%}
+                  <span class="product-detail__discount-value">· {{ section.settings.discount_value | escape }}</span>
+                {%- endif -%}
+              </a>
+            {%- endif -%}
+          </div>
+
+          {%- if section.settings.price_note != blank -%}
+            <p class="product-detail__price-note">{{ section.settings.price_note | escape }}</p>
+          {%- endif -%}
+
+          {%- if has_product -%}
+            {%- form 'product', product, id: 'ProductForm', class: 'product-detail__form', novalidate: 'novalidate' -%}
+              <input type="hidden" name="id" value="{{ current_variant.id }}" data-pd-variant-id>
+
+              {%- if product.variants.size > 1 -%}
+                <div class="product-detail__variant">
+                  <label for="pd-variant-{{ section.id }}" class="product-detail__variant-label">
+                    {{ 'product_detail.variant' | t | default: 'Variant' }}
+                  </label>
+                  <select
+                    id="pd-variant-{{ section.id }}"
+                    class="product-detail__variant-select"
+                    data-pd-variant-select
+                  >
+                    {%- for variant in product.variants -%}
+                      <option
+                        value="{{ variant.id }}"
+                        data-price="{{ variant.price | money }}"
+                        data-compare="{{ variant.compare_at_price | money }}"
+                        data-available="{{ variant.available }}"
+                        {% if variant == current_variant %}selected{% endif %}
+                      >
+                        {{ variant.title }} — {{ variant.price | money }}{% unless variant.available %} ({{ 'product_detail.sold_out' | t | default: 'Sold out' }}){% endunless %}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              {%- endif -%}
+
+              <div class="product-detail__cta-row">
+                <div class="product-detail__qty">
+                  <label for="pd-qty-{{ section.id }}" class="visually-hidden">
+                    {{ 'product_detail.quantity' | t | default: 'Quantity' }}
+                  </label>
+                  <button
+                    type="button"
+                    class="product-detail__qty-btn"
+                    data-pd-qty-dec
+                    aria-label="{{ 'product_detail.qty_decrease' | t | default: 'Decrease quantity' }}"
+                  >−</button>
+                  <input
+                    id="pd-qty-{{ section.id }}"
+                    class="product-detail__qty-input"
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value="1"
+                    data-pd-qty-input
+                    inputmode="numeric"
+                  >
+                  <button
+                    type="button"
+                    class="product-detail__qty-btn"
+                    data-pd-qty-inc
+                    aria-label="{{ 'product_detail.qty_increase' | t | default: 'Increase quantity' }}"
+                  >+</button>
+                </div>
+
+                <button
+                  type="submit"
+                  name="add"
+                  class="product-detail__add-to-cart"
+                  data-pd-add
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  <span class="product-detail__btn-label">
+                    {%- if current_variant.available -%}
+                      {{ 'product_detail.add_to_cart' | t | default: 'In den Warenkorb' }}
+                    {%- else -%}
+                      {{ 'product_detail.sold_out' | t | default: 'Sold out' }}
+                    {%- endif -%}
+                  </span>
+                  <span aria-hidden="true" class="product-detail__btn-arrow">→</span>
+                </button>
+              </div>
+
+              {%- if show_buy_now -%}
+                <button
+                  type="button"
+                  class="product-detail__buy-now"
+                  data-pd-buy-now
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  <span class="product-detail__btn-label">
+                    {{ section.settings.buy_now_label | default: 'Sofortkauf' | escape }}
+                  </span>
+                  <span aria-hidden="true" class="product-detail__btn-arrow">→</span>
+                </button>
+              {%- endif -%}
+
+              {%- if show_consultation and section.settings.consultation_label != blank -%}
+                <a
+                  class="product-detail__consultation"
+                  href="{{ section.settings.consultation_url | default: '#' }}"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ section.settings.consultation_label | escape }}</span>
+                </a>
+              {%- endif -%}
+            {%- endform -%}
+          {%- else -%}
+            <div class="product-detail__form" aria-hidden="true">
+              <button type="button" class="product-detail__add-to-cart" disabled>
+                {{ 'product_detail.add_to_cart' | t | default: 'In den Warenkorb' }}
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if show_trust_strip -%}
+          {%- assign trust_1 = section.settings.trust_1 -%}
+          {%- assign trust_2 = section.settings.trust_2 -%}
+          {%- assign payment_methods = section.settings.payment_methods_text -%}
+          {%- if trust_1 != blank or trust_2 != blank or payment_methods != blank -%}
+            <ul class="product-detail__trust">
+              {%- if trust_1 != blank -%}
+                <li class="product-detail__trust-item">
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+                    <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ trust_1 | escape }}</span>
+                </li>
+              {%- endif -%}
+              {%- if trust_2 != blank -%}
+                <li class="product-detail__trust-item">
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+                    <path d="M3 12a9 9 0 1 0 3-6.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M3 4v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ trust_2 | escape }}</span>
+                </li>
+              {%- endif -%}
+              {%- if payment_methods != blank -%}
+                <li class="product-detail__trust-item product-detail__trust-item--pay">
+                  <span>{{ payment_methods | escape }}</span>
+                </li>
+              {%- endif -%}
+            </ul>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </product-detail>
+  </div>
+</section>
+
+<script src="{{ 'product-detail.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .product-detail {
+    background: var(--color-background, #fff);
+    color: var(--color-foreground, #1a1a1a);
+    padding: var(--pd-pad-top, 64px) var(--page-margin, 20px) var(--pd-pad-bottom, 64px);
+  }
+  .product-detail *,
+  .product-detail *::before,
+  .product-detail *::after { box-sizing: border-box; }
+
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  .product-detail__inner {
+    max-width: var(--page-width, 90rem);
+    margin: 0 auto;
+  }
+
+  .product-detail__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .product-detail__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 3rem;
+    }
+  }
+
+  /* --- LEFT: dark media card --- */
+  .product-detail__media-card {
+    background: var(--pd-media-bg, #0e1a2b);
+    color: #e9f1ef;
+    border-radius: var(--pd-radius, 18px);
+    padding: 1.5rem clamp(1rem, 2vw, 2rem) 1.25rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+  }
+  .product-detail__media-eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, #e9f1ef 70%, transparent);
+  }
+  .product-detail__media-figure {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0 1.5rem;
+  }
+  .product-detail__media-img,
+  .product-detail__media-placeholder {
+    width: var(--pd-media-size, 70%);
+    max-width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+  }
+  .product-detail__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    color: color-mix(in srgb, #e9f1ef 30%, transparent);
+  }
+
+  .product-detail__media-meta {
+    list-style: none;
+    padding: 1.25rem 0 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 1rem;
+    border-top: 1px solid color-mix(in srgb, #e9f1ef 18%, transparent);
+  }
+  .product-detail__meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+  .product-detail__meta-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, #e9f1ef 60%, transparent);
+  }
+  .product-detail__meta-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    overflow-wrap: anywhere;
+  }
+
+  /* --- RIGHT: info column --- */
+  .product-detail__info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .product-detail__eyebrow {
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 60%, transparent);
+  }
+  .product-detail__title {
+    margin: 0;
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+  .product-detail__desc {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 78%, transparent);
+  }
+  .product-detail__desc p { margin: 0 0 0.6rem; }
+  .product-detail__desc p:last-child { margin-bottom: 0; }
+
+  /* --- Rating --- */
+  .product-detail__rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .product-detail__rating-stars {
+    display: inline-flex;
+    gap: 2px;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
+  }
+  .product-detail__star.is-on { color: #f5b50a; }
+  .product-detail__rating-value { font-weight: 700; }
+  .product-detail__rating-count,
+  .product-detail__rating-extra {
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 65%, transparent);
+  }
+
+  /* --- Pricing card --- */
+  .product-detail__pricing-card {
+    margin-top: 0.5rem;
+    padding: 1.25rem 1.25rem 1.4rem;
+    background: var(--color-background, #fff);
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #1a1a1a) 12%, transparent);
+    border-radius: var(--pd-radius, 18px);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .product-detail__price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 0.9rem;
+  }
+  .product-detail__price {
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .product-detail__price-compare {
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 55%, transparent);
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .product-detail__discount-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.65rem;
+    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #1a1a1a) 14%, transparent);
+    color: inherit;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .product-detail__discount-badge:hover {
+    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 22%, transparent);
+  }
+  .product-detail__price-note {
+    margin: 0;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 60%, transparent);
+  }
+
+  /* --- Form --- */
+  .product-detail__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .product-detail__variant { display: flex; flex-direction: column; gap: 0.35rem; }
+  .product-detail__variant-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 75%, transparent);
+  }
+  .product-detail__variant-select {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    font: inherit;
+    color: inherit;
+    background: var(--color-background, #fff);
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
+    border-radius: 10px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .product-detail__variant-select:focus {
+    outline: none;
+    border-color: var(--color-foreground, #1a1a1a);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-foreground, #1a1a1a) 14%, transparent);
+  }
+
+  .product-detail__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .product-detail__qty {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--color-background, #fff);
+    flex: 0 0 auto;
+  }
+  .product-detail__qty-btn {
+    width: 42px;
+    height: 48px;
+    background: transparent;
+    color: inherit;
+    border: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: background .15s ease;
+  }
+  .product-detail__qty-btn:hover {
+    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 8%, transparent);
+  }
+  .product-detail__qty-input {
+    width: 44px;
+    height: 48px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: center;
+    font: inherit;
+    font-weight: 600;
+    -moz-appearance: textfield;
+  }
+  .product-detail__qty-input::-webkit-outer-spin-button,
+  .product-detail__qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .product-detail__qty-input:focus { outline: none; }
+
+  .product-detail__add-to-cart,
+  .product-detail__buy-now {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.4rem;
+    min-height: 48px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform .12s ease, opacity .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease;
+  }
+  .product-detail__add-to-cart {
+    flex: 1 1 200px;
+    background: var(--color-foreground, #111);
+    color: var(--color-background, #fff);
+    border: 1px solid var(--color-foreground, #111);
+  }
+  .product-detail__add-to-cart:hover:not([disabled]) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--color-foreground, #111) 18%, transparent);
+  }
+  .product-detail__add-to-cart[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .product-detail__buy-now {
+    width: 100%;
+    background: transparent;
+    color: var(--color-foreground, #111);
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #111) 24%, transparent);
+  }
+  .product-detail__buy-now:hover:not([disabled]) {
+    background: color-mix(in srgb, var(--color-foreground, #111) 6%, transparent);
+    border-color: color-mix(in srgb, var(--color-foreground, #111) 40%, transparent);
+  }
+  .product-detail__buy-now[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .product-detail__buy-now.is-loading {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .product-detail__btn-arrow { transition: transform .15s ease; }
+  .product-detail__add-to-cart:hover .product-detail__btn-arrow,
+  .product-detail__buy-now:hover .product-detail__btn-arrow {
+    transform: translateX(3px);
+  }
+
+  .product-detail__consultation {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #111) 16%, transparent);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: background-color .15s ease, border-color .15s ease;
+  }
+  .product-detail__consultation:hover {
+    background: color-mix(in srgb, var(--color-foreground, #111) 6%, transparent);
+    border-color: color-mix(in srgb, var(--color-foreground, #111) 28%, transparent);
+  }
+
+  /* --- Trust strip --- */
+  .product-detail__trust {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.25rem;
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 65%, transparent);
+  }
+  .product-detail__trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .product-detail__trust-item--pay {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-detail *,
+    .product-detail *::before,
+    .product-detail *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.product",
-  "settings": [],
+  "name": "Product",
+  "tag": "section",
+  "class": "shopify-section--product-detail",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow_label",
+      "label": "Eyebrow label",
+      "info": "Small uppercase tag above the title. Leave empty to hide.",
+      "default": "AUDIT · TIER 01"
+    },
+    {
+      "type": "richtext",
+      "id": "fallback_description",
+      "label": "Fallback description",
+      "info": "Used in the theme editor when no product is selected."
+    },
+    {
+      "type": "header",
+      "content": "Media card"
+    },
+    {
+      "type": "text",
+      "id": "media_eyebrow",
+      "label": "Media card eyebrow",
+      "info": "Small label inside the dark media card. Falls back to product vendor.",
+      "default": "NETIMPULSE · AUDIT-PAKET 01"
+    },
+    {
+      "type": "range",
+      "id": "media_size",
+      "label": "Image size",
+      "info": "Image width inside the media card. Lower values give a smaller, more centered look.",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 70
+    },
+    {
+      "type": "color",
+      "id": "media_bg_color",
+      "label": "Media card background",
+      "default": "#0e1a2b"
+    },
+    {
+      "type": "text",
+      "id": "meta_1_label",
+      "label": "Meta 1 label",
+      "default": "Laufzeit"
+    },
+    {
+      "type": "text",
+      "id": "meta_1_value",
+      "label": "Meta 1 value",
+      "default": "30 Tage"
+    },
+    {
+      "type": "text",
+      "id": "meta_2_label",
+      "label": "Meta 2 label",
+      "default": "Format"
+    },
+    {
+      "type": "text",
+      "id": "meta_2_value",
+      "label": "Meta 2 value",
+      "default": "PDF + Live-Call"
+    },
+    {
+      "type": "text",
+      "id": "meta_3_label",
+      "label": "Meta 3 label",
+      "default": "Sprache"
+    },
+    {
+      "type": "text",
+      "id": "meta_3_value",
+      "label": "Meta 3 value",
+      "default": "DE / EN"
+    },
+    {
+      "type": "text",
+      "id": "meta_4_label",
+      "label": "Meta 4 label",
+      "default": "Start"
+    },
+    {
+      "type": "text",
+      "id": "meta_4_value",
+      "label": "Meta 4 value",
+      "default": "Sofort"
+    },
+    {
+      "type": "header",
+      "content": "Rating (optional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "rating_score",
+      "label": "Score",
+      "default": "4.9"
+    },
+    {
+      "type": "text",
+      "id": "rating_count",
+      "label": "Review count text",
+      "default": "42 Bewertungen"
+    },
+    {
+      "type": "text",
+      "id": "rating_extra_label",
+      "label": "Extra label",
+      "info": "Shown after the rating count, e.g. \"Bestseller im Audit-Segment\".",
+      "default": "Bestseller im Audit-Segment"
+    },
+    {
+      "type": "header",
+      "content": "Pricing"
+    },
+    {
+      "type": "text",
+      "id": "price_note",
+      "label": "Price note",
+      "info": "Small line under the price (tax / invoice info).",
+      "default": "Einmalig, inkl. 19 % MwSt. · Rechnung verfügbar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_badge",
+      "label": "Show discount-code badge",
+      "info": "Visual hint next to the price. Strikethrough comes automatically from the variant's compare-at price.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+      "label": "Discount code",
+      "info": "Customer-facing code from your Shopify admin discount.",
+      "default": "SIGNAL10"
+    },
+    {
+      "type": "text",
+      "id": "discount_value",
+      "label": "Badge value label",
+      "default": "-10 %"
+    },
+    {
+      "type": "url",
+      "id": "discount_url",
+      "label": "Badge link",
+      "info": "Defaults to /discount/<code>. Clicking applies the code automatically at checkout."
+    },
+    {
+      "type": "header",
+      "content": "Buy buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_now",
+      "label": "Show Sofortkauf button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "buy_now_label",
+      "label": "Sofortkauf label",
+      "default": "Sofortkauf"
+    },
+    {
+      "type": "header",
+      "content": "Consultation CTA (optional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_consultation_button",
+      "label": "Show consultation button",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "consultation_label",
+      "label": "Consultation label",
+      "default": "Erst beraten lassen — 20 Min, kostenfrei"
+    },
+    {
+      "type": "url",
+      "id": "consultation_url",
+      "label": "Consultation link"
+    },
+    {
+      "type": "header",
+      "content": "Trust strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_strip",
+      "label": "Show trust strip",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Trust item 1",
+      "default": "SSL-gesichert"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Trust item 2",
+      "default": "30-Tage Geld-zurück"
+    },
+    {
+      "type": "text",
+      "id": "payment_methods_text",
+      "label": "Payment methods",
+      "default": "Rechnung · SEPA · PayPal · Klarna"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
   "disabled_on": {
     "groups": ["header", "footer"]
   }

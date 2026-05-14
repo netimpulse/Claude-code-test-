@@ -1,20 +1,42 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "product",
-      "settings": {}
+      "settings": {
+        "eyebrow_label": "AUDIT · TIER 01",
+        "media_eyebrow": "NETIMPULSE · AUDIT-PAKET 01",
+        "media_size": 70,
+        "media_bg_color": "#0e1a2b",
+        "meta_1_label": "Laufzeit",
+        "meta_1_value": "30 Tage",
+        "meta_2_label": "Format",
+        "meta_2_value": "PDF + Live-Call",
+        "meta_3_label": "Sprache",
+        "meta_3_value": "DE / EN",
+        "meta_4_label": "Start",
+        "meta_4_value": "Sofort",
+        "show_rating": false,
+        "rating_score": "4.9",
+        "rating_count": "42 Bewertungen",
+        "rating_extra_label": "Bestseller im Audit-Segment",
+        "price_note": "Einmalig, inkl. 19 % MwSt. · Rechnung verfügbar",
+        "show_discount_badge": false,
+        "discount_code": "SIGNAL10",
+        "discount_value": "-10 %",
+        "show_buy_now": true,
+        "buy_now_label": "Sofortkauf",
+        "show_consultation_button": false,
+        "consultation_label": "Erst beraten lassen — 20 Min, kostenfrei",
+        "show_trust_strip": true,
+        "trust_1": "SSL-gesichert",
+        "trust_2": "30-Tage Geld-zurück",
+        "payment_methods_text": "Rechnung · SEPA · PayPal · Klarna",
+        "color_scheme": "scheme-1",
+        "card_radius": 18,
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main"]
 }
