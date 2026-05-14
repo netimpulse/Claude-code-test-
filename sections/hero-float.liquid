@@ -97,10 +97,21 @@
           <ul class="hero-float__deck-list" data-hf-deck-list>
             {%- for block in section.blocks -%}
               {%- if block.type == 'card' -%}
+                {%- comment -%}
+                  Per-card aspect ratio. If the merchant uploaded an image,
+                  use its natural aspect so the mockup isn't cropped. If not,
+                  fall back to the section-wide aspect setting.
+                {%- endcomment -%}
+                {%- if block.settings.image != blank and block.settings.image.aspect_ratio != blank -%}
+                  {%- assign per_aspect = block.settings.image.aspect_ratio -%}
+                {%- else -%}
+                  {%- assign per_aspect = card_aspect_ratio -%}
+                {%- endif -%}
                 <li
                   class="hero-float__card"
                   data-hf-card
                   data-index="{{ forloop.index0 }}"
+                  style="--card-aspect: {{ per_aspect }};"
                   {{ block.shopify_attributes }}
                 >
                   {%- if block.settings.image != blank -%}
@@ -280,9 +291,9 @@
     top: 0;
     left: 0;
     height: var(--hf-card-height, 360px);
-    /* Fixed width via aspect ratio — guarantees uploaded images render in a
-       predictable box regardless of the image's natural dimensions. */
-    width: calc(var(--hf-card-height, 360px) * var(--hf-card-aspect, 0.5625));
+    /* Width comes from the card's own aspect ratio (set per-block from the
+       uploaded image's natural aspect, with the section default as fallback). */
+    width: calc(var(--hf-card-height, 360px) * var(--card-aspect, var(--hf-card-aspect, 0.5625)));
     border-radius: 22px;
     overflow: hidden;
     background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 4%, transparent);
@@ -309,16 +320,26 @@
     animation-play-state: paused;
   }
   @keyframes hf-card-depth {
+    /* Front: full sharpness, extended through the sides so cards stay crisp
+       longer in the visible front half. */
     0%, 100% {
       filter: blur(0px) brightness(1);
       opacity: 1;
     }
-    25%, 75% {
-      filter: blur(3px) brightness(0.94);
-      opacity: 0.85;
+    15%, 85% {
+      filter: blur(0px) brightness(0.99);
+      opacity: 0.98;
+    }
+    30%, 70% {
+      filter: blur(1.5px) brightness(0.94);
+      opacity: 0.9;
+    }
+    45%, 55% {
+      filter: blur(6px) brightness(0.85);
+      opacity: 0.7;
     }
     50% {
-      filter: blur(9px) brightness(0.82);
+      filter: blur(9px) brightness(0.8);
       opacity: 0.55;
     }
   }
