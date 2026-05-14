@@ -80,5 +80,8 @@
     "add_to_cart": "In den Warenkorb",
     "sold_out": "Sold out",
     "rating_count_prefix": "aus"
+  },
+  "hero_float": {
+    "add_cards": "Add card blocks in the theme editor to fill the carousel."
   }
 }

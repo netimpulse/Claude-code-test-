@@ -9,6 +9,30 @@
  */
 {
   "sections": {
+    "hero_float": {
+      "type": "hero-float",
+      "settings": {
+        "heading": "Designing world-class products in California",
+        "subheading": "We help early-stage SaaS founders craft premium, investor-ready brands and product experiences.",
+        "show_halftone": true,
+        "show_pulse": true,
+        "carousel_tilt": -18,
+        "card_height": 380,
+        "auto_scroll": true,
+        "scroll_speed": 50,
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 96
+      },
+      "blocks": {
+        "card_1": { "type": "card", "settings": {} },
+        "card_2": { "type": "card", "settings": {} },
+        "card_3": { "type": "card", "settings": {} },
+        "card_4": { "type": "card", "settings": {} },
+        "card_5": { "type": "card", "settings": {} }
+      },
+      "block_order": ["card_1", "card_2", "card_3", "card_4", "card_5"]
+    },
     "services_overview": {
       "type": "services-overview",
       "settings": {
@@ -252,5 +276,5 @@
       "block_order": ["tm_anna", "tm_david", "tm_lena"]
     }
   },
-  "order": ["services_overview", "theme_store_preview", "team_overview", "qa"]
+  "order": ["hero_float", "services_overview", "theme_store_preview", "team_overview", "qa"]
 }

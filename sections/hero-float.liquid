@@ -1,0 +1,481 @@
+{% comment %}
+  Hero Float — combined hero section
+  ----------------------------------------------------------------
+  - Large headline + subheadline (textarea)
+  - Halftone logo: configurable image with circular dot-grid mask,
+    surrounded by 3 pulsing radar rings
+  - 3D-perspective floating carousel: auto-scroll with rotateY tilt
+    so the cards look like they're floating and the backs are visible.
+    Alternating Y-offset on cards for the "schweben" feel.
+  - Cards are blocks (image upload), seamlessly looped by rendering twice
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+  assign halftone_image = section.settings.halftone_image
+  assign show_halftone = section.settings.show_halftone
+  assign show_pulse = section.settings.show_pulse
+  assign carousel_tilt = section.settings.carousel_tilt
+  assign card_height = section.settings.card_height
+  assign auto_scroll = section.settings.auto_scroll
+  assign scroll_speed = section.settings.scroll_speed
+
+  assign card_blocks_count = 0
+  for block in section.blocks
+    if block.type == 'card'
+      assign card_blocks_count = card_blocks_count | plus: 1
+    endif
+  endfor
+-%}
+
+<section
+  class="hero-float full-width color-{{ scheme.id }}{% if show_pulse %} hero-float--pulse{% endif %}{% if auto_scroll %} hero-float--auto{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-float"
+  style="
+    --hf-pad-top: {{ section.settings.padding_top }}px;
+    --hf-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hf-tilt: {{ carousel_tilt }}deg;
+    --hf-card-height: {{ card_height }}px;
+    --hf-scroll-speed: {{ scroll_speed }}s;
+  "
+>
+  <div class="hero-float__inner">
+    <header class="hero-float__intro">
+      {%- if heading != blank -%}
+        <h1 class="hero-float__heading">{{ heading }}</h1>
+      {%- endif -%}
+      {%- if subheading != blank -%}
+        <p class="hero-float__subheading">{{ subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- if show_halftone -%}
+      <div class="hero-float__halftone" aria-hidden="true">
+        <span class="hero-float__halftone-ring"></span>
+        <span class="hero-float__halftone-ring"></span>
+        <span class="hero-float__halftone-ring"></span>
+        <span class="hero-float__halftone-dots"></span>
+        {%- if halftone_image != blank -%}
+          {%- capture logo_class -%}hero-float__halftone-logo{%- endcapture -%}
+          {%- assign logo_alt = halftone_image.alt | default: '' | escape -%}
+          {{ halftone_image | image_url: width: 480 | image_tag:
+            alt: logo_alt,
+            class: logo_class,
+            widths: '120, 200, 320, 480',
+            sizes: '(min-width: 990px) 320px, 220px',
+            loading: 'lazy'
+          }}
+        {%- else -%}
+          <svg class="hero-float__halftone-logo hero-float__halftone-logo--placeholder" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="50" cy="50" r="20" fill="currentColor" opacity="0.15"/>
+            <circle cx="50" cy="50" r="8" fill="currentColor"/>
+          </svg>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if card_blocks_count > 0 -%}
+      <div class="hero-float__stage">
+        <ul class="hero-float__track" data-hf-track>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'card' -%}
+              <li class="hero-float__card" {{ block.shopify_attributes }}>
+                {%- if block.settings.image != blank -%}
+                  {%- capture card_class -%}hero-float__card-img{%- endcapture -%}
+                  {%- assign card_alt = block.settings.image.alt | default: '' | escape -%}
+                  {{ block.settings.image | image_url: width: 1000 | image_tag:
+                    alt: card_alt,
+                    class: card_class,
+                    widths: '320, 480, 640, 800, 1000',
+                    sizes: 'auto',
+                    loading: 'lazy'
+                  }}
+                {%- else -%}
+                  <div class="hero-float__card-placeholder" aria-hidden="true">
+                    {{ 'product-1' | placeholder_svg_tag: 'hero-float__card-placeholder-svg' }}
+                  </div>
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- comment -%} Duplicated set for seamless infinite scroll {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'card' -%}
+              <li class="hero-float__card" aria-hidden="true">
+                {%- if block.settings.image != blank -%}
+                  {%- capture card_class2 -%}hero-float__card-img{%- endcapture -%}
+                  {%- assign card_alt2 = block.settings.image.alt | default: '' | escape -%}
+                  {{ block.settings.image | image_url: width: 1000 | image_tag:
+                    alt: card_alt2,
+                    class: card_class2,
+                    widths: '320, 480, 640, 800, 1000',
+                    sizes: 'auto',
+                    loading: 'lazy'
+                  }}
+                {%- else -%}
+                  <div class="hero-float__card-placeholder" aria-hidden="true">
+                    {{ 'product-1' | placeholder_svg_tag: 'hero-float__card-placeholder-svg' }}
+                  </div>
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- else -%}
+      <p class="hero-float__placeholder">
+        {{ 'hero_float.add_cards' | t | default: 'Add card blocks in the theme editor to fill the carousel.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'hero-float.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .hero-float {
+    position: relative;
+    background: var(--color-background, #fff);
+    color: var(--color-foreground, #1a1a1a);
+    padding: var(--hf-pad-top, 80px) var(--page-margin, 20px) var(--hf-pad-bottom, 80px);
+    overflow: hidden;
+  }
+  .hero-float *,
+  .hero-float *::before,
+  .hero-float *::after { box-sizing: border-box; }
+
+  .hero-float__inner {
+    max-width: var(--page-width, 90rem);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  /* --- Intro --- */
+  .hero-float__intro {
+    text-align: center;
+    max-width: 56rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .hero-float__heading {
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+  .hero-float__subheading {
+    margin: 0;
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 70%, transparent);
+  }
+
+  /* --- Halftone logo with pulsing rings --- */
+  .hero-float__halftone {
+    position: relative;
+    width: clamp(220px, 28vw, 360px);
+    height: clamp(220px, 28vw, 360px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-foreground, #1a1a1a);
+  }
+  .hero-float__halftone-dots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, currentColor 1.1px, transparent 1.7px);
+    background-size: 8px 8px;
+    background-position: center;
+    -webkit-mask: radial-gradient(circle at center, #000 22%, rgba(0,0,0,0.85) 38%, rgba(0,0,0,0.4) 58%, transparent 78%);
+            mask: radial-gradient(circle at center, #000 22%, rgba(0,0,0,0.85) 38%, rgba(0,0,0,0.4) 58%, transparent 78%);
+    opacity: 0.55;
+  }
+  .hero-float--pulse .hero-float__halftone-dots {
+    animation: hf-dots-pulse 4s ease-in-out infinite;
+  }
+  @keyframes hf-dots-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.97); }
+    50%      { opacity: 0.7; transform: scale(1.04); }
+  }
+
+  .hero-float__halftone-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hero-float--pulse .hero-float__halftone-ring {
+    animation: hf-ring-ping 5s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+  }
+  .hero-float--pulse .hero-float__halftone-ring:nth-child(2) { animation-delay: 1.6s; }
+  .hero-float--pulse .hero-float__halftone-ring:nth-child(3) { animation-delay: 3.2s; }
+  @keyframes hf-ring-ping {
+    0%   { transform: scale(0.55); opacity: 0; }
+    20%  { opacity: 0.18; }
+    100% { transform: scale(1.25); opacity: 0; }
+  }
+
+  .hero-float__halftone-logo {
+    position: relative;
+    z-index: 2;
+    width: 55%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .hero-float__halftone-logo--placeholder {
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 55%, transparent);
+  }
+
+  /* --- 3D-tilted carousel --- */
+  .hero-float__stage {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    margin-top: 1rem;
+    perspective: 1800px;
+    perspective-origin: 50% 60%;
+    overflow: hidden;
+    --hf-mask: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    -webkit-mask-image: var(--hf-mask);
+            mask-image: var(--hf-mask);
+  }
+
+  .hero-float__track {
+    list-style: none;
+    padding: clamp(40px, 5vw, 80px) 0;
+    margin: 0;
+    display: flex;
+    gap: clamp(1rem, 2vw, 2rem);
+    width: max-content;
+    transform: rotateY(var(--hf-tilt, -18deg)) rotateX(5deg);
+    transform-style: preserve-3d;
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  .hero-float--auto .hero-float__track {
+    animation: hf-scroll var(--hf-scroll-speed, 50s) linear infinite;
+  }
+  .hero-float--auto.is-paused .hero-float__track {
+    animation-play-state: paused;
+  }
+  @keyframes hf-scroll {
+    from { transform: rotateY(var(--hf-tilt, -18deg)) rotateX(5deg) translateX(0); }
+    to   { transform: rotateY(var(--hf-tilt, -18deg)) rotateX(5deg) translateX(-50%); }
+  }
+
+  .hero-float__card {
+    flex: 0 0 auto;
+    height: var(--hf-card-height, 380px);
+    border-radius: 22px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 4%, transparent);
+    box-shadow:
+      0 30px 60px -20px color-mix(in srgb, var(--color-foreground, #1a1a1a) 35%, transparent),
+      0 12px 24px -10px color-mix(in srgb, var(--color-foreground, #1a1a1a) 22%, transparent);
+    transform: translateZ(0);
+  }
+  .hero-float__card:nth-child(odd)  { transform: translateY(-14px) translateZ(0); }
+  .hero-float__card:nth-child(even) { transform: translateY(14px)  translateZ(0); }
+  .hero-float__card:nth-child(4n)   { transform: translateY(-8px)  translateZ(20px); }
+  .hero-float__card:nth-child(4n+3) { transform: translateY(10px)  translateZ(-30px); }
+
+  .hero-float__card-img,
+  .hero-float__card-placeholder {
+    display: block;
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+  }
+  .hero-float__card-placeholder {
+    width: calc(var(--hf-card-height, 380px) * 1.4);
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 25%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-float__card-placeholder-svg {
+    width: 60%;
+    height: 60%;
+  }
+
+  .hero-float__placeholder {
+    padding: 2rem;
+    text-align: center;
+    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 60%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--color-foreground, #1a1a1a) 20%, transparent);
+    border-radius: 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-float--pulse .hero-float__halftone-dots,
+    .hero-float--pulse .hero-float__halftone-ring,
+    .hero-float--auto .hero-float__track {
+      animation: none !important;
+    }
+    .hero-float__track { transform: none; }
+    .hero-float__stage { perspective: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero float",
+  "tag": "section",
+  "class": "shopify-section--hero-float",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designing world-class products in California"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sub-heading",
+      "default": "We help early-stage SaaS founders craft premium, investor-ready brands and product experiences."
+    },
+    {
+      "type": "header",
+      "content": "Halftone logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_halftone",
+      "label": "Show halftone logo",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "halftone_image",
+      "label": "Logo image",
+      "info": "PNG / SVG without text label. Sits on top of the dotted ring pattern."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pulse",
+      "label": "Pulse animation",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Carousel"
+    },
+    {
+      "type": "range",
+      "id": "carousel_tilt",
+      "label": "3D tilt",
+      "info": "Negative values tilt to the left (you see the right sides of the cards).",
+      "min": -30,
+      "max": 30,
+      "step": 1,
+      "unit": "°",
+      "default": -18
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Card height",
+      "min": 240,
+      "max": 520,
+      "step": 10,
+      "unit": "px",
+      "default": 380
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_scroll",
+      "label": "Auto-scroll",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll speed",
+      "info": "Seconds for one full loop. Higher = slower.",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "s",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card image",
+          "info": "Tall or wide mockups both work — cards keep a fixed height and let width follow the image's aspect ratio."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero float",
+      "category": "Hero",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
