@@ -31,9 +31,11 @@
         "card_2": { "type": "card", "settings": {} },
         "card_3": { "type": "card", "settings": {} },
         "card_4": { "type": "card", "settings": {} },
-        "card_5": { "type": "card", "settings": {} }
+        "card_5": { "type": "card", "settings": {} },
+        "card_6": { "type": "card", "settings": {} },
+        "card_7": { "type": "card", "settings": {} }
       },
-      "block_order": ["card_1", "card_2", "card_3", "card_4", "card_5"]
+      "block_order": ["card_1", "card_2", "card_3", "card_4", "card_5", "card_6", "card_7"]
     },
     "services_overview": {
       "type": "services-overview",

@@ -16,9 +16,13 @@
 (function () {
   const SECTION_TYPE = "hero-float";
   const MAX_ROTATION = 78;
-  const BLUR_START = 2;
-  const BLUR_PER_STEP = 2.5;
-  const FADE_OUT_AT = 4;
+  // Asymmetric visible window — matches the reference where the active sits
+  // on the left and cards stretch to the right with depth.
+  const VISIBLE_LEFT = 1;
+  const VISIBLE_RIGHT = 4;
+  // Cards beyond offset +1 start getting blurred (depth of field)
+  const BLUR_START = 1;
+  const BLUR_PER_STEP = 3.5;
 
   class CoverFlow {
     constructor(root) {
@@ -128,21 +132,47 @@
         const abs = Math.abs(offset);
         const isActive = offset === 0;
 
-        const tx = offset * this.step + this.lockShiftPx;
-        const tz = -abs * 180;
-        // Outward (cylinder) rotation, capped so far cards don't flip past edge
-        const rawRy = offset * this.rotate;
-        const ry =
-          Math.sign(rawRy) * Math.min(Math.abs(rawRy), MAX_ROTATION);
-        const blur =
-          abs >= BLUR_START ? (abs - BLUR_START + 1) * BLUR_PER_STEP : 0;
-        const brightness = isActive ? 1 : 0.94;
-        const opacity = abs >= FADE_OUT_AT ? 0 : 1;
-        const pointer = abs >= FADE_OUT_AT ? "none" : "auto";
+        let tx, tz, ry, blur, opacity, pointer;
+
+        if (offset === 0) {
+          // Active — locked, no rotation, no blur
+          tx = this.lockShiftPx;
+          tz = 0;
+          ry = 0;
+          blur = 0;
+          opacity = 1;
+          pointer = "auto";
+        } else if (offset > 0 && offset <= VISIBLE_RIGHT) {
+          // Right side — fan into the distance with progressive blur
+          tx = offset * this.step + this.lockShiftPx;
+          tz = -offset * 180;
+          ry = Math.min(offset * this.rotate, MAX_ROTATION);
+          blur = offset * 2.2;
+          opacity = 1;
+          pointer = "auto";
+        } else if (offset === -1) {
+          // Edge peek on the far left — like the dark phone in the reference.
+          // Pushed slightly further left than one step, tilted to show its
+          // inner edge facing the active card.
+          tx = -this.step * 1.15 + this.lockShiftPx;
+          tz = -260;
+          ry = -60;
+          blur = 4;
+          opacity = 0.95;
+          pointer = "auto";
+        } else {
+          // Hidden — outside the asymmetric visible window
+          tx = -3000;
+          tz = -1500;
+          ry = 0;
+          blur = 0;
+          opacity = 0;
+          pointer = "none";
+        }
 
         card.style.transform =
           `translate(-50%, -50%) translate3d(${tx}px, 0, ${tz}px) rotateY(${ry}deg)`;
-        card.style.filter = `blur(${blur}px) brightness(${brightness})`;
+        card.style.filter = `blur(${blur}px) brightness(${isActive ? 1 : 0.96})`;
         card.style.opacity = String(opacity);
         card.style.pointerEvents = pointer;
         card.style.zIndex = String(100 - abs);
