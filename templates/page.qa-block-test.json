@@ -9,6 +9,39 @@
  */
 {
   "sections": {
+    "hero_channels": {
+      "type": "hero-channels",
+      "settings": {
+        "eyebrow": "Five channels · One signal",
+        "heading_line_1": "Every channel.",
+        "heading_line_2": "One outcome:",
+        "heading_line_3": "revenue.",
+        "lead": "<p>SEO, paid search, social, GEO, and Shopify themes are operated as one system — measured against the only number that matters.</p>",
+        "primary_label": "Get a free audit",
+        "primary_url": "",
+        "secondary_label": "See our process",
+        "secondary_url": "",
+        "show_diagram": true,
+        "show_particles": true,
+        "show_pulse": true,
+        "revenue_label": "Revenue",
+        "revenue_value": "+2.4×",
+        "caption_inputs": "Inputs",
+        "caption_routing": "Routing",
+        "caption_outcome": "Outcome",
+        "color_scheme": "scheme-2",
+        "accent_color": "#9CCFD0",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "ch_seo":  { "type": "channel", "settings": { "label": "SEO",  "sublabel": "Organic search" } },
+        "ch_sea":  { "type": "channel", "settings": { "label": "SEA",  "sublabel": "Paid search" } },
+        "ch_smm":  { "type": "channel", "settings": { "label": "SMM",  "sublabel": "Social media" } },
+        "ch_geo":  { "type": "channel", "settings": { "label": "GEO",  "sublabel": "Generative engines" } }
+      },
+      "block_order": ["ch_seo", "ch_sea", "ch_smm", "ch_geo"]
+    },
     "hero_float": {
       "type": "hero-float",
       "settings": {
@@ -283,5 +316,5 @@
       "block_order": ["tm_anna", "tm_david", "tm_lena"]
     }
   },
-  "order": ["hero_float", "services_overview", "theme_store_preview", "team_overview", "qa"]
+  "order": ["hero_channels", "hero_float", "services_overview", "theme_store_preview", "team_overview", "qa"]
 }
