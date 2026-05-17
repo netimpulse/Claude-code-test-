@@ -1,0 +1,476 @@
+{% comment %}
+  Hero Channels — flowing channels into one signal
+  ----------------------------------------------------------------
+  Two-column hero:
+  - Left: eyebrow, three-line headline (middle line highlighted),
+    lead text, primary + secondary CTA.
+  - Right: SVG flow diagram. Channel pills (blocks) on the left
+    feed paths into a central pulsing hub, which outputs to a
+    revenue node on the right. Particles flow along the paths.
+
+  Channel pill positions, path geometry and animations are derived
+  from the block count, so the diagram stays balanced when the
+  merchant adds or removes channels in the theme editor.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign show_diagram = section.settings.show_diagram
+  assign show_particles = section.settings.show_particles
+  assign show_pulse = section.settings.show_pulse
+
+  assign channel_blocks_count = 0
+  for block in section.blocks
+    if block.type == 'channel'
+      assign channel_blocks_count = channel_blocks_count | plus: 1
+    endif
+  endfor
+
+  assign vb_w = 620
+  assign vb_h = 440
+  assign pill_w = 220
+  assign pill_h = 44
+  assign pill_x = 0
+  assign hub_cx = 380
+  assign hub_cy = 220
+  assign revenue_x = 500
+  assign revenue_w = 120
+  assign revenue_cx = 560
+
+  assign center_y = 220
+  assign spacing = 100
+  if channel_blocks_count > 4
+    assign spacing = 76
+  endif
+  if channel_blocks_count > 5
+    assign spacing = 64
+  endif
+  assign half_span = channel_blocks_count | minus: 1 | times: spacing | divided_by: 2
+  assign start_y = center_y | minus: half_span
+-%}
+
+{{ 'section-hero-channels.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-channels {
+    --hc-pad-top: {{ section.settings.padding_top }}px;
+    --hc-pad-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --hc-bg: {{ scheme.settings.background }};
+      --hc-text: {{ scheme.settings.text }};
+      --hc-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
+      --hc-text-mute: {{ scheme.settings.text | color_modify: 'alpha', 0.55 }};
+      --hc-line: {{ scheme.settings.text | color_modify: 'alpha', 0.14 }};
+      --hc-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
+      --hc-pill-fill: {{ scheme.settings.text | color_modify: 'alpha', 0.04 }};
+    {%- endif -%}
+    {%- if section.settings.accent_color != blank -%}
+      --hc-accent: {{ section.settings.accent_color }};
+      --hc-accent-soft: {{ section.settings.accent_color | color_modify: 'alpha', 0.5 }};
+      --hc-accent-faint: {{ section.settings.accent_color | color_modify: 'alpha', 0.25 }};
+      --hc-accent-glow: {{ section.settings.accent_color | color_modify: 'alpha', 0.1 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-channels
+  class="hero-channels color-{{ scheme.id }}{% if show_pulse %} hero-channels--pulse{% endif %}{% if show_particles %} hero-channels--particles{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-channels"
+  data-channels="{{ channel_blocks_count }}"
+>
+  <div class="hero-channels__inner">
+    <div class="hero-channels__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hero-channels__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.heading_line_1 != blank or section.settings.heading_line_2 != blank or section.settings.heading_line_3 != blank -%}
+        <h1 class="hero-channels__heading">
+          {%- if section.settings.heading_line_1 != blank -%}
+            <span class="hero-channels__heading-line">{{ section.settings.heading_line_1 | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.heading_line_2 != blank -%}
+            <span class="hero-channels__heading-line hero-channels__heading-line--accent">{{ section.settings.heading_line_2 | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.heading_line_3 != blank -%}
+            <span class="hero-channels__heading-line">{{ section.settings.heading_line_3 | escape }}</span>
+          {%- endif -%}
+        </h1>
+      {%- endif -%}
+
+      {%- if section.settings.lead != blank -%}
+        <div class="hero-channels__lead">{{ section.settings.lead }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
+        <div class="hero-channels__ctas">
+          {%- if section.settings.primary_label != blank -%}
+            <a class="hero-channels__cta hero-channels__cta--primary" href="{{ section.settings.primary_url | default: '#' }}">
+              <span>{{ section.settings.primary_label | escape }}</span>
+              <svg class="hero-channels__cta-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.secondary_label != blank -%}
+            <a class="hero-channels__cta hero-channels__cta--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+              <span>{{ section.settings.secondary_label | escape }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if show_diagram -%}
+      <div class="hero-channels__diagram" aria-hidden="true">
+        <svg
+          class="hero-channels__svg"
+          viewBox="0 0 {{ vb_w }} {{ vb_h }}"
+          preserveAspectRatio="xMidYMid meet"
+          role="presentation"
+          focusable="false"
+        >
+          <defs>
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'channel' -%}
+                {%- assign idx = forloop.index0 -%}
+                {%- assign py = start_y | plus: 0 -%}
+                {%- assign py_offset = idx | times: spacing -%}
+                {%- assign py = start_y | plus: py_offset -%}
+                {%- assign path_start_x = pill_w | plus: pill_x -%}
+                <path id="hc-flow-{{ section.id }}-{{ idx }}"
+                  d="M {{ path_start_x }} {{ py }} C {{ path_start_x | plus: 100 }} {{ py }}, {{ hub_cx | minus: 100 }} {{ hub_cy }}, {{ hub_cx }} {{ hub_cy }}"
+                  fill="none" />
+              {%- endif -%}
+            {%- endfor -%}
+            <path id="hc-flow-out-{{ section.id }}"
+              d="M {{ hub_cx }} {{ hub_cy }} C {{ hub_cx | plus: 80 }} {{ hub_cy }}, {{ revenue_x }} {{ hub_cy }}, {{ revenue_cx }} {{ hub_cy }}"
+              fill="none" />
+          </defs>
+
+          {%- comment -%} Path strokes {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'channel' -%}
+              <use href="#hc-flow-{{ section.id }}-{{ forloop.index0 }}"
+                class="hero-channels__path" />
+            {%- endif -%}
+          {%- endfor -%}
+          <use href="#hc-flow-out-{{ section.id }}"
+            class="hero-channels__path hero-channels__path--out" />
+
+          {%- comment -%} Channel pills {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'channel' -%}
+              {%- assign idx = forloop.index0 -%}
+              {%- assign py_offset = idx | times: spacing -%}
+              {%- assign py = start_y | plus: py_offset -%}
+              {%- assign rect_y = py | minus: 22 -%}
+              {%- assign label = block.settings.label | default: '' -%}
+              {%- assign sublabel = block.settings.sublabel | default: '' -%}
+              <g class="hero-channels__pill" {{ block.shopify_attributes }}>
+                <rect x="{{ pill_x }}" y="{{ rect_y }}" width="{{ pill_w }}" height="{{ pill_h }}" rx="6"
+                  class="hero-channels__pill-bg" />
+                {%- if label != blank -%}
+                  <text x="{{ pill_x | plus: 18 }}" y="{{ py | plus: 5 }}"
+                    class="hero-channels__pill-label">{{ label | escape }}</text>
+                {%- endif -%}
+                {%- if sublabel != blank -%}
+                  <text x="{{ pill_x | plus: 64 }}" y="{{ py | plus: 4 }}"
+                    class="hero-channels__pill-sublabel">{{ sublabel | upcase | escape }}</text>
+                {%- endif -%}
+                <circle cx="{{ pill_x | plus: pill_w | plus: 6 }}" cy="{{ py }}" r="2.5"
+                  class="hero-channels__pill-dot" />
+              </g>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- comment -%} Central hub {%- endcomment -%}
+          <g class="hero-channels__hub">
+            <circle cx="{{ hub_cx }}" cy="{{ hub_cy }}" r="68" class="hero-channels__hub-ring-outer" />
+            <circle cx="{{ hub_cx }}" cy="{{ hub_cy }}" r="48" class="hero-channels__hub-ring-mid" />
+            <circle cx="{{ hub_cx }}" cy="{{ hub_cy }}" r="28" class="hero-channels__hub-core" />
+
+            {%- comment -%} Mini waveform inside the hub {%- endcomment -%}
+            <g transform="translate({{ hub_cx | minus: 14 }}, {{ hub_cy | minus: 12 }})" class="hero-channels__hub-wave">
+              <rect x="0" y="9" width="3" height="6" rx="1" class="hero-channels__hub-bar" data-bar="1"/>
+              <rect x="6" y="5" width="3" height="14" rx="1" class="hero-channels__hub-bar" data-bar="2"/>
+              <rect x="12" y="1" width="3" height="22" rx="1" class="hero-channels__hub-bar" data-bar="3"/>
+              <rect x="18" y="5" width="3" height="14" rx="1" class="hero-channels__hub-bar" data-bar="4"/>
+              <rect x="24" y="9" width="3" height="6" rx="1" class="hero-channels__hub-bar" data-bar="5"/>
+            </g>
+
+            {%- if show_pulse -%}
+              <circle cx="{{ hub_cx }}" cy="{{ hub_cy }}" r="68" class="hero-channels__hub-pulse hero-channels__hub-pulse--1" />
+              <circle cx="{{ hub_cx }}" cy="{{ hub_cy }}" r="68" class="hero-channels__hub-pulse hero-channels__hub-pulse--2" />
+            {%- endif -%}
+          </g>
+
+          {%- comment -%} Revenue output node {%- endcomment -%}
+          <g class="hero-channels__revenue">
+            <rect x="{{ revenue_x }}" y="{{ hub_cy | minus: 26 }}" width="{{ revenue_w }}" height="52" rx="6"
+              class="hero-channels__revenue-bg" />
+            {%- if section.settings.revenue_label != blank -%}
+              <text x="{{ revenue_cx }}" y="{{ hub_cy | minus: 6 }}"
+                class="hero-channels__revenue-label" text-anchor="middle">{{ section.settings.revenue_label | upcase | escape }}</text>
+            {%- endif -%}
+            {%- if section.settings.revenue_value != blank -%}
+              <text x="{{ revenue_cx }}" y="{{ hub_cy | plus: 16 }}"
+                class="hero-channels__revenue-value" text-anchor="middle">{{ section.settings.revenue_value | escape }}</text>
+            {%- endif -%}
+          </g>
+
+          {%- if show_particles -%}
+            {%- comment -%} Inbound particles, two per channel staggered {%- endcomment -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'channel' -%}
+                {%- assign idx = forloop.index0 -%}
+                {%- assign delay_a = idx | times: 0.4 -%}
+                {%- assign delay_b = delay_a | plus: 1.4 -%}
+                <circle r="3" class="hero-channels__particle">
+                  <animateMotion dur="2.8s" repeatCount="indefinite" begin="{{ delay_a }}s">
+                    <mpath href="#hc-flow-{{ section.id }}-{{ idx }}" />
+                  </animateMotion>
+                </circle>
+                <circle r="3" class="hero-channels__particle">
+                  <animateMotion dur="2.8s" repeatCount="indefinite" begin="{{ delay_b }}s">
+                    <mpath href="#hc-flow-{{ section.id }}-{{ idx }}" />
+                  </animateMotion>
+                </circle>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- comment -%} Outbound particles to revenue {%- endcomment -%}
+            <circle r="3.5" class="hero-channels__particle hero-channels__particle--out">
+              <animateMotion dur="1.6s" repeatCount="indefinite" begin="0s">
+                <mpath href="#hc-flow-out-{{ section.id }}" />
+              </animateMotion>
+            </circle>
+            <circle r="3.5" class="hero-channels__particle hero-channels__particle--out">
+              <animateMotion dur="1.6s" repeatCount="indefinite" begin="0.55s">
+                <mpath href="#hc-flow-out-{{ section.id }}" />
+              </animateMotion>
+            </circle>
+            <circle r="3.5" class="hero-channels__particle hero-channels__particle--out">
+              <animateMotion dur="1.6s" repeatCount="indefinite" begin="1.1s">
+                <mpath href="#hc-flow-out-{{ section.id }}" />
+              </animateMotion>
+            </circle>
+          {%- endif -%}
+        </svg>
+
+        <div class="hero-channels__caption">
+          {%- if section.settings.caption_inputs != blank -%}
+            <span class="hero-channels__caption-cell">{{ section.settings.caption_inputs | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.caption_routing != blank -%}
+            <span class="hero-channels__caption-cell">{{ section.settings.caption_routing | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.caption_outcome != blank -%}
+            <span class="hero-channels__caption-cell hero-channels__caption-cell--accent">{{ section.settings.caption_outcome | escape }}</span>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</hero-channels>
+
+<script src="{{ 'hero-channels.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero channels",
+  "tag": "section",
+  "class": "shopify-section--hero-channels",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Five channels · One signal"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "Line 1",
+      "default": "Every channel."
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2",
+      "label": "Line 2 (highlighted)",
+      "default": "One outcome:"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_3",
+      "label": "Line 3",
+      "default": "revenue."
+    },
+    {
+      "type": "richtext",
+      "id": "lead",
+      "label": "Lead text",
+      "default": "<p>SEO, paid search, social, GEO, and Shopify themes are operated as one system — measured against the only number that matters.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Get a free audit"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "See our process"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Flow diagram"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_diagram",
+      "label": "Show flow diagram",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_particles",
+      "label": "Animate flowing particles",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pulse",
+      "label": "Animate hub pulse ring",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "revenue_label",
+      "label": "Revenue node label",
+      "default": "Revenue"
+    },
+    {
+      "type": "text",
+      "id": "revenue_value",
+      "label": "Revenue node value",
+      "default": "+2.4×"
+    },
+    {
+      "type": "header",
+      "content": "Caption row"
+    },
+    {
+      "type": "text",
+      "id": "caption_inputs",
+      "label": "Caption — inputs",
+      "default": "Inputs"
+    },
+    {
+      "type": "text",
+      "id": "caption_routing",
+      "label": "Caption — routing",
+      "default": "Routing"
+    },
+    {
+      "type": "text",
+      "id": "caption_outcome",
+      "label": "Caption — outcome (accent)",
+      "default": "Outcome"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#9CCFD0"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "channel",
+      "name": "Channel",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "SEO"
+        },
+        {
+          "type": "text",
+          "id": "sublabel",
+          "label": "Sublabel",
+          "default": "Organic search"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero channels",
+      "category": "Hero",
+      "blocks": [
+        { "type": "channel", "settings": { "label": "SEO",  "sublabel": "Organic search" } },
+        { "type": "channel", "settings": { "label": "SEA",  "sublabel": "Paid search" } },
+        { "type": "channel", "settings": { "label": "SMM",  "sublabel": "Social media" } },
+        { "type": "channel", "settings": { "label": "GEO",  "sublabel": "Generative engines" } }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
