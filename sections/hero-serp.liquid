@@ -1,0 +1,210 @@
+{% comment %}
+  Hero SERP — animated rank-jump dashboard
+  ----------------------------------------------------------------
+  Left column: eyebrow, two-tone headline with highlight, body,
+  two CTAs. Right column: mock Google SERP — a search bar that
+  types the configured query, result tabs, and a results list
+  where the row flagged as "your brand" jumps from its initial
+  position to the top while rows above it shift down. Everything,
+  including all animation copy, is editor-driven.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign accent_soft = section.settings.accent_soft
+
+  assign brand_index = -1
+  for block in section.blocks
+    if block.type == 'result' and block.settings.is_brand
+      assign brand_index = forloop.index0
+      break
+    endif
+  endfor
+-%}
+
+{{ 'section-hero-serp.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-serp {
+    --hs-pad-top: {{ section.settings.padding_top }}px;
+    --hs-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hs-accent: {{ accent }};
+    --hs-accent-soft: {{ accent_soft }};
+    --hs-accent-tint: {{ accent_soft | color_modify: 'alpha', 0.18 }};
+    --hs-accent-border: {{ accent | color_modify: 'alpha', 0.18 }};
+    {%- if scheme.settings.background != blank -%}
+      --hs-bg: {{ scheme.settings.background }};
+      --hs-bg-soft: {{ scheme.settings.background | color_modify: 'lightness', '-2' }};
+      --hs-text: {{ scheme.settings.text }};
+      --hs-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
+      --hs-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.45 }};
+      --hs-line: {{ scheme.settings.text | color_modify: 'alpha', 0.10 }};
+      --hs-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
+      --hs-card-bg: {{ scheme.settings.background_card | default: '#ffffff' }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-serp
+  class="hero-serp color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-serp"
+  data-query="{{ section.settings.search_query | escape }}"
+  data-cycle="{{ section.settings.cycle_duration }}"
+  data-typing="{{ section.settings.typing_duration | divided_by: 10.0 }}"
+  data-brand-index="{{ brand_index }}"
+>
+  <div class="hero-serp__inner">
+    <div class="hero-serp__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hero-serp__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      <h1 class="hero-serp__heading">
+        {%- if section.settings.heading_before != blank -%}
+          <span>{{ section.settings.heading_before | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_highlight != blank -%}
+          <span class="hero-serp__heading-accent">{{ section.settings.heading_highlight | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_after != blank -%}
+          <span>{{ section.settings.heading_after | escape }}</span>
+        {%- endif -%}
+      </h1>
+
+      {%- if section.settings.body != blank -%}
+        <div class="hero-serp__body">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      <div class="hero-serp__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="hero-serp__btn hero-serp__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+            <span>{{ section.settings.primary_label | escape }}</span>
+            <svg class="hero-serp__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="hero-serp__btn hero-serp__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+            <span>{{ section.settings.secondary_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="hero-serp__mock" aria-hidden="true">
+      <div class="hero-serp__searchbar">
+        <svg class="hero-serp__search-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="hero-serp__query"><span data-hs-typed></span><span class="hero-serp__cursor" data-hs-cursor></span></div>
+        <span class="hero-serp__engine">{{ section.settings.search_engine_label | escape }}</span>
+      </div>
+
+      <div class="hero-serp__tabs">
+        {%- assign tabs = section.settings.tabs | default: 'All|Images|Shopping|News|Videos' | split: '|' -%}
+        {%- for tab in tabs -%}
+          <span class="hero-serp__tab{% if forloop.first %} hero-serp__tab--active{% endif %}">{{ tab | strip | escape }}</span>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.results_meta_text != blank -%}
+        <div class="hero-serp__meta">{{ section.settings.results_meta_text | escape }}</div>
+      {%- endif -%}
+
+      <div class="hero-serp__results" data-hs-results style="--hs-row-h: 64px; --hs-row-count: {{ section.blocks.size }};">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'result' -%}
+            <div
+              class="hero-serp__row{% if block.settings.is_brand %} hero-serp__row--brand{% endif %}"
+              data-hs-row
+              data-row-index="{{ forloop.index0 }}"
+              {% if block.settings.is_brand %}data-is-brand="true"{% endif %}
+              {{ block.shopify_attributes }}
+            >
+              <span class="hero-serp__favicon">{{ block.settings.favicon | escape }}</span>
+              <div class="hero-serp__row-text">
+                <div class="hero-serp__row-url">{{ block.settings.url | escape }}</div>
+                <div class="hero-serp__row-title">{{ block.settings.title | escape }}</div>
+              </div>
+              {%- if block.settings.is_brand -%}
+                <span class="hero-serp__rank-badge" data-hs-rank>
+                  <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 9V3M3 6l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span data-hs-rank-value>0</span>
+                </span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</hero-serp>
+
+<script src="{{ 'hero-serp.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero SERP",
+  "tag": "section",
+  "class": "shopify-section--hero-serp",
+  "settings": [
+    {"type": "header", "content": "Content"},
+    {"type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "SEO · Organic search"},
+    {"type": "textarea", "id": "heading_before", "label": "Heading text (before highlight)", "default": "Show up first when buyers "},
+    {"type": "text", "id": "heading_highlight", "label": "Heading highlight word", "default": "search"},
+    {"type": "text", "id": "heading_after", "label": "Heading text (after highlight)", "default": "."},
+    {"type": "richtext", "id": "body", "label": "Body", "default": "<p>We tune your pages, fix what Google trips over, and earn the links that move you up the list. First results in 60–90 days.</p>"},
+    {"type": "header", "content": "Buttons"},
+    {"type": "text", "id": "primary_label", "label": "Primary button", "default": "See your audit"},
+    {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "How we work"},
+    {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
+    {"type": "header", "content": "Search mock"},
+    {"type": "text", "id": "search_query", "label": "Typed query", "default": "best shopify theme studio"},
+    {"type": "text", "id": "search_engine_label", "label": "Engine label", "default": "Google"},
+    {"type": "text", "id": "results_meta_text", "label": "Results meta", "default": "About 12,400,000 results · 0.42 s"},
+    {"type": "text", "id": "tabs", "label": "Tabs", "info": "Pipe-separated. First tab is active.", "default": "All|Images|Shopping|News|Videos"},
+    {"type": "header", "content": "Animation"},
+    {"type": "range", "id": "cycle_duration", "label": "Cycle length", "min": 5, "max": 20, "step": 1, "unit": "s", "default": 8},
+    {"type": "range", "id": "typing_duration", "label": "Typing speed (×0.1s)", "info": "How long it takes to type the query. 14 = 1.4 seconds.", "min": 5, "max": 40, "step": 1, "default": 14},
+    {"type": "header", "content": "Appearance"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
+    {"type": "color", "id": "accent_color", "label": "Accent color", "default": "#1c4948"},
+    {"type": "color", "id": "accent_soft", "label": "Accent (soft)", "default": "#9ccfd0"},
+    {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
+    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80}
+  ],
+  "blocks": [
+    {
+      "type": "result",
+      "name": "Search result",
+      "limit": 8,
+      "settings": [
+        {"type": "text", "id": "title", "label": "Title", "default": "Top 12 Shopify Theme Studios · 2026"},
+        {"type": "text", "id": "url", "label": "URL line", "default": "ecommercebenchmarker.com"},
+        {"type": "text", "id": "favicon", "label": "Favicon initials", "info": "2 letters.", "default": "EB"},
+        {"type": "checkbox", "id": "is_brand", "label": "This is your brand (jumps to top)", "default": false}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero SERP",
+      "category": "Hero",
+      "blocks": [
+        {"type": "result", "settings": {"title": "Top 12 Shopify Theme Studios · 2026", "url": "ecommercebenchmarker.com", "favicon": "EB"}},
+        {"type": "result", "settings": {"title": "Best Shopify theme designers ranked", "url": "buildgrowscale.com", "favicon": "BG"}},
+        {"type": "result", "settings": {"title": "Shopify themes directory", "url": "shopify.com › themes", "favicon": "SH"}},
+        {"type": "result", "settings": {"title": "Netimpulse — Custom Shopify themes", "url": "netimpulse.com › shopify", "favicon": "NI", "is_brand": true}},
+        {"type": "result", "settings": {"title": "Awwwards · Shopify Site of the Day", "url": "awwwards.com", "favicon": "AW"}},
+        {"type": "result", "settings": {"title": "Forbes · agencies to watch", "url": "forbes.com", "favicon": "FB"}}
+      ]
+    }
+  ],
+  "disabled_on": {"groups": ["header", "footer"]}
+}
+{% endschema %}
