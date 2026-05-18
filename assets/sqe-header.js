@@ -15,29 +15,44 @@
     window.addEventListener("resize", setVar, { passive: true });
 
     // -------- Sticky --------
+    // The wrapper is pinned from the start (position: sticky in CSS), so it never
+    // scrolls away in the first place. "on-scroll-up" only adds an `is-hidden`
+    // class — translateY(-100%) — when the user is scrolling down.
     const stickyMode = section.getAttribute("data-sticky") || "none";
     if (wrapper) {
       wrapper.classList.remove("is-sticky", "is-hidden");
-      let lastY = 0;
-      const onScroll = () => {
-        const y = window.scrollY;
-        if (stickyMode === "always") {
-          wrapper.classList.add("is-sticky");
-        } else if (stickyMode === "on-scroll-up") {
-          if (y > wrapper.offsetHeight) {
-            wrapper.classList.add("is-sticky");
-            if (y > lastY) wrapper.classList.add("is-hidden");
-            else wrapper.classList.remove("is-hidden");
-          } else {
-            wrapper.classList.remove("is-sticky", "is-hidden");
+      if (section._sqeScroll) {
+        window.removeEventListener("scroll", section._sqeScroll);
+        section._sqeScroll = null;
+      }
+
+      if (stickyMode === "always" || stickyMode === "on-scroll-up") {
+        wrapper.classList.add("is-sticky");
+      }
+
+      if (stickyMode === "on-scroll-up") {
+        let lastY = window.scrollY;
+        const threshold = 8; // ignore tiny pixel jitters
+        const onScroll = () => {
+          const y = window.scrollY;
+          const headerH = wrapper.offsetHeight;
+          if (y <= headerH) {
+            // Near the top: never hide.
+            wrapper.classList.remove("is-hidden");
+          } else if (y - lastY > threshold) {
+            // Scrolling down: hide.
+            wrapper.classList.add("is-hidden");
+            lastY = y;
+          } else if (lastY - y > threshold) {
+            // Scrolling up: show.
+            wrapper.classList.remove("is-hidden");
+            lastY = y;
           }
-        }
-        lastY = y;
-      };
-      onScroll();
-      if (section._sqeScroll) window.removeEventListener("scroll", section._sqeScroll);
-      section._sqeScroll = onScroll;
-      window.addEventListener("scroll", onScroll, { passive: true });
+        };
+        onScroll();
+        section._sqeScroll = onScroll;
+        window.addEventListener("scroll", onScroll, { passive: true });
+      }
     }
 
     // -------- Mobile drawer --------

@@ -27,6 +27,7 @@
   assign show_cta = section.settings.show_cta
   assign cta_text = section.settings.cta_text
   assign cta_link = section.settings.cta_link
+  assign logo_image = section.settings.logo_image | default: settings.logo
 
   assign menu_weight = '400'
   if section.settings.menu_bold
@@ -36,7 +37,7 @@
 
 <section
   id="shopify-section-{{ section.id }}-inner"
-  class="sqe-header"
+  class="sqe-header full-width"
   data-section-id="{{ section.id }}"
   data-section-type="sqe-header"
   data-sticky="{{ sticky }}"
@@ -91,9 +92,9 @@
     <div class="sqe-header__logo">
       {%- if request.page_type == 'index' -%}<h1 class="sqe-header__h1">{%- endif -%}
       <a href="{{ routes.root_url }}" class="sqe-header__logo-link" aria-label="{{ shop.name | escape }}">
-        {%- if settings.logo != blank -%}
-          {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
-          {{ settings.logo | image_url: width: 600 | image_tag:
+        {%- if logo_image != blank -%}
+          {%- assign logo_alt = logo_image.alt | default: shop.name | escape -%}
+          {{ logo_image | image_url: width: 600 | image_tag:
               widths: '160, 240, 320, 480, 600',
               sizes: '(max-width: 750px) 30vw, 240px',
               class: 'sqe-header__logo-img',
@@ -257,11 +258,18 @@
 {%- endif -%}
 
 {% style %}
-  /* Section-id scoped sticky rules — must live in {% raw %}{% style %}{% endraw %} because they contain Liquid. */
+  /* Wrapper gets the header background so the sticky bar is opaque across the full
+     viewport (the .shopify-section grid would otherwise leave the side margins transparent). */
+  #shopify-section-{{ section.id }} {
+    background: {{ scheme.settings.background | default: '#FFFFFF' }};
+  }
+  /* Sticky modes pin the wrapper from the start, so it never scrolls away in the first place. */
   #shopify-section-{{ section.id }}.is-sticky {
     position: sticky;
     top: 0;
-    transition: transform .2s ease;
+    z-index: 30;
+    transition: transform .25s ease;
+    will-change: transform;
   }
   #shopify-section-{{ section.id }}.is-hidden { transform: translateY(-100%); }
 {% endstyle %}
@@ -596,6 +604,14 @@
   "name": "SQE Header",
   "class": "section-header",
   "settings": [
+    { "type": "header", "content": "Logo" },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image",
+      "info": "Overrides the global theme logo. Falls back to the global logo, then to the shop name as text."
+    },
+
     { "type": "header", "content": "Navigation" },
     { "type": "link_list", "id": "menu", "default": "main-menu", "label": "Menu" },
     {
