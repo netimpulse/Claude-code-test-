@@ -9,6 +9,61 @@
  */
 {
   "sections": {
+    "hero_pulse": {
+      "type": "hero-pulse",
+      "settings": {
+        "eyebrow": "Listening to your market · Live",
+        "heading_strong": "Signal that sells.",
+        "heading_muted": "Not noise.",
+        "body": "<p>SEO, paid search, social, and custom Shopify themes — built around what your buyers actually do. We track to revenue, not vanity metrics.</p>",
+        "primary_label": "Get a free audit",
+        "primary_url": "",
+        "secondary_label": "See recent work",
+        "secondary_url": "",
+        "signal_label": "Signal · Live",
+        "show_timer": true,
+        "bar_count": 56,
+        "accent_bars": 10,
+        "animation_speed": 13,
+        "accent_color": "#b5e8db",
+        "color_scheme": "scheme-2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "stat_lift": {
+          "type": "stat",
+          "settings": {
+            "label": "Avg. revenue lift",
+            "value": "2.4×",
+            "style": "accent",
+            "live_counter": false,
+            "counter_rate": 3
+          }
+        },
+        "stat_sessions": {
+          "type": "stat",
+          "settings": {
+            "label": "Sessions · today",
+            "value": "12864",
+            "style": "mono",
+            "live_counter": true,
+            "counter_rate": 3
+          }
+        },
+        "stat_channels": {
+          "type": "stat",
+          "settings": {
+            "label": "Channels live",
+            "value": "4 / 4",
+            "style": "default",
+            "live_counter": false,
+            "counter_rate": 3
+          }
+        }
+      },
+      "block_order": ["stat_lift", "stat_sessions", "stat_channels"]
+    },
     "hero_float": {
       "type": "hero-float",
       "settings": {
@@ -283,5 +338,5 @@
       "block_order": ["tm_anna", "tm_david", "tm_lena"]
     }
   },
-  "order": ["hero_float", "services_overview", "theme_store_preview", "team_overview", "qa"]
+  "order": ["hero_pulse", "hero_float", "services_overview", "theme_store_preview", "team_overview", "qa"]
 }

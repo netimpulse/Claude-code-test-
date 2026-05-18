@@ -1,0 +1,391 @@
+{% comment %}
+  Hero Pulse — signal/waveform hero
+  ----------------------------------------------------------------
+  Left column: eyebrow, two-line heading (strong + muted), body
+  copy, primary + secondary CTAs.
+  Right column: live signal indicator with running mm:ss.ms timer,
+  animated pseudo-Perlin waveform, configurable stat blocks below
+  with optional live-counter animation.
+
+  Animation lives in assets/hero-pulse.js and gracefully falls
+  back to a static frame for prefers-reduced-motion users.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign bar_count = section.settings.bar_count
+  assign accent_bars = section.settings.accent_bars
+  if accent_bars > bar_count
+    assign accent_bars = bar_count
+  endif
+-%}
+
+{{ 'section-hero-pulse.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-pulse {
+    --hp-pad-top: {{ section.settings.padding_top }}px;
+    --hp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hp-accent: {{ accent }};
+    --hp-accent-glow: {{ accent | color_modify: 'alpha', 0.55 }};
+    {%- if scheme.settings.background != blank -%}
+      --hp-bg: {{ scheme.settings.background }};
+      --hp-text: {{ scheme.settings.text }};
+      --hp-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.45 }};
+      --hp-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
+      --hp-line: {{ scheme.settings.text | color_modify: 'alpha', 0.10 }};
+      --hp-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
+      --hp-status: {{ scheme.settings.text | color_modify: 'alpha', 0.55 }};
+      --hp-stat-label: {{ scheme.settings.text | color_modify: 'alpha', 0.5 }};
+      --hp-bar: {{ scheme.settings.text | color_modify: 'alpha', 0.78 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-pulse
+  class="hero-pulse color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-pulse"
+  data-bars="{{ bar_count }}"
+  data-accent-bars="{{ accent_bars }}"
+  data-speed="{{ section.settings.animation_speed | divided_by: 10.0 }}"
+  data-show-timer="{{ section.settings.show_timer }}"
+>
+  <div class="hero-pulse__inner">
+    <div class="hero-pulse__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hero-pulse__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.heading_strong != blank or section.settings.heading_muted != blank -%}
+        <h1 class="hero-pulse__heading">
+          {%- if section.settings.heading_strong != blank -%}
+            <span class="hero-pulse__heading-strong">{{ section.settings.heading_strong | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.heading_muted != blank -%}
+            <span class="hero-pulse__heading-muted">{{ section.settings.heading_muted | escape }}</span>
+          {%- endif -%}
+        </h1>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <div class="hero-pulse__body">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
+        <div class="hero-pulse__actions">
+          {%- if section.settings.primary_label != blank -%}
+            <a
+              class="hero-pulse__btn hero-pulse__btn--primary"
+              href="{{ section.settings.primary_url | default: '#' }}"
+            >
+              <span>{{ section.settings.primary_label | escape }}</span>
+              <svg class="hero-pulse__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+
+          {%- if section.settings.secondary_label != blank -%}
+            <a
+              class="hero-pulse__btn hero-pulse__btn--secondary"
+              href="{{ section.settings.secondary_url | default: '#' }}"
+            >
+              <span>{{ section.settings.secondary_label | escape }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero-pulse__panel" aria-hidden="true">
+      <div class="hero-pulse__status">
+        <span class="hero-pulse__status-left">
+          <span class="hero-pulse__dot"></span>
+          <span>{{ section.settings.signal_label | escape }}</span>
+        </span>
+        {%- if section.settings.show_timer -%}
+          <span class="hero-pulse__timer" data-hp-timer>00:00.000</span>
+        {%- endif -%}
+      </div>
+
+      <div class="hero-pulse__wave-wrap">
+        <div class="hero-pulse__wave" data-hp-wave>
+          {%- for i in (1..bar_count) -%}
+            {%- assign idx = forloop.index0 -%}
+            {%- assign accent_start = bar_count | minus: accent_bars -%}
+            {%- if idx >= accent_start and accent_bars > 0 -%}
+              <span class="hero-pulse__bar hero-pulse__bar--accent" data-hp-bar></span>
+            {%- else -%}
+              <span class="hero-pulse__bar" data-hp-bar></span>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <span class="hero-pulse__centerline" aria-hidden="true"></span>
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="hero-pulse__stats">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'stat' -%}
+              <div
+                class="hero-pulse__stat hero-pulse__stat--{{ block.settings.style }}"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.label != blank -%}
+                  <div class="hero-pulse__stat-label">{{ block.settings.label | escape }}</div>
+                {%- endif -%}
+                {%- if block.settings.live_counter -%}
+                  {%- assign base_digits = block.settings.value | replace: ',', '' | replace: '.', '' | replace: ' ', '' -%}
+                  <div
+                    class="hero-pulse__stat-value"
+                    data-hp-counter
+                    data-base="{{ base_digits | plus: 0 }}"
+                    data-rate="{{ block.settings.counter_rate }}"
+                  >{{ block.settings.value | escape }}</div>
+                {%- else -%}
+                  <div class="hero-pulse__stat-value">{{ block.settings.value | escape }}</div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</hero-pulse>
+
+<script src="{{ 'hero-pulse.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero pulse",
+  "tag": "section",
+  "class": "shopify-section--hero-pulse",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Listening to your market · Live"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_strong",
+      "label": "Headline (primary)",
+      "default": "Signal that sells."
+    },
+    {
+      "type": "textarea",
+      "id": "heading_muted",
+      "label": "Headline (muted)",
+      "info": "Shown below the primary headline in a faded color.",
+      "default": "Not noise."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>SEO, paid search, social, and custom Shopify themes — built around what your buyers actually do. We track to revenue, not vanity metrics.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Get a free audit"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "See recent work"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Signal panel"
+    },
+    {
+      "type": "text",
+      "id": "signal_label",
+      "label": "Signal label",
+      "default": "Signal · Live"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timer",
+      "label": "Show running timer",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "bar_count",
+      "label": "Bars in waveform",
+      "min": 24,
+      "max": 96,
+      "step": 2,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "accent_bars",
+      "label": "Trailing accent bars",
+      "info": "How many bars on the right use the accent color.",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "label": "Wave speed",
+      "info": "Higher = faster motion.",
+      "min": 1,
+      "max": 40,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "info": "Used for the eyebrow, primary button, signal dot and trailing waveform bars.",
+      "default": "#b5e8db"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Avg. revenue lift"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "2.4×"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            { "value": "default", "label": "Default" },
+            { "value": "accent",  "label": "Accent color" },
+            { "value": "mono",    "label": "Monospace" }
+          ],
+          "default": "default"
+        },
+        {
+          "type": "checkbox",
+          "id": "live_counter",
+          "label": "Animate as live counter",
+          "info": "Increments the value over time. Use a numeric value (digits only).",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "counter_rate",
+          "label": "Counter rate per second",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 3
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero pulse",
+      "category": "Hero",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Avg. revenue lift",
+            "value": "2.4×",
+            "style": "accent"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Sessions · today",
+            "value": "12864",
+            "style": "mono",
+            "live_counter": true,
+            "counter_rate": 3
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Channels live",
+            "value": "4 / 4",
+            "style": "default"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
