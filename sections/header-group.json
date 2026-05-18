@@ -13,10 +13,44 @@
   "sections": {
     "header": {
       "type": "sqe-header",
-      "settings": {}
+      "settings": {
+        "menu": "hauptmenu",
+        "nav_alignment": "center",
+        "sticky_header_type": "on-scroll-up",
+        "color_scheme": "",
+        "header_height": 80,
+        "show_border": true,
+        "menu_font_size": 15,
+        "menu_bold": true,
+        "show_cta": true,
+        "cta_text": "Get a Quote",
+        "cta_link": "",
+        "cta_font_size": 14,
+        "show_search": true,
+        "show_account": true,
+        "show_cart": true,
+        "logo_pos_x": 2,
+        "logo_pos_y": 0,
+        "menu_nudge_x": 0,
+        "menu_pos_y": 0,
+        "actions_pos_x": 2,
+        "actions_pos_y": 0,
+        "search_pos_x": 0,
+        "search_pos_y": 0,
+        "account_pos_x": 0,
+        "account_pos_y": 0,
+        "cart_pos_x": 0,
+        "cart_pos_y": 0,
+        "cta_pos_x": 0,
+        "cta_pos_y": 0,
+        "hamburger_pos_x": 2,
+        "hamburger_pos_y": 0,
+        "mobile_logo_size": 36,
+        "mobile_icon_size": 38
+      }
     }
   },
   "order": [
     "header"
-  ],
+  ]
 }

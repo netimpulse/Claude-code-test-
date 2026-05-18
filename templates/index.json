@@ -9,89 +9,29 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
-    },
-    "theme_store_EcNgjF": {
-      "type": "theme-store",
-      "blocks": {
-        "category_dNiNTD": {
-          "type": "category",
-          "settings": {
-            "collection": "",
-            "label": ""
-          }
-        },
-        "category_E6qcFx": {
-          "type": "category",
-          "settings": {
-            "collection": "",
-            "label": ""
-          }
-        },
-        "category_6jEAzw": {
-          "type": "category",
-          "settings": {
-            "collection": "",
-            "label": ""
-          }
-        },
-        "feature_4GME4C": {
-          "type": "feature",
-          "settings": {
-            "text": "Mobile optimized"
-          }
-        },
-        "feature_ATGGwX": {
-          "type": "feature",
-          "settings": {
-            "text": "SEO friendly"
-          }
-        },
-        "feature_Y6gULB": {
-          "type": "feature",
-          "settings": {
-            "text": "Theme editor compatible"
-          }
-        },
-        "feature_Gwb3eH": {
-          "type": "feature",
-          "settings": {
-            "text": "Fast load times"
-          }
-        }
-      },
-      "block_order": [
-        "category_dNiNTD",
-        "category_E6qcFx",
-        "category_6jEAzw",
-        "feature_4GME4C",
-        "feature_ATGGwX",
-        "feature_Y6gULB",
-        "feature_Gwb3eH"
-      ],
-      "name": "t:theme_store.name",
+    "theme_store_preview_zMCVkD": {
+      "type": "theme-store-preview",
+      "name": "Theme store preview",
       "settings": {
-        "heading": "Theme Store",
-        "search_placeholder": "Search themes…",
-        "categories_heading": "Categories",
-        "all_label": "All themes",
-        "features_heading": "Features",
-        "color_scheme": "scheme-2",
-        "heading_font": "work_sans_n7",
-        "body_font": "work_sans_n4",
-        "card_radius": 14
+        "heading": "Hier geht es zum Theme-Store.",
+        "heading_highlight": "Theme-Store",
+        "subheading": "Eine Auswahl unserer Premium-Themes.",
+        "collection": "",
+        "products_to_show": 6,
+        "show_price": true,
+        "show_details": true,
+        "details_label": "Details",
+        "card_aspect": "4 / 3",
+        "card_radius": 14,
+        "cta_label": "Zum Theme-Store",
+        "cta_url": "",
+        "color_scheme": "",
+        "padding_top": 64,
+        "padding_bottom": 64
       }
-    },
-    "sticky_buy_bar": {
-      "type": "sticky-buy-bar",
-      "settings": {}
     }
   },
   "order": [
-    "main",
-    "theme_store_EcNgjF",
-    "sticky_buy_bar"
+    "theme_store_preview_zMCVkD"
   ]
 }
