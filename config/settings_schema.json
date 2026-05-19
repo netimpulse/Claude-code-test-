@@ -8,6 +8,27 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Branding",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "Used as the default logo in the header. The SQE Header section can override this with its own logo image."
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Logo width",
+        "min": 60,
+        "max": 320,
+        "step": 10,
+        "unit": "px",
+        "default": 160
+      }
+    ]
+  },
+  {
     "name": "t:general.typography",
     "settings": [
       {

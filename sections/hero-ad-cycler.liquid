@@ -1,0 +1,286 @@
+{% comment %}
+  Hero Ad Cycler — creative variants cycling like an A/B test
+  ----------------------------------------------------------------
+  Left column: eyebrow, three-line headline with one accent word,
+  body, two CTAs and a small stat strip.
+  Right column: ad-test card. Header shows live A/B test label
+  and ticking impressions counter. Card body cycles between
+  variant blocks (tag, headline, sub, CTA, decorative art
+  pattern). Below: variant tabs showing CTR per variant; the
+  highest CTR is marked WIN. Every text — including tags, CTAs,
+  decorative variant copy and footer labels — is editor-driven.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign accent_soft = section.settings.accent_soft
+
+  assign variant_blocks = section.blocks | where: 'type', 'variant'
+  assign winner_index = -1
+  assign winner_ctr = -1.0
+  for block in variant_blocks
+    assign ctr_num = block.settings.ctr | replace: '%', '' | replace: ',', '.' | times: 1.0
+    if ctr_num > winner_ctr
+      assign winner_ctr = ctr_num
+      assign winner_index = forloop.index0
+    endif
+  endfor
+-%}
+
+{{ 'section-hero-ad-cycler.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-ac {
+    --ac-pad-top: {{ section.settings.padding_top }}px;
+    --ac-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --ac-accent: {{ accent }};
+    --ac-accent-soft: {{ accent_soft }};
+    --ac-accent-tint: {{ accent_soft | color_modify: 'alpha', 0.18 }};
+    --ac-accent-tint-strong: {{ accent_soft | color_modify: 'alpha', 0.45 }};
+    {%- if scheme.settings.background != blank -%}
+      --ac-bg: {{ scheme.settings.background }};
+      --ac-bg-soft: {{ scheme.settings.background | color_modify: 'lightness', '-3' }};
+      --ac-text: {{ scheme.settings.text }};
+      --ac-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
+      --ac-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
+      --ac-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --ac-card-bg: {{ scheme.settings.background_card | default: '#ffffff' }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-ad-cycler
+  class="hero-ac color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-ad-cycler"
+  data-variant-dur="{{ section.settings.variant_duration }}"
+  data-impression-base="{{ section.settings.impression_base }}"
+  data-impression-rate="{{ section.settings.impression_rate }}"
+  data-winner-index="{{ winner_index }}"
+>
+  <div class="hero-ac__inner">
+    <div class="hero-ac__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hero-ac__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      <h1 class="hero-ac__heading">
+        {%- if section.settings.heading_line_1 != blank -%}
+          <span>{{ section.settings.heading_line_1 | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_accent != blank or section.settings.heading_line_2 != blank -%}
+          <span>
+            {%- if section.settings.heading_accent != blank -%}<span class="hero-ac__heading-accent">{{ section.settings.heading_accent | escape }}</span>{%- endif -%}
+            {%- if section.settings.heading_line_2 != blank -%} {{ section.settings.heading_line_2 | escape }}{%- endif -%}
+          </span>
+        {%- endif -%}
+        {%- if section.settings.heading_line_3 != blank -%}
+          <span>{{ section.settings.heading_line_3 | escape }}</span>
+        {%- endif -%}
+      </h1>
+
+      {%- if section.settings.body != blank -%}
+        <div class="hero-ac__body">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      <div class="hero-ac__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="hero-ac__btn hero-ac__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+            <span>{{ section.settings.primary_label | escape }}</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="hero-ac__btn hero-ac__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+            <span>{{ section.settings.secondary_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
+      {%- if stat_blocks.size > 0 -%}
+        <div class="hero-ac__stats">
+          {%- for block in stat_blocks -%}
+            <div class="hero-ac__stat" {{ block.shopify_attributes }}>
+              <div class="hero-ac__stat-label">{{ block.settings.label | escape }}</div>
+              <div class="hero-ac__stat-value">{{ block.settings.value | escape }}</div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero-ac__panel" aria-hidden="true">
+      <div class="hero-ac__panel-head">
+        <span class="hero-ac__test-label">
+          <span class="hero-ac__test-dot"></span>
+          {{ section.settings.test_label | escape }}
+        </span>
+        <span class="hero-ac__impressions">
+          <span data-ac-impressions>0</span>
+          {{ section.settings.impressions_label | escape }}
+        </span>
+      </div>
+
+      <div class="hero-ac__card">
+        <div class="hero-ac__post-head">
+          <span class="hero-ac__post-avatar">{{ section.settings.brand_initials | escape }}</span>
+          <div class="hero-ac__post-meta">
+            <div class="hero-ac__post-name">{{ section.settings.brand_name | escape }}</div>
+            <div class="hero-ac__post-sub">{{ section.settings.brand_sub | escape }}</div>
+          </div>
+          <span class="hero-ac__post-more" aria-hidden="true">···</span>
+        </div>
+
+        <div class="hero-ac__art" data-ac-art>
+          {%- for block in variant_blocks -%}
+            {%- assign tone = block.settings.color_tone | default: 'deep' -%}
+            <div
+              class="hero-ac__slide hero-ac__slide--{{ tone }}{% if forloop.first %} is-active{% endif %}"
+              data-ac-slide
+              data-art="{{ block.settings.art_kind }}"
+              data-index="{{ forloop.index0 }}"
+              data-cta="{{ block.settings.cta | escape }}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="hero-ac__pattern" data-ac-pattern="{{ block.settings.art_kind }}"></div>
+              <div class="hero-ac__slide-top">
+                <span class="hero-ac__variant-tag">{{ block.settings.tag | escape }}</span>
+                <span class="hero-ac__ad-badge">{{ section.settings.ad_badge | escape }}</span>
+              </div>
+              <div class="hero-ac__slide-body">
+                <h3 class="hero-ac__slide-headline">{{ block.settings.headline | escape }}</h3>
+                <div class="hero-ac__slide-sub">{{ block.settings.sub | escape }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="hero-ac__cta-row">
+          <div>
+            <div class="hero-ac__cta-domain">{{ section.settings.brand_domain | escape }}</div>
+            <div class="hero-ac__cta-line" data-ac-cta>{{ variant_blocks[0].settings.cta | escape }}</div>
+          </div>
+          <button type="button" class="hero-ac__cta-button" tabindex="-1">
+            <span data-ac-cta-btn>{{ variant_blocks[0].settings.cta | escape }}</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-ac__tabs">
+        {%- for block in variant_blocks -%}
+          <div
+            class="hero-ac__tab{% if forloop.first %} is-active{% endif %}{% if forloop.index0 == winner_index %} is-winner{% endif %}"
+            data-ac-tab
+            data-index="{{ forloop.index0 }}"
+          >
+            <div class="hero-ac__tab-label">
+              <span>{{ section.settings.variant_label_prefix | escape }} {{ block.settings.letter | escape }}</span>
+              {%- if forloop.index0 == winner_index -%}
+                <span class="hero-ac__tab-win">{{ section.settings.winner_label | escape }}</span>
+              {%- endif -%}
+            </div>
+            <div class="hero-ac__tab-ctr">{{ block.settings.ctr | escape }}</div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</hero-ad-cycler>
+
+<script src="{{ 'hero-ad-cycler.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero ad cycler",
+  "tag": "section",
+  "class": "shopify-section--hero-ad-cycler",
+  "settings": [
+    {"type": "header", "content": "Content"},
+    {"type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Paid social · A/B always-on"},
+    {"type": "textarea", "id": "heading_line_1", "label": "Headline (line 1)", "default": "Creative that"},
+    {"type": "text", "id": "heading_accent", "label": "Headline accent word (line 2)", "default": "converts."},
+    {"type": "text", "id": "heading_line_2", "label": "Headline rest (line 2)", "default": "Tested"},
+    {"type": "textarea", "id": "heading_line_3", "label": "Headline (line 3)", "default": "until it does."},
+    {"type": "richtext", "id": "body", "label": "Body", "default": "<p>We ship 4–8 ad variants every week, then quietly kill the ones that don't pay. Your spend follows the winners — automatically.</p>"},
+    {"type": "header", "content": "Buttons"},
+    {"type": "text", "id": "primary_label", "label": "Primary button", "default": "Plan a campaign"},
+    {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "Recent creatives"},
+    {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
+    {"type": "header", "content": "Test panel"},
+    {"type": "text", "id": "test_label", "label": "Test header label", "default": "Live · A/B test #248"},
+    {"type": "text", "id": "impressions_label", "label": "Impressions label", "default": "impressions"},
+    {"type": "number", "id": "impression_base", "label": "Impressions base", "default": 148230},
+    {"type": "number", "id": "impression_rate", "label": "Impressions per second", "default": 7},
+    {"type": "text", "id": "brand_initials", "label": "Post avatar initials", "default": "NI"},
+    {"type": "text", "id": "brand_name", "label": "Brand name", "default": "Netimpulse"},
+    {"type": "text", "id": "brand_sub", "label": "Brand sub-line", "default": "Sponsored · Today"},
+    {"type": "text", "id": "brand_domain", "label": "Brand domain", "default": "netimpulse.com"},
+    {"type": "text", "id": "ad_badge", "label": "Ad badge text", "default": "AD"},
+    {"type": "header", "content": "Variant tabs"},
+    {"type": "text", "id": "variant_label_prefix", "label": "Variant prefix", "default": "Variant"},
+    {"type": "text", "id": "winner_label", "label": "Winner badge", "default": "WIN"},
+    {"type": "header", "content": "Animation"},
+    {"type": "range", "id": "variant_duration", "label": "Seconds per variant", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 3},
+    {"type": "header", "content": "Appearance"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
+    {"type": "color", "id": "accent_color", "label": "Accent (deep)", "default": "#1c4948"},
+    {"type": "color", "id": "accent_soft", "label": "Accent (mist)", "default": "#9ccfd0"},
+    {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
+    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80}
+  ],
+  "blocks": [
+    {
+      "type": "variant",
+      "name": "Ad variant",
+      "limit": 6,
+      "settings": [
+        {"type": "text", "id": "letter", "label": "Letter", "info": "A, B, C ...", "default": "A"},
+        {"type": "text", "id": "tag", "label": "Internal tag", "default": "Variant A · Direct"},
+        {"type": "textarea", "id": "headline", "label": "Ad headline", "default": "Stop guessing what your customers want."},
+        {"type": "text", "id": "sub", "label": "Ad sub-line", "default": "Free 30-min audit. No pitch."},
+        {"type": "text", "id": "cta", "label": "Ad CTA", "default": "Book a slot"},
+        {"type": "text", "id": "ctr", "label": "CTR (e.g. 2.9%)", "info": "Highest CTR is marked as winner.", "default": "1.8%"},
+        {"type": "select", "id": "color_tone", "label": "Background tone", "options": [
+          {"value": "deep", "label": "Deep accent"},
+          {"value": "ink", "label": "Ink (near black)"}
+        ], "default": "deep"},
+        {"type": "select", "id": "art_kind", "label": "Decorative pattern", "options": [
+          {"value": "stripes", "label": "Stripes"},
+          {"value": "grid", "label": "Grid"},
+          {"value": "dots", "label": "Dots"},
+          {"value": "wave", "label": "Wave"}
+        ], "default": "stripes"}
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 4,
+      "settings": [
+        {"type": "text", "id": "label", "label": "Label", "default": "Variants live"},
+        {"type": "text", "id": "value", "label": "Value", "default": "34"}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero ad cycler",
+      "category": "Hero",
+      "blocks": [
+        {"type": "variant", "settings": {"letter": "A", "tag": "Variant A · Direct", "headline": "Stop guessing what your customers want.", "sub": "Free 30-min audit. No pitch.", "cta": "Book a slot", "ctr": "1.8%", "color_tone": "deep", "art_kind": "stripes"}},
+        {"type": "variant", "settings": {"letter": "B", "tag": "Variant B · Outcome", "headline": "2.4× more buyers from organic search.", "sub": "See how 80+ Shopify brands grew.", "cta": "See results", "ctr": "3.4%", "color_tone": "ink", "art_kind": "grid"}},
+        {"type": "variant", "settings": {"letter": "C", "tag": "Variant C · Trust", "headline": "120+ Shopify themes shipped. Yours next.", "sub": "Built for performance. Tied to revenue.", "cta": "Start a project", "ctr": "2.9%", "color_tone": "deep", "art_kind": "dots"}},
+        {"type": "variant", "settings": {"letter": "D", "tag": "Variant D · Curiosity", "headline": "The agency growing the brands you wish were yours.", "sub": "Quiet work. Loud results.", "cta": "What we do", "ctr": "4.7%", "color_tone": "ink", "art_kind": "wave"}},
+        {"type": "stat", "settings": {"label": "Variants live", "value": "34"}},
+        {"type": "stat", "settings": {"label": "Avg. winner lift", "value": "+58%"}},
+        {"type": "stat", "settings": {"label": "Spend on autopilot", "value": "€12K/wk"}}
+      ]
+    }
+  ],
+  "disabled_on": {"groups": ["header", "footer"]}
+}
+{% endschema %}

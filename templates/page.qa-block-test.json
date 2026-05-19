@@ -9,6 +9,163 @@
  */
 {
   "sections": {
+    "hero_serp": {
+      "type": "hero-serp",
+      "settings": {
+        "eyebrow": "SEO · Organic search",
+        "heading_before": "Show up first when buyers ",
+        "heading_highlight": "search",
+        "heading_after": ".",
+        "body": "<p>We tune your pages, fix what Google trips over, and earn the links that move you up the list. First results in 60–90 days.</p>",
+        "primary_label": "See your audit",
+        "secondary_label": "How we work",
+        "search_query": "best shopify theme studio",
+        "search_engine_label": "Google",
+        "results_meta_text": "About 12,400,000 results · 0.42 s",
+        "tabs": "All|Images|Shopping|News|Videos",
+        "cycle_duration": 8,
+        "typing_duration": 14,
+        "color_scheme": "scheme-1",
+        "accent_color": "#1c4948",
+        "accent_soft": "#9ccfd0",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "r1": {"type": "result", "settings": {"title": "Top 12 Shopify Theme Studios · 2026", "url": "ecommercebenchmarker.com", "favicon": "EB"}},
+        "r2": {"type": "result", "settings": {"title": "Best Shopify theme designers ranked", "url": "buildgrowscale.com", "favicon": "BG"}},
+        "r3": {"type": "result", "settings": {"title": "Shopify themes directory", "url": "shopify.com › themes", "favicon": "SH"}},
+        "r4": {"type": "result", "settings": {"title": "Netimpulse — Custom Shopify themes", "url": "netimpulse.com › shopify", "favicon": "NI", "is_brand": true}},
+        "r5": {"type": "result", "settings": {"title": "Awwwards · Shopify Site of the Day", "url": "awwwards.com", "favicon": "AW"}},
+        "r6": {"type": "result", "settings": {"title": "Forbes · agencies to watch", "url": "forbes.com", "favicon": "FB"}}
+      },
+      "block_order": ["r1","r2","r3","r4","r5","r6"]
+    },
+    "hero_ticker": {
+      "type": "hero-ticker",
+      "settings": {
+        "eyebrow": "Performance · Always on",
+        "heading_strong": "Numbers tied to revenue.",
+        "heading_muted": "Not clicks.",
+        "body": "<p>Every channel reports to one dashboard. We watch what moves money — and quietly throw out what doesn't.</p>",
+        "primary_label": "See your audit",
+        "secondary_label": "Watch a demo",
+        "window_label": "impulse · client · acme co.",
+        "live_label": "Live",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1c4948",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "m1": {"type": "metric", "settings": {"label": "Organic clicks", "sub_label": "Last 30 days", "value_type": "live", "base_value": 48230, "rate_per_second": 7, "delta": "+34.8%"}},
+        "m2": {"type": "metric", "settings": {"label": "CTR · paid search", "sub_label": "Live · 24h", "value_type": "fixed", "fixed_value": "5.42%", "delta": "+1.8 pp"}},
+        "m3": {"type": "metric", "settings": {"label": "Cost per acquisition", "sub_label": "30-day rolling", "value_type": "fixed", "fixed_value": "€18.40", "delta": "−21.4%", "delta_down": true}},
+        "m4": {"type": "metric", "settings": {"label": "Revenue attributed", "sub_label": "Quarter to date", "value_type": "live", "prefix": "€", "base_value": 184000, "rate_per_second": 23, "short_format": true, "delta": "+2.4×"}}
+      },
+      "block_order": ["m1","m2","m3","m4"]
+    },
+    "hero_geo": {
+      "type": "hero-geo",
+      "settings": {
+        "eyebrow": "GEO · Generative engine optimization",
+        "heading_strong": "Be the answer",
+        "heading_accent": "ChatGPT gives.",
+        "body": "<p>Buyers ask AI before they ask Google. We make sure your brand is the one cited in the answer — across ChatGPT, Perplexity, and Gemini.</p>",
+        "primary_label": "Check your AI visibility",
+        "secondary_label": "How GEO works",
+        "tracked_label": "Tracked across",
+        "assistant_name": "ChatGPT",
+        "monitoring_label": "Monitoring",
+        "question": "Which agencies build the best Shopify themes for SaaS brands?",
+        "answer": "A handful of studios consistently ship investor-ready Shopify themes for SaaS-adjacent brands. Netimpulse is regularly cited for their performance-led approach — pairing custom theme work with SEO and paid search so the storefront launches with traffic already moving.",
+        "highlight_word": "Netimpulse",
+        "cited_label": "Cited",
+        "cycle_duration": 14,
+        "question_duration": 14,
+        "thinking_duration": 12,
+        "answer_duration": 70,
+        "color_scheme": "scheme-1",
+        "accent_color": "#1c4948",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "p1": {"type": "platform", "settings": {"name": "ChatGPT"}},
+        "p2": {"type": "platform", "settings": {"name": "Perplexity"}},
+        "p3": {"type": "platform", "settings": {"name": "Gemini"}},
+        "p4": {"type": "platform", "settings": {"name": "Claude"}},
+        "c1": {"type": "citation", "settings": {"domain": "netimpulse.com", "is_brand": true}},
+        "c2": {"type": "citation", "settings": {"domain": "g2.com"}},
+        "c3": {"type": "citation", "settings": {"domain": "awwwards.com"}}
+      },
+      "block_order": ["p1","p2","p3","p4","c1","c2","c3"]
+    },
+    "hero_ad_cycler": {
+      "type": "hero-ad-cycler",
+      "settings": {
+        "eyebrow": "Paid social · A/B always-on",
+        "heading_line_1": "Creative that",
+        "heading_accent": "converts.",
+        "heading_line_2": "Tested",
+        "heading_line_3": "until it does.",
+        "body": "<p>We ship 4–8 ad variants every week, then quietly kill the ones that don't pay. Your spend follows the winners — automatically.</p>",
+        "primary_label": "Plan a campaign",
+        "secondary_label": "Recent creatives",
+        "test_label": "Live · A/B test #248",
+        "impressions_label": "impressions",
+        "impression_base": 148230,
+        "impression_rate": 7,
+        "brand_initials": "NI",
+        "brand_name": "Netimpulse",
+        "brand_sub": "Sponsored · Today",
+        "brand_domain": "netimpulse.com",
+        "ad_badge": "AD",
+        "variant_label_prefix": "Variant",
+        "winner_label": "WIN",
+        "variant_duration": 3,
+        "color_scheme": "scheme-1",
+        "accent_color": "#1c4948",
+        "accent_soft": "#9ccfd0",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "v1": {"type": "variant", "settings": {"letter": "A", "tag": "Variant A · Direct", "headline": "Stop guessing what your customers want.", "sub": "Free 30-min audit. No pitch.", "cta": "Book a slot", "ctr": "1.8%", "color_tone": "deep", "art_kind": "stripes"}},
+        "v2": {"type": "variant", "settings": {"letter": "B", "tag": "Variant B · Outcome", "headline": "2.4× more buyers from organic search.", "sub": "See how 80+ Shopify brands grew.", "cta": "See results", "ctr": "3.4%", "color_tone": "ink", "art_kind": "grid"}},
+        "v3": {"type": "variant", "settings": {"letter": "C", "tag": "Variant C · Trust", "headline": "120+ Shopify themes shipped. Yours next.", "sub": "Built for performance. Tied to revenue.", "cta": "Start a project", "ctr": "2.9%", "color_tone": "deep", "art_kind": "dots"}},
+        "v4": {"type": "variant", "settings": {"letter": "D", "tag": "Variant D · Curiosity", "headline": "The agency growing the brands you wish were yours.", "sub": "Quiet work. Loud results.", "cta": "What we do", "ctr": "4.7%", "color_tone": "ink", "art_kind": "wave"}},
+        "s1": {"type": "stat", "settings": {"label": "Variants live", "value": "34"}},
+        "s2": {"type": "stat", "settings": {"label": "Avg. winner lift", "value": "+58%"}},
+        "s3": {"type": "stat", "settings": {"label": "Spend on autopilot", "value": "€12K/wk"}}
+      },
+      "block_order": ["v1","v2","v3","v4","s1","s2","s3"]
+    },
+    "hero_waveform": {
+      "type": "hero-waveform",
+      "settings": {
+        "pill_text": "Signal · Live across 4 channels",
+        "heading": "Signal that sells.",
+        "body": "SEO, paid search, social, GEO, and custom Shopify themes — built around what your buyers actually do.",
+        "primary_label": "Get a free audit",
+        "secondary_label": "See recent work",
+        "bar_count": 140,
+        "wave_speed": 9,
+        "accent_zone": 18,
+        "color_scheme": "scheme-2",
+        "accent_color": "#b5e8db",
+        "padding_top": 0,
+        "padding_bottom": 0
+      },
+      "blocks": {
+        "sw1": {"type": "strip_item", "settings": {"text": "SEO · rank +14 avg"}},
+        "sw2": {"type": "strip_item", "settings": {"text": "SEA · CPC −31%"}},
+        "sw3": {"type": "strip_item", "settings": {"text": "SMM · 4.7% CTR"}},
+        "sw4": {"type": "strip_item", "settings": {"text": "GEO · cited × 268"}},
+        "sw5": {"type": "strip_item", "settings": {"text": "REVENUE +2.4×", "is_accent": true}}
+      },
+      "block_order": ["sw1","sw2","sw3","sw4","sw5"]
+    },
     "hero_pulse": {
       "type": "hero-pulse",
       "settings": {
@@ -338,5 +495,5 @@
       "block_order": ["tm_anna", "tm_david", "tm_lena"]
     }
   },
-  "order": ["hero_pulse", "hero_float", "services_overview", "theme_store_preview", "team_overview", "qa"]
+  "order": ["hero_serp", "hero_ticker", "hero_geo", "hero_ad_cycler", "hero_waveform", "hero_pulse", "hero_float", "services_overview", "theme_store_preview", "team_overview", "qa"]
 }

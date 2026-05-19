@@ -1,0 +1,220 @@
+{% comment %}
+  Hero GEO — be the answer ChatGPT gives
+  ----------------------------------------------------------------
+  Left column: eyebrow (with sparkle icon), two-tone headline,
+  body, two CTAs, "tracked across" platform pills.
+  Right column: chat mock — user question types in, AI thinks
+  with bouncing dots, then streams its answer with a highlighted
+  brand word; citation chips appear once the answer is far enough.
+  Question text, answer text, highlight word, citations and
+  platforms are all editor-driven.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+-%}
+
+{{ 'section-hero-geo.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-geo {
+    --hg-pad-top: {{ section.settings.padding_top }}px;
+    --hg-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hg-accent: {{ accent }};
+    --hg-accent-tint: {{ accent | color_modify: 'alpha', 0.12 }};
+    --hg-accent-tint-strong: {{ accent | color_modify: 'alpha', 0.25 }};
+    {%- if scheme.settings.background != blank -%}
+      --hg-bg: {{ scheme.settings.background }};
+      --hg-bg-soft: {{ scheme.settings.background | color_modify: 'lightness', '-3' }};
+      --hg-text: {{ scheme.settings.text }};
+      --hg-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
+      --hg-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
+      --hg-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --hg-card-bg: {{ scheme.settings.background_card | default: '#ffffff' }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-geo
+  class="hero-geo color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-geo"
+  data-question="{{ section.settings.question | escape }}"
+  data-answer="{{ section.settings.answer | escape }}"
+  data-highlight="{{ section.settings.highlight_word | escape }}"
+  data-cycle="{{ section.settings.cycle_duration }}"
+  data-question-duration="{{ section.settings.question_duration | divided_by: 10.0 }}"
+  data-thinking-duration="{{ section.settings.thinking_duration | divided_by: 10.0 }}"
+  data-answer-duration="{{ section.settings.answer_duration | divided_by: 10.0 }}"
+>
+  <div class="hero-geo__inner">
+    <div class="hero-geo__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hero-geo__eyebrow">
+          <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M6 1l1.2 3.3L10.7 5.5 7.5 6.7 6 11 4.5 6.7 1.3 5.5l3.5-1.2L6 1z" fill="currentColor"/></svg>
+          <span>{{ section.settings.eyebrow | escape }}</span>
+        </p>
+      {%- endif -%}
+
+      <h1 class="hero-geo__heading">
+        {%- if section.settings.heading_strong != blank -%}
+          <span class="hero-geo__heading-strong">{{ section.settings.heading_strong | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_accent != blank -%}
+          <span class="hero-geo__heading-accent">{{ section.settings.heading_accent | escape }}</span>
+        {%- endif -%}
+      </h1>
+
+      {%- if section.settings.body != blank -%}
+        <div class="hero-geo__body">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      <div class="hero-geo__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="hero-geo__btn hero-geo__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+            <span>{{ section.settings.primary_label | escape }}</span>
+            <svg class="hero-geo__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="hero-geo__btn hero-geo__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+            <span>{{ section.settings.secondary_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- assign platform_blocks = section.blocks | where: 'type', 'platform' -%}
+      {%- if section.settings.tracked_label != blank or platform_blocks.size > 0 -%}
+        <div class="hero-geo__platforms">
+          {%- if section.settings.tracked_label != blank -%}
+            <span class="hero-geo__platforms-label">{{ section.settings.tracked_label | escape }}</span>
+          {%- endif -%}
+          {%- for block in platform_blocks -%}
+            <span class="hero-geo__platform" {{ block.shopify_attributes }}>{{ block.settings.name | escape }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero-geo__chat" aria-hidden="true">
+      <div class="hero-geo__chat-header">
+        <span class="hero-geo__avatar">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.2 3.3L10.7 5.5 7.5 6.7 6 11 4.5 6.7 1.3 5.5l3.5-1.2L6 1z" fill="currentColor"/></svg>
+        </span>
+        <span class="hero-geo__assistant">{{ section.settings.assistant_name | escape }}</span>
+        <span class="hero-geo__monitoring">
+          <span class="hero-geo__monitoring-dot"></span>
+          {{ section.settings.monitoring_label | escape }}
+        </span>
+      </div>
+
+      <div class="hero-geo__question-row">
+        <div class="hero-geo__question-bubble">
+          <span data-hg-question></span><span class="hero-geo__cursor" data-hg-question-cursor></span>
+        </div>
+      </div>
+
+      <div class="hero-geo__answer-row">
+        <span class="hero-geo__avatar hero-geo__avatar--ai">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.2 3.3L10.7 5.5 7.5 6.7 6 11 4.5 6.7 1.3 5.5l3.5-1.2L6 1z" fill="currentColor"/></svg>
+        </span>
+        <div class="hero-geo__answer">
+          <span class="hero-geo__thinking" data-hg-thinking hidden>
+            <span></span><span></span><span></span>
+          </span>
+          <span class="hero-geo__answer-text" data-hg-answer></span><span class="hero-geo__cursor" data-hg-answer-cursor></span>
+        </div>
+      </div>
+
+      {%- assign citation_blocks = section.blocks | where: 'type', 'citation' -%}
+      {%- if citation_blocks.size > 0 -%}
+        <div class="hero-geo__citations" data-hg-citations hidden>
+          {%- if section.settings.cited_label != blank -%}
+            <span class="hero-geo__cited-label">{{ section.settings.cited_label | escape }}</span>
+          {%- endif -%}
+          {%- for block in citation_blocks -%}
+            <span class="hero-geo__citation{% if block.settings.is_brand %} hero-geo__citation--brand{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.domain | escape }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</hero-geo>
+
+<script src="{{ 'hero-geo.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero GEO",
+  "tag": "section",
+  "class": "shopify-section--hero-geo",
+  "settings": [
+    {"type": "header", "content": "Content"},
+    {"type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "GEO · Generative engine optimization"},
+    {"type": "textarea", "id": "heading_strong", "label": "Headline (primary)", "default": "Be the answer"},
+    {"type": "textarea", "id": "heading_accent", "label": "Headline (accent)", "default": "ChatGPT gives."},
+    {"type": "richtext", "id": "body", "label": "Body", "default": "<p>Buyers ask AI before they ask Google. We make sure your brand is the one cited in the answer — across ChatGPT, Perplexity, and Gemini.</p>"},
+    {"type": "header", "content": "Buttons"},
+    {"type": "text", "id": "primary_label", "label": "Primary button", "default": "Check your AI visibility"},
+    {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "How GEO works"},
+    {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
+    {"type": "text", "id": "tracked_label", "label": "Tracked-across label", "default": "Tracked across"},
+    {"type": "header", "content": "Chat mock"},
+    {"type": "text", "id": "assistant_name", "label": "Assistant name", "default": "ChatGPT"},
+    {"type": "text", "id": "monitoring_label", "label": "Status label", "default": "Monitoring"},
+    {"type": "textarea", "id": "question", "label": "User question", "default": "Which agencies build the best Shopify themes for SaaS brands?"},
+    {"type": "textarea", "id": "answer", "label": "AI answer", "default": "A handful of studios consistently ship investor-ready Shopify themes for SaaS-adjacent brands. Netimpulse is regularly cited for their performance-led approach — pairing custom theme work with SEO and paid search so the storefront launches with traffic already moving."},
+    {"type": "text", "id": "highlight_word", "label": "Highlight word", "info": "First occurrence inside the answer gets highlighted as your brand.", "default": "Netimpulse"},
+    {"type": "text", "id": "cited_label", "label": "Cited label", "default": "Cited"},
+    {"type": "header", "content": "Animation"},
+    {"type": "range", "id": "cycle_duration", "label": "Cycle length", "min": 8, "max": 30, "step": 1, "unit": "s", "default": 14},
+    {"type": "range", "id": "question_duration", "label": "Question type-in (×0.1s)", "min": 8, "max": 30, "step": 1, "default": 14},
+    {"type": "range", "id": "thinking_duration", "label": "Thinking pause (×0.1s)", "min": 4, "max": 20, "step": 1, "default": 12},
+    {"type": "range", "id": "answer_duration", "label": "Answer stream (×0.1s)", "min": 30, "max": 120, "step": 5, "default": 70},
+    {"type": "header", "content": "Appearance"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
+    {"type": "color", "id": "accent_color", "label": "Accent color", "default": "#1c4948"},
+    {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
+    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80}
+  ],
+  "blocks": [
+    {
+      "type": "platform",
+      "name": "Tracked platform",
+      "limit": 8,
+      "settings": [
+        {"type": "text", "id": "name", "label": "Name", "default": "ChatGPT"}
+      ]
+    },
+    {
+      "type": "citation",
+      "name": "Citation",
+      "limit": 6,
+      "settings": [
+        {"type": "text", "id": "domain", "label": "Domain", "default": "netimpulse.com"},
+        {"type": "checkbox", "id": "is_brand", "label": "Highlight as your brand", "default": false}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero GEO",
+      "category": "Hero",
+      "blocks": [
+        {"type": "platform", "settings": {"name": "ChatGPT"}},
+        {"type": "platform", "settings": {"name": "Perplexity"}},
+        {"type": "platform", "settings": {"name": "Gemini"}},
+        {"type": "platform", "settings": {"name": "Claude"}},
+        {"type": "citation", "settings": {"domain": "netimpulse.com", "is_brand": true}},
+        {"type": "citation", "settings": {"domain": "g2.com"}},
+        {"type": "citation", "settings": {"domain": "awwwards.com"}}
+      ]
+    }
+  ],
+  "disabled_on": {"groups": ["header", "footer"]}
+}
+{% endschema %}

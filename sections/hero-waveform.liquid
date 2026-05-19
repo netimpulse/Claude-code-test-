@@ -1,0 +1,152 @@
+{% comment %}
+  Hero Waveform Takeover — full-bleed continuous waveform
+  ----------------------------------------------------------------
+  The waveform IS the page. A pill-shaped status badge, a giant
+  centered headline, body, two CTAs and a bottom data strip sit on
+  top of the wave. Bars near the center use the accent color; bars
+  toward the edges fade out. Bar count, pill text, headline, body,
+  CTAs, and bottom strip items are all editor-driven.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign bar_count = section.settings.bar_count
+-%}
+
+{{ 'section-hero-waveform.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-wt {
+    --wt-pad-top: {{ section.settings.padding_top }}px;
+    --wt-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --wt-accent: {{ accent }};
+    --wt-accent-glow: {{ accent | color_modify: 'alpha', 0.55 }};
+    --wt-accent-border: {{ accent | color_modify: 'alpha', 0.25 }};
+    {%- if scheme.settings.background != blank -%}
+      --wt-bg: {{ scheme.settings.background }};
+      --wt-text: {{ scheme.settings.text }};
+      --wt-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.78 }};
+      --wt-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.5 }};
+      --wt-line: {{ scheme.settings.text | color_modify: 'alpha', 0.08 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-waveform
+  class="hero-wt color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-waveform"
+  data-bars="{{ bar_count }}"
+  data-speed="{{ section.settings.wave_speed | divided_by: 10.0 }}"
+  data-accent-zone="{{ section.settings.accent_zone | divided_by: 100.0 }}"
+>
+  <div class="hero-wt__stage">
+    <div class="hero-wt__wave" data-wt-wave>
+      {%- for i in (1..bar_count) -%}
+        <span class="hero-wt__bar" data-wt-bar></span>
+      {%- endfor -%}
+    </div>
+
+    <div class="hero-wt__centerline" aria-hidden="true"></div>
+
+    <div class="hero-wt__content">
+      {%- if section.settings.pill_text != blank -%}
+        <span class="hero-wt__pill">
+          <span class="hero-wt__pill-dot"></span>
+          {{ section.settings.pill_text | escape }}
+        </span>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h1 class="hero-wt__heading">{{ section.settings.heading | escape }}</h1>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <p class="hero-wt__body">{{ section.settings.body | escape }}</p>
+      {%- endif -%}
+
+      <div class="hero-wt__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="hero-wt__btn hero-wt__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+            <span>{{ section.settings.primary_label | escape }}</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="hero-wt__btn hero-wt__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+            <span>{{ section.settings.secondary_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="hero-wt__strip" aria-hidden="true">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'strip_item' -%}
+            <span
+              class="hero-wt__strip-item{% if block.settings.is_accent %} hero-wt__strip-item--accent{% endif %}"
+              {{ block.shopify_attributes }}
+            >{{ block.settings.text | escape }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</hero-waveform>
+
+<script src="{{ 'hero-waveform.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero waveform",
+  "tag": "section",
+  "class": "shopify-section--hero-waveform",
+  "settings": [
+    {"type": "header", "content": "Content"},
+    {"type": "text", "id": "pill_text", "label": "Status pill text", "default": "Signal · Live across 4 channels"},
+    {"type": "textarea", "id": "heading", "label": "Headline", "default": "Signal that sells."},
+    {"type": "textarea", "id": "body", "label": "Body", "default": "SEO, paid search, social, GEO, and custom Shopify themes — built around what your buyers actually do."},
+    {"type": "header", "content": "Buttons"},
+    {"type": "text", "id": "primary_label", "label": "Primary button", "default": "Get a free audit"},
+    {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "See recent work"},
+    {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
+    {"type": "header", "content": "Waveform"},
+    {"type": "range", "id": "bar_count", "label": "Number of bars", "min": 60, "max": 200, "step": 5, "default": 140},
+    {"type": "range", "id": "wave_speed", "label": "Wave speed (×0.1)", "min": 3, "max": 30, "step": 1, "default": 9},
+    {"type": "range", "id": "accent_zone", "label": "Accent zone width (%)", "info": "% of bars around the centre that use the accent color.", "min": 5, "max": 50, "step": 1, "default": 18},
+    {"type": "header", "content": "Appearance"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2"},
+    {"type": "color", "id": "accent_color", "label": "Accent color", "default": "#b5e8db"},
+    {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0},
+    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0}
+  ],
+  "blocks": [
+    {
+      "type": "strip_item",
+      "name": "Bottom strip item",
+      "limit": 8,
+      "settings": [
+        {"type": "text", "id": "text", "label": "Text", "default": "SEO · rank +14 avg"},
+        {"type": "checkbox", "id": "is_accent", "label": "Use accent color", "default": false}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero waveform",
+      "category": "Hero",
+      "blocks": [
+        {"type": "strip_item", "settings": {"text": "SEO · rank +14 avg"}},
+        {"type": "strip_item", "settings": {"text": "SEA · CPC −31%"}},
+        {"type": "strip_item", "settings": {"text": "SMM · 4.7% CTR"}},
+        {"type": "strip_item", "settings": {"text": "GEO · cited × 268"}},
+        {"type": "strip_item", "settings": {"text": "REVENUE +2.4×", "is_accent": true}}
+      ]
+    }
+  ],
+  "disabled_on": {"groups": ["header", "footer"]}
+}
+{% endschema %}

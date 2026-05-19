@@ -1,0 +1,211 @@
+{% comment %}
+  Hero Ticker — live performance dashboard with sparklines
+  ----------------------------------------------------------------
+  Left column: eyebrow, two-tone headline, body, two CTAs.
+  Right column: dashboard mock with window chrome label and a
+  configurable grid of metrics. Each metric block has its own
+  label, sub-label, value (fixed or live-incrementing), delta
+  and sparkline trend direction. All copy is editor-driven.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+-%}
+
+{{ 'section-hero-ticker.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .hero-ticker {
+    --ht-pad-top: {{ section.settings.padding_top }}px;
+    --ht-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --ht-accent: {{ accent }};
+    --ht-accent-soft: {{ accent | color_modify: 'alpha', 0.1 }};
+    {%- if scheme.settings.background != blank -%}
+      --ht-bg: {{ scheme.settings.background }};
+      --ht-bg-soft: {{ scheme.settings.background | color_modify: 'lightness', '-2' }};
+      --ht-text: {{ scheme.settings.text }};
+      --ht-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
+      --ht-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
+      --ht-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --ht-card-bg: {{ scheme.settings.background_card | default: '#ffffff' }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-ticker
+  class="hero-ticker color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-ticker"
+>
+  <div class="hero-ticker__inner">
+    <div class="hero-ticker__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hero-ticker__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      <h1 class="hero-ticker__heading">
+        {%- if section.settings.heading_strong != blank -%}
+          <span class="hero-ticker__heading-strong">{{ section.settings.heading_strong | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_muted != blank -%}
+          <span class="hero-ticker__heading-muted">{{ section.settings.heading_muted | escape }}</span>
+        {%- endif -%}
+      </h1>
+
+      {%- if section.settings.body != blank -%}
+        <div class="hero-ticker__body">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      <div class="hero-ticker__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="hero-ticker__btn hero-ticker__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+            <span>{{ section.settings.primary_label | escape }}</span>
+            <svg class="hero-ticker__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="hero-ticker__btn hero-ticker__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+            <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 1.5 10 6 2 10.5z" fill="currentColor"/></svg>
+            <span>{{ section.settings.secondary_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="hero-ticker__dashboard" aria-hidden="true">
+      <div class="hero-ticker__chrome">
+        <span class="hero-ticker__chrome-dots">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="hero-ticker__chrome-label">{{ section.settings.window_label | escape }}</span>
+        <span class="hero-ticker__chrome-live">
+          <span class="hero-ticker__chrome-pulse"></span>
+          {{ section.settings.live_label | escape }}
+        </span>
+      </div>
+
+      <div class="hero-ticker__grid" data-ht-grid>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'metric' -%}
+            {%- assign live = false -%}
+            {%- if block.settings.value_type == 'live' -%}{%- assign live = true -%}{%- endif -%}
+            <div
+              class="hero-ticker__metric{% if block.settings.delta_down %} hero-ticker__metric--down{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="hero-ticker__metric-label">{{ block.settings.label | escape }}</div>
+              {%- if live -%}
+                <div
+                  class="hero-ticker__metric-value"
+                  data-ht-value
+                  data-base="{{ block.settings.base_value }}"
+                  data-rate="{{ block.settings.rate_per_second }}"
+                  data-prefix="{{ block.settings.prefix | escape }}"
+                  data-suffix="{{ block.settings.suffix | escape }}"
+                  data-short="{{ block.settings.short_format }}"
+                >{{ block.settings.prefix }}{{ block.settings.base_value }}{{ block.settings.suffix }}</div>
+              {%- else -%}
+                <div class="hero-ticker__metric-value">{{ block.settings.fixed_value | escape }}</div>
+              {%- endif -%}
+              <div class="hero-ticker__metric-meta">
+                <span class="hero-ticker__metric-delta">
+                  <svg viewBox="0 0 12 12" aria-hidden="true">
+                    {%- if block.settings.delta_down -%}
+                      <path d="M6 3v6M3 6l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    {%- else -%}
+                      <path d="M6 9V3M3 6l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    {%- endif -%}
+                  </svg>
+                  {{ block.settings.delta | escape }}
+                </span>
+                <span class="hero-ticker__metric-sub">{{ block.settings.sub_label | escape }}</span>
+              </div>
+              <svg
+                class="hero-ticker__spark"
+                viewBox="0 0 220 42"
+                preserveAspectRatio="none"
+                data-ht-spark
+                data-seed="{{ forloop.index0 }}"
+                data-trend="{% if block.settings.delta_down %}-0.4{% else %}0.5{% endif %}"
+                aria-hidden="true"
+              >
+                <path class="hero-ticker__spark-area" data-ht-area />
+                <path class="hero-ticker__spark-line" data-ht-line />
+                <circle class="hero-ticker__spark-dot" data-ht-dot r="3" />
+              </svg>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</hero-ticker>
+
+<script src="{{ 'hero-ticker.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero Ticker",
+  "tag": "section",
+  "class": "shopify-section--hero-ticker",
+  "settings": [
+    {"type": "header", "content": "Content"},
+    {"type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Performance · Always on"},
+    {"type": "textarea", "id": "heading_strong", "label": "Headline (primary)", "default": "Numbers tied to revenue."},
+    {"type": "textarea", "id": "heading_muted", "label": "Headline (muted)", "default": "Not clicks."},
+    {"type": "richtext", "id": "body", "label": "Body", "default": "<p>Every channel reports to one dashboard. We watch what moves money — and quietly throw out what doesn't.</p>"},
+    {"type": "header", "content": "Buttons"},
+    {"type": "text", "id": "primary_label", "label": "Primary button", "default": "See your audit"},
+    {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "Watch a demo"},
+    {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
+    {"type": "header", "content": "Dashboard"},
+    {"type": "text", "id": "window_label", "label": "Window chrome label", "default": "impulse · client · acme co."},
+    {"type": "text", "id": "live_label", "label": "Live indicator label", "default": "Live"},
+    {"type": "header", "content": "Appearance"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
+    {"type": "color", "id": "accent_color", "label": "Accent / sparkline color", "default": "#1c4948"},
+    {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
+    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80}
+  ],
+  "blocks": [
+    {
+      "type": "metric",
+      "name": "Metric",
+      "limit": 6,
+      "settings": [
+        {"type": "text", "id": "label", "label": "Label", "default": "Organic clicks"},
+        {"type": "text", "id": "sub_label", "label": "Sub-label", "default": "Last 30 days"},
+        {"type": "select", "id": "value_type", "label": "Value type", "options": [
+          {"value": "live", "label": "Live counter"},
+          {"value": "fixed", "label": "Fixed value"}
+        ], "default": "live"},
+        {"type": "text", "id": "fixed_value", "label": "Fixed value", "info": "Used when value type = Fixed.", "default": "5.42%"},
+        {"type": "text", "id": "prefix", "label": "Live value — prefix", "info": "Optional. Use a space to leave blank."},
+        {"type": "text", "id": "suffix", "label": "Live value — suffix", "info": "Optional. Use a space to leave blank."},
+        {"type": "number", "id": "base_value", "label": "Live value — base", "default": 48230},
+        {"type": "number", "id": "rate_per_second", "label": "Live value — rate / sec", "default": 7},
+        {"type": "checkbox", "id": "short_format", "label": "Short-format big numbers (12.4k)", "default": false},
+        {"type": "text", "id": "delta", "label": "Delta", "default": "+34.8%"},
+        {"type": "checkbox", "id": "delta_down", "label": "Delta points down", "default": false}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Ticker",
+      "category": "Hero",
+      "blocks": [
+        {"type": "metric", "settings": {"label": "Organic clicks", "sub_label": "Last 30 days", "value_type": "live", "base_value": 48230, "rate_per_second": 7, "delta": "+34.8%"}},
+        {"type": "metric", "settings": {"label": "CTR · paid search", "sub_label": "Live · 24h", "value_type": "fixed", "fixed_value": "5.42%", "delta": "+1.8 pp"}},
+        {"type": "metric", "settings": {"label": "Cost per acquisition", "sub_label": "30-day rolling", "value_type": "fixed", "fixed_value": "€18.40", "delta": "−21.4%", "delta_down": true}},
+        {"type": "metric", "settings": {"label": "Revenue attributed", "sub_label": "Quarter to date", "value_type": "live", "prefix": "€", "base_value": 184000, "rate_per_second": 23, "short_format": true, "delta": "+2.4×"}}
+      ]
+    }
+  ],
+  "disabled_on": {"groups": ["header", "footer"]}
+}
+{% endschema %}
