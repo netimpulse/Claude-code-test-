@@ -1,9 +1,114 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
+    },
+    "hero_ticker_tPizBw": {
+      "type": "hero-ticker",
+      "blocks": {
+        "metric_CdC6Kh": {
+          "type": "metric",
+          "settings": {
+            "label": "Organic clicks",
+            "sub_label": "Last 30 days",
+            "value_type": "live",
+            "fixed_value": "5.42%",
+            "prefix": "",
+            "suffix": "",
+            "base_value": 48230,
+            "rate_per_second": 7,
+            "short_format": false,
+            "delta": "+34.8%",
+            "delta_down": false
+          }
+        },
+        "metric_jkEigM": {
+          "type": "metric",
+          "settings": {
+            "label": "CTR · paid search",
+            "sub_label": "Live · 24h",
+            "value_type": "fixed",
+            "fixed_value": "5.42%",
+            "prefix": "",
+            "suffix": "",
+            "base_value": 48230,
+            "rate_per_second": 7,
+            "short_format": false,
+            "delta": "+1.8 pp",
+            "delta_down": false
+          }
+        },
+        "metric_EfYX9M": {
+          "type": "metric",
+          "settings": {
+            "label": "Cost per acquisition",
+            "sub_label": "30-day rolling",
+            "value_type": "fixed",
+            "fixed_value": "€18.40",
+            "prefix": "",
+            "suffix": "",
+            "base_value": 48230,
+            "rate_per_second": 7,
+            "short_format": false,
+            "delta": "−21.4%",
+            "delta_down": true
+          }
+        },
+        "metric_gWN3jh": {
+          "type": "metric",
+          "settings": {
+            "label": "Revenue attributed",
+            "sub_label": "Quarter to date",
+            "value_type": "live",
+            "fixed_value": "5.42%",
+            "prefix": "€",
+            "suffix": "",
+            "base_value": 184000,
+            "rate_per_second": 23,
+            "short_format": true,
+            "delta": "+2.4×",
+            "delta_down": false
+          }
+        }
+      },
+      "block_order": [
+        "metric_CdC6Kh",
+        "metric_jkEigM",
+        "metric_EfYX9M",
+        "metric_gWN3jh"
+      ],
+      "name": "Hero Ticker",
+      "settings": {
+        "eyebrow": "Performance · Always on",
+        "heading_strong": "Numbers tied to revenue.",
+        "heading_muted": "Not clicks.",
+        "body": "<p>Every channel reports to one dashboard. We watch what moves money — and quietly throw out what doesn't.</p>",
+        "primary_label": "See your audit",
+        "primary_url": "",
+        "secondary_label": "Watch a demo",
+        "secondary_url": "",
+        "window_label": "impulse · client · acme co.",
+        "live_label": "Live",
+        "color_scheme": "",
+        "accent_color": "#1c4948",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "hero_ticker_tPizBw"
+  ]
 }
