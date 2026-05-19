@@ -12,73 +12,9 @@
     "main": {
       "type": "page",
       "settings": {}
-    },
-    "team_overview_6mwhNC": {
-      "type": "team-overview",
-      "blocks": {
-        "member_Cz4PTr": {
-          "type": "member",
-          "settings": {
-            "initials": "",
-            "card_color": "#1f4f4a",
-            "role": "Founder · SEA, GEO, Shopify",
-            "name": "Luca Graf",
-            "bio": "Baut Performance-Setups, die nicht nach drei Wochen wieder zerfallen. Lieblings-KPI: Deckungsbeitrag, nicht ROAS.",
-            "tag_1": "Google Ads",
-            "tag_2": "Shopify",
-            "tag_3": "GA4",
-            "details_url": ""
-          }
-        },
-        "member_4U6Aea": {
-          "type": "member",
-          "settings": {
-            "initials": "",
-            "card_color": "#dde7e4",
-            "role": "Founder",
-            "name": "Niklas Roos",
-            "bio": "Technische SEO mit Schwerpunkt auf E-Commerce. Hat schon Shops mit 200k URLs umgezogen, ohne Rankings zu verlieren.",
-            "tag_1": "Tech SEO",
-            "tag_2": "Shopify",
-            "tag_3": "Logfiles",
-            "details_url": ""
-          }
-        },
-        "member_fjrTUU": {
-          "type": "member",
-          "settings": {
-            "initials": "",
-            "card_color": "#e9eef0",
-            "role": "Content & Strategy",
-            "name": "Tom",
-            "bio": "Schreibt Briefings, die Redakteure tatsächlich lesen wollen. Verbindet Suchintention mit echter Recherche.",
-            "tag_1": "Content Ops",
-            "tag_2": "Editorial",
-            "tag_3": "Intent",
-            "details_url": ""
-          }
-        }
-      },
-      "block_order": [
-        "member_Cz4PTr",
-        "member_4U6Aea",
-        "member_fjrTUU"
-      ],
-      "name": "t:team_overview.name",
-      "settings": {
-        "heading": "Das Team",
-        "intro": "",
-        "columns_desktop": 3,
-        "show_numbers": true,
-        "color_scheme": "",
-        "accent_color": "#1f4f4a",
-        "padding_top": 72,
-        "padding_bottom": 72
-      }
     }
   },
   "order": [
-    "main",
-    "team_overview_6mwhNC"
+    "main"
   ]
 }

@@ -9,68 +9,127 @@
  */
 {
   "sections": {
-    "hero_waveform_nXyDA4": {
-      "type": "hero-waveform",
+    "hero_pulse_gccCFK": {
+      "type": "hero-pulse",
       "blocks": {
-        "strip_item_XBqDUB": {
-          "type": "strip_item",
+        "stat_mG8fhX": {
+          "type": "stat",
           "settings": {
-            "text": "SEO · rank +14 avg",
-            "is_accent": false
+            "label": "Avg. revenue lift",
+            "value": "2.4×",
+            "style": "accent",
+            "live_counter": false,
+            "counter_rate": 3
           }
         },
-        "strip_item_Rp3DMP": {
-          "type": "strip_item",
+        "stat_DP9nip": {
+          "type": "stat",
           "settings": {
-            "text": "SEA · CPC −31%",
-            "is_accent": false
+            "label": "Sessions · today",
+            "value": "12864",
+            "style": "mono",
+            "live_counter": true,
+            "counter_rate": 3
           }
         },
-        "strip_item_YCkGWQ": {
-          "type": "strip_item",
+        "stat_jDLdW4": {
+          "type": "stat",
           "settings": {
-            "text": "SMM · 4.7% CTR",
-            "is_accent": false
-          }
-        },
-        "strip_item_4pkNUB": {
-          "type": "strip_item",
-          "settings": {
-            "text": "GEO · cited × 268",
-            "is_accent": false
-          }
-        },
-        "strip_item_HxTVbp": {
-          "type": "strip_item",
-          "settings": {
-            "text": "REVENUE +2.4×",
-            "is_accent": true
+            "label": "Channels live",
+            "value": "4 / 4",
+            "style": "default",
+            "live_counter": false,
+            "counter_rate": 3
           }
         }
       },
       "block_order": [
-        "strip_item_XBqDUB",
-        "strip_item_Rp3DMP",
-        "strip_item_YCkGWQ",
-        "strip_item_4pkNUB",
-        "strip_item_HxTVbp"
+        "stat_mG8fhX",
+        "stat_DP9nip",
+        "stat_jDLdW4"
       ],
-      "name": "Hero waveform",
+      "name": "Hero pulse",
       "settings": {
-        "pill_text": "Signal · Live across 4 channels",
-        "heading": "Signal that sells.",
-        "body": "SEO, paid search, social, GEO, and custom Shopify themes — built around what your buyers actually do.",
+        "eyebrow": "Listening to your market · Live",
+        "heading_strong": "Signal that sells.",
+        "heading_muted": "Not noise.",
+        "body": "<p>SEO, paid search, social, and custom Shopify themes — built around what your buyers actually do. We track to revenue, not vanity metrics.</p>",
         "primary_label": "Get a free audit",
         "primary_url": "",
         "secondary_label": "See recent work",
         "secondary_url": "",
-        "bar_count": 140,
-        "wave_speed": 9,
-        "accent_zone": 18,
-        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
-        "accent_color": "#b5e8db",
-        "padding_top": 0,
-        "padding_bottom": 0
+        "signal_label": "Signal · Live",
+        "show_timer": false,
+        "bar_count": 56,
+        "accent_bars": 30,
+        "animation_speed": 13,
+        "accent_color": "#9ccfd0",
+        "color_scheme": "scheme-2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "team_overview_pAyCBP": {
+      "type": "team-overview",
+      "blocks": {
+        "member_rhrTDn": {
+          "type": "member",
+          "settings": {
+            "initials": "",
+            "card_color": "#1f4f4a",
+            "role": "Co-Founder · SEA & GEO",
+            "name": "Anna Schmid",
+            "bio": "Baut Performance-Setups, die nicht nach drei Wochen wieder zerfallen. Lieblings-KPI: Deckungsbeitrag, nicht ROAS.",
+            "tag_1": "Google Ads",
+            "tag_2": "Meta",
+            "tag_3": "GA4",
+            "details_url": ""
+          }
+        },
+        "member_krmHLD": {
+          "type": "member",
+          "settings": {
+            "initials": "",
+            "card_color": "#dde7e4",
+            "role": "Senior SEO Lead",
+            "name": "David Kogler",
+            "bio": "Technische SEO mit Schwerpunkt auf E-Commerce. Hat schon Shops mit 200k URLs umgezogen, ohne Rankings zu verlieren.",
+            "tag_1": "Tech SEO",
+            "tag_2": "Shopify",
+            "tag_3": "Logfiles",
+            "details_url": ""
+          }
+        },
+        "member_ixqtNN": {
+          "type": "member",
+          "settings": {
+            "initials": "",
+            "card_color": "#e9eef0",
+            "role": "Content & Strategy",
+            "name": "Lena Reuter",
+            "bio": "Schreibt Briefings, die Redakteure tatsächlich lesen wollen. Verbindet Suchintention mit echter Recherche.",
+            "tag_1": "Content Ops",
+            "tag_2": "Editorial",
+            "tag_3": "Intent",
+            "details_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "member_rhrTDn",
+        "member_krmHLD",
+        "member_ixqtNN"
+      ],
+      "name": "t:team_overview.name",
+      "settings": {
+        "heading": "Das Team",
+        "intro": "",
+        "columns_desktop": 3,
+        "show_numbers": true,
+        "color_scheme": "",
+        "accent_color": "#1f4f4a",
+        "padding_top": 72,
+        "padding_bottom": 72
       }
     },
     "theme_store_preview_zMCVkD": {
@@ -93,10 +152,131 @@
         "padding_top": 64,
         "padding_bottom": 64
       }
+    },
+    "services_overview_hLzJ7w": {
+      "type": "services-overview",
+      "blocks": {
+        "service_nTrD3U": {
+          "type": "service",
+          "settings": {
+            "icon": "compass",
+            "tab_label": "Strategie",
+            "kicker": "01 · Strategie",
+            "title": "Strategie & Beratung",
+            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "benefit_1": "Digitale Positionierung und Angebotsstruktur",
+            "benefit_2": "Customer Journey und Conversion-Potenziale",
+            "benefit_3": "Klare Prioritäten statt beliebiger Einzelmaßnahmen",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_FPFmmp": {
+          "type": "service",
+          "settings": {
+            "icon": "layout",
+            "tab_label": "Webdesign",
+            "kicker": "02 · Design",
+            "title": "Webdesign & UX",
+            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "benefit_1": "Individuelle Seitenarchitektur statt Standard-Layout",
+            "benefit_2": "Klare Nutzerführung auf Desktop und Mobile",
+            "benefit_3": "Designsystem für konsistente Markenwirkung",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_6HRmx8": {
+          "type": "service",
+          "settings": {
+            "icon": "bag",
+            "tab_label": "Shopify",
+            "kicker": "03 · Entwicklung",
+            "title": "Shopify & Entwicklung",
+            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "benefit_1": "Custom Sections und flexible Theme-Editor-Steuerung",
+            "benefit_2": "Saubere technische Umsetzung mit Fokus auf Performance",
+            "benefit_3": "Strukturen, die später ohne Chaos erweitert werden können",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_FHEtez": {
+          "type": "service",
+          "settings": {
+            "icon": "search",
+            "tab_label": "SEO / GEO",
+            "kicker": "04 · Sichtbarkeit",
+            "title": "SEO & GEO",
+            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "benefit_1": "Technisches SEO und saubere Informationsarchitektur",
+            "benefit_2": "Content-Strukturen für relevante Suchintentionen",
+            "benefit_3": "GEO-orientierte Aufbereitung von Expertise und Entitäten",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_gnTJqV": {
+          "type": "service",
+          "settings": {
+            "icon": "chart",
+            "tab_label": "Google Ads",
+            "kicker": "05 · Performance",
+            "title": "Google Ads & Performance",
+            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "benefit_1": "Such-, Shopping- und Performance-Strukturen mit Zielbezug",
+            "benefit_2": "Budgetsteuerung nach Wirtschaftlichkeit",
+            "benefit_3": "Kontinuierliche Auswertung und Verbesserung",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_GC3BLy": {
+          "type": "service",
+          "settings": {
+            "icon": "quote",
+            "tab_label": "Content",
+            "kicker": "06 · Kommunikation",
+            "title": "Content & Storytelling",
+            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "benefit_1": "Präzise Botschaften statt austauschbarer Werbetexte",
+            "benefit_2": "Leistungsseiten mit klarer Argumentationslinie",
+            "benefit_3": "Content, der Design und Conversion unterstützt",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "service_nTrD3U",
+        "service_FPFmmp",
+        "service_6HRmx8",
+        "service_FHEtez",
+        "service_gnTJqV",
+        "service_GC3BLy"
+      ],
+      "name": "t:services_overview.name",
+      "settings": {
+        "heading": "Unsere Leistungen",
+        "core_mark": "NI",
+        "core_label": "Digitales Wachstum als System",
+        "primary_label": "Mehr zur Leistung",
+        "primary_url": "",
+        "secondary_label": "Projekt anfragen",
+        "secondary_url": "",
+        "enable_autoplay": true,
+        "autoplay_interval": 7,
+        "color_scheme": "",
+        "accent_color": "#df6c3d",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
     }
   },
   "order": [
-    "hero_waveform_nXyDA4",
-    "theme_store_preview_zMCVkD"
+    "hero_pulse_gccCFK",
+    "team_overview_pAyCBP",
+    "theme_store_preview_zMCVkD",
+    "services_overview_hLzJ7w"
   ]
 }
