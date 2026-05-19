@@ -18,7 +18,7 @@
         "menu": "hauptmenu",
         "nav_alignment": "center",
         "sticky_header_type": "on-scroll-up",
-        "color_scheme": "",
+        "color_scheme": "scheme-1",
         "header_height": 80,
         "show_border": true,
         "menu_font_size": 15,
