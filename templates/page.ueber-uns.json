@@ -12,9 +12,73 @@
     "main": {
       "type": "page",
       "settings": {}
+    },
+    "team_overview_qD4ERV": {
+      "type": "team-overview",
+      "blocks": {
+        "member_KiDJth": {
+          "type": "member",
+          "settings": {
+            "initials": "",
+            "card_color": "#1f4f4a",
+            "role": "Co-Founder · SEA & GEO",
+            "name": "Anna Schmid",
+            "bio": "Baut Performance-Setups, die nicht nach drei Wochen wieder zerfallen. Lieblings-KPI: Deckungsbeitrag, nicht ROAS.",
+            "tag_1": "Google Ads",
+            "tag_2": "Meta",
+            "tag_3": "GA4",
+            "details_url": ""
+          }
+        },
+        "member_arhakk": {
+          "type": "member",
+          "settings": {
+            "initials": "",
+            "card_color": "#dde7e4",
+            "role": "Senior SEO Lead",
+            "name": "David Kogler",
+            "bio": "Technische SEO mit Schwerpunkt auf E-Commerce. Hat schon Shops mit 200k URLs umgezogen, ohne Rankings zu verlieren.",
+            "tag_1": "Tech SEO",
+            "tag_2": "Shopify",
+            "tag_3": "Logfiles",
+            "details_url": ""
+          }
+        },
+        "member_rG9f4T": {
+          "type": "member",
+          "settings": {
+            "initials": "",
+            "card_color": "#e9eef0",
+            "role": "Content & Strategy",
+            "name": "Lena Reuter",
+            "bio": "Schreibt Briefings, die Redakteure tatsächlich lesen wollen. Verbindet Suchintention mit echter Recherche.",
+            "tag_1": "Content Ops",
+            "tag_2": "Editorial",
+            "tag_3": "Intent",
+            "details_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "member_KiDJth",
+        "member_arhakk",
+        "member_rG9f4T"
+      ],
+      "name": "t:team_overview.name",
+      "settings": {
+        "heading": "Das Team",
+        "intro": "",
+        "columns_desktop": 3,
+        "show_numbers": true,
+        "color_scheme": "",
+        "accent_color": "#1f4f4a",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "team_overview_qD4ERV"
   ]
 }
