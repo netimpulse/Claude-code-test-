@@ -272,6 +272,61 @@ print(f'OK: {opens} Blöcke korrekt geschlossen')
 
 **NIEMALS CSS-Dateien über Bash-Heredocs erstellen** — immer `Write`/`Edit` Tools verwenden.
 
+**⚠️ CRITICAL: Skeleton-Theme — `.shopify-section` ist ein 3-Spalten-Grid; full-bleed Sections MÜSSEN `class="full-width"` haben**
+
+Das Skeleton-Theme (und alle davon abgeleiteten Themes) definiert in `assets/critical.css` ein 3-Spalten-Grid auf JEDEM Shopify-Section-Wrapper:
+
+```css
+.shopify-section {
+  --content-grid: minmax(var(--page-margin), 1fr) var(--content-width) minmax(var(--page-margin), 1fr);
+  display: grid;
+  grid-template-columns: var(--content-grid);
+}
+.shopify-section > *           { grid-column: 2; }        /* default: center column */
+.shopify-section > .full-width { grid-column: 1 / -1; }   /* opt-in: full bleed */
+```
+
+**Folge:** Jedes direkte Kind eines Shopify-Section-Wrappers landet automatisch in der mittleren Spalte (= `var(--content-width)`, also schmaler als das Viewport). Die zwei seitlichen Grid-Spalten bleiben **transparent**. Wenn deine Section eine Hintergrundfarbe hat, sieht man auf Desktop links und rechts weiße Seitenränder, durch die beim Scrollen der dahinterliegende Body-Inhalt durchscheint.
+
+**Regel:**
+- Jede Section die **edge-to-edge** rendern soll (Hero, Header, Footer, Banner, Marquee, Sticky Bar, jede Section mit eigenem Hintergrund) MUSS das Root-Element mit `class="full-width"` (oder zusätzlich dazu) ausstatten.
+- Sections die bewusst nur in der Content-Spalte sitzen sollen (typische Listing-/Grid-Sections wie related-products auf einer Product-Page) lassen es weg.
+- Selbst wenn deine Section-CSS `width: 100%` setzt: das ist `100%` der Grid-Spalte, NICHT des Viewports. `full-width` ist die einzige saubere Lösung in dieser Theme-Architektur.
+
+**Sticky-Header-Variante:** Wenn die Section sticky sein soll, muss zusätzlich der **Wrapper** (`#shopify-section-{id}`) eine Hintergrundfarbe bekommen — sonst sieht man beim Sticken durch die Grid-Spalten hindurch durch den Wrapper selbst:
+
+```liquid
+{% style %}
+  #shopify-section-{{ section.id }} {
+    background: {{ scheme.settings.background | default: '#FFFFFF' }};
+  }
+{% endstyle %}
+```
+
+**Quick-Check beim Schreiben:** Jede neue Section auf folgende Regeln prüfen:
+1. Hat das Section-Root-Element `class="…full-width…"`? (Ja, außer du willst bewusst nur die Content-Spalte.)
+2. Liest dein CSS irgendwo `--page-margin` oder `--page-width` für das Padding? Wenn ja, gehört das in einen **inneren** `.section__inner`-Wrapper, nicht aufs Root.
+3. Wenn die Section sticky / fixed werden kann: bekommt der `#shopify-section-{id}`-Wrapper über `{% style %}` eine Hintergrundfarbe?
+
+**Color-Scheme-Variante:** `color_scheme` als Setting allein reicht **nicht**. Das Setting wählt nur einen Scheme aus, aber damit das visuell ankommt, muss die Section in einem `{% style %}`-Block die Scheme-Farben in CSS-Variablen schreiben (entweder auf das Section-Root oder auf den Wrapper `#shopify-section-{id}`). Wenn dein Section-CSS globale Variablen wie `--color-background` / `--color-foreground` nutzt (die aus `snippets/css-variables.liquid` kommen und theme-weit gleich sind), überschreib sie scoped:
+
+```liquid
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+    {%- endif -%}
+    {%- if scheme.settings.text != blank -%}
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+{% endstyle %}
+```
+
+Ohne diesen Block ändert das `color_scheme`-Setting NICHTS — alle Sections bleiben auf den globalen Theme-Farben.
+
+---
+
 **⚠️ CRITICAL: Section Layout — Dawn-Ansatz (KEIN CSS-Grid auf `.shopify-section`)**
 
 Shopify wraps jede Section in ein `<div class="shopify-section">`. **NIEMALS** ein CSS-Grid, Margins oder Padding auf `.shopify-section` setzen! Das erzeugt weiße Ränder um ALLE Sections.
