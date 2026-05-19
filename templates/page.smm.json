@@ -1,9 +1,139 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
+    },
+    "hero_ad_cycler_tPQApY": {
+      "type": "hero-ad-cycler",
+      "blocks": {
+        "variant_qhqjz4": {
+          "type": "variant",
+          "settings": {
+            "letter": "A",
+            "tag": "Variant A · Direct",
+            "headline": "Stop guessing what your customers want.",
+            "sub": "Free 30-min audit. No pitch.",
+            "cta": "Book a slot",
+            "ctr": "1.8%",
+            "color_tone": "deep",
+            "art_kind": "stripes"
+          }
+        },
+        "variant_3nb8WV": {
+          "type": "variant",
+          "settings": {
+            "letter": "B",
+            "tag": "Variant B · Outcome",
+            "headline": "2.4× more buyers from organic search.",
+            "sub": "See how 80+ Shopify brands grew.",
+            "cta": "See results",
+            "ctr": "3.4%",
+            "color_tone": "ink",
+            "art_kind": "grid"
+          }
+        },
+        "variant_DxHWfE": {
+          "type": "variant",
+          "settings": {
+            "letter": "C",
+            "tag": "Variant C · Trust",
+            "headline": "120+ Shopify themes shipped. Yours next.",
+            "sub": "Built for performance. Tied to revenue.",
+            "cta": "Start a project",
+            "ctr": "2.9%",
+            "color_tone": "deep",
+            "art_kind": "dots"
+          }
+        },
+        "variant_AhDKJT": {
+          "type": "variant",
+          "settings": {
+            "letter": "D",
+            "tag": "Variant D · Curiosity",
+            "headline": "The agency growing the brands you wish were yours.",
+            "sub": "Quiet work. Loud results.",
+            "cta": "What we do",
+            "ctr": "4.7%",
+            "color_tone": "ink",
+            "art_kind": "wave"
+          }
+        },
+        "stat_R69Mkx": {
+          "type": "stat",
+          "settings": {
+            "label": "Variants live",
+            "value": "34"
+          }
+        },
+        "stat_CNaTzC": {
+          "type": "stat",
+          "settings": {
+            "label": "Avg. winner lift",
+            "value": "+58%"
+          }
+        },
+        "stat_bBnikp": {
+          "type": "stat",
+          "settings": {
+            "label": "Spend on autopilot",
+            "value": "€12K/wk"
+          }
+        }
+      },
+      "block_order": [
+        "variant_qhqjz4",
+        "variant_3nb8WV",
+        "variant_DxHWfE",
+        "variant_AhDKJT",
+        "stat_R69Mkx",
+        "stat_CNaTzC",
+        "stat_bBnikp"
+      ],
+      "name": "Hero ad cycler",
+      "settings": {
+        "eyebrow": "Paid social · A/B always-on",
+        "heading_line_1": "Creative that",
+        "heading_accent": "converts.",
+        "heading_line_2": "Tested",
+        "heading_line_3": "until it does.",
+        "body": "<p>We ship 4–8 ad variants every week, then quietly kill the ones that don't pay. Your spend follows the winners — automatically.</p>",
+        "primary_label": "Plan a campaign",
+        "primary_url": "",
+        "secondary_label": "Recent creatives",
+        "secondary_url": "",
+        "test_label": "Live · A/B test #248",
+        "impressions_label": "impressions",
+        "impression_base": 148230,
+        "impression_rate": 7,
+        "brand_initials": "NI",
+        "brand_name": "Netimpulse",
+        "brand_sub": "Sponsored · Today",
+        "brand_domain": "netimpulse.com",
+        "ad_badge": "AD",
+        "variant_label_prefix": "Variant",
+        "winner_label": "WIN",
+        "variant_duration": 3,
+        "color_scheme": "",
+        "accent_color": "#1c4948",
+        "accent_soft": "#9ccfd0",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "hero_ad_cycler_tPQApY"
+  ]
 }

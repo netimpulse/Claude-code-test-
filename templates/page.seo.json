@@ -1,9 +1,112 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
+    },
+    "hero_serp_NnRBck": {
+      "type": "hero-serp",
+      "blocks": {
+        "result_dMBGzk": {
+          "type": "result",
+          "settings": {
+            "title": "Top 12 Shopify Theme Studios · 2026",
+            "url": "ecommercebenchmarker.com",
+            "favicon": "EB",
+            "is_brand": false
+          }
+        },
+        "result_B4Q4Mq": {
+          "type": "result",
+          "settings": {
+            "title": "Best Shopify theme designers ranked",
+            "url": "buildgrowscale.com",
+            "favicon": "BG",
+            "is_brand": false
+          }
+        },
+        "result_ncgDmD": {
+          "type": "result",
+          "settings": {
+            "title": "Shopify themes directory",
+            "url": "shopify.com › themes",
+            "favicon": "SH",
+            "is_brand": false
+          }
+        },
+        "result_Yhm4Wr": {
+          "type": "result",
+          "settings": {
+            "title": "Netimpulse — Custom Shopify themes",
+            "url": "netimpulse.com › shopify",
+            "favicon": "NI",
+            "is_brand": true
+          }
+        },
+        "result_JWxhye": {
+          "type": "result",
+          "settings": {
+            "title": "Awwwards · Shopify Site of the Day",
+            "url": "awwwards.com",
+            "favicon": "AW",
+            "is_brand": false
+          }
+        },
+        "result_Hy7PxP": {
+          "type": "result",
+          "settings": {
+            "title": "Forbes · agencies to watch",
+            "url": "forbes.com",
+            "favicon": "FB",
+            "is_brand": false
+          }
+        }
+      },
+      "block_order": [
+        "result_dMBGzk",
+        "result_B4Q4Mq",
+        "result_ncgDmD",
+        "result_Yhm4Wr",
+        "result_JWxhye",
+        "result_Hy7PxP"
+      ],
+      "name": "Hero SERP",
+      "settings": {
+        "eyebrow": "SEO · Organic search",
+        "heading_before": "Show up first when buyers",
+        "heading_highlight": "search",
+        "heading_after": ".",
+        "body": "<p>We tune your pages, fix what Google trips over, and earn the links that move you up the list. First results in 60–90 days.</p>",
+        "primary_label": "See your audit",
+        "primary_url": "",
+        "secondary_label": "How we work",
+        "secondary_url": "",
+        "search_query": "best shopify theme studio",
+        "search_engine_label": "Google",
+        "results_meta_text": "About 12,400,000 results · 0.42 s",
+        "tabs": "All|Images|Shopping|News|Videos",
+        "cycle_duration": 8,
+        "typing_duration": 14,
+        "color_scheme": "",
+        "accent_color": "#1c4948",
+        "accent_soft": "#9ccfd0",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "hero_serp_NnRBck"
+  ]
 }
