@@ -9,6 +9,70 @@
  */
 {
   "sections": {
+    "hero_waveform_nXyDA4": {
+      "type": "hero-waveform",
+      "blocks": {
+        "strip_item_XBqDUB": {
+          "type": "strip_item",
+          "settings": {
+            "text": "SEO · rank +14 avg",
+            "is_accent": false
+          }
+        },
+        "strip_item_Rp3DMP": {
+          "type": "strip_item",
+          "settings": {
+            "text": "SEA · CPC −31%",
+            "is_accent": false
+          }
+        },
+        "strip_item_YCkGWQ": {
+          "type": "strip_item",
+          "settings": {
+            "text": "SMM · 4.7% CTR",
+            "is_accent": false
+          }
+        },
+        "strip_item_4pkNUB": {
+          "type": "strip_item",
+          "settings": {
+            "text": "GEO · cited × 268",
+            "is_accent": false
+          }
+        },
+        "strip_item_HxTVbp": {
+          "type": "strip_item",
+          "settings": {
+            "text": "REVENUE +2.4×",
+            "is_accent": true
+          }
+        }
+      },
+      "block_order": [
+        "strip_item_XBqDUB",
+        "strip_item_Rp3DMP",
+        "strip_item_YCkGWQ",
+        "strip_item_4pkNUB",
+        "strip_item_HxTVbp"
+      ],
+      "name": "Hero waveform",
+      "settings": {
+        "pill_text": "Signal · Live across 4 channels",
+        "heading": "Signal that sells.",
+        "body": "SEO, paid search, social, GEO, and custom Shopify themes — built around what your buyers actually do.",
+        "primary_label": "Get a free audit",
+        "primary_url": "",
+        "secondary_label": "See recent work",
+        "secondary_url": "",
+        "bar_count": 140,
+        "wave_speed": 9,
+        "accent_zone": 18,
+        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
+        "accent_color": "#b5e8db",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "theme_store_preview_zMCVkD": {
       "type": "theme-store-preview",
       "name": "Theme store preview",
@@ -25,13 +89,14 @@
         "card_radius": 14,
         "cta_label": "Zum Theme-Store",
         "cta_url": "",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
         "padding_top": 64,
         "padding_bottom": 64
       }
     }
   },
   "order": [
+    "hero_waveform_nXyDA4",
     "theme_store_preview_zMCVkD"
   ]
 }
