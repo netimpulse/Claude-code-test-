@@ -1,9 +1,92 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "page",
       "settings": {}
+    },
+    "theme_store_z7RH4r": {
+      "type": "theme-store",
+      "blocks": {
+        "category_Xnyq78": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "label": ""
+          }
+        },
+        "category_H8JQC9": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "label": ""
+          }
+        },
+        "category_jktiMW": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "label": ""
+          }
+        },
+        "feature_neFzy6": {
+          "type": "feature",
+          "settings": {
+            "text": "Mobile optimized"
+          }
+        },
+        "feature_6YQn7L": {
+          "type": "feature",
+          "settings": {
+            "text": "SEO friendly"
+          }
+        },
+        "feature_ppMLRj": {
+          "type": "feature",
+          "settings": {
+            "text": "Theme editor compatible"
+          }
+        },
+        "feature_3PFBMP": {
+          "type": "feature",
+          "settings": {
+            "text": "Fast load times"
+          }
+        }
+      },
+      "block_order": [
+        "category_Xnyq78",
+        "category_H8JQC9",
+        "category_jktiMW",
+        "feature_neFzy6",
+        "feature_6YQn7L",
+        "feature_ppMLRj",
+        "feature_3PFBMP"
+      ],
+      "name": "t:theme_store.name",
+      "settings": {
+        "heading": "Theme Store",
+        "search_placeholder": "Search themes…",
+        "categories_heading": "Categories",
+        "all_label": "All themes",
+        "features_heading": "Features",
+        "color_scheme": "",
+        "heading_font": "work_sans_n7",
+        "body_font": "work_sans_n4",
+        "card_radius": 14
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "theme_store_z7RH4r"
+  ]
 }
