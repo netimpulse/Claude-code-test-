@@ -29,6 +29,21 @@
   endif
 -%}
 
+{% style %}
+  /* Apply the section's color scheme by overriding the global color tokens
+     within this section's scope. Without this, the section would inherit the
+     global background/foreground from settings.background_color and the
+     color_scheme setting would have no visible effect. */
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+    {%- endif -%}
+    {%- if scheme.settings.text != blank -%}
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
 <section
   class="tsp full-width color-{{ scheme.id }}"
   data-section-id="{{ section.id }}"
