@@ -14,6 +14,7 @@
     "header": {
       "type": "sqe-header",
       "settings": {
+        "logo_image": "shopify://shop_images/Logo.jpg",
         "menu": "hauptmenu",
         "nav_alignment": "center",
         "sticky_header_type": "on-scroll-up",
