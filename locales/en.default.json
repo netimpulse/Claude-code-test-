@@ -97,5 +97,13 @@
   },
   "services_spotlight": {
     "add_services": "Add services blocks to get started."
+  },
+  "landing_orbit": {
+    "add_services": "Add service blocks to fill the orbit."
+  },
+  "landing_portal": {
+    "prev": "Previous theme",
+    "next": "Next theme",
+    "add_collection": "Pick a collection in the theme editor to preview themes here."
   }
 }

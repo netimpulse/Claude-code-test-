@@ -1,78 +1,89 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "hero_pulse_gccCFK": {
-      "type": "hero-pulse",
+    "prologue": {
+      "type": "landing-prologue",
       "blocks": {
-        "stat_mG8fhX": {
-          "type": "stat",
+        "rotator_shops": { "type": "rotator", "settings": { "word": "Shops" } },
+        "rotator_stores": { "type": "rotator", "settings": { "word": "Stores" } },
+        "rotator_marken": { "type": "rotator", "settings": { "word": "Marken" } },
+        "rotator_maschinen": { "type": "rotator", "settings": { "word": "Maschinen" } },
+        "feed_strategy": { "type": "feed", "settings": { "label": "Strategy", "value": "live", "tone": "accent" } },
+        "feed_design": { "type": "feed", "settings": { "label": "Design", "value": "live", "tone": "accent" } },
+        "feed_shopify": { "type": "feed", "settings": { "label": "Shopify Dev", "value": "live", "tone": "accent" } },
+        "feed_seo": { "type": "feed", "settings": { "label": "SEO / GEO", "value": "live", "tone": "accent" } },
+        "feed_ads": { "type": "feed", "settings": { "label": "Google Ads", "value": "live", "tone": "accent" } },
+        "feed_content": { "type": "feed", "settings": { "label": "Content", "value": "live", "tone": "accent" } },
+        "principle_1": {
+          "type": "principle",
           "settings": {
-            "label": "Avg. revenue lift",
-            "value": "2.4×",
-            "style": "accent",
-            "live_counter": false,
-            "counter_rate": 3
+            "title": "Wir denken vom Umsatz aus.",
+            "description": "Jede Empfehlung wird daran gemessen, ob sie Deckungsbeitrag, Sichtbarkeit oder Wiederkaufrate verbessert."
           }
         },
-        "stat_DP9nip": {
-          "type": "stat",
+        "principle_2": {
+          "type": "principle",
           "settings": {
-            "label": "Sessions · today",
-            "value": "12864",
-            "style": "mono",
-            "live_counter": true,
-            "counter_rate": 3
+            "title": "Strategie und Build, ein Team.",
+            "description": "Kein Übergabeverlust zwischen Konzept, Design und Code — die Leute, die planen, bauen auch."
           }
         },
-        "stat_jDLdW4": {
-          "type": "stat",
+        "principle_3": {
+          "type": "principle",
           "settings": {
-            "label": "Channels live",
-            "value": "4 / 4",
-            "style": "default",
-            "live_counter": false,
-            "counter_rate": 3
+            "title": "Lieber langsam, dafür sauber.",
+            "description": "Wir bauen Strukturen, die in zwei Jahren noch funktionieren — kein Kurzfrist-Hack, der morgen wieder kostet."
+          }
+        },
+        "principle_4": {
+          "type": "principle",
+          "settings": {
+            "title": "Daten statt Bauchgefühl.",
+            "description": "Tracking, Kohorten und Tests entscheiden — nicht das lauteste Meinungs-Slack."
           }
         }
       },
       "block_order": [
-        "stat_mG8fhX",
-        "stat_DP9nip",
-        "stat_jDLdW4"
+        "rotator_shops",
+        "rotator_stores",
+        "rotator_marken",
+        "rotator_maschinen",
+        "feed_strategy",
+        "feed_design",
+        "feed_shopify",
+        "feed_seo",
+        "feed_ads",
+        "feed_content",
+        "principle_1",
+        "principle_2",
+        "principle_3",
+        "principle_4"
       ],
-      "name": "Hero pulse",
       "settings": {
-        "eyebrow": "Listening to your market · Live",
-        "heading_strong": "Signal that sells.",
-        "heading_muted": "Not noise.",
-        "body": "<p>SEO, paid search, social, and custom Shopify themes — built around what your buyers actually do. We track to revenue, not vanity metrics.</p>",
-        "primary_label": "Get a free audit",
-        "primary_url": "",
-        "secondary_label": "See recent work",
-        "secondary_url": "",
-        "signal_label": "Signal · Live",
-        "show_timer": false,
-        "bar_count": 56,
-        "accent_bars": 30,
-        "animation_speed": 13,
-        "accent_color": "#9ccfd0",
+        "eyebrow": "Vienna · Strategie + Build · Estd. 2025",
+        "heading_prefix": "Wir bauen",
+        "heading_suffix": "die wirklich verkaufen.",
+        "rotator_interval": 2500,
+        "body": "<p>Strategie, Design, Shopify-Entwicklung, SEO und Performance — als ein Team, eine Hand, ein Plan. Wir messen unsere Arbeit am Deckungsbeitrag, nicht am Pitch-Deck.</p>",
+        "primary_label": "Kostenloses Audit holen",
+        "primary_url": "/pages/kontakt",
+        "secondary_label": "Aktuelle Cases",
+        "secondary_url": "/pages/leistungen",
+        "broadcast_label": "Live · Signal",
+        "ticker_text": "channels live · cohort tracked · revenue routed",
+        "bridge_label": "Wer wir sind",
+        "mission_kicker": "01 · Unsere Mission",
+        "mission_heading": "<p>Wir machen Wachstum zur Routine — nicht zum Zufall.</p>",
+        "mission_body": "<p>Eine kleine Studio-Crew aus Strategie, Design und Engineering. Wir bringen das zusammen, was sonst zwischen Agenturen versickert — und übersetzen Markenanspruch in Conversion, Sichtbarkeit und stabilen Umsatz.</p>",
         "color_scheme": "scheme-2",
-        "padding_top": 80,
-        "padding_bottom": 80
+        "accent_color": "#9ccfd0",
+        "padding_top": 88,
+        "padding_bottom": 48
       }
     },
-    "services_spotlight_J8T4KU": {
-      "type": "services-spotlight",
+    "orbit": {
+      "type": "landing-orbit",
       "blocks": {
-        "service_fdmG8T": {
+        "svc_strategie": {
           "type": "service",
           "settings": {
             "icon": "compass",
@@ -86,13 +97,13 @@
             "primary_url": ""
           }
         },
-        "service_RKg38n": {
+        "svc_webdesign": {
           "type": "service",
           "settings": {
             "icon": "layout",
             "label": "Webdesign",
             "title": "Webdesign & UX",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "description": "<p>Individuelle Seitenarchitektur und klare Nutzerführung – damit der erste Eindruck und die Conversion zusammenpassen.</p>",
             "benefit_1": "Individuelle Seitenarchitektur statt Standard-Layout",
             "benefit_2": "Klare Nutzerführung auf Desktop und Mobile",
             "benefit_3": "Designsystem für konsistente Markenwirkung",
@@ -100,13 +111,13 @@
             "primary_url": ""
           }
         },
-        "service_bp3XGB": {
+        "svc_shopify": {
           "type": "service",
           "settings": {
             "icon": "bag",
             "label": "Shopify",
             "title": "Shopify & Entwicklung",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "description": "<p>Saubere, schnelle Themes mit voller Theme-Editor-Kontrolle. Performance-orientiert, wartbar, erweiterbar.</p>",
             "benefit_1": "Custom Sections und flexible Theme-Editor-Steuerung",
             "benefit_2": "Saubere technische Umsetzung mit Fokus auf Performance",
             "benefit_3": "Strukturen, die später ohne Chaos erweitert werden können",
@@ -114,13 +125,13 @@
             "primary_url": ""
           }
         },
-        "service_NVWwwH": {
+        "svc_seo": {
           "type": "service",
           "settings": {
             "icon": "search",
             "label": "SEO / GEO",
             "title": "SEO & GEO",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "description": "<p>Technisches Fundament, klare Informationsarchitektur und Content, der zur Suchintention passt — für klassische Suche und KI-Antworten.</p>",
             "benefit_1": "Technisches SEO und saubere Informationsarchitektur",
             "benefit_2": "Content-Strukturen für relevante Suchintentionen",
             "benefit_3": "GEO-orientierte Aufbereitung von Expertise und Entitäten",
@@ -128,13 +139,13 @@
             "primary_url": ""
           }
         },
-        "service_hwMEcN": {
+        "svc_ads": {
           "type": "service",
           "settings": {
             "icon": "chart",
             "label": "Google Ads",
             "title": "Google Ads & Performance",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "description": "<p>Such-, Shopping- und Performance-Kampagnen, die nach Wirtschaftlichkeit gesteuert werden — nicht nach ROAS-Cosmetic.</p>",
             "benefit_1": "Such-, Shopping- und Performance-Strukturen mit Zielbezug",
             "benefit_2": "Budgetsteuerung nach Wirtschaftlichkeit",
             "benefit_3": "Kontinuierliche Auswertung und Verbesserung",
@@ -142,13 +153,13 @@
             "primary_url": ""
           }
         },
-        "service_7eci8q": {
+        "svc_content": {
           "type": "service",
           "settings": {
             "icon": "quote",
             "label": "Content",
             "title": "Content & Storytelling",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
+            "description": "<p>Botschaften, die nicht austauschbar sind — sondern Position beziehen und Conversion unterstützen.</p>",
             "benefit_1": "Präzise Botschaften statt austauschbarer Werbetexte",
             "benefit_2": "Leistungsseiten mit klarer Argumentationslinie",
             "benefit_3": "Content, der Design und Conversion unterstützt",
@@ -158,52 +169,48 @@
         }
       },
       "block_order": [
-        "service_fdmG8T",
-        "service_RKg38n",
-        "service_bp3XGB",
-        "service_NVWwwH",
-        "service_hwMEcN",
-        "service_7eci8q"
+        "svc_strategie",
+        "svc_webdesign",
+        "svc_shopify",
+        "svc_seo",
+        "svc_ads",
+        "svc_content"
       ],
-      "name": "t:services_spotlight.name",
       "settings": {
-        "heading": "Unsere Leistungen",
+        "kicker": "02 · Unsere Leistungen",
+        "heading": "<p>Sechs Disziplinen — ein gemeinsamer Plan.</p>",
+        "intro": "<p>Statt sechs Agenturen mit sechs Slack-Channels: ein Team, das Strategie, Sichtbarkeit, Conversion und Code unter einem Dach denkt.</p>",
         "center_eyebrow": "Im Fokus",
         "primary_label": "Mehr zur Leistung",
-        "primary_url": "",
-        "secondary_label": "Projekt anfragen",
-        "secondary_url": "",
-        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
+        "primary_url": "/pages/leistungen",
+        "color_scheme": "scheme-2",
         "accent_color": "#9ccfd0",
-        "padding_top": 72,
-        "padding_bottom": 72
+        "padding_top": 32,
+        "padding_bottom": 64
       }
     },
-    "theme_store_preview_zMCVkD": {
-      "type": "theme-store-preview",
-      "name": "Theme store preview",
+    "portal": {
+      "type": "landing-portal",
       "settings": {
-        "heading": "Hier geht es zum Theme-Store.",
-        "heading_highlight": "Theme-Store",
-        "subheading": "Eine Auswahl unserer Premium-Themes.",
+        "kicker": "03 · Theme-Store",
+        "heading": "Premium-Themes, direkt aus dem Atelier.",
+        "heading_highlight": "Atelier",
+        "subheading": "Eine Auswahl unserer Themes — getestet im Studio, gebaut für echte Conversion.",
         "collection": "business",
         "products_to_show": 6,
         "show_price": true,
         "show_details": true,
         "details_label": "Details",
         "card_aspect": "4 / 3",
-        "card_radius": 14,
+        "card_radius": 16,
         "cta_label": "Zum Theme-Store",
-        "cta_url": "",
-        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
-        "padding_top": 64,
-        "padding_bottom": 64
+        "cta_url": "/pages/theme-store",
+        "color_scheme": "scheme-2",
+        "accent_color": "#9ccfd0",
+        "padding_top": 32,
+        "padding_bottom": 96
       }
     }
   },
-  "order": [
-    "hero_pulse_gccCFK",
-    "services_spotlight_J8T4KU",
-    "theme_store_preview_zMCVkD"
-  ]
+  "order": ["prologue", "orbit", "portal"]
 }

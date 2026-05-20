@@ -1,0 +1,441 @@
+{% comment %}
+  Landing Prologue
+  ----------------------------------------------------------------
+  Innovative hero + company mission on a single continuous canvas.
+
+  Hero half:
+    - Editorial three-line heading: solid line, rotating word line,
+      outlined "ghost" line.
+    - Live broadcast strip on the right with channel feed + waveform.
+  Mission half:
+    - Numbered manifesto principles (block-driven).
+
+  Shared dark canvas with aurora + grid background. Bottom edge
+  fades into the next section so the page reads as one piece.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign rotator_blocks = section.blocks | where: 'type', 'rotator'
+  assign principle_blocks = section.blocks | where: 'type', 'principle'
+  assign feed_blocks = section.blocks | where: 'type', 'feed'
+-%}
+
+{{ 'section-landing-prologue.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+  #shopify-section-{{ section.id }} .lp {
+    --lp-pad-top: {{ section.settings.padding_top }}px;
+    --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --lp-accent: {{ accent }};
+    --lp-accent-soft: {{ accent | color_modify: 'alpha', 0.16 }};
+    --lp-accent-glow: {{ accent | color_modify: 'alpha', 0.4 }};
+    {%- if scheme.settings.background != blank -%}
+      --lp-bg: {{ scheme.settings.background }};
+      --lp-text: {{ scheme.settings.text }};
+      --lp-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.5 }};
+      --lp-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.7 }};
+      --lp-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --lp-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="lp full-width color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="landing-prologue"
+  data-rotator-interval="{{ section.settings.rotator_interval }}"
+>
+  <div class="lp__atmosphere" aria-hidden="true">
+    <span class="lp__aurora lp__aurora--a"></span>
+    <span class="lp__aurora lp__aurora--b"></span>
+    <span class="lp__aurora lp__aurora--c"></span>
+    <span class="lp__grid"></span>
+    <span class="lp__noise"></span>
+  </div>
+
+  <div class="lp__inner">
+    <div class="lp__hero">
+      <div class="lp__hero-copy">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="lp__eyebrow">
+            <span class="lp__pulse-dot" aria-hidden="true"></span>
+            <span>{{ section.settings.eyebrow | escape }}</span>
+          </p>
+        {%- endif -%}
+
+        <h1 class="lp__heading">
+          {%- if section.settings.heading_prefix != blank -%}
+            <span class="lp__heading-line lp__heading-line--solid">{{ section.settings.heading_prefix | escape }}</span>
+          {%- endif -%}
+
+          {%- if rotator_blocks.size > 0 -%}
+            <span class="lp__rotator" data-lp-rotator>
+              {%- for block in rotator_blocks -%}
+                <span
+                  class="lp__rotator-word{% if forloop.first %} is-active{% endif %}"
+                  data-rotator-word
+                  {% unless forloop.first %}aria-hidden="true"{% endunless %}
+                  {{ block.shopify_attributes }}
+                >{{ block.settings.word | escape }}</span>
+              {%- endfor -%}
+            </span>
+          {%- endif -%}
+
+          {%- if section.settings.heading_suffix != blank -%}
+            <span class="lp__heading-line lp__heading-line--outline">{{ section.settings.heading_suffix | escape }}</span>
+          {%- endif -%}
+        </h1>
+
+        {%- if section.settings.body != blank -%}
+          <div class="lp__body">{{ section.settings.body }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
+          <div class="lp__actions">
+            {%- if section.settings.primary_label != blank -%}
+              <a class="lp__btn lp__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+                <span>{{ section.settings.primary_label | escape }}</span>
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+                  <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- if section.settings.secondary_label != blank -%}
+              <a class="lp__btn lp__btn--ghost" href="{{ section.settings.secondary_url | default: '#' }}">
+                <span>{{ section.settings.secondary_label | escape }}</span>
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <aside class="lp__broadcast" aria-hidden="true">
+        <div class="lp__broadcast-frame">
+          <div class="lp__broadcast-header">
+            <span class="lp__signal-dot"></span>
+            <span class="lp__signal-label">{{ section.settings.broadcast_label | default: 'Live · Signal' | escape }}</span>
+            <span class="lp__broadcast-timer" data-lp-timer>00:00</span>
+          </div>
+
+          {%- if feed_blocks.size > 0 -%}
+            <ul class="lp__feed" data-lp-feed>
+              {%- for block in feed_blocks -%}
+                <li class="lp__feed-item" {{ block.shopify_attributes }}>
+                  <span class="lp__feed-label">{{ block.settings.label | escape }}</span>
+                  <span class="lp__feed-value lp__feed-value--{{ block.settings.tone | default: 'default' }}">
+                    {{ block.settings.value | escape }}
+                  </span>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          <div class="lp__broadcast-wave" data-lp-wave>
+            {%- for i in (1..36) -%}
+              <span class="lp__wave-bar" style="--i: {{ forloop.index0 }}"></span>
+            {%- endfor -%}
+          </div>
+
+          <div class="lp__broadcast-footer">
+            <span class="lp__ticker">{{ section.settings.ticker_text | default: 'channels live · cohort tracked · revenue routed' | escape }}</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="lp__bridge" aria-hidden="true">
+      <span class="lp__bridge-line"></span>
+      <span class="lp__bridge-label">{{ section.settings.bridge_label | default: 'Wer wir sind' | escape }}</span>
+      <span class="lp__bridge-line"></span>
+    </div>
+
+    <div class="lp__mission">
+      <div class="lp__mission-intro">
+        {%- if section.settings.mission_kicker != blank -%}
+          <p class="lp__mission-kicker">{{ section.settings.mission_kicker | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.mission_heading != blank -%}
+          <h2 class="lp__mission-heading">{{ section.settings.mission_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.mission_body != blank -%}
+          <div class="lp__mission-body">{{ section.settings.mission_body }}</div>
+        {%- endif -%}
+      </div>
+
+      {%- if principle_blocks.size > 0 -%}
+        <ol class="lp__principles" data-lp-principles>
+          {%- for block in principle_blocks -%}
+            {%- assign idx_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
+            <li class="lp__principle" {{ block.shopify_attributes }}>
+              <span class="lp__principle-num" aria-hidden="true">{{ idx_num }}</span>
+              <div class="lp__principle-body">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="lp__principle-title">{{ block.settings.title | escape }}</h3>
+                {%- endif -%}
+                {%- if block.settings.description != blank -%}
+                  <p class="lp__principle-text">{{ block.settings.description | escape }}</p>
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'landing-prologue.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Landing prologue",
+  "tag": "section",
+  "class": "shopify-section--landing-prologue",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Vienna · Strategie + Build · Estd. 2025"
+    },
+    {
+      "type": "text",
+      "id": "heading_prefix",
+      "label": "Heading line 1 (solid)",
+      "default": "Wir bauen"
+    },
+    {
+      "type": "text",
+      "id": "heading_suffix",
+      "label": "Heading line 3 (outline)",
+      "info": "Drawn as outline-only ghost text to balance the solid line.",
+      "default": "die wirklich verkaufen."
+    },
+    {
+      "type": "range",
+      "id": "rotator_interval",
+      "label": "Rotator interval",
+      "min": 1500,
+      "max": 5000,
+      "step": 250,
+      "unit": "ms",
+      "default": 2500
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Strategie, Design, Shopify-Entwicklung, SEO und Performance — als ein Team, eine Hand, ein Plan. Wir messen unsere Arbeit am Deckungsbeitrag, nicht am Pitch-Deck.</p>"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Kostenloses Audit holen"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Aktuelle Cases"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Broadcast strip"
+    },
+    {
+      "type": "text",
+      "id": "broadcast_label",
+      "label": "Broadcast label",
+      "default": "Live · Signal"
+    },
+    {
+      "type": "text",
+      "id": "ticker_text",
+      "label": "Ticker text",
+      "default": "channels live · cohort tracked · revenue routed"
+    },
+    {
+      "type": "header",
+      "content": "Bridge to mission"
+    },
+    {
+      "type": "text",
+      "id": "bridge_label",
+      "label": "Bridge label",
+      "default": "Wer wir sind"
+    },
+    {
+      "type": "header",
+      "content": "Mission"
+    },
+    {
+      "type": "text",
+      "id": "mission_kicker",
+      "label": "Kicker",
+      "default": "01 · Unsere Mission"
+    },
+    {
+      "type": "richtext",
+      "id": "mission_heading",
+      "label": "Mission heading",
+      "default": "<p>Wir machen Wachstum zur Routine — nicht zum Zufall.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "mission_body",
+      "label": "Mission body",
+      "default": "<p>Eine kleine Studio-Crew aus Strategie, Design und Engineering. Wir bringen das zusammen, was sonst zwischen Agenturen versickert — und übersetzen Markenanspruch in Conversion, Sichtbarkeit und stabilen Umsatz.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "info": "Used for eyebrow pulse, rotator word, signal dot and CTA.",
+      "default": "#9ccfd0"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "rotator",
+      "name": "Rotator word",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "word",
+          "label": "Word",
+          "default": "Shops"
+        }
+      ]
+    },
+    {
+      "type": "feed",
+      "name": "Broadcast feed item",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Channel",
+          "default": "Strategy"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "live"
+        },
+        {
+          "type": "select",
+          "id": "tone",
+          "label": "Tone",
+          "options": [
+            { "value": "default", "label": "Default" },
+            { "value": "accent", "label": "Accent" },
+            { "value": "mono", "label": "Monospace" }
+          ],
+          "default": "accent"
+        }
+      ]
+    },
+    {
+      "type": "principle",
+      "name": "Mission principle",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Wir denken vom Umsatz aus."
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Jede Empfehlung wird daran gemessen, ob sie Deckungsbeitrag, Sichtbarkeit oder Wiederkaufrate verbessert."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Landing prologue",
+      "category": "Hero",
+      "blocks": [
+        { "type": "rotator", "settings": { "word": "Shops" } },
+        { "type": "rotator", "settings": { "word": "Stores" } },
+        { "type": "rotator", "settings": { "word": "Marken" } },
+        { "type": "rotator", "settings": { "word": "Maschinen" } },
+        { "type": "feed", "settings": { "label": "Strategy", "value": "live", "tone": "accent" } },
+        { "type": "feed", "settings": { "label": "Design", "value": "live", "tone": "accent" } },
+        { "type": "feed", "settings": { "label": "Shopify Dev", "value": "live", "tone": "accent" } },
+        { "type": "feed", "settings": { "label": "SEO / GEO", "value": "live", "tone": "accent" } },
+        { "type": "feed", "settings": { "label": "Google Ads", "value": "live", "tone": "accent" } },
+        { "type": "feed", "settings": { "label": "Content", "value": "live", "tone": "accent" } },
+        { "type": "principle", "settings": { "title": "Wir denken vom Umsatz aus.", "description": "Jede Empfehlung wird daran gemessen, ob sie Deckungsbeitrag, Sichtbarkeit oder Wiederkaufrate verbessert." } },
+        { "type": "principle", "settings": { "title": "Strategie und Build, ein Team.", "description": "Kein Übergabeverlust zwischen Konzept, Design und Code — die Leute, die planen, bauen auch." } },
+        { "type": "principle", "settings": { "title": "Lieber langsam, dafür sauber.", "description": "Wir bauen Strukturen, die in zwei Jahren noch funktionieren — kein Kurzfrist-Hack, der morgen wieder kostet." } },
+        { "type": "principle", "settings": { "title": "Daten statt Bauchgefühl.", "description": "Tracking, Kohorten und Tests entscheiden — nicht das lauteste Meinungs-Slack." } }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

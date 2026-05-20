@@ -1,0 +1,345 @@
+{% comment %}
+  Landing Orbit — services on the prologue's continued dark canvas
+  ----------------------------------------------------------------
+  Variation of the orbit metaphor, built for the dark landing
+  canvas. Nodes sit on a faint ring; active node lands at the
+  bottom in front of a "lens" that holds the active title and
+  description. Keyboard navigation + cross-fading detail panel.
+
+  Same accent + canvas language as landing-prologue, so the
+  page reads as one continuous experience.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+-%}
+
+{{ 'section-landing-orbit.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+  #shopify-section-{{ section.id }} .lo {
+    --lo-pad-top: {{ section.settings.padding_top }}px;
+    --lo-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --lo-accent: {{ accent }};
+    --lo-accent-soft: {{ accent | color_modify: 'alpha', 0.16 }};
+    --lo-accent-glow: {{ accent | color_modify: 'alpha', 0.4 }};
+    {%- if scheme.settings.background != blank -%}
+      --lo-bg: {{ scheme.settings.background }};
+      --lo-text: {{ scheme.settings.text }};
+      --lo-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.5 }};
+      --lo-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.7 }};
+      --lo-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --lo-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="lo full-width color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="landing-orbit"
+  {% if section.settings.heading != blank %}aria-labelledby="lo-heading-{{ section.id }}"{% endif %}
+>
+  <div class="lo__atmosphere" aria-hidden="true">
+    <span class="lo__aurora"></span>
+    <span class="lo__grid"></span>
+  </div>
+
+  <div class="lo__inner">
+    <header class="lo__intro">
+      {%- if section.settings.kicker != blank -%}
+        <p class="lo__kicker">{{ section.settings.kicker | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 id="lo-heading-{{ section.id }}" class="lo__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.intro != blank -%}
+        <div class="lo__intro-body">{{ section.settings.intro }}</div>
+      {%- endif -%}
+    </header>
+
+    {%- if block_count > 0 -%}
+      <landing-orbit class="lo__stage" data-total="{{ block_count }}">
+        <div class="lo__orbit" data-orbit>
+          <div class="lo__ring lo__ring--outer" aria-hidden="true"></div>
+          <div class="lo__ring lo__ring--inner" aria-hidden="true"></div>
+
+          <svg class="lo__svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <line class="lo__connector" data-connector x1="50" y1="50" x2="50" y2="100"></line>
+          </svg>
+
+          <div class="lo__lens" aria-hidden="true">
+            <span class="lo__lens-ring"></span>
+            <span class="lo__lens-core"></span>
+          </div>
+
+          <div class="lo__center" aria-live="polite">
+            {%- if section.settings.center_eyebrow != blank -%}
+              <span class="lo__center-eyebrow">{{ section.settings.center_eyebrow | escape }}</span>
+            {%- endif -%}
+            <span class="lo__center-title" data-center-title>
+              {{ section.blocks[0].settings.title | escape }}
+            </span>
+          </div>
+
+          {%- for block in section.blocks -%}
+            {%- assign label = block.settings.label | default: block.settings.title -%}
+            <button
+              type="button"
+              class="lo__node{% if forloop.first %} is-active{% endif %}"
+              data-node
+              data-index="{{ forloop.index0 }}"
+              aria-label="{{ block.settings.title | escape }}"
+              aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+              tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <span class="lo__node-icon" aria-hidden="true">
+                {%- render 'services-overview-icon', name: block.settings.icon -%}
+              </span>
+              <span class="lo__node-label">{{ label | escape }}</span>
+            </button>
+          {%- endfor -%}
+        </div>
+
+        <div class="lo__details">
+          {%- for block in section.blocks -%}
+            <article
+              class="lo__panel{% if forloop.first %} is-active{% endif %}"
+              data-panel
+              data-index="{{ forloop.index0 }}"
+              aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.description != blank -%}
+                <div class="lo__panel-text">{{ block.settings.description }}</div>
+              {%- endif -%}
+
+              {%- assign has_benefits = false -%}
+              {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank or block.settings.benefit_3 != blank -%}
+                {%- assign has_benefits = true -%}
+              {%- endif -%}
+
+              {%- if has_benefits -%}
+                <ul class="lo__benefits">
+                  {%- if block.settings.benefit_1 != blank -%}<li>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.benefit_2 != blank -%}<li>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.benefit_3 != blank -%}<li>{{ block.settings.benefit_3 | escape }}</li>{%- endif -%}
+                </ul>
+              {%- endif -%}
+
+              {%- assign primary_label = block.settings.primary_label | default: section.settings.primary_label -%}
+              {%- assign primary_url = block.settings.primary_url | default: section.settings.primary_url -%}
+              {%- if primary_label != blank -%}
+                <div class="lo__panel-actions">
+                  <a class="lo__panel-cta" href="{{ primary_url | default: '#' }}">
+                    {{ primary_label | escape }}
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
+        </div>
+
+        <p class="lo__sr-live" data-live aria-live="polite"></p>
+      </landing-orbit>
+    {%- else -%}
+      <p class="lo__placeholder">
+        {{ 'landing_orbit.add_services' | t | default: 'Add service blocks to fill the orbit.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'landing-orbit.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Landing orbit",
+  "tag": "section",
+  "class": "shopify-section--landing-orbit",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "02 · Unsere Leistungen"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Sechs Disziplinen — ein gemeinsamer Plan.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro",
+      "default": "<p>Statt sechs Agenturen mit sechs Slack-Channels: ein Team, das Strategie, Sichtbarkeit, Conversion und Code unter einem Dach denkt.</p>"
+    },
+    {
+      "type": "text",
+      "id": "center_eyebrow",
+      "label": "Center eyebrow",
+      "default": "Im Fokus"
+    },
+    {
+      "type": "header",
+      "content": "Default CTA"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary CTA label",
+      "default": "Mehr zur Leistung"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "Primary CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#9ccfd0"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "compass", "label": "Compass — Strategy" },
+            { "value": "layout", "label": "Layout — Design" },
+            { "value": "bag", "label": "Bag — Shop" },
+            { "value": "search", "label": "Search — Visibility" },
+            { "value": "chart", "label": "Chart — Performance" },
+            { "value": "quote", "label": "Quote — Content" },
+            { "value": "spark", "label": "Spark — Innovation" },
+            { "value": "globe", "label": "Globe — Global" }
+          ],
+          "default": "compass"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label under node",
+          "info": "Short label under the orbit node. Falls back to the title.",
+          "default": "Strategie"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title (shown in center)",
+          "default": "Strategie & Beratung"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>"
+        },
+        {
+          "type": "header",
+          "content": "Benefits"
+        },
+        {
+          "type": "text",
+          "id": "benefit_1",
+          "label": "Benefit 1",
+          "default": "Digitale Positionierung und Angebotsstruktur"
+        },
+        {
+          "type": "text",
+          "id": "benefit_2",
+          "label": "Benefit 2",
+          "default": "Customer Journey und Conversion-Potenziale"
+        },
+        {
+          "type": "text",
+          "id": "benefit_3",
+          "label": "Benefit 3",
+          "default": "Klare Prioritäten statt beliebiger Einzelmaßnahmen"
+        },
+        {
+          "type": "header",
+          "content": "Per-service CTA (optional)"
+        },
+        {
+          "type": "text",
+          "id": "primary_label",
+          "label": "Primary CTA label"
+        },
+        {
+          "type": "url",
+          "id": "primary_url",
+          "label": "Primary CTA link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Landing orbit",
+      "category": "Services",
+      "blocks": [
+        { "type": "service", "settings": { "icon": "compass", "label": "Strategie", "title": "Strategie & Beratung", "benefit_1": "Digitale Positionierung und Angebotsstruktur", "benefit_2": "Customer Journey und Conversion-Potenziale", "benefit_3": "Klare Prioritäten statt beliebiger Einzelmaßnahmen" } },
+        { "type": "service", "settings": { "icon": "layout", "label": "Webdesign", "title": "Webdesign & UX", "benefit_1": "Individuelle Seitenarchitektur statt Standard-Layout", "benefit_2": "Klare Nutzerführung auf Desktop und Mobile", "benefit_3": "Designsystem für konsistente Markenwirkung" } },
+        { "type": "service", "settings": { "icon": "bag", "label": "Shopify", "title": "Shopify & Entwicklung", "benefit_1": "Custom Sections und flexible Theme-Editor-Steuerung", "benefit_2": "Saubere technische Umsetzung mit Fokus auf Performance", "benefit_3": "Strukturen, die später ohne Chaos erweitert werden können" } },
+        { "type": "service", "settings": { "icon": "search", "label": "SEO / GEO", "title": "SEO & GEO", "benefit_1": "Technisches SEO und saubere Informationsarchitektur", "benefit_2": "Content-Strukturen für relevante Suchintentionen", "benefit_3": "GEO-orientierte Aufbereitung von Expertise und Entitäten" } },
+        { "type": "service", "settings": { "icon": "chart", "label": "Google Ads", "title": "Google Ads & Performance", "benefit_1": "Such-, Shopping- und Performance-Strukturen mit Zielbezug", "benefit_2": "Budgetsteuerung nach Wirtschaftlichkeit", "benefit_3": "Kontinuierliche Auswertung und Verbesserung" } },
+        { "type": "service", "settings": { "icon": "quote", "label": "Content", "title": "Content & Storytelling", "benefit_1": "Präzise Botschaften statt austauschbarer Werbetexte", "benefit_2": "Leistungsseiten mit klarer Argumentationslinie", "benefit_3": "Content, der Design und Conversion unterstützt" } }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
