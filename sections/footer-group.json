@@ -1,25 +1,46 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "col_product": {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Leistungen"
+          }
+        },
+        "col_resources": {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Ressourcen"
+          }
+        },
+        "col_legal": {
+          "type": "legal_column",
+          "settings": {
+            "heading": "Rechtliches",
+            "show_privacy": true,
+            "privacy_label": "Datenschutz",
+            "show_terms": true,
+            "terms_label": "AGB",
+            "show_refund": false,
+            "show_shipping": false,
+            "impressum_label": "Impressum"
+          }
+        }
+      },
+      "block_order": ["col_product", "col_resources", "col_legal"],
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
+        "show_socials": true,
+        "show_qr": false,
+        "show_payment_icons": true,
+        "color_scheme": "scheme-2",
+        "padding_top": 64,
+        "padding_bottom": 48
       }
     }
   },
-  "order": [
-    "footer"
-  ]
+  "order": ["footer"]
 }
