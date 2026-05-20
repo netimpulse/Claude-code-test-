@@ -89,6 +89,7 @@
   "theme_store": {
     "name": "Theme store",
     "heading_label": "Heading",
+    "subheading_label": "Subheading",
     "search_placeholder_label": "Search placeholder",
     "categories_heading_label": "Categories heading",
     "all_label": "\"All\" entry label",
