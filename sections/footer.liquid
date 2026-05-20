@@ -1,57 +1,304 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
+{% comment %}
+  Footer — Zelt-inspired multi-column layout
+  ----------------------------------------------------------------
+  Layout: brand column (logo + tagline + social row) on the left,
+  configurable menu/legal columns in the middle, optional CTA / QR
+  card on the right. Bottom row shows copyright and (optionally)
+  payment icons.
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
+  Editor model:
+  - Menu columns are blocks ('menu_column') that pair a heading
+    with any Shopify link_list. Use one per PRODUCT / RESOURCES /
+    COMPANY column.
+  - Legal column is a separate block type ('legal_column') that
+    auto-resolves Shopify's built-in policy pages (privacy_policy,
+    terms_of_service, refund_policy, shipping_policy) and accepts
+    a manual page_picker for Impressum (no built-in equivalent).
+  - Social icons, QR card, copyright and payment-icon toggle are
+    section-level settings.
+{% endcomment %}
 
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign logo_image = section.settings.logo_image | default: settings.logo
+  assign show_socials = section.settings.show_socials
+  assign show_qr = section.settings.show_qr
+  assign show_payment_icons = section.settings.show_payment_icons
+  assign copyright = section.settings.copyright
+
+  assign year_now = 'now' | date: '%Y'
+  assign copyright = copyright | replace: '[year]', year_now | replace: '[shop]', shop.name
+-%}
+
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}
+      background: {{ scheme.settings.background }};
+      --color-background: {{ scheme.settings.background }};
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+  #shopify-section-{{ section.id }} .footer {
+    --footer-pad-top: {{ section.settings.padding_top }}px;
+    --footer-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --footer-logo-width: {{ section.settings.logo_width }}px;
+    {%- if scheme.settings.background != blank -%}
+      --footer-bg: {{ scheme.settings.background }};
+      --footer-text: {{ scheme.settings.text }};
+      --footer-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.55 }};
+      --footer-text-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.85 }};
+      --footer-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --footer-icon-bg: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --footer-icon-bg-hover: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<footer
+  class="footer full-width color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="footer"
+  role="contentinfo"
+>
+  <div class="footer__inner">
+    <div class="footer__main">
+      <div class="footer__brand">
+        <a href="{{ routes.root_url }}" class="footer__logo-link" aria-label="{{ shop.name | escape }}">
+          {%- if logo_image != blank -%}
+            {%- assign logo_alt = logo_image.alt | default: shop.name | escape -%}
+            {{ logo_image | image_url: width: 480 | image_tag:
+                widths: '120, 180, 240, 320, 480',
+                sizes: 'var(--footer-logo-width, 120px)',
+                class: 'footer__logo-img',
+                alt: logo_alt,
+                loading: 'lazy'
+            }}
+          {%- else -%}
+            <span class="footer__logo-text">{{ shop.name }}</span>
+          {%- endif -%}
+        </a>
+
+        {%- if section.settings.tagline != blank -%}
+          <p class="footer__tagline">{{ section.settings.tagline | escape }}</p>
+        {%- endif -%}
+
+        {%- if show_socials -%}
+          {%- assign socials = 'linkedin,twitter,instagram,facebook,youtube,tiktok,medium,github' | split: ',' -%}
+          {%- assign has_socials = false -%}
+          {%- for s in socials -%}
+            {%- capture key -%}social_{{ s }}{%- endcapture -%}
+            {%- if section.settings[key] != blank -%}
+              {%- assign has_socials = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if has_socials -%}
+            <ul class="footer__socials" role="list">
+              {%- for s in socials -%}
+                {%- capture key -%}social_{{ s }}{%- endcapture -%}
+                {%- assign social_url = section.settings[key] -%}
+                {%- if social_url != blank -%}
+                  <li>
+                    <a
+                      class="footer__social"
+                      href="{{ social_url }}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="{{ s | capitalize }}"
+                    >
+                      {%- render 'footer-social-icon', name: s -%}
+                    </a>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+      <div class="footer__columns">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'menu_column' -%}
+              <nav class="footer__column" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h3 class="footer__column-heading">{{ block.settings.heading | escape }}</h3>
+                {%- endif -%}
+                {%- if block.settings.menu != blank -%}
+                  <ul class="footer__column-list" role="list">
+                    {%- for link in block.settings.menu.links -%}
+                      <li>
+                        <a class="footer__column-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
+                          {{ link.title | escape }}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </nav>
+
+            {%- when 'legal_column' -%}
+              <nav class="footer__column" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h3 class="footer__column-heading">{{ block.settings.heading | escape }}</h3>
+                {%- endif -%}
+                <ul class="footer__column-list" role="list">
+                  {%- if block.settings.show_privacy and shop.privacy_policy != blank -%}
+                    <li>
+                      <a class="footer__column-link" href="{{ shop.privacy_policy.url }}">
+                        {{ block.settings.privacy_label | default: shop.privacy_policy.title | escape }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if block.settings.show_terms and shop.terms_of_service != blank -%}
+                    <li>
+                      <a class="footer__column-link" href="{{ shop.terms_of_service.url }}">
+                        {{ block.settings.terms_label | default: shop.terms_of_service.title | escape }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if block.settings.show_refund and shop.refund_policy != blank -%}
+                    <li>
+                      <a class="footer__column-link" href="{{ shop.refund_policy.url }}">
+                        {{ block.settings.refund_label | default: shop.refund_policy.title | escape }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if block.settings.show_shipping and shop.shipping_policy != blank -%}
+                    <li>
+                      <a class="footer__column-link" href="{{ shop.shipping_policy.url }}">
+                        {{ block.settings.shipping_label | default: shop.shipping_policy.title | escape }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if block.settings.impressum_page != blank -%}
+                    <li>
+                      <a class="footer__column-link" href="{{ block.settings.impressum_page.url }}">
+                        {{ block.settings.impressum_label | default: 'Impressum' | escape }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                </ul>
+              </nav>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if show_qr -%}
+        <div class="footer__qr">
+          {%- if section.settings.qr_image != blank -%}
+            {%- assign qr_alt = section.settings.qr_image.alt | default: section.settings.qr_caption | escape -%}
+            {{ section.settings.qr_image | image_url: width: 280 | image_tag:
+                widths: '120, 160, 200, 280',
+                sizes: '120px',
+                class: 'footer__qr-img',
+                alt: qr_alt,
+                loading: 'lazy'
+            }}
+          {%- endif -%}
+          {%- if section.settings.qr_caption != blank -%}
+            <span class="footer__qr-caption">{{ section.settings.qr_caption | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if copyright != blank or show_payment_icons -%}
+      <div class="footer__bottom">
+        {%- if copyright != blank -%}
+          <p class="footer__copyright">{{ copyright }}</p>
+        {%- endif -%}
+        {%- if show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+          <ul class="footer__payments" role="list" aria-label="Payment methods">
+            {%- for type in shop.enabled_payment_types -%}
+              <li>{{ type | payment_type_svg_tag: class: 'footer__payment-icon' }}</li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
   </div>
 </footer>
 
-{% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-  footer a {
-    text-decoration: none;
-    color: var(--color-foreground);
-  }
-  footer .footer__links,
-  footer .footer__payment {
-    display: flex;
-    gap: 1rem;
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
-  "name": "t:general.footer",
+  "name": "Footer",
   "settings": [
+    { "type": "header", "content": "Logo" },
+    { "type": "image_picker", "id": "logo_image", "label": "Logo image", "info": "Falls back to the global theme logo." },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 60, "max": 280, "step": 10, "unit": "px", "default": 120 },
+    { "type": "textarea", "id": "tagline", "label": "Tagline (optional)", "info": "Short line under the logo." },
+
+    { "type": "header", "content": "Social links" },
+    { "type": "checkbox", "id": "show_socials", "label": "Show social icons", "default": true },
+    { "type": "url", "id": "social_linkedin",  "label": "LinkedIn URL" },
+    { "type": "url", "id": "social_twitter",   "label": "X / Twitter URL" },
+    { "type": "url", "id": "social_instagram", "label": "Instagram URL" },
+    { "type": "url", "id": "social_facebook",  "label": "Facebook URL" },
+    { "type": "url", "id": "social_youtube",   "label": "YouTube URL" },
+    { "type": "url", "id": "social_tiktok",    "label": "TikTok URL" },
+    { "type": "url", "id": "social_medium",    "label": "Medium URL" },
+    { "type": "url", "id": "social_github",    "label": "GitHub URL" },
+
+    { "type": "header", "content": "QR / app card" },
+    { "type": "checkbox", "id": "show_qr", "label": "Show QR card", "default": false, "info": "A small card on the right with an image (QR code or app badge) and caption." },
+    { "type": "image_picker", "id": "qr_image", "label": "QR / badge image" },
+    { "type": "text", "id": "qr_caption", "label": "Caption", "default": "Scan with iPhone" },
+
+    { "type": "header", "content": "Bottom row" },
+    { "type": "text", "id": "copyright", "label": "Copyright line", "info": "Use [year] for the current year and [shop] for the shop name.", "default": "© [year] [shop]. Alle Rechte vorbehalten." },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 48 }
+  ],
+  "blocks": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "menu_column",
+      "name": "Menu column",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Column heading", "default": "Produkt" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "info": "Create a menu under Navigation in the Shopify admin and select it here." }
+      ]
     },
     {
-      "type": "checkbox",
-      "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
-      "default": true
+      "type": "legal_column",
+      "name": "Legal column",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Column heading", "default": "Rechtliches" },
+        { "type": "paragraph", "content": "Links resolve automatically to your Shopify policy pages (Settings → Policies)." },
+        { "type": "checkbox", "id": "show_privacy",  "label": "Show privacy policy",     "default": true },
+        { "type": "text",     "id": "privacy_label", "label": "Privacy label override",   "info": "Leave empty to use the policy's own title.", "default": "Datenschutz" },
+        { "type": "checkbox", "id": "show_terms",    "label": "Show terms of service",   "default": true },
+        { "type": "text",     "id": "terms_label",   "label": "Terms label override",    "default": "AGB" },
+        { "type": "checkbox", "id": "show_refund",   "label": "Show refund policy",      "default": false },
+        { "type": "text",     "id": "refund_label",  "label": "Refund label override",   "default": "Widerruf" },
+        { "type": "checkbox", "id": "show_shipping", "label": "Show shipping policy",    "default": false },
+        { "type": "text",     "id": "shipping_label","label": "Shipping label override", "default": "Versand" },
+        { "type": "header",   "content": "Impressum" },
+        { "type": "paragraph","content": "Shopify has no built-in Impressum policy. Create a page (Pages → Add page) and pick it here." },
+        { "type": "page",     "id": "impressum_page", "label": "Impressum page" },
+        { "type": "text",     "id": "impressum_label","label": "Impressum label", "default": "Impressum" }
+      ]
     }
-  ]
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "menu_column",  "settings": { "heading": "Produkt" } },
+        { "type": "menu_column",  "settings": { "heading": "Ressourcen" } },
+        { "type": "legal_column", "settings": { "heading": "Rechtliches" } }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
 }
 {% endschema %}
