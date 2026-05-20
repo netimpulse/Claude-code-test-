@@ -22,7 +22,8 @@ ignore = [
   "package-lock.json",
   "qa-screenshots/**",
   ".env*",
-  "node_modules/**"
+  "node_modules/**",
+  ".claude/**"
 ]
 
 # Production-Block wird pro Kundenshop ergaenzt. Hier QA-Pfade extra mit
