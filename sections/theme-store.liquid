@@ -45,6 +45,17 @@
 >
   <div class="theme-store__inner">
     <div class="theme-store__grid">
+      {% if section.settings.heading != blank or section.settings.subheading != blank %}
+        <div class="theme-store__header">
+          {% if section.settings.heading != blank %}
+            <h2 class="theme-store__heading">{{ section.settings.heading }}</h2>
+          {% endif %}
+          {% if section.settings.subheading != blank %}
+            <p class="theme-store__subheading">{{ section.settings.subheading }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
       <aside class="theme-store__sidebar" aria-label="{{ 'theme_store.filter_label' | t | default: 'Filters' }}">
         <button
           type="button"
@@ -139,17 +150,6 @@
       </aside>
 
       <div class="theme-store__products">
-        {% if section.settings.heading != blank or section.settings.subheading != blank %}
-          <div class="theme-store__header">
-            {% if section.settings.heading != blank %}
-              <h2 class="theme-store__heading">{{ section.settings.heading }}</h2>
-            {% endif %}
-            {% if section.settings.subheading != blank %}
-              <p class="theme-store__subheading">{{ section.settings.subheading }}</p>
-            {% endif %}
-          </div>
-        {% endif %}
-
         <div class="theme-store__searchbar" data-ts-search-root>
           <label for="ts-search-{{ section.id }}" class="theme-store__sr-only">
             {{ 'theme_store.search_label' | t | default: 'Search themes' }}
@@ -567,8 +567,14 @@
   @media (min-width: 990px) {
     .theme-store__grid {
       grid-template-columns: 250px minmax(0, 1fr);
+      grid-template-areas:
+        ".       header"
+        "sidebar products";
       align-items: start;
     }
+    .theme-store__header { grid-area: header; margin-bottom: 0; }
+    .theme-store__sidebar { grid-area: sidebar; }
+    .theme-store__products { grid-area: products; }
     .theme-store__sidebar-toggle { display: none; }
     .theme-store__sidebar-panel { display: block; margin-top: 0; }
     .theme-store__product-grid {
