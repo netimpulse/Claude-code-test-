@@ -1,0 +1,207 @@
+{% doc %}
+  A single bento card. Lives inside the LP · Bento block. The `span`
+  setting controls how much of the asymmetric grid it occupies.
+{% enddoc %}
+
+{%- liquid
+  assign span = block.settings.span | default: 'normal'
+  assign url = block.settings.link
+-%}
+
+<article class="lp-bento__card lp-bento__card--{{ span }}" {{ block.shopify_attributes }}>
+  {%- if url != blank -%}
+    <a class="lp-bento__card-link" href="{{ url }}" aria-label="{{ block.settings.title | escape }}"></a>
+  {%- endif -%}
+
+  {%- if block.settings.icon != 'none' -%}
+    <span class="lp-bento__icon" aria-hidden="true">
+      {%- render 'services-overview-icon', name: block.settings.icon -%}
+    </span>
+  {%- endif -%}
+
+  <div class="lp-bento__card-body">
+    {%- if block.settings.title != blank -%}
+      <h3 class="lp-bento__card-title">{{ block.settings.title | escape }}</h3>
+    {%- endif -%}
+    {%- if block.settings.text != blank -%}
+      <p class="lp-bento__card-text">{{ block.settings.text | escape }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- if url != blank and block.settings.link_label != blank -%}
+    <span class="lp-bento__card-cta">
+      {{ block.settings.link_label | escape }}
+      <span aria-hidden="true">→</span>
+    </span>
+  {%- endif -%}
+</article>
+
+{% stylesheet %}
+  .lp-bento__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    background: var(--lp-surface, color-mix(in srgb, var(--lp-text, #1f2328) 4%, transparent));
+    border: 1px solid var(--lp-line, color-mix(in srgb, currentcolor 12%, transparent));
+    border-radius: 18px;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .lp-bento__card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 120% at 0% 0%, var(--lp-accent-soft, rgba(74, 124, 255, 0.08)), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: -1;
+  }
+  .lp-bento__card:hover {
+    transform: translateY(-3px);
+    border-color: var(--lp-accent, #4a7cff);
+    box-shadow: 0 18px 40px color-mix(in srgb, var(--lp-text, #1f2328) 12%, transparent);
+  }
+  .lp-bento__card:hover::before { opacity: 1; }
+
+  .lp-bento__card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .lp-bento__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    color: var(--lp-accent, #4a7cff);
+    background: var(--lp-accent-soft, color-mix(in srgb, var(--lp-accent, #4a7cff) 12%, transparent));
+  }
+  .lp-bento__icon svg { width: 24px; height: 24px; }
+
+  .lp-bento__card-body { margin-top: auto; }
+  .lp-bento__card-title {
+    margin: 0 0 0.4rem;
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .lp-bento__card-text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 72%, transparent);
+  }
+  .lp-bento__card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--lp-accent, #4a7cff);
+  }
+  .lp-bento__card-cta span { transition: transform 0.15s ease; }
+  .lp-bento__card:hover .lp-bento__card-cta span { transform: translateX(3px); }
+
+  /* Feature cards get more breathing room and a larger icon */
+  .lp-bento__card--feature {
+    gap: 1rem;
+    background:
+      linear-gradient(135deg, var(--lp-accent-soft, rgba(74, 124, 255, 0.1)), transparent 60%),
+      var(--lp-surface, color-mix(in srgb, var(--lp-text, #1f2328) 4%, transparent));
+  }
+  .lp-bento__card--feature .lp-bento__icon { width: 54px; height: 54px; }
+  .lp-bento__card--feature .lp-bento__icon svg { width: 28px; height: 28px; }
+  .lp-bento__card--feature .lp-bento__card-title { font-size: clamp(1.3rem, 2.6vw, 1.9rem); }
+  .lp-bento__card--feature .lp-bento__card-text { font-size: 1.02rem; }
+
+  /* Span behaviour scales with the bento grid columns */
+  @media (min-width: 720px) {
+    .lp-bento__card--feature { grid-column: span 2; grid-row: span 2; }
+    .lp-bento__card--wide { grid-column: span 2; }
+    .lp-bento__card--tall { grid-row: span 2; }
+  }
+  @media (min-width: 1000px) {
+    .lp-bento__card--feature { grid-column: span 2; grid-row: span 2; }
+    .lp-bento__card--wide { grid-column: span 2; }
+    .lp-bento__card--tall { grid-row: span 2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp-bento__card,
+    .lp-bento__card::before,
+    .lp-bento__card-cta span { transition: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LP · Bento card",
+  "settings": [
+    {
+      "type": "select",
+      "id": "span",
+      "label": "Tile size",
+      "options": [
+        { "value": "normal", "label": "Normal (1×1)" },
+        { "value": "wide", "label": "Wide (2×1)" },
+        { "value": "tall", "label": "Tall (1×2)" },
+        { "value": "feature", "label": "Feature (2×2)" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icon",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "compass", "label": "Compass" },
+        { "value": "layout", "label": "Layout" },
+        { "value": "bag", "label": "Bag" },
+        { "value": "search", "label": "Search" },
+        { "value": "chart", "label": "Chart" },
+        { "value": "quote", "label": "Quote" },
+        { "value": "spark", "label": "Spark" },
+        { "value": "globe", "label": "Globe" }
+      ],
+      "default": "compass"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Leistung"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Eine kurze Beschreibung dieser Leistung."
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link (optional)"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Mehr erfahren"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LP · Bento card",
+      "category": "Landing"
+    }
+  ]
+}
+{% endschema %}

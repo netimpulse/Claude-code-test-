@@ -1,0 +1,367 @@
+{% doc %}
+  Landing-page theme-store preview. A horizontal scroll-snap carousel of
+  theme products pulled from a collection, with prev/next controls and a
+  call-to-action to the full store. Self-contained palette.
+{% enddoc %}
+
+{%- liquid
+  assign source = block.settings.collection
+  assign count = block.settings.products_to_show
+  assign aspect = block.settings.card_aspect | default: '4 / 3'
+-%}
+
+<section class="lp-themes" data-block-type="lp-themes" {{ block.shopify_attributes }}>
+  <lp-themes class="lp-themes__inner" style="--lp-card-aspect: {{ aspect }}; --lp-card-radius: {{ block.settings.card_radius }}px;">
+    <header class="lp-themes__head">
+      <div class="lp-themes__intro">
+        {%- if block.settings.eyebrow != blank -%}
+          <span class="lp-themes__eyebrow">{{ block.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        {%- if block.settings.heading != blank -%}
+          <h2 class="lp-themes__heading">{{ block.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if block.settings.subheading != blank -%}
+          <p class="lp-themes__subheading">{{ block.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="lp-themes__nav">
+        <button type="button" class="lp-themes__nav-btn" data-prev aria-label="{{ 'landingpage.prev' | t | default: 'Previous' }}">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <button type="button" class="lp-themes__nav-btn" data-next aria-label="{{ 'landingpage.next' | t | default: 'Next' }}">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    {%- if source != blank and source.products.size > 0 -%}
+      <ul class="lp-themes__track" data-track>
+        {%- for product in source.products limit: count -%}
+          <li class="lp-themes__card">
+            <a class="lp-themes__card-link" href="{{ product.url }}">
+              <div class="lp-themes__media">
+                {%- if product.featured_image -%}
+                  {%- assign p_alt = product.featured_image.alt | default: product.title | escape -%}
+                  {{ product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '(min-width: 1000px) 25vw, 70vw', widths: '300, 500, 700', alt: p_alt, class: 'lp-themes__img' }}
+                {%- else -%}
+                  <div class="lp-themes__ph" aria-hidden="true">{{ 'product-1' | placeholder_svg_tag: 'lp-themes__ph-svg' }}</div>
+                {%- endif -%}
+              </div>
+              <div class="lp-themes__body">
+                <h3 class="lp-themes__title">{{ product.title | escape }}</h3>
+                <div class="lp-themes__meta">
+                  {%- if block.settings.show_price -%}
+                    <span class="lp-themes__price">{{ product.price | money }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.show_details -%}
+                    <span class="lp-themes__details">{{ block.settings.details_label | default: 'Details' | escape }} <span aria-hidden="true">→</span></span>
+                  {%- endif -%}
+                </div>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p class="lp-themes__placeholder">
+        {{ 'landingpage.add_collection' | t | default: 'Pick a themes collection in the editor to preview products here.' }}
+      </p>
+    {%- endif -%}
+
+    {%- if block.settings.cta_label != blank -%}
+      <div class="lp-themes__footer">
+        <a class="lp-themes__cta" href="{{ block.settings.cta_url | default: '#' }}">
+          {{ block.settings.cta_label | escape }}
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    {%- endif -%}
+  </lp-themes>
+</section>
+
+{% stylesheet %}
+  .lp-themes {
+    background: var(--lp-bg, var(--color-background, #fff));
+    color: var(--lp-text, var(--color-foreground, #1f2328));
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  .lp-themes__inner {
+    display: block;
+    max-width: var(--lp-maxw, var(--page-width, 90rem));
+    margin-inline: auto;
+    padding-inline: var(--lp-pad-x, var(--page-margin, 20px));
+  }
+  .lp-themes__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+  .lp-themes__intro { min-width: 0; flex: 1 1 22rem; }
+  .lp-themes__eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lp-accent, #4a7cff);
+    margin-bottom: 0.5rem;
+  }
+  .lp-themes__heading {
+    margin: 0 0 0.4rem;
+    font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .lp-themes__subheading {
+    margin: 0;
+    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 68%, transparent);
+  }
+
+  .lp-themes__nav { display: flex; gap: 0.5rem; flex-shrink: 0; }
+  .lp-themes__nav-btn {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: inherit;
+    border: 1px solid var(--lp-line-strong, color-mix(in srgb, currentcolor 20%, transparent));
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  }
+  .lp-themes__nav-btn:hover {
+    background: var(--lp-accent-soft, color-mix(in srgb, currentcolor 8%, transparent));
+    border-color: var(--lp-accent, #4a7cff);
+  }
+  .lp-themes__nav-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+
+  .lp-themes__track {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.5rem;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(min(240px, 80%), 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.1rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .lp-themes__track::-webkit-scrollbar { display: none; }
+
+  .lp-themes__card {
+    scroll-snap-align: start;
+    background: var(--lp-surface, var(--color-background, #fff));
+    border: 1px solid var(--lp-line, color-mix(in srgb, currentcolor 10%, transparent));
+    border-radius: var(--lp-card-radius, 16px);
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .lp-themes__card:hover {
+    transform: translateY(-3px);
+    border-color: var(--lp-accent, #4a7cff);
+    box-shadow: 0 16px 36px color-mix(in srgb, var(--lp-text, #1f2328) 12%, transparent);
+  }
+  .lp-themes__card-link { display: flex; flex-direction: column; height: 100%; color: inherit; text-decoration: none; }
+  .lp-themes__media {
+    aspect-ratio: var(--lp-card-aspect, 4 / 3);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--lp-text, #1f2328) 5%, transparent);
+  }
+  .lp-themes__img, .lp-themes__ph, .lp-themes__ph-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .lp-themes__ph-svg { opacity: 0.4; }
+  .lp-themes__body { padding: 0.85rem 0.95rem 0.95rem; display: flex; flex-direction: column; gap: 0.45rem; }
+  .lp-themes__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+  .lp-themes__meta { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.88rem; }
+  .lp-themes__price { font-weight: 800; font-variant-numeric: tabular-nums; }
+  .lp-themes__details { color: color-mix(in srgb, var(--lp-text, #1f2328) 70%, transparent); font-weight: 600; white-space: nowrap; }
+  .lp-themes__card:hover .lp-themes__details { color: var(--lp-accent, #4a7cff); }
+
+  .lp-themes__placeholder {
+    padding: 2rem;
+    text-align: center;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 55%, transparent);
+    border: 1px dashed var(--lp-line, color-mix(in srgb, currentcolor 18%, transparent));
+    border-radius: 16px;
+  }
+
+  .lp-themes__footer { display: flex; justify-content: center; margin-top: 1.75rem; }
+  .lp-themes__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.6rem;
+    background: var(--lp-accent, #4a7cff);
+    color: var(--lp-on-accent, #fff);
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 10px 28px var(--lp-accent-glow, rgba(74, 124, 255, 0.3));
+    transition: transform 0.15s ease;
+  }
+  .lp-themes__cta:hover { transform: translateY(-2px); }
+  .lp-themes__cta span { transition: transform 0.15s ease; }
+  .lp-themes__cta:hover span { transform: translateX(3px); }
+
+  @media (min-width: 700px) { .lp-themes__track { grid-auto-columns: minmax(0, calc((100% - 1rem) / 2)); } }
+  @media (min-width: 1000px) { .lp-themes__track { grid-auto-columns: minmax(0, calc((100% - 2.2rem) / 3)); } }
+  @media (min-width: 1280px) { .lp-themes__track { grid-auto-columns: minmax(0, calc((100% - 3.3rem) / 4)); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp-themes__card, .lp-themes__cta, .lp-themes__cta span, .lp-themes__nav-btn { transition: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class LpThemes extends HTMLElement {
+    connectedCallback() {
+      this.track = this.querySelector('[data-track]');
+      this.prev = this.querySelector('[data-prev]');
+      this.next = this.querySelector('[data-next]');
+      if (!this.track || !this.prev || !this.next) {
+        if (this.prev) this.prev.disabled = true;
+        if (this.next) this.next.disabled = true;
+        return;
+      }
+
+      this.onPrev = () => this.track.scrollBy({ left: -this.step(), behavior: 'smooth' });
+      this.onNext = () => this.track.scrollBy({ left: this.step(), behavior: 'smooth' });
+      this.update = () => {
+        const max = this.track.scrollWidth - this.track.clientWidth - 1;
+        this.prev.toggleAttribute('disabled', this.track.scrollLeft <= 0);
+        this.next.toggleAttribute('disabled', this.track.scrollLeft >= max);
+      };
+
+      this.prev.addEventListener('click', this.onPrev);
+      this.next.addEventListener('click', this.onNext);
+      this.track.addEventListener('scroll', this.update, { passive: true });
+      window.addEventListener('resize', this.update);
+      this.update();
+    }
+
+    step() {
+      const card = this.track.querySelector('.lp-themes__card');
+      if (!card) return this.track.clientWidth * 0.8;
+      const styles = window.getComputedStyle(this.track);
+      const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+      return card.getBoundingClientRect().width + gap;
+    }
+
+    disconnectedCallback() {
+      if (this.prev) this.prev.removeEventListener('click', this.onPrev);
+      if (this.next) this.next.removeEventListener('click', this.onNext);
+      if (this.track) this.track.removeEventListener('scroll', this.update);
+      window.removeEventListener('resize', this.update);
+    }
+  }
+
+  if (!customElements.get('lp-themes')) {
+    customElements.define('lp-themes', LpThemes);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LP · Themes",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Aus unserem Theme-Store"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Premium-Themes zum Kaufen"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Eine Auswahl unserer fertigen Shopify-Themes."
+    },
+    {
+      "type": "header",
+      "content": "Source"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Themes collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Themes to show",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    { "type": "checkbox", "id": "show_price", "label": "Show price", "default": true },
+    { "type": "checkbox", "id": "show_details", "label": "Show details link", "default": true },
+    { "type": "text", "id": "details_label", "label": "Details label", "default": "Details" },
+    {
+      "type": "select",
+      "id": "card_aspect",
+      "label": "Card image aspect",
+      "options": [
+        { "value": "16 / 10", "label": "Wide (16:10)" },
+        { "value": "4 / 3", "label": "Standard (4:3)" },
+        { "value": "1 / 1", "label": "Square (1:1)" }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Zum Theme-Store" },
+    { "type": "url", "id": "cta_url", "label": "Button link" }
+  ],
+  "presets": [
+    {
+      "name": "LP · Themes",
+      "category": "Landing"
+    }
+  ]
+}
+{% endschema %}

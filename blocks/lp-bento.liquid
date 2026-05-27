@@ -1,0 +1,147 @@
+{% doc %}
+  Landing-page bento grid container. Holds lp-bento-card child blocks
+  that each choose their own span (feature / wide / tall / normal),
+  packed densely into an asymmetric grid. Self-contained palette.
+{% enddoc %}
+
+<section class="lp-bento" {{ block.shopify_attributes }}>
+  <div class="lp-bento__inner">
+    {%- if block.settings.heading != blank or block.settings.eyebrow != blank or block.settings.intro != blank -%}
+      <header class="lp-bento__head">
+        {%- if block.settings.eyebrow != blank -%}
+          <span class="lp-bento__eyebrow">{{ block.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        {%- if block.settings.heading != blank -%}
+          <h2 class="lp-bento__heading">{{ block.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if block.settings.intro != blank -%}
+          <p class="lp-bento__intro">{{ block.settings.intro | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="lp-bento__grid" data-placeholder="{{ 'landingpage.add_cards' | t | default: 'Add bento cards in the theme editor.' }}">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .lp-bento {
+    background: var(--lp-bg, var(--color-background, #fff));
+    color: var(--lp-text, var(--color-foreground, #1f2328));
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  .lp-bento__inner {
+    max-width: var(--lp-maxw, var(--page-width, 90rem));
+    margin-inline: auto;
+    padding-inline: var(--lp-pad-x, var(--page-margin, 20px));
+  }
+  .lp-bento__head { margin-bottom: clamp(1.75rem, 4vw, 2.75rem); max-width: 46rem; }
+  .lp-bento__eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lp-accent, #4a7cff);
+    margin-bottom: 0.5rem;
+  }
+  .lp-bento__heading {
+    margin: 0;
+    font-size: clamp(1.6rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .lp-bento__intro {
+    margin: 0.9rem 0 0;
+    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 72%, transparent);
+  }
+
+  .lp-bento__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(150px, auto);
+    grid-auto-flow: dense;
+    gap: clamp(0.75rem, 1.6vw, 1.1rem);
+  }
+  /* Shopify wraps each theme block in a .shopify-block element; collapse it
+     so each card becomes the actual grid item and its span class applies. */
+  .lp-bento__grid > .shopify-block { display: contents; }
+  .lp-bento__grid:empty {
+    display: grid;
+    place-items: center;
+    min-height: 180px;
+    border: 1px dashed var(--lp-line, color-mix(in srgb, currentcolor 18%, transparent));
+    border-radius: 16px;
+  }
+  .lp-bento__grid:empty::after {
+    content: attr(data-placeholder);
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 55%, transparent);
+    font-size: 0.95rem;
+  }
+
+  @media (min-width: 720px) {
+    .lp-bento__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1000px) {
+    .lp-bento__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LP · Bento",
+  "blocks": [{ "type": "lp-bento-card" }],
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Was wir können"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ein System für digitales Wachstum"
+    },
+    {
+      "type": "text",
+      "id": "intro",
+      "label": "Intro"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LP · Bento",
+      "category": "Landing",
+      "blocks": [
+        {
+          "type": "lp-bento-card",
+          "settings": { "span": "feature", "icon": "compass", "title": "Strategie & Beratung", "text": "Klarheit in Angebot, Zielgruppe und Kommunikation." }
+        },
+        {
+          "type": "lp-bento-card",
+          "settings": { "span": "normal", "icon": "layout", "title": "Webdesign & UX", "text": "Individuelle Seitenarchitektur statt Standard-Layout." }
+        },
+        {
+          "type": "lp-bento-card",
+          "settings": { "span": "normal", "icon": "search", "title": "SEO & GEO", "text": "Content für relevante Suchintentionen." }
+        },
+        {
+          "type": "lp-bento-card",
+          "settings": { "span": "wide", "icon": "chart", "title": "Google Ads & Performance", "text": "Kampagnen, gesteuert nach Wirtschaftlichkeit." }
+        },
+        {
+          "type": "lp-bento-card",
+          "settings": { "span": "normal", "icon": "bag", "title": "Shopify & Entwicklung", "text": "Performante Umsetzung, flexibel steuerbar." }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

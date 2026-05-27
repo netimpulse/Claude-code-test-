@@ -892,6 +892,123 @@
         "padding_top": 72,
         "padding_bottom": 72
       }
+    },
+    "landingpage_qa": {
+      "type": "landingpage",
+      "blocks": {
+        "lp_hero": {
+          "type": "lp-hero",
+          "settings": {
+            "eyebrow": "Online-Marketing & Webdesign",
+            "heading_lead": "Wir bauen digitales",
+            "rotating_words": "Wachstum, Sichtbarkeit, Conversion, Markenkraft",
+            "heading_trail": "das sich rechnet.",
+            "body": "<p>Strategie, Webdesign, SEO und Performance-Marketing aus einer Hand – als System, nicht als Einzelmaßnahmen.</p>",
+            "rotate_interval": 3,
+            "primary_label": "Kostenloses Audit",
+            "secondary_label": "Projekte ansehen",
+            "chip_1": "+143% organische Sichtbarkeit",
+            "chip_2": "2,4× ROAS",
+            "chip_3": "60 Tage bis zu Ergebnissen"
+          }
+        },
+        "lp_metrics": {
+          "type": "lp-metrics",
+          "settings": {
+            "eyebrow": "Ergebnisse",
+            "heading": "Zahlen, die für sich sprechen",
+            "count_duration": 2,
+            "stat_1_value": "143",
+            "stat_1_suffix": "%",
+            "stat_1_label": "Mehr organische Sichtbarkeit",
+            "stat_2_value": "2.4",
+            "stat_2_suffix": "×",
+            "stat_2_label": "Durchschnittlicher ROAS",
+            "stat_3_value": "60",
+            "stat_3_suffix": " Tage",
+            "stat_3_label": "Bis zu ersten Ergebnissen",
+            "stat_4_value": "98",
+            "stat_4_suffix": "%",
+            "stat_4_label": "Weiterempfehlungsrate"
+          }
+        },
+        "lp_bento": {
+          "type": "lp-bento",
+          "blocks": {
+            "c1": { "type": "lp-bento-card", "settings": { "span": "feature", "icon": "compass", "title": "Strategie & Beratung", "text": "Klarheit in Angebot, Zielgruppe und Kommunikation." } },
+            "c2": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "layout", "title": "Webdesign & UX", "text": "Individuelle Seitenarchitektur statt Standard-Layout." } },
+            "c3": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "search", "title": "SEO & GEO", "text": "Content für relevante Suchintentionen." } },
+            "c4": { "type": "lp-bento-card", "settings": { "span": "wide", "icon": "chart", "title": "Google Ads & Performance", "text": "Kampagnen, gesteuert nach Wirtschaftlichkeit." } },
+            "c5": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "bag", "title": "Shopify & Entwicklung", "text": "Performante Umsetzung, flexibel steuerbar." } }
+          },
+          "block_order": ["c1", "c2", "c3", "c4", "c5"],
+          "settings": {
+            "eyebrow": "Was wir können",
+            "heading": "Ein System für digitales Wachstum"
+          }
+        },
+        "lp_themes": {
+          "type": "lp-themes",
+          "settings": {
+            "eyebrow": "Aus unserem Theme-Store",
+            "heading": "Premium-Themes zum Kaufen",
+            "subheading": "Eine Auswahl unserer fertigen Shopify-Themes.",
+            "collection": "fashion",
+            "products_to_show": 8,
+            "show_price": true,
+            "show_details": true,
+            "details_label": "Details",
+            "card_aspect": "4 / 3",
+            "card_radius": 16,
+            "cta_label": "Zum Theme-Store"
+          }
+        },
+        "lp_case": {
+          "type": "lp-case",
+          "settings": {
+            "eyebrow": "Case Study",
+            "heading": "Vorher / Nachher",
+            "text": "<p>Ein Redesign, das nicht nur besser aussieht, sondern messbar mehr verkauft.</p>",
+            "label_before": "Vorher",
+            "label_after": "Nachher",
+            "ratio": "16 / 10"
+          }
+        },
+        "lp_testimonial": {
+          "type": "lp-testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Endlich eine Agentur, die Design, Technik und Marketing zusammen denkt. Unsere Conversion ist innerhalb eines Quartals deutlich gestiegen.</p>",
+            "author": "Sarah König",
+            "role": "Geschäftsführerin",
+            "company": "Atelier Nord"
+          }
+        },
+        "lp_cta": {
+          "type": "lp-cta",
+          "settings": {
+            "heading": "Bereit für planbares Wachstum?",
+            "text": "Lass uns in einem kostenlosen Audit herausfinden, wo dein größter Hebel liegt.",
+            "primary_label": "Kostenloses Audit anfragen",
+            "secondary_label": "Erstgespräch buchen"
+          }
+        }
+      },
+      "block_order": [
+        "lp_hero",
+        "lp_metrics",
+        "lp_bento",
+        "lp_themes",
+        "lp_case",
+        "lp_testimonial",
+        "lp_cta"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "accent_color": "#4a7cff",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     }
   },
   "order": [
@@ -906,6 +1023,7 @@
     "services_spotlight",
     "theme_store_preview",
     "team_overview",
-    "qa"
+    "qa",
+    "landingpage_qa"
   ]
 }
