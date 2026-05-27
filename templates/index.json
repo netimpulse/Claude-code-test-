@@ -9,6 +9,76 @@
  */
 {
   "sections": {
+    "ni_hero_ErftzP": {
+      "type": "ni-hero",
+      "name": "NI Hero",
+      "settings": {
+        "label": "Online Marketing Studio",
+        "heading": "Marketing, das sichtbar verkauft",
+        "body": "NetImpulse entwickelt Websites, Kampagnen und Shopify-Erlebnisse für Unternehmen, die online klarer auftreten, besser gefunden werden und professioneller verkaufen wollen.",
+        "primary_label": "Kostenloses Erstgespräch",
+        "primary_url": "",
+        "secondary_label": "Theme Store ansehen",
+        "secondary_url": "",
+        "caption_title": "NetImpulse Prinzip",
+        "caption_text": "Strategie, Gestaltung und Umsetzung arbeiten als ein System.",
+        "book_label": "Termin buchen",
+        "book_url": "",
+        "color_scheme": "",
+        "accent_color": "#050505",
+        "padding_top": 48,
+        "padding_bottom": 88
+      }
+    },
+    "ni_intro_6VnTbr": {
+      "type": "ni-intro",
+      "blocks": {
+        "card_b4JCCG": {
+          "type": "card",
+          "settings": {
+            "width": "full",
+            "icon": "net",
+            "title": "Strategie statt Einzelmaßnahmen",
+            "text": "Wir starten nicht mit einem beliebigen Kanal, sondern mit der Frage, wo Sichtbarkeit, Vertrauen und Conversion aktuell am meisten Wirkung erzeugen."
+          }
+        },
+        "card_FiXcq3": {
+          "type": "card",
+          "settings": {
+            "width": "inset-1",
+            "icon": "chart",
+            "title": "Design, das nicht nur dekoriert",
+            "text": "Jede Seite soll schneller erklären, hochwertiger wirken und Besucher gezielter führen – ohne überladene Effekte oder generische Marketing-Optik."
+          }
+        },
+        "card_g3fG4Y": {
+          "type": "card",
+          "settings": {
+            "width": "inset-2",
+            "icon": "window",
+            "title": "Shopify als skalierbares System",
+            "text": "Wir denken Websites und Shops so, dass Inhalte gepflegt, Kampagnen erweitert und neue Sections oder Themes sauber ergänzt werden können."
+          }
+        }
+      },
+      "block_order": [
+        "card_b4JCCG",
+        "card_FiXcq3",
+        "card_g3fG4Y"
+      ],
+      "name": "NI Intro",
+      "settings": {
+        "kicker": "Unternehmensvorstellung",
+        "heading": "Ein Studio für digitale Auftritte mit System.",
+        "text": "Wir verbinden Online-Marketing, Webdesign und Shopify-Entwicklung, damit aus einzelnen Maßnahmen ein klarer digitaler Auftritt entsteht.",
+        "panel_heading": "Von der ersten Idee bis zur laufenden Optimierung.",
+        "panel_text": "Ob Relaunch, SEO-Aufbau, Google Ads oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten.",
+        "color_scheme": "",
+        "accent_color": "#050505",
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
     "theme_store_preview_zMCVkD": {
       "type": "theme-store-preview",
       "name": "Theme store preview",
@@ -29,9 +99,110 @@
         "padding_top": 64,
         "padding_bottom": 64
       }
+    },
+    "ni_deck_dtycEA": {
+      "type": "ni-deck",
+      "blocks": {
+        "card_fFHqKn": {
+          "type": "card",
+          "settings": {
+            "tone": "light",
+            "number": "01",
+            "label": "SEO",
+            "title": "Gefunden werden",
+            "text": "Technische Struktur, Inhalte und Suchintentionen werden so aufgebaut, dass eure Website langfristig Sichtbarkeit und Vertrauen gewinnt.",
+            "tag_1": "Keyword Mapping",
+            "tag_2": "Content",
+            "tag_3": "Technik",
+            "device_label": "Search Visibility",
+            "link_url": ""
+          }
+        },
+        "card_zzVFkJ": {
+          "type": "card",
+          "settings": {
+            "tone": "sand",
+            "number": "02",
+            "label": "SEA",
+            "title": "Nachfrage aktivieren",
+            "text": "Google Ads Kampagnen werden nicht nur gestartet, sondern sauber strukturiert, gemessen und auf rentable Anfragen ausgerichtet.",
+            "tag_1": "Search",
+            "tag_2": "Shopping",
+            "tag_3": "Tracking",
+            "device_label": "Campaign System",
+            "link_url": ""
+          }
+        },
+        "card_bP6MWe": {
+          "type": "card",
+          "settings": {
+            "tone": "sand-deep",
+            "number": "03",
+            "label": "SMM",
+            "title": "Aufmerksamkeit formen",
+            "text": "Social Media wird als klare Marken- und Inhaltsfläche gedacht: mit Struktur, Wiedererkennung und Beiträgen, die zum Angebot passen.",
+            "tag_1": "Content",
+            "tag_2": "Paid Social",
+            "tag_3": "Brand",
+            "device_label": "Content Flow",
+            "link_url": ""
+          }
+        },
+        "card_wLf4QD": {
+          "type": "card",
+          "settings": {
+            "tone": "dark",
+            "number": "04",
+            "label": "Webdesign",
+            "title": "Website als Gespräch",
+            "text": "Wir gestalten Seiten, die erklären, führen und verkaufen – clean, hochwertig und ohne das Gefühl eines ausgetauschten Standard-Templates.",
+            "tag_1": "UX",
+            "tag_2": "Designsystem",
+            "tag_3": "Conversion",
+            "device_label": "Interface",
+            "link_url": ""
+          }
+        },
+        "card_4abCHC": {
+          "type": "card",
+          "settings": {
+            "tone": "cream",
+            "number": "05",
+            "label": "Shopify",
+            "title": "Shops, die skalieren",
+            "text": "Custom Sections, Theme-Strukturen und Layouts, die im Editor pflegbar bleiben und trotzdem nicht wie ein Standard-Shop aussehen.",
+            "tag_1": "Liquid",
+            "tag_2": "OS 2.0",
+            "tag_3": "Themes",
+            "device_label": "Theme System",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_fFHqKn",
+        "card_zzVFkJ",
+        "card_bP6MWe",
+        "card_wLf4QD",
+        "card_4abCHC"
+      ],
+      "name": "NI Deck",
+      "settings": {
+        "kicker": "Leistungen",
+        "heading": "Ein Kartendeck, das beim Scrollen Schicht für Schicht arbeitet.",
+        "text": "Die nächste Leistung kommt von unten hoch, bleibt kurz im Fokus und legt sich über die vorherige Karte.",
+        "note": "Ein vertikaler Sticky-Stack: Beim Scrollen rückt jede Karte von unten nach und übernimmt den Fokus.",
+        "color_scheme": "",
+        "accent_color": "#050505",
+        "padding_top": 120,
+        "padding_bottom": 88
+      }
     }
   },
   "order": [
+    "ni_hero_ErftzP",
+    "ni_intro_6VnTbr",
+    "ni_deck_dtycEA",
     "theme_store_preview_zMCVkD"
   ]
 }
