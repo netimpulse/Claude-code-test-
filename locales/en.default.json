@@ -97,5 +97,8 @@
   },
   "services_spotlight": {
     "add_services": "Add services blocks to get started."
+  },
+  "services_orbit": {
+    "add_services": "Add service blocks to get started."
   }
 }
