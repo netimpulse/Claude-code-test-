@@ -1,9 +1,140 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
+    },
+    "services_orbit_X8nLCF": {
+      "type": "services-orbit",
+      "blocks": {
+        "service_QEqtYR": {
+          "type": "service",
+          "settings": {
+            "icon": "seo",
+            "label": "SEO",
+            "center_title": "Suchmaschinenoptimierung",
+            "title": "Gefunden werden, bevor andere sichtbar sind.",
+            "description": "<p>Wir strukturieren eure Website so, dass Inhalte, Technik und Suchintention zusammenarbeiten – für bessere Sichtbarkeit bei den richtigen Suchanfragen.</p>",
+            "benefit_1": "Keyword- und Seitenstruktur mit klarer Suchintention",
+            "benefit_2": "Technische SEO-Grundlagen für Performance und Indexierung",
+            "benefit_3": "Content-Aufbau für Leistungen, Standorte und Zielgruppen",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_mYqWcB": {
+          "type": "service",
+          "settings": {
+            "icon": "sea",
+            "label": "SEA",
+            "center_title": "Google Ads",
+            "title": "Kampagnen, die Nachfrage gezielt aktivieren.",
+            "description": "<p>Wir strukturieren eure Website so, dass Inhalte, Technik und Suchintention zusammenarbeiten – für bessere Sichtbarkeit bei den richtigen Suchanfragen.</p>",
+            "benefit_1": "Saubere Kampagnen- und Anzeigengruppen-Struktur",
+            "benefit_2": "Conversion-Tracking und klare Auswertung",
+            "benefit_3": "Optimierung nach Suchintention, Budget und Zielwerten",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_JtbwXw": {
+          "type": "service",
+          "settings": {
+            "icon": "smm",
+            "label": "SMM",
+            "center_title": "Social Media Marketing",
+            "title": "Aufmerksamkeit mit Wiedererkennung und Richtung.",
+            "description": "<p>Wir strukturieren eure Website so, dass Inhalte, Technik und Suchintention zusammenarbeiten – für bessere Sichtbarkeit bei den richtigen Suchanfragen.</p>",
+            "benefit_1": "Content-Struktur für wiederkehrende Formate",
+            "benefit_2": "Kampagnenideen passend zu Marke und Zielgruppe",
+            "benefit_3": "Visuelle Systeme für mehr Wiedererkennung",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_388XBT": {
+          "type": "service",
+          "settings": {
+            "icon": "webdesign",
+            "label": "Webdesign",
+            "center_title": "Webdesign & UX",
+            "title": "Websites, die erklären, führen und verkaufen.",
+            "description": "<p>Wir strukturieren eure Website so, dass Inhalte, Technik und Suchintention zusammenarbeiten – für bessere Sichtbarkeit bei den richtigen Suchanfragen.</p>",
+            "benefit_1": "Individuelle Layouts statt Standard-Template-Gefühl",
+            "benefit_2": "UX-Struktur für Leistungen, Vertrauen und Kontakt",
+            "benefit_3": "Responsive Design mit sauberer mobiler Führung",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_yMn8GQ": {
+          "type": "service",
+          "settings": {
+            "icon": "shopify",
+            "label": "Shopify",
+            "center_title": "Shopify Entwicklung",
+            "title": "Shopify-Auftritte, die im Alltag skalieren.",
+            "description": "<p>Wir strukturieren eure Website so, dass Inhalte, Technik und Suchintention zusammenarbeiten – für bessere Sichtbarkeit bei den richtigen Suchanfragen.</p>",
+            "benefit_1": "Custom Sections mit Theme-Editor-Einstellungen",
+            "benefit_2": "Liquid, OS 2.0 und Dawn-kompatible Logik",
+            "benefit_3": "Performance, mobile Optimierung und saubere Pflege",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        },
+        "service_gGPQBH": {
+          "type": "service",
+          "settings": {
+            "icon": "themes",
+            "label": "Themes",
+            "center_title": "Theme Store",
+            "title": "Fertige Bausteine für schnellere Launches.",
+            "description": "<p>Wir strukturieren eure Website so, dass Inhalte, Technik und Suchintention zusammenarbeiten – für bessere Sichtbarkeit bei den richtigen Suchanfragen.</p>",
+            "benefit_1": "Theme- und Section-Packs für verschiedene Branchen",
+            "benefit_2": "Schneller Start mit professioneller Grundstruktur",
+            "benefit_3": "Erweiterbare Bausteine für spätere Optimierung",
+            "primary_label": "",
+            "primary_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "service_QEqtYR",
+        "service_mYqWcB",
+        "service_JtbwXw",
+        "service_388XBT",
+        "service_yMn8GQ",
+        "service_gGPQBH"
+      ],
+      "name": "t:services_orbit.name",
+      "settings": {
+        "kicker": "Unsere Leistungen",
+        "heading": "Ein System aus Sichtbarkeit, Design und Umsetzung.",
+        "intro": "Leistung auswählen, der Kreis dreht sich zur aktiven Position und rechts erscheint die passende Einordnung.",
+        "center_eyebrow": "Fokus",
+        "primary_label": "Mehr zur Leistung",
+        "primary_url": "",
+        "secondary_label": "Projekt anfragen",
+        "secondary_url": "",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#df6c3d",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "services_orbit_X8nLCF"
+  ]
 }
