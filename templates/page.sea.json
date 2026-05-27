@@ -100,8 +100,8 @@
         "secondary_url": "",
         "window_label": "impulse · client · acme co.",
         "live_label": "Live",
-        "color_scheme": "",
-        "accent_color": "#1c4948",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#a0a6ae",
         "padding_top": 80,
         "padding_bottom": 80
       }

@@ -1,0 +1,429 @@
+{% doc %}
+  Landing-page hero with an animated rotating word in the headline,
+  dual call-to-action and a row of small proof chips.
+
+  Self-contained: reads the shared --lp-* palette when used inside the
+  Landingpage section, falls back to global theme tokens elsewhere.
+{% enddoc %}
+
+{%- liquid
+  assign words = block.settings.rotating_words | split: ','
+  assign first_word = words.first | strip
+-%}
+
+<section
+  class="lp-hero{% if block.settings.image != blank %} lp-hero--has-media{% endif %}"
+  {{ block.shopify_attributes }}
+>
+  <div class="lp-hero__inner">
+    <div class="lp-hero__content">
+      {%- if block.settings.eyebrow != blank -%}
+        <span class="lp-hero__eyebrow">
+          <span class="lp-hero__dot" aria-hidden="true"></span>
+          {{ block.settings.eyebrow | escape }}
+        </span>
+      {%- endif -%}
+
+      <h1 class="lp-hero__title">
+        {%- if block.settings.heading_lead != blank -%}
+          <span class="lp-hero__line">{{ block.settings.heading_lead | escape }}</span>
+        {%- endif -%}
+        {%- if first_word != blank -%}
+          <lp-hero
+            class="lp-hero__rotator"
+            data-words="{{ block.settings.rotating_words | escape }}"
+            data-interval="{{ block.settings.rotate_interval | times: 1000 }}"
+          >
+            <span class="lp-hero__rotator-word" data-word>{{ first_word | escape }}</span>
+          </lp-hero>
+        {%- endif -%}
+        {%- if block.settings.heading_trail != blank -%}
+          <span class="lp-hero__line">{{ block.settings.heading_trail | escape }}</span>
+        {%- endif -%}
+      </h1>
+
+      {%- if block.settings.body != blank -%}
+        <div class="lp-hero__body">{{ block.settings.body }}</div>
+      {%- endif -%}
+
+      {%- if block.settings.primary_label != blank or block.settings.secondary_label != blank -%}
+        <div class="lp-hero__actions">
+          {%- if block.settings.primary_label != blank -%}
+            <a class="lp-hero__btn lp-hero__btn--primary" href="{{ block.settings.primary_url | default: '#' }}">
+              {{ block.settings.primary_label | escape }}
+              <span aria-hidden="true">→</span>
+            </a>
+          {%- endif -%}
+          {%- if block.settings.secondary_label != blank -%}
+            <a class="lp-hero__btn lp-hero__btn--secondary" href="{{ block.settings.secondary_url | default: '#' }}">
+              {{ block.settings.secondary_label | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- assign has_chips = false -%}
+      {%- if block.settings.chip_1 != blank or block.settings.chip_2 != blank or block.settings.chip_3 != blank -%}
+        {%- assign has_chips = true -%}
+      {%- endif -%}
+      {%- if has_chips -%}
+        <ul class="lp-hero__chips">
+          {%- if block.settings.chip_1 != blank -%}<li class="lp-hero__chip">{{ block.settings.chip_1 | escape }}</li>{%- endif -%}
+          {%- if block.settings.chip_2 != blank -%}<li class="lp-hero__chip">{{ block.settings.chip_2 | escape }}</li>{%- endif -%}
+          {%- if block.settings.chip_3 != blank -%}<li class="lp-hero__chip">{{ block.settings.chip_3 | escape }}</li>{%- endif -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- if block.settings.image != blank -%}
+      <div class="lp-hero__media">
+        {%- assign img_alt = block.settings.image.alt | default: block.settings.heading_lead | escape -%}
+        {{
+          block.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '(min-width: 990px) 45vw, 100vw',
+            widths: '400, 600, 800, 1000, 1200',
+            alt: img_alt,
+            class: 'lp-hero__img'
+        }}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .lp-hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--lp-bg, var(--color-background, #fff));
+    color: var(--lp-text, var(--color-foreground, #1f2328));
+    padding-block: clamp(3.5rem, 8vw, 7rem);
+  }
+  .lp-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 60% at 15% 0%, var(--lp-accent-glow, rgba(74, 124, 255, 0.18)), transparent 70%),
+      radial-gradient(50% 50% at 100% 100%, var(--lp-accent-soft, rgba(74, 124, 255, 0.08)), transparent 70%);
+    pointer-events: none;
+  }
+
+  .lp-hero__inner {
+    position: relative;
+    max-width: var(--lp-maxw, var(--page-width, 90rem));
+    margin-inline: auto;
+    padding-inline: var(--lp-pad-x, var(--page-margin, 20px));
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+  .lp-hero--has-media .lp-hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-hero__content {
+    max-width: 46rem;
+  }
+
+  .lp-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--lp-line-strong, color-mix(in srgb, currentcolor 22%, transparent));
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 80%, transparent);
+  }
+  .lp-hero__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lp-accent, #4a7cff);
+    box-shadow: 0 0 0 0 var(--lp-accent-glow, rgba(74, 124, 255, 0.5));
+    animation: lp-hero-pulse 2.4s ease-out infinite;
+  }
+
+  .lp-hero__title {
+    margin: 1.25rem 0 0;
+    font-size: clamp(2.2rem, 6vw, 4.25rem);
+    line-height: 1.04;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .lp-hero__line {
+    display: block;
+  }
+  .lp-hero__rotator {
+    display: block;
+    min-height: 1.08em;
+    color: var(--lp-accent, #4a7cff);
+  }
+  .lp-hero__rotator-word {
+    display: inline-block;
+    transition: opacity 0.32s ease, transform 0.32s ease;
+  }
+  .lp-hero__rotator-word.is-out {
+    opacity: 0;
+    transform: translateY(-0.35em);
+  }
+
+  .lp-hero__body {
+    margin-top: 1.5rem;
+    max-width: 42rem;
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 78%, transparent);
+  }
+  .lp-hero__body > :first-child { margin-top: 0; }
+  .lp-hero__body > :last-child { margin-bottom: 0; }
+
+  .lp-hero__actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+  .lp-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.95rem 1.6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .lp-hero__btn span { transition: transform 0.15s ease; }
+  .lp-hero__btn--primary {
+    background: var(--lp-accent, #4a7cff);
+    color: var(--lp-on-accent, #fff);
+    box-shadow: 0 10px 28px var(--lp-accent-glow, rgba(74, 124, 255, 0.32));
+  }
+  .lp-hero__btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px var(--lp-accent-glow, rgba(74, 124, 255, 0.4));
+  }
+  .lp-hero__btn--primary:hover span { transform: translateX(3px); }
+  .lp-hero__btn--secondary {
+    background: transparent;
+    color: var(--lp-text, #1f2328);
+    border-color: var(--lp-line-strong, color-mix(in srgb, currentcolor 25%, transparent));
+  }
+  .lp-hero__btn--secondary:hover {
+    border-color: var(--lp-accent, #4a7cff);
+    color: var(--lp-accent, #4a7cff);
+  }
+
+  .lp-hero__chips {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .lp-hero__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--lp-surface, color-mix(in srgb, var(--lp-text, #1f2328) 4%, transparent));
+    border: 1px solid var(--lp-line, color-mix(in srgb, currentcolor 12%, transparent));
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .lp-hero__chip::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--lp-accent, #4a7cff);
+  }
+
+  .lp-hero__media {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--lp-line, color-mix(in srgb, currentcolor 12%, transparent));
+    box-shadow: 0 24px 60px color-mix(in srgb, var(--lp-text, #1f2328) 12%, transparent);
+  }
+  .lp-hero__img { width: 100%; height: auto; display: block; }
+
+  @media (min-width: 990px) {
+    .lp-hero--has-media .lp-hero__inner {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    }
+  }
+
+  @keyframes lp-hero-pulse {
+    0% { box-shadow: 0 0 0 0 var(--lp-accent-glow, rgba(74, 124, 255, 0.5)); }
+    70% { box-shadow: 0 0 0 10px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp-hero__dot { animation: none; }
+    .lp-hero__rotator-word { transition: none; }
+    .lp-hero__btn,
+    .lp-hero__btn span { transition: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class LpHero extends HTMLElement {
+    connectedCallback() {
+      this.wordEl = this.querySelector('[data-word]');
+      const raw = this.getAttribute('data-words') || '';
+      this.words = raw.split(',').map((w) => w.trim()).filter(Boolean);
+      this.interval = parseInt(this.getAttribute('data-interval'), 10) || 2600;
+      this.index = 0;
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!this.wordEl || this.words.length < 2 || reduce) return;
+
+      this.timer = window.setInterval(() => this.next(), this.interval);
+    }
+
+    next() {
+      this.index = (this.index + 1) % this.words.length;
+      const el = this.wordEl;
+      el.classList.add('is-out');
+      window.setTimeout(() => {
+        el.textContent = this.words[this.index];
+        el.classList.remove('is-out');
+      }, 320);
+    }
+
+    disconnectedCallback() {
+      if (this.timer) window.clearInterval(this.timer);
+    }
+  }
+
+  if (!customElements.get('lp-hero')) {
+    customElements.define('lp-hero', LpHero);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LP · Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Online-Marketing & Webdesign"
+    },
+    {
+      "type": "text",
+      "id": "heading_lead",
+      "label": "Headline – line before rotating word",
+      "default": "Wir bauen digitales"
+    },
+    {
+      "type": "text",
+      "id": "rotating_words",
+      "label": "Rotating words",
+      "info": "Comma-separated. They cycle on the middle line.",
+      "default": "Wachstum, Sichtbarkeit, Conversion, Markenkraft"
+    },
+    {
+      "type": "text",
+      "id": "heading_trail",
+      "label": "Headline – line after rotating word",
+      "default": "das sich rechnet."
+    },
+    {
+      "type": "range",
+      "id": "rotate_interval",
+      "label": "Rotation interval",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "unit": "s",
+      "default": 3
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Strategie, Webdesign, SEO und Performance-Marketing aus einer Hand – als System, nicht als Einzelmaßnahmen.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Kostenloses Audit"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Projekte ansehen"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Proof chips"
+    },
+    {
+      "type": "text",
+      "id": "chip_1",
+      "label": "Chip 1",
+      "default": "+143% organische Sichtbarkeit"
+    },
+    {
+      "type": "text",
+      "id": "chip_2",
+      "label": "Chip 2",
+      "default": "2,4× ROAS"
+    },
+    {
+      "type": "text",
+      "id": "chip_3",
+      "label": "Chip 3",
+      "default": "60 Tage bis zu Ergebnissen"
+    },
+    {
+      "type": "header",
+      "content": "Media (optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Side image",
+      "info": "Optional. When set, the hero becomes a two-column layout on desktop."
+    }
+  ],
+  "presets": [
+    {
+      "name": "LP · Hero",
+      "category": "Landing"
+    }
+  ]
+}
+{% endschema %}

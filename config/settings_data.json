@@ -61,6 +61,23 @@
           "links": "#1c4948",
           "icons": "#0d1c1f"
         }
+      },
+      "scheme-sand": {
+        "settings": {
+          "background": "#f8f6f1",
+          "background_card": "#fffdf8",
+          "text": "#050505",
+          "muted": "#6b665e",
+          "accent": "#050505",
+          "primary_button": "#ebe3d4",
+          "on_primary_button": "#FFFFFF",
+          "primary_button_border": "#050505",
+          "secondary_button": "#fffdf8",
+          "on_secondary_button": "#050505",
+          "secondary_button_border": "#050505",
+          "links": "#050505",
+          "icons": "#050505"
+        }
       }
     }
   }

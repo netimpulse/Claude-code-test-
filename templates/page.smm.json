@@ -124,7 +124,7 @@
         "variant_label_prefix": "Variant",
         "winner_label": "WIN",
         "variant_duration": 3,
-        "color_scheme": "",
+        "color_scheme": "scheme-sand",
         "accent_color": "#1c4948",
         "accent_soft": "#9ccfd0",
         "padding_top": 80,

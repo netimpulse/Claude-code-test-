@@ -990,6 +990,276 @@
         "padding_top": 72,
         "padding_bottom": 72
       }
+    },
+    "landingpage_qa": {
+      "type": "landingpage",
+      "blocks": {
+        "lp_hero": {
+          "type": "lp-hero",
+          "settings": {
+            "eyebrow": "Online-Marketing & Webdesign",
+            "heading_lead": "Wir bauen digitales",
+            "rotating_words": "Wachstum, Sichtbarkeit, Conversion, Markenkraft",
+            "heading_trail": "das sich rechnet.",
+            "body": "<p>Strategie, Webdesign, SEO und Performance-Marketing aus einer Hand – als System, nicht als Einzelmaßnahmen.</p>",
+            "rotate_interval": 3,
+            "primary_label": "Kostenloses Audit",
+            "secondary_label": "Projekte ansehen",
+            "chip_1": "+143% organische Sichtbarkeit",
+            "chip_2": "2,4× ROAS",
+            "chip_3": "60 Tage bis zu Ergebnissen"
+          }
+        },
+        "lp_metrics": {
+          "type": "lp-metrics",
+          "settings": {
+            "eyebrow": "Ergebnisse",
+            "heading": "Zahlen, die für sich sprechen",
+            "count_duration": 2,
+            "stat_1_value": "143",
+            "stat_1_suffix": "%",
+            "stat_1_label": "Mehr organische Sichtbarkeit",
+            "stat_2_value": "2.4",
+            "stat_2_suffix": "×",
+            "stat_2_label": "Durchschnittlicher ROAS",
+            "stat_3_value": "60",
+            "stat_3_suffix": " Tage",
+            "stat_3_label": "Bis zu ersten Ergebnissen",
+            "stat_4_value": "98",
+            "stat_4_suffix": "%",
+            "stat_4_label": "Weiterempfehlungsrate"
+          }
+        },
+        "lp_bento": {
+          "type": "lp-bento",
+          "blocks": {
+            "c1": { "type": "lp-bento-card", "settings": { "span": "feature", "icon": "compass", "title": "Strategie & Beratung", "text": "Klarheit in Angebot, Zielgruppe und Kommunikation." } },
+            "c2": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "layout", "title": "Webdesign & UX", "text": "Individuelle Seitenarchitektur statt Standard-Layout." } },
+            "c3": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "search", "title": "SEO & GEO", "text": "Content für relevante Suchintentionen." } },
+            "c4": { "type": "lp-bento-card", "settings": { "span": "wide", "icon": "chart", "title": "Google Ads & Performance", "text": "Kampagnen, gesteuert nach Wirtschaftlichkeit." } },
+            "c5": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "bag", "title": "Shopify & Entwicklung", "text": "Performante Umsetzung, flexibel steuerbar." } }
+          },
+          "block_order": ["c1", "c2", "c3", "c4", "c5"],
+          "settings": {
+            "eyebrow": "Was wir können",
+            "heading": "Ein System für digitales Wachstum"
+          }
+        },
+        "lp_themes": {
+          "type": "lp-themes",
+          "settings": {
+            "eyebrow": "Aus unserem Theme-Store",
+            "heading": "Premium-Themes zum Kaufen",
+            "subheading": "Eine Auswahl unserer fertigen Shopify-Themes.",
+            "collection": "fashion",
+            "products_to_show": 8,
+            "show_price": true,
+            "show_details": true,
+            "details_label": "Details",
+            "card_aspect": "4 / 3",
+            "card_radius": 16,
+            "cta_label": "Zum Theme-Store"
+          }
+        },
+        "lp_case": {
+          "type": "lp-case",
+          "settings": {
+            "eyebrow": "Case Study",
+            "heading": "Vorher / Nachher",
+            "text": "<p>Ein Redesign, das nicht nur besser aussieht, sondern messbar mehr verkauft.</p>",
+            "label_before": "Vorher",
+            "label_after": "Nachher",
+            "ratio": "16 / 10"
+          }
+        },
+        "lp_testimonial": {
+          "type": "lp-testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Endlich eine Agentur, die Design, Technik und Marketing zusammen denkt. Unsere Conversion ist innerhalb eines Quartals deutlich gestiegen.</p>",
+            "author": "Sarah König",
+            "role": "Geschäftsführerin",
+            "company": "Atelier Nord"
+          }
+        },
+        "lp_cta": {
+          "type": "lp-cta",
+          "settings": {
+            "heading": "Bereit für planbares Wachstum?",
+            "text": "Lass uns in einem kostenlosen Audit herausfinden, wo dein größter Hebel liegt.",
+            "primary_label": "Kostenloses Audit anfragen",
+            "secondary_label": "Erstgespräch buchen"
+          }
+        }
+      },
+      "block_order": [
+        "lp_hero",
+        "lp_metrics",
+        "lp_bento",
+        "lp_themes",
+        "lp_case",
+        "lp_testimonial",
+        "lp_cta"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "accent_color": "#4a7cff",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "ni_hero_qa": {
+      "type": "ni-hero",
+      "settings": {
+        "label": "Online Marketing Studio",
+        "heading": "Marketing, das sichtbar verkauft",
+        "body": "NetImpulse entwickelt Websites, Kampagnen und Shopify-Erlebnisse für Unternehmen, die online klarer auftreten, besser gefunden werden und professioneller verkaufen wollen.",
+        "primary_label": "Kostenloses Erstgespräch",
+        "secondary_label": "Theme Store ansehen",
+        "caption_title": "NetImpulse Prinzip",
+        "caption_text": "Strategie, Gestaltung und Umsetzung arbeiten als ein System.",
+        "book_label": "Termin buchen",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#050505",
+        "padding_top": 48,
+        "padding_bottom": 88
+      }
+    },
+    "ni_intro_qa": {
+      "type": "ni-intro",
+      "blocks": {
+        "c1": {
+          "type": "card",
+          "settings": {
+            "width": "full",
+            "icon": "net",
+            "title": "Strategie statt Einzelmaßnahmen",
+            "text": "Wir starten nicht mit einem beliebigen Kanal, sondern mit der Frage, wo Sichtbarkeit, Vertrauen und Conversion aktuell am meisten Wirkung erzeugen."
+          }
+        },
+        "c2": {
+          "type": "card",
+          "settings": {
+            "width": "inset-1",
+            "icon": "chart",
+            "title": "Design, das nicht nur dekoriert",
+            "text": "Jede Seite soll schneller erklären, hochwertiger wirken und Besucher gezielter führen – ohne überladene Effekte oder generische Marketing-Optik."
+          }
+        },
+        "c3": {
+          "type": "card",
+          "settings": {
+            "width": "inset-2",
+            "icon": "window",
+            "title": "Shopify als skalierbares System",
+            "text": "Wir denken Websites und Shops so, dass Inhalte gepflegt, Kampagnen erweitert und neue Sections oder Themes sauber ergänzt werden können."
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "settings": {
+        "kicker": "Unternehmensvorstellung",
+        "heading": "Ein Studio für digitale Auftritte mit System.",
+        "text": "Wir verbinden Online-Marketing, Webdesign und Shopify-Entwicklung, damit aus einzelnen Maßnahmen ein klarer digitaler Auftritt entsteht.",
+        "panel_heading": "Von der ersten Idee bis zur laufenden Optimierung.",
+        "panel_text": "Ob Relaunch, SEO-Aufbau, Google Ads oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten.",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#050505"
+      }
+    },
+    "ni_deck_qa": {
+      "type": "ni-deck",
+      "blocks": {
+        "d1": {
+          "type": "card",
+          "settings": {
+            "tone": "light",
+            "number": "01",
+            "label": "SEO",
+            "title": "Gefunden werden",
+            "text": "Technische Struktur, Inhalte und Suchintentionen werden so aufgebaut, dass eure Website langfristig Sichtbarkeit und Vertrauen gewinnt.",
+            "tag_1": "Keyword Mapping",
+            "tag_2": "Content",
+            "tag_3": "Technik",
+            "device_label": "Search Visibility"
+          }
+        },
+        "d2": {
+          "type": "card",
+          "settings": {
+            "tone": "sand",
+            "number": "02",
+            "label": "SEA",
+            "title": "Nachfrage aktivieren",
+            "text": "Google Ads Kampagnen werden nicht nur gestartet, sondern sauber strukturiert, gemessen und auf rentable Anfragen ausgerichtet.",
+            "tag_1": "Search",
+            "tag_2": "Shopping",
+            "tag_3": "Tracking",
+            "device_label": "Campaign System"
+          }
+        },
+        "d3": {
+          "type": "card",
+          "settings": {
+            "tone": "sand-deep",
+            "number": "03",
+            "label": "SMM",
+            "title": "Aufmerksamkeit formen",
+            "text": "Social Media wird als klare Marken- und Inhaltsfläche gedacht: mit Struktur, Wiedererkennung und Beiträgen, die zum Angebot passen.",
+            "tag_1": "Content",
+            "tag_2": "Paid Social",
+            "tag_3": "Brand",
+            "device_label": "Content Flow"
+          }
+        },
+        "d4": {
+          "type": "card",
+          "settings": {
+            "tone": "dark",
+            "number": "04",
+            "label": "Webdesign",
+            "title": "Website als Gespräch",
+            "text": "Wir gestalten Seiten, die erklären, führen und verkaufen – clean, hochwertig und ohne das Gefühl eines ausgetauschten Standard-Templates.",
+            "tag_1": "UX",
+            "tag_2": "Designsystem",
+            "tag_3": "Conversion",
+            "device_label": "Interface"
+          }
+        },
+        "d5": {
+          "type": "card",
+          "settings": {
+            "tone": "cream",
+            "number": "05",
+            "label": "Shopify",
+            "title": "Shops, die skalieren",
+            "text": "Custom Sections, Theme-Strukturen und Layouts, die im Editor pflegbar bleiben und trotzdem nicht wie ein Standard-Shop aussehen.",
+            "tag_1": "Liquid",
+            "tag_2": "OS 2.0",
+            "tag_3": "Themes",
+            "device_label": "Theme System"
+          }
+        }
+      },
+      "block_order": [
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5"
+      ],
+      "settings": {
+        "kicker": "Leistungen",
+        "heading": "Ein Kartendeck, das beim Scrollen Schicht für Schicht arbeitet.",
+        "text": "Die nächste Leistung kommt von unten hoch, bleibt kurz im Fokus und legt sich über die vorherige Karte.",
+        "note": "Ein vertikaler Sticky-Stack: Beim Scrollen rückt jede Karte von unten nach und übernimmt den Fokus.",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#050505"
+      }
     }
   },
   "order": [
@@ -1005,6 +1275,10 @@
     "services_orbit",
     "theme_store_preview",
     "team_overview",
-    "qa"
+    "qa",
+    "landingpage_qa",
+    "ni_hero_qa",
+    "ni_intro_qa",
+    "ni_deck_qa"
   ]
 }
