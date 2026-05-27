@@ -13,7 +13,7 @@
       "type": "ni-hero",
       "name": "NI Hero",
       "settings": {
-        "label": "Online Marketing Studio",
+        "label": "",
         "heading": "Marketing, das sichtbar verkauft",
         "body": "NetImpulse entwickelt Websites, Kampagnen und Shopify-Erlebnisse für Unternehmen, die online klarer auftreten, besser gefunden werden und professioneller verkaufen wollen.",
         "primary_label": "Kostenloses Erstgespräch",
@@ -22,7 +22,7 @@
         "secondary_url": "",
         "caption_title": "NetImpulse Prinzip",
         "caption_text": "Strategie, Gestaltung und Umsetzung arbeiten als ein System.",
-        "book_label": "Termin buchen",
+        "book_label": "",
         "book_url": "",
         "color_scheme": "",
         "accent_color": "#050505",
@@ -77,27 +77,6 @@
         "accent_color": "#050505",
         "padding_top": 112,
         "padding_bottom": 112
-      }
-    },
-    "theme_store_preview_zMCVkD": {
-      "type": "theme-store-preview",
-      "name": "Theme store preview",
-      "settings": {
-        "heading": "Hier geht es zum Theme-Store.",
-        "heading_highlight": "Theme-Store",
-        "subheading": "Eine Auswahl unserer Premium-Themes.",
-        "collection": "business",
-        "products_to_show": 6,
-        "show_price": true,
-        "show_details": true,
-        "details_label": "Details",
-        "card_aspect": "4 / 3",
-        "card_radius": 14,
-        "cta_label": "Zum Theme-Store",
-        "cta_url": "",
-        "color_scheme": "scheme-sand",
-        "padding_top": 64,
-        "padding_bottom": 64
       }
     },
     "ni_deck_dtycEA": {
@@ -196,6 +175,27 @@
         "accent_color": "#050505",
         "padding_top": 120,
         "padding_bottom": 88
+      }
+    },
+    "theme_store_preview_zMCVkD": {
+      "type": "theme-store-preview",
+      "name": "Theme store preview",
+      "settings": {
+        "heading": "Hier geht es zum Theme-Store.",
+        "heading_highlight": "Theme-Store",
+        "subheading": "Eine Auswahl unserer Premium-Themes.",
+        "collection": "business",
+        "products_to_show": 6,
+        "show_price": true,
+        "show_details": true,
+        "details_label": "Details",
+        "card_aspect": "4 / 3",
+        "card_radius": 14,
+        "cta_label": "Zum Theme-Store",
+        "cta_url": "",
+        "color_scheme": "scheme-sand",
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     }
   },
