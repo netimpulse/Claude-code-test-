@@ -297,7 +297,7 @@ services-spotlight { display: block; }
 .services-spotlight__btn {
   min-height: 50px;
   padding: 0 22px;
-  border-radius: 0;
+  border-radius: 999px;
   border: 1px solid transparent;
   display: inline-flex;
   align-items: center;

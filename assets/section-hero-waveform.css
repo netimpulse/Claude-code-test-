@@ -34,7 +34,7 @@
   max-width: 5px;
   height: 100%;
   background: var(--wt-text-soft, rgba(255,255,255,0.78));
-  border-radius: 0;
+  border-radius: 1px;
   transform-origin: 50% 50%;
   transform: scaleY(0.05);
   will-change: transform;
@@ -71,7 +71,7 @@
   padding: 0.5rem 0.875rem;
   background: color-mix(in srgb, var(--wt-bg, #0e1716) 80%, transparent);
   border: 1px solid var(--wt-accent-border, rgba(181,232,219,0.25));
-  border-radius: 0;
+  border-radius: 999px;
   font-family: var(--wt-mono);
   font-size: 0.72rem;
   letter-spacing: 0.1em;
@@ -130,7 +130,7 @@
   gap: 0.5rem;
   padding: 0.85rem 1.25rem;
   border: 1px solid transparent;
-  border-radius: 0;
+  border-radius: 8px;
   font: inherit;
   font-weight: 600;
   font-size: 0.95rem;

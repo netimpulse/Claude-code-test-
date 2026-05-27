@@ -281,7 +281,7 @@
 
   .cart-page__card {
     background: var(--cart-bg-card, #FFFFFF);
-    border-radius: 0;
+    border-radius: var(--cart-radius, 14px);
     padding: 1rem;
     box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
   }
@@ -304,7 +304,7 @@
 
   .cart-item__media {
     width: 64px; height: 64px;
-    border-radius: 0;
+    border-radius: 10px;
     overflow: hidden;
     background: color-mix(in srgb, var(--cart-text) 6%, transparent);
     display: grid; place-items: center;
@@ -332,7 +332,7 @@
   .cart-qty {
     display: inline-flex; align-items: center;
     border: 1px solid color-mix(in srgb, var(--cart-text) 16%, transparent);
-    border-radius: 0;
+    border-radius: 999px;
     padding: 2px;
     background: var(--cart-bg-card, #FFFFFF);
   }
@@ -340,7 +340,7 @@
     width: 28px; height: 28px;
     border: 0; background: transparent;
     color: inherit;
-    border-radius: 0;
+    border-radius: 999px;
     font: inherit; font-size: 1.1rem; line-height: 1;
     cursor: pointer;
   }
@@ -388,7 +388,7 @@
     display: inline-block;
     margin-left: .35rem;
     padding: 2px 6px;
-    border-radius: 0;
+    border-radius: 6px;
     background: color-mix(in srgb, var(--cart-text) 8%, transparent);
     color: var(--cart-text);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -410,7 +410,7 @@
   /* Discount block */
   .cart-discount {
     background: var(--cart-bg-card, #FFFFFF);
-    border-radius: 0;
+    border-radius: var(--cart-radius, 14px);
     padding: .85rem 1rem;
     box-shadow: 0 1px 2px rgba(0,0,0,.04);
   }
@@ -425,7 +425,7 @@
     flex: 1;
     padding: .65rem .85rem;
     border: 1px solid color-mix(in srgb, var(--cart-text) 16%, transparent);
-    border-radius: 0;
+    border-radius: 10px;
     background: transparent;
     color: inherit;
     font: inherit;
@@ -439,7 +439,7 @@
     padding: 0 1rem;
     background: transparent;
     border: 1px solid color-mix(in srgb, var(--cart-text) 30%, transparent);
-    border-radius: 0;
+    border-radius: 10px;
     color: var(--cart-text);
     font: inherit; font-weight: 600;
     cursor: pointer;
@@ -456,7 +456,7 @@
     background: var(--cart-text, #1F2328);
     color: var(--cart-bg-card, #FFFFFF);
     border: 0;
-    border-radius: 0;
+    border-radius: var(--cart-radius, 14px);
     font: inherit;
     font-size: 1.05rem;
     font-weight: 700;
@@ -506,7 +506,7 @@
     text-align: center;
     padding: 3rem 1rem;
     background: var(--cart-bg-card, #FFFFFF);
-    border-radius: 0;
+    border-radius: var(--cart-radius, 14px);
   }
   .cart-page__empty-text {
     margin: 0 0 1rem;

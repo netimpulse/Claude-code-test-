@@ -86,7 +86,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 0;
+  border-radius: var(--to-card-radius);
   overflow: hidden;
   background: var(--to-card-bg, #e9efee);
   display: grid;
@@ -217,7 +217,7 @@
   align-items: center;
   padding: 4px 10px;
   border: 1px solid var(--to-line-strong);
-  border-radius: 0;
+  border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.08em;
