@@ -59,7 +59,7 @@
   text-align: center;
   color: color-mix(in srgb, var(--ni-text) 55%, transparent);
   border: 1px dashed var(--ni-line);
-  border-radius: 16px;
+  border-radius: 0;
 }
 .ni-deck__note { margin-top: 24px; max-width: 700px; color: var(--ni-muted); font-size: 0.95rem; line-height: 1.55; }
 
@@ -72,7 +72,7 @@
   grid-template-columns: 0.95fr 1.05fr;
   align-items: stretch;
   border: 1px solid var(--ni-line);
-  border-radius: 46px;
+  border-radius: 0;
   background: var(--ni-paper);
   color: var(--ni-text);
   box-shadow: 0 34px 90px rgba(33, 28, 20, 0.16);
@@ -118,7 +118,7 @@
 .ni-deck-card__tags span {
   border: 1px solid currentColor;
   opacity: 0.66;
-  border-radius: 999px;
+  border-radius: 0;
   padding: 8px 12px;
   font-size: 0.78rem;
   font-weight: 740;
@@ -199,7 +199,7 @@
     grid-template-columns: 1fr;
     min-height: auto;
     margin-bottom: 20px;
-    border-radius: 28px;
+    border-radius: 0;
   }
   .ni-deck-card__copy { min-height: auto; padding: 30px; }
   .ni-deck-card__title { margin-top: 46px; font-size: clamp(3rem, 14vw, 4.8rem); }

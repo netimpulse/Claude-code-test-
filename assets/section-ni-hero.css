@@ -179,7 +179,7 @@
   width: 27px;
   height: 27px;
   border: 3px solid var(--ni-text);
-  border-radius: 3px;
+  border-radius: 0;
 }
 .ni-cal::before, .ni-cal::after {
   content: "";

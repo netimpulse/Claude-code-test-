@@ -57,7 +57,7 @@
   text-align: center;
   color: color-mix(in srgb, var(--ni-text) 55%, transparent);
   border: 1px dashed var(--ni-line);
-  border-radius: 16px;
+  border-radius: 0;
 }
 
 .ni-intro-card {

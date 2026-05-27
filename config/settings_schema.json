@@ -97,7 +97,7 @@
         "step": 1,
         "unit": "px",
         "label": "t:labels.input_corner_radius",
-        "default": 4
+        "default": 0
       },
       {
         "type": "color_scheme_group",
