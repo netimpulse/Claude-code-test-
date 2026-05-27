@@ -93,7 +93,7 @@
         "question_duration": 14,
         "thinking_duration": 12,
         "answer_duration": 70,
-        "color_scheme": "",
+        "color_scheme": "scheme-sand",
         "accent_color": "#1c4948",
         "padding_top": 80,
         "padding_bottom": 80
