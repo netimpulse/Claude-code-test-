@@ -98,10 +98,104 @@
         "padding_top": 80,
         "padding_bottom": 80
       }
+    },
+    "image_with_text_TTGNGW": {
+      "type": "image-with-text",
+      "name": "t:image_with_text.name",
+      "settings": {
+        "image_position": "right",
+        "heading": "SEO at Scale Is a Structural Problem.",
+        "body": "<p>SEO at scale isn't a checklist. You're managing thousands of pages, legacy tech stacks, and competing priorities across teams and business units.</p><p>At this level, the problems are structural — crawl budget limits, keyword cannibalization, and years of technical debt. You need a partner who can execute <a href=\"#\">technical and content strategies</a> that produce durable results.</p>",
+        "link_label": "",
+        "link_url": "",
+        "show_badge": false,
+        "badge_value": "50+",
+        "badge_label": "Industries Served",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#b6e84f",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "service_aspects_bt3faw": {
+      "type": "service-aspects",
+      "blocks": {
+        "tile_X7H9Ba": {
+          "type": "tile",
+          "settings": {
+            "icon": "search",
+            "title": "Audit",
+            "text": "Bestandsaufnahme von Technik, Inhalten und Rankings."
+          }
+        },
+        "tile_YB8UjW": {
+          "type": "tile",
+          "settings": {
+            "icon": "compass",
+            "title": "Keyword-Recherche",
+            "text": "Suchintention, Volumen und Wettbewerb pro Thema."
+          }
+        },
+        "tile_TkPBTq": {
+          "type": "tile",
+          "settings": {
+            "icon": "layout",
+            "title": "On-Page-Optimierung",
+            "text": "Struktur, Snippets und interne Verlinkung."
+          }
+        },
+        "tile_KnTWja": {
+          "type": "tile",
+          "settings": {
+            "icon": "spark",
+            "title": "Technisches SEO",
+            "text": "Crawling, Indexierung und Core Web Vitals."
+          }
+        },
+        "tile_gRNq8i": {
+          "type": "tile",
+          "settings": {
+            "icon": "quote",
+            "title": "Content-Strategie",
+            "text": "Themencluster und Inhalte mit klarer Intention."
+          }
+        },
+        "tile_RBayGP": {
+          "type": "tile",
+          "settings": {
+            "icon": "chart",
+            "title": "Monitoring & Reporting",
+            "text": "Laufende Auswertung von Sichtbarkeit und Traffic."
+          }
+        }
+      },
+      "block_order": [
+        "tile_X7H9Ba",
+        "tile_YB8UjW",
+        "tile_TkPBTq",
+        "tile_KnTWja",
+        "tile_gRNq8i",
+        "tile_RBayGP"
+      ],
+      "name": "t:service_aspects.name",
+      "settings": {
+        "kicker": "SEO",
+        "heading": "Was in einem SEO-Projekt steckt.",
+        "intro": "Jede Kachel steht für einen Baustein – von der Analyse bis zum laufenden Reporting.",
+        "columns": "3",
+        "stagger": 48,
+        "show_numbers": true,
+        "color_scheme": "scheme-sand",
+        "accent_color": "#4a7cff",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
   "order": [
     "main",
-    "hero_geo_newWWR"
+    "hero_geo_newWWR",
+    "image_with_text_TTGNGW",
+    "service_aspects_bt3faw"
   ]
 }
