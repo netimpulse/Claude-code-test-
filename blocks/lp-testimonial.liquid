@@ -1,0 +1,181 @@
+{% doc %}
+  Landing-page testimonial — an oversized editorial pull-quote with an
+  ornamental quotation-mark watermark, optional star rating, avatar and
+  attribution. Self-contained palette.
+{% enddoc %}
+
+{%- liquid
+  assign rating = block.settings.rating | default: 0
+  assign avatar = block.settings.avatar
+-%}
+
+<section class="lp-testimonial" {{ block.shopify_attributes }}>
+  <figure class="lp-testimonial__inner">
+    <span class="lp-testimonial__mark" aria-hidden="true">&ldquo;</span>
+
+    {%- if rating > 0 -%}
+      <div class="lp-testimonial__rating" role="img" aria-label="{{ rating }}/5">
+        {%- for i in (1..5) -%}
+          <span class="lp-testimonial__star{% if i <= rating %} is-on{% endif %}" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z" fill="currentColor"/></svg>
+          </span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.quote != blank -%}
+      <blockquote class="lp-testimonial__quote">{{ block.settings.quote }}</blockquote>
+    {%- endif -%}
+
+    <figcaption class="lp-testimonial__author">
+      {%- if avatar != blank -%}
+        {%- assign avatar_alt = block.settings.author | default: 'Avatar' | escape -%}
+        <span class="lp-testimonial__avatar">
+          {{ avatar | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60, 120', alt: avatar_alt, class: 'lp-testimonial__avatar-img' }}
+        </span>
+      {%- elsif block.settings.author != blank -%}
+        <span class="lp-testimonial__avatar lp-testimonial__avatar--initials" aria-hidden="true">
+          {{ block.settings.author | split: ' ' | first | slice: 0 }}{{ block.settings.author | split: ' ' | last | slice: 0 }}
+        </span>
+      {%- endif -%}
+      <span class="lp-testimonial__meta">
+        {%- if block.settings.author != blank -%}
+          <span class="lp-testimonial__name">{{ block.settings.author | escape }}</span>
+        {%- endif -%}
+        {%- if block.settings.role != blank or block.settings.company != blank -%}
+          <span class="lp-testimonial__role">
+            {{ block.settings.role | escape }}{% if block.settings.role != blank and block.settings.company != blank %}, {% endif %}{{ block.settings.company | escape }}
+          </span>
+        {%- endif -%}
+      </span>
+    </figcaption>
+  </figure>
+</section>
+
+{% stylesheet %}
+  .lp-testimonial {
+    background: var(--lp-bg, var(--color-background, #fff));
+    color: var(--lp-text, var(--color-foreground, #1f2328));
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+  }
+  .lp-testimonial__inner {
+    position: relative;
+    max-width: 56rem;
+    margin-inline: auto;
+    padding-inline: var(--lp-pad-x, var(--page-margin, 20px));
+    text-align: center;
+    margin-block: 0;
+  }
+  .lp-testimonial__mark {
+    display: block;
+    font-size: clamp(6rem, 16vw, 11rem);
+    line-height: 0.6;
+    font-weight: 800;
+    height: 0.5em;
+    color: var(--lp-accent, #4a7cff);
+    opacity: 0.22;
+    pointer-events: none;
+  }
+  .lp-testimonial__rating {
+    display: inline-flex;
+    gap: 0.2rem;
+    margin-bottom: 1.25rem;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 22%, transparent);
+  }
+  .lp-testimonial__star.is-on { color: var(--lp-accent, #4a7cff); }
+
+  .lp-testimonial__quote {
+    margin: 0 auto 2rem;
+    max-width: 48rem;
+    font-size: clamp(1.4rem, 3.4vw, 2.25rem);
+    line-height: 1.32;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .lp-testimonial__author {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-align: left;
+  }
+  .lp-testimonial__avatar {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: var(--lp-accent-soft, color-mix(in srgb, var(--lp-accent, #4a7cff) 14%, transparent));
+    color: var(--lp-accent, #4a7cff);
+    font-weight: 800;
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+  .lp-testimonial__avatar-img { width: 100%; height: 100%; object-fit: cover; }
+  .lp-testimonial__meta { display: flex; flex-direction: column; line-height: 1.3; }
+  .lp-testimonial__name { font-weight: 700; }
+  .lp-testimonial__role {
+    font-size: 0.92rem;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 65%, transparent);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LP · Testimonial",
+  "settings": [
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Star rating",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "richtext",
+      "id": "quote",
+      "label": "Quote",
+      "default": "<p>Endlich eine Agentur, die Design, Technik und Marketing zusammen denkt. Unsere Conversion ist innerhalb eines Quartals deutlich gestiegen.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Author"
+    },
+    {
+      "type": "image_picker",
+      "id": "avatar",
+      "label": "Avatar",
+      "info": "Optional. Initials are shown when empty."
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Name",
+      "default": "Sarah König"
+    },
+    {
+      "type": "text",
+      "id": "role",
+      "label": "Role",
+      "default": "Geschäftsführerin"
+    },
+    {
+      "type": "text",
+      "id": "company",
+      "label": "Company",
+      "default": "Atelier Nord"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LP · Testimonial",
+      "category": "Landing"
+    }
+  ]
+}
+{% endschema %}

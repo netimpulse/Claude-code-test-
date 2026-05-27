@@ -1,0 +1,126 @@
+{% comment %}
+  NI Hero — editorial split hero (sand design). Standalone section:
+  add it from "Add section". Oversized headline, label line, dual CTA
+  and a media panel with a live caption and a floating "book a call" tag.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  if accent == blank
+    assign accent = scheme.settings.accent
+  endif
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --lp-bg: {{ scheme.settings.background | default: '#f8f6f1' }};
+    --lp-surface: {{ scheme.settings.background_card | default: '#fffdf8' }};
+    --lp-text: {{ scheme.settings.text | default: '#050505' }};
+    --lp-muted: {{ scheme.settings.muted | default: '#6b665e' }};
+    --lp-line: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.12 }};
+    --lp-line-strong: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.22 }};
+    --lp-maxw: 1440px;
+    --lp-pad-top: {{ section.settings.padding_top }}px;
+    --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --lp-accent: {{ accent }};
+  }
+{% endstyle %}
+
+<ni-hero class="ni-hero full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+  <div class="ni-hero__shell">
+    <div class="ni-hero__content ni-reveal">
+      {%- if section.settings.label != blank -%}
+        <span class="ni-hero__label">{{ section.settings.label | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h1 class="ni-hero__title">{{ section.settings.heading | escape }}</h1>
+      {%- endif -%}
+      {%- if section.settings.body != blank -%}
+        <p class="ni-hero__copy">{{ section.settings.body | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
+        <div class="ni-hero__actions">
+          {%- if section.settings.primary_label != blank -%}
+            <a class="ni-btn ni-btn--primary" href="{{ section.settings.primary_url | default: '#' }}">{{ section.settings.primary_label | escape }}</a>
+          {%- endif -%}
+          {%- if section.settings.secondary_label != blank -%}
+            <a class="ni-btn ni-btn--ghost" href="{{ section.settings.secondary_url | default: '#' }}">{{ section.settings.secondary_label | escape }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="ni-hero__media ni-reveal">
+      <div class="ni-hero__photo">
+        {%- if section.settings.image != blank -%}
+          {%- assign img_alt = section.settings.image.alt | default: section.settings.heading | escape -%}
+          {{
+            section.settings.image
+            | image_url: width: 1500
+            | image_tag:
+              loading: 'eager',
+              fetchpriority: 'high',
+              sizes: '(min-width: 1120px) 52vw, 100vw',
+              widths: '600, 900, 1200, 1500',
+              alt: img_alt,
+              class: 'ni-hero__img'
+          }}
+        {%- else -%}
+          <div class="ni-hero__img ni-hero__img--ph" aria-hidden="true"></div>
+        {%- endif -%}
+
+        {%- if section.settings.caption_title != blank or section.settings.caption_text != blank -%}
+          <div class="ni-hero__caption">
+            <span class="ni-pulse" aria-hidden="true"></span>
+            <div>
+              {%- if section.settings.caption_title != blank -%}<b>{{ section.settings.caption_title | escape }}</b>{%- endif -%}
+              {%- if section.settings.caption_text != blank -%}<span>{{ section.settings.caption_text | escape }}</span>{%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.book_label != blank -%}
+        <a class="ni-hero__book" href="{{ section.settings.book_url | default: '#' }}">
+          <span class="ni-cal" aria-hidden="true"></span>
+          {{ section.settings.book_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</ni-hero>
+
+{{ 'section-ni-hero.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ni-reveal.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "NI Hero",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label line", "default": "Online Marketing Studio" },
+    { "type": "textarea", "id": "heading", "label": "Headline", "default": "Marketing, das sichtbar verkauft" },
+    { "type": "textarea", "id": "body", "label": "Body text", "default": "NetImpulse entwickelt Websites, Kampagnen und Shopify-Erlebnisse für Unternehmen, die online klarer auftreten, besser gefunden werden und professioneller verkaufen wollen." },
+    { "type": "header", "content": "Call to action" },
+    { "type": "text", "id": "primary_label", "label": "Primary button label", "default": "Kostenloses Erstgespräch" },
+    { "type": "url", "id": "primary_url", "label": "Primary button link" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary button label", "default": "Theme Store ansehen" },
+    { "type": "url", "id": "secondary_url", "label": "Secondary button link" },
+    { "type": "header", "content": "Media" },
+    { "type": "image_picker", "id": "image", "label": "Hero image" },
+    { "type": "text", "id": "caption_title", "label": "Caption title", "default": "NetImpulse Prinzip" },
+    { "type": "text", "id": "caption_text", "label": "Caption text", "default": "Strategie, Gestaltung und Umsetzung arbeiten als ein System." },
+    { "type": "text", "id": "book_label", "label": "Floating tag label", "default": "Termin buchen" },
+    { "type": "url", "id": "book_url", "label": "Floating tag link" },
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#050505" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 }
+  ],
+  "presets": [
+    { "name": "NI Hero", "category": "Landing" }
+  ]
+}
+{% endschema %}

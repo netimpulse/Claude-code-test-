@@ -1,0 +1,340 @@
+{% doc %}
+  Landing-page case study with an interactive before/after image
+  comparison slider. Drag the handle or use the keyboard (range input)
+  to reveal the redesign. Self-contained palette.
+{% enddoc %}
+
+{%- liquid
+  assign before = block.settings.image_before
+  assign after = block.settings.image_after
+  assign ratio = block.settings.ratio | default: '16 / 10'
+-%}
+
+<section class="lp-case" {{ block.shopify_attributes }}>
+  <div class="lp-case__inner">
+    {%- if block.settings.eyebrow != blank or block.settings.heading != blank or block.settings.text != blank -%}
+      <header class="lp-case__head">
+        {%- if block.settings.eyebrow != blank -%}
+          <span class="lp-case__eyebrow">{{ block.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        {%- if block.settings.heading != blank -%}
+          <h2 class="lp-case__heading">{{ block.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if block.settings.text != blank -%}
+          <div class="lp-case__text">{{ block.settings.text }}</div>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <lp-compare class="lp-case__compare" style="--pos: 50%; --ratio: {{ ratio }};">
+      <div class="lp-case__frame">
+        {%- if before != blank -%}
+          {%- assign before_alt = before.alt | default: block.settings.label_before | escape -%}
+          {{ before | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 70vw, 100vw', widths: '500, 800, 1100, 1400', alt: before_alt, class: 'lp-case__media lp-case__media--before' }}
+        {%- else -%}
+          <div class="lp-case__media lp-case__media--before lp-case__media--ph" aria-hidden="true">{{ block.settings.label_before | escape }}</div>
+        {%- endif -%}
+
+        <div class="lp-case__after" data-after>
+          {%- if after != blank -%}
+            {%- assign after_alt = after.alt | default: block.settings.label_after | escape -%}
+            {{ after | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 70vw, 100vw', widths: '500, 800, 1100, 1400', alt: after_alt, class: 'lp-case__media' }}
+          {%- else -%}
+            <div class="lp-case__media lp-case__media--ph lp-case__media--after-ph" aria-hidden="true">{{ block.settings.label_after | escape }}</div>
+          {%- endif -%}
+        </div>
+
+        <span class="lp-case__tag lp-case__tag--before">{{ block.settings.label_before | escape }}</span>
+        <span class="lp-case__tag lp-case__tag--after">{{ block.settings.label_after | escape }}</span>
+
+        <div class="lp-case__divider" data-divider aria-hidden="true">
+          <span class="lp-case__grip">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-4 5 4 5M15 7l4 5-4 5"/></svg>
+          </span>
+        </div>
+
+        <input
+          class="lp-case__range"
+          type="range"
+          min="0"
+          max="100"
+          value="50"
+          step="0.5"
+          data-range
+          aria-label="{{ 'landingpage.compare' | t | default: 'Reveal before and after' }}"
+        >
+      </div>
+    </lp-compare>
+  </div>
+</section>
+
+{% stylesheet %}
+  .lp-case {
+    background: var(--lp-bg, var(--color-background, #fff));
+    color: var(--lp-text, var(--color-foreground, #1f2328));
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  .lp-case__inner {
+    max-width: var(--lp-maxw, var(--page-width, 90rem));
+    margin-inline: auto;
+    padding-inline: var(--lp-pad-x, var(--page-margin, 20px));
+  }
+  .lp-case__head { margin-bottom: clamp(1.75rem, 4vw, 2.5rem); max-width: 46rem; }
+  .lp-case__eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lp-accent, #4a7cff);
+    margin-bottom: 0.5rem;
+  }
+  .lp-case__heading {
+    margin: 0;
+    font-size: clamp(1.6rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .lp-case__text {
+    margin: 0.9rem 0 0;
+    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 72%, transparent);
+  }
+  .lp-case__text > :first-child { margin-top: 0; }
+  .lp-case__text > :last-child { margin-bottom: 0; }
+
+  .lp-case__compare { display: block; }
+  .lp-case__frame {
+    position: relative;
+    aspect-ratio: var(--ratio, 16 / 10);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--lp-line, color-mix(in srgb, currentcolor 12%, transparent));
+    box-shadow: 0 24px 60px color-mix(in srgb, var(--lp-text, #1f2328) 12%, transparent);
+    touch-action: none;
+    user-select: none;
+  }
+  .lp-case__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .lp-case__media--ph {
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 45%, transparent);
+    background:
+      repeating-linear-gradient(45deg, color-mix(in srgb, var(--lp-text, #1f2328) 5%, transparent) 0 12px, transparent 12px 24px),
+      var(--lp-surface, color-mix(in srgb, var(--lp-text, #1f2328) 4%, transparent));
+  }
+  .lp-case__media--after-ph {
+    background:
+      repeating-linear-gradient(45deg, var(--lp-accent-soft, rgba(74, 124, 255, 0.12)) 0 12px, transparent 12px 24px),
+      var(--lp-surface, color-mix(in srgb, var(--lp-accent, #4a7cff) 6%, transparent));
+    color: var(--lp-accent, #4a7cff);
+  }
+
+  .lp-case__after {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--pos, 50%)) 0 0);
+  }
+
+  .lp-case__tag {
+    position: absolute;
+    top: 0.85rem;
+    z-index: 3;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    backdrop-filter: blur(6px);
+    background: color-mix(in srgb, #000 45%, transparent);
+    color: #fff;
+  }
+  .lp-case__tag--before { left: 0.85rem; }
+  .lp-case__tag--after {
+    right: 0.85rem;
+    background: var(--lp-accent, #4a7cff);
+    color: var(--lp-on-accent, #fff);
+  }
+
+  .lp-case__divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos, 50%);
+    width: 2px;
+    transform: translateX(-1px);
+    background: #fff;
+    box-shadow: 0 0 0 1px color-mix(in srgb, #000 15%, transparent);
+    z-index: 4;
+    pointer-events: none;
+  }
+  .lp-case__grip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #fff;
+    color: #111;
+    box-shadow: 0 4px 14px color-mix(in srgb, #000 30%, transparent);
+  }
+
+  .lp-case__range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    z-index: 5;
+  }
+  .lp-case__range:focus-visible {
+    opacity: 1;
+    outline: none;
+  }
+  .lp-case__range:focus-visible + * { outline: none; }
+  .lp-case__frame:focus-within .lp-case__grip {
+    outline: 3px solid var(--lp-accent, #4a7cff);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp-case__after { transition: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class LpCompare extends HTMLElement {
+    connectedCallback() {
+      this.frame = this.querySelector('.lp-case__frame');
+      this.range = this.querySelector('[data-range]');
+      if (!this.frame || !this.range) return;
+
+      this.onInput = () => this.setPos(parseFloat(this.range.value));
+      this.onPointer = (e) => {
+        const rect = this.frame.getBoundingClientRect();
+        if (rect.width === 0) return;
+        const pct = ((e.clientX - rect.left) / rect.width) * 100;
+        const clamped = Math.max(0, Math.min(100, pct));
+        this.range.value = clamped;
+        this.setPos(clamped);
+      };
+      this.onDown = (e) => {
+        if (e.target === this.range) return;
+        this.onPointer(e);
+        this.dragging = true;
+      };
+      this.onMove = (e) => { if (this.dragging) this.onPointer(e); };
+      this.onUp = () => { this.dragging = false; };
+
+      this.range.addEventListener('input', this.onInput);
+      this.frame.addEventListener('pointerdown', this.onDown);
+      window.addEventListener('pointermove', this.onMove);
+      window.addEventListener('pointerup', this.onUp);
+    }
+
+    setPos(value) {
+      this.style.setProperty('--pos', value + '%');
+    }
+
+    disconnectedCallback() {
+      if (this.range) this.range.removeEventListener('input', this.onInput);
+      if (this.frame) this.frame.removeEventListener('pointerdown', this.onDown);
+      window.removeEventListener('pointermove', this.onMove);
+      window.removeEventListener('pointerup', this.onUp);
+    }
+  }
+
+  if (!customElements.get('lp-compare')) {
+    customElements.define('lp-compare', LpCompare);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LP · Case",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Case Study"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Vorher / Nachher"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Ein Redesign, das nicht nur besser aussieht, sondern messbar mehr verkauft.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_before",
+      "label": "Before image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_after",
+      "label": "After image"
+    },
+    {
+      "type": "text",
+      "id": "label_before",
+      "label": "Before label",
+      "default": "Vorher"
+    },
+    {
+      "type": "text",
+      "id": "label_after",
+      "label": "After label",
+      "default": "Nachher"
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Aspect ratio",
+      "options": [
+        { "value": "16 / 10", "label": "Wide (16:10)" },
+        { "value": "4 / 3", "label": "Standard (4:3)" },
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "21 / 9", "label": "Cinematic (21:9)" }
+      ],
+      "default": "16 / 10"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LP · Case",
+      "category": "Landing"
+    }
+  ]
+}
+{% endschema %}

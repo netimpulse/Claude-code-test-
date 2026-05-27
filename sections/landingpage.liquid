@@ -1,0 +1,264 @@
+{% comment %}
+  Landingpage
+  ----------------------------------------------------------------
+  A composable landing-page container. It does not render content of
+  its own — it provides the shared palette (from the chosen color
+  scheme + an accent override) as CSS custom properties and stacks
+  any landing-page theme blocks (lp-*) vertically, edge to edge.
+
+  Each lp-* block is fully self-contained (own padding, own inner
+  max-width, own background) and reads the --lp-* variables defined
+  here. Because the blocks accept `@theme`, they can also be used on
+  their own in any other section; outside this section the --lp-*
+  variables fall back to the global theme tokens.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  if accent == blank
+    assign accent = scheme.settings.accent
+  endif
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} .landingpage {
+    --lp-pad-top: {{ section.settings.padding_top }}px;
+    --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --lp-maxw: {{ settings.max_page_width | default: '90rem' }};
+    --lp-pad-x: var(--page-margin, 20px);
+    --lp-accent: {{ accent }};
+    --lp-accent-soft: {{ accent | color_modify: 'alpha', 0.12 }};
+    --lp-accent-glow: {{ accent | color_modify: 'alpha', 0.30 }};
+    {%- if scheme.settings.background != blank -%}
+      --lp-bg: {{ scheme.settings.background }};
+      --lp-surface: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --lp-text: {{ scheme.settings.text }};
+      --lp-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --lp-on-accent: {{ scheme.settings.on_primary_button | default: '#ffffff' }};
+      --lp-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+      --lp-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
+    {%- endif -%}
+  }
+
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<div
+  class="landingpage full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="landingpage"
+>
+  {%- if section.blocks.size > 0 -%}
+    {% content_for 'blocks' %}
+  {%- else -%}
+    <p class="landingpage__placeholder">
+      {{ 'landingpage.empty' | t | default: 'Add landing-page blocks (Hero, Bento, Metrics, Case, Testimonial, Themes, CTA) to build your page.' }}
+    </p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .landingpage {
+    background: var(--lp-bg, var(--color-background, #fff));
+    color: var(--lp-text, var(--color-foreground, #1f2328));
+    padding-block: var(--lp-pad-top, 0) var(--lp-pad-bottom, 0);
+    display: flow-root;
+  }
+
+  .landingpage__placeholder {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 4rem) var(--page-margin, 20px);
+    text-align: center;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 60%, transparent);
+    border: 1px dashed var(--lp-line, color-mix(in srgb, currentcolor 18%, transparent));
+    border-radius: 16px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Landingpage",
+  "tag": "section",
+  "class": "shopify-section--landingpage",
+  "blocks": [{ "type": "@theme" }],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "info": "Shared accent used by all landing-page blocks. Leave empty to use the color scheme accent.",
+      "default": "#4a7cff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Landingpage",
+      "category": "Landing",
+      "blocks": [
+        {
+          "type": "lp-hero",
+          "settings": {
+            "eyebrow": "Online-Marketing & Webdesign",
+            "heading_lead": "Wir bauen digitales",
+            "rotating_words": "Wachstum, Sichtbarkeit, Conversion, Markenkraft",
+            "heading_trail": "das sich rechnet.",
+            "body": "<p>Strategie, Webdesign, SEO und Performance-Marketing aus einer Hand – als System, nicht als Einzelmaßnahmen.</p>",
+            "primary_label": "Kostenloses Audit",
+            "secondary_label": "Projekte ansehen",
+            "chip_1": "+143% organische Sichtbarkeit",
+            "chip_2": "2,4× ROAS",
+            "chip_3": "60 Tage bis zu Ergebnissen"
+          }
+        },
+        {
+          "type": "lp-metrics",
+          "settings": {
+            "heading": "Zahlen, die für sich sprechen",
+            "stat_1_value": "143",
+            "stat_1_suffix": "%",
+            "stat_1_label": "Mehr organische Sichtbarkeit",
+            "stat_2_value": "2.4",
+            "stat_2_suffix": "×",
+            "stat_2_label": "Durchschnittlicher ROAS",
+            "stat_3_value": "60",
+            "stat_3_suffix": " Tage",
+            "stat_3_label": "Bis zu ersten Ergebnissen",
+            "stat_4_value": "98",
+            "stat_4_suffix": "%",
+            "stat_4_label": "Weiterempfehlungsrate"
+          }
+        },
+        {
+          "type": "lp-bento",
+          "settings": {
+            "eyebrow": "Was wir können",
+            "heading": "Ein System für digitales Wachstum"
+          },
+          "blocks": [
+            {
+              "type": "lp-bento-card",
+              "settings": {
+                "span": "feature",
+                "icon": "compass",
+                "title": "Strategie & Beratung",
+                "text": "Klarheit in Angebot, Zielgruppe und Kommunikation – die Grundlage für alles Weitere."
+              }
+            },
+            {
+              "type": "lp-bento-card",
+              "settings": {
+                "span": "normal",
+                "icon": "layout",
+                "title": "Webdesign & UX",
+                "text": "Individuelle Seitenarchitektur statt Standard-Layout."
+              }
+            },
+            {
+              "type": "lp-bento-card",
+              "settings": {
+                "span": "normal",
+                "icon": "search",
+                "title": "SEO & GEO",
+                "text": "Technisches SEO und Content für relevante Suchintentionen."
+              }
+            },
+            {
+              "type": "lp-bento-card",
+              "settings": {
+                "span": "wide",
+                "icon": "chart",
+                "title": "Google Ads & Performance",
+                "text": "Such-, Shopping- und Performance-Kampagnen, gesteuert nach Wirtschaftlichkeit."
+              }
+            },
+            {
+              "type": "lp-bento-card",
+              "settings": {
+                "span": "normal",
+                "icon": "bag",
+                "title": "Shopify & Entwicklung",
+                "text": "Saubere, performante Umsetzung mit flexibler Editor-Steuerung."
+              }
+            }
+          ]
+        },
+        {
+          "type": "lp-themes",
+          "settings": {
+            "eyebrow": "Aus unserem Theme-Store",
+            "heading": "Premium-Themes zum Kaufen",
+            "subheading": "Eine Auswahl unserer fertigen Shopify-Themes – sofort einsetzbar.",
+            "cta_label": "Zum Theme-Store"
+          }
+        },
+        {
+          "type": "lp-case",
+          "settings": {
+            "eyebrow": "Case Study",
+            "heading": "Vorher / Nachher",
+            "text": "<p>Ein Redesign, das nicht nur besser aussieht, sondern messbar mehr verkauft.</p>",
+            "label_before": "Vorher",
+            "label_after": "Nachher"
+          }
+        },
+        {
+          "type": "lp-testimonial",
+          "settings": {
+            "quote": "<p>Endlich eine Agentur, die Design, Technik und Marketing zusammen denkt. Unsere Conversion ist innerhalb eines Quartals deutlich gestiegen.</p>",
+            "author": "Sarah König",
+            "role": "Geschäftsführerin",
+            "company": "Atelier Nord",
+            "rating": 5
+          }
+        },
+        {
+          "type": "lp-cta",
+          "settings": {
+            "heading": "Bereit für planbares Wachstum?",
+            "text": "Lass uns in einem kostenlosen Audit herausfinden, wo dein größter Hebel liegt.",
+            "primary_label": "Kostenloses Audit anfragen",
+            "secondary_label": "Erstgespräch buchen"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

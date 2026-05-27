@@ -1,0 +1,172 @@
+{% comment %}
+  NI Intro — company introduction (sand design). Section header plus a
+  two-column body: staggered editorial cards (section blocks) on the
+  left and an image panel with copy on the right.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  if accent == blank
+    assign accent = scheme.settings.accent
+  endif
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --lp-bg: {{ scheme.settings.background | default: '#f8f6f1' }};
+    --lp-surface: {{ scheme.settings.background_card | default: '#fffdf8' }};
+    --lp-text: {{ scheme.settings.text | default: '#050505' }};
+    --lp-muted: {{ scheme.settings.muted | default: '#6b665e' }};
+    --lp-line: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.12 }};
+    --lp-line-strong: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.22 }};
+    --lp-maxw: 1440px;
+    --lp-pad-top: {{ section.settings.padding_top }}px;
+    --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --lp-accent: {{ accent }};
+  }
+{% endstyle %}
+
+<ni-intro class="ni-intro full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+  <div class="ni-intro__shell">
+    <header class="ni-intro__head ni-reveal">
+      <div>
+        {%- if section.settings.kicker != blank -%}
+          <span class="ni-intro__kicker">{{ section.settings.kicker | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ni-intro__title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.text != blank -%}
+        <p class="ni-intro__text">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="ni-intro__grid">
+      <div class="ni-intro__cards">
+        {%- for block in section.blocks -%}
+          {%- assign width = block.settings.width | default: 'full' -%}
+          <article class="ni-intro-card ni-intro-card--{{ width }} ni-reveal" {{ block.shopify_attributes }}>
+            <div class="ni-intro-card__icon" aria-hidden="true">
+              <span class="ni-orbit ni-orbit--a"></span>
+              <span class="ni-orbit ni-orbit--b"></span>
+              {%- case block.settings.icon -%}
+                {%- when 'chart' -%}
+                  <svg viewBox="0 0 48 48"><path d="M8 34h32M12 28l8-8 7 6 10-13M8 40h32"/></svg>
+                {%- when 'window' -%}
+                  <svg viewBox="0 0 48 48"><path d="M10 13h28v22H10zM16 20h16M16 27h10M34 35l5 6"/></svg>
+                {%- else -%}
+                  <svg viewBox="0 0 48 48"><path d="M24 6v36M6 24h36M12 12l24 24M36 12 12 36"/></svg>
+              {%- endcase -%}
+            </div>
+            {%- if block.settings.title != blank -%}
+              <h3 class="ni-intro-card__title">{{ block.settings.title | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="ni-intro-card__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+          </article>
+        {%- else -%}
+          <p class="ni-intro__empty">{{ 'landingpage.add_cards' | t | default: 'Add intro cards in the theme editor.' }}</p>
+        {%- endfor -%}
+      </div>
+
+      <article class="ni-intro__panel ni-reveal">
+        <div class="ni-intro__panel-media">
+          {%- if section.settings.panel_image != blank -%}
+            {%- assign p_alt = section.settings.panel_image.alt | default: section.settings.panel_heading | escape -%}
+            {{
+              section.settings.panel_image
+              | image_url: width: 1300
+              | image_tag:
+                loading: 'lazy',
+                sizes: '(min-width: 1120px) 52vw, 100vw',
+                widths: '500, 800, 1100, 1300',
+                alt: p_alt,
+                class: 'ni-intro__panel-img'
+            }}
+          {%- else -%}
+            <div class="ni-intro__panel-img ni-intro__panel-img--ph" aria-hidden="true"></div>
+          {%- endif -%}
+        </div>
+        <div class="ni-intro__panel-copy">
+          {%- if section.settings.panel_heading != blank -%}
+            <h3>{{ section.settings.panel_heading | escape }}</h3>
+          {%- endif -%}
+          {%- if section.settings.panel_text != blank -%}
+            <p>{{ section.settings.panel_text | escape }}</p>
+          {%- endif -%}
+        </div>
+      </article>
+    </div>
+  </div>
+</ni-intro>
+
+{{ 'section-ni-intro.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ni-reveal.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "NI Intro",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Unternehmensvorstellung" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Ein Studio für digitale Auftritte mit System." },
+    { "type": "textarea", "id": "text", "label": "Intro text", "default": "Wir verbinden Online-Marketing, Webdesign und Shopify-Entwicklung, damit aus einzelnen Maßnahmen ein klarer digitaler Auftritt entsteht." },
+    { "type": "header", "content": "Image panel" },
+    { "type": "image_picker", "id": "panel_image", "label": "Panel image" },
+    { "type": "textarea", "id": "panel_heading", "label": "Panel heading", "default": "Von der ersten Idee bis zur laufenden Optimierung." },
+    { "type": "textarea", "id": "panel_text", "label": "Panel text", "default": "Ob Relaunch, SEO-Aufbau, Google Ads oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten." },
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#050505" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 112 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 112 }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Width & tone",
+          "options": [
+            { "value": "full", "label": "Full (paper)" },
+            { "value": "inset-1", "label": "Inset right (sand)" },
+            { "value": "inset-2", "label": "Inset left (cream)" }
+          ],
+          "default": "full"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "net", "label": "Net" },
+            { "value": "chart", "label": "Chart" },
+            { "value": "window", "label": "Window" }
+          ],
+          "default": "net"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Strategie statt Einzelmaßnahmen" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Eine kurze Beschreibung dieser Stärke." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NI Intro",
+      "category": "Landing",
+      "blocks": [
+        { "type": "card", "settings": { "width": "full", "icon": "net", "title": "Strategie statt Einzelmaßnahmen", "text": "Wir starten nicht mit einem beliebigen Kanal, sondern mit der Frage, wo Sichtbarkeit, Vertrauen und Conversion aktuell am meisten Wirkung erzeugen." } },
+        { "type": "card", "settings": { "width": "inset-1", "icon": "chart", "title": "Design, das nicht nur dekoriert", "text": "Jede Seite soll schneller erklären, hochwertiger wirken und Besucher gezielter führen – ohne überladene Effekte oder generische Marketing-Optik." } },
+        { "type": "card", "settings": { "width": "inset-2", "icon": "window", "title": "Shopify als skalierbares System", "text": "Wir denken Websites und Shops so, dass Inhalte gepflegt, Kampagnen erweitert und neue Sections oder Themes sauber ergänzt werden können." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

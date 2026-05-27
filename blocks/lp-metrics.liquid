@@ -1,0 +1,262 @@
+{% doc %}
+  Landing-page metrics row. Up to four KPI figures that count up when
+  scrolled into view, each with an accent underline that draws in.
+  Empty slots are skipped. Self-contained (--lp-* palette with theme
+  fallbacks).
+{% enddoc %}
+
+{%- liquid
+  assign stats = ''
+  for i in (1..4)
+    assign vkey = 'stat_' | append: i | append: '_value'
+    assign value = block.settings[vkey]
+    if value != blank
+      assign stats = stats | append: i | append: ','
+    endif
+  endfor
+  assign stat_indexes = stats | split: ','
+-%}
+
+<section class="lp-metrics" {{ block.shopify_attributes }}>
+  <div class="lp-metrics__inner">
+    {%- if block.settings.heading != blank or block.settings.eyebrow != blank -%}
+      <header class="lp-metrics__head">
+        {%- if block.settings.eyebrow != blank -%}
+          <span class="lp-metrics__eyebrow">{{ block.settings.eyebrow | escape }}</span>
+        {%- endif -%}
+        {%- if block.settings.heading != blank -%}
+          <h2 class="lp-metrics__heading">{{ block.settings.heading | escape }}</h2>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if stat_indexes.size > 0 -%}
+      <lp-metrics class="lp-metrics__grid" data-duration="{{ block.settings.count_duration | times: 1000 }}">
+        {%- for i in stat_indexes -%}
+          {%- assign pkey = 'stat_' | append: i | append: '_prefix' -%}
+          {%- assign vkey = 'stat_' | append: i | append: '_value' -%}
+          {%- assign skey = 'stat_' | append: i | append: '_suffix' -%}
+          {%- assign lkey = 'stat_' | append: i | append: '_label' -%}
+          <div class="lp-metrics__item">
+            <div class="lp-metrics__figure">
+              {%- if block.settings[pkey] != blank -%}<span class="lp-metrics__affix">{{ block.settings[pkey] | escape }}</span>{%- endif -%}
+              <span class="lp-metrics__value" data-value="{{ block.settings[vkey] | escape }}">{{ block.settings[vkey] | escape }}</span>
+              {%- if block.settings[skey] != blank -%}<span class="lp-metrics__affix">{{ block.settings[skey] | escape }}</span>{%- endif -%}
+            </div>
+            {%- if block.settings[lkey] != blank -%}
+              <div class="lp-metrics__label">{{ block.settings[lkey] | escape }}</div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </lp-metrics>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .lp-metrics {
+    background: var(--lp-bg, var(--color-background, #fff));
+    color: var(--lp-text, var(--color-foreground, #1f2328));
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  .lp-metrics__inner {
+    max-width: var(--lp-maxw, var(--page-width, 90rem));
+    margin-inline: auto;
+    padding-inline: var(--lp-pad-x, var(--page-margin, 20px));
+  }
+  .lp-metrics__head { margin-bottom: clamp(1.75rem, 4vw, 2.75rem); max-width: 42rem; }
+  .lp-metrics__eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lp-accent, #4a7cff);
+    margin-bottom: 0.5rem;
+  }
+  .lp-metrics__heading {
+    margin: 0;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+  }
+
+  .lp-metrics__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .lp-metrics__item { min-width: 0; }
+  .lp-metrics__figure {
+    display: flex;
+    align-items: baseline;
+    gap: 0.05em;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .lp-metrics__affix { color: var(--lp-accent, #4a7cff); }
+  .lp-metrics__value { position: relative; }
+
+  .lp-metrics__item::after {
+    content: "";
+    display: block;
+    height: 3px;
+    width: 100%;
+    margin-top: 0.85rem;
+    border-radius: 2px;
+    background: var(--lp-accent, #4a7cff);
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lp-metrics__grid--ready .lp-metrics__item::after { transform: scaleX(0); }
+  .lp-metrics__grid--ready.is-visible .lp-metrics__item::after { transform: scaleX(1); }
+
+  .lp-metrics__label {
+    margin-top: 0.85rem;
+    font-size: 0.98rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--lp-text, #1f2328) 72%, transparent);
+    max-width: 22ch;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp-metrics__item::after { transition: none; }
+    .lp-metrics__grid--ready .lp-metrics__item::after { transform: scaleX(1); }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class LpMetrics extends HTMLElement {
+    connectedCallback() {
+      this.values = Array.from(this.querySelectorAll('[data-value]'));
+      this.duration = parseInt(this.getAttribute('data-duration'), 10) || 1600;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce || !('IntersectionObserver' in window) || this.values.length === 0) {
+        return;
+      }
+
+      this.classList.add('lp-metrics__grid--ready');
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.run();
+            this.observer.disconnect();
+          }
+        });
+      }, { threshold: 0.35 });
+      this.observer.observe(this);
+    }
+
+    run() {
+      this.classList.add('is-visible');
+      this.values.forEach((el) => this.animate(el));
+    }
+
+    animate(el) {
+      const raw = el.getAttribute('data-value') || '';
+      const match = raw.match(/-?\d+(?:[.,]\d+)?/);
+      if (!match) return;
+      const normalized = match[0].replace(',', '.');
+      const target = parseFloat(normalized);
+      if (isNaN(target)) return;
+      const decimals = normalized.includes('.') ? normalized.split('.')[1].length : 0;
+      const prefix = raw.slice(0, match.index);
+      const suffix = raw.slice(match.index + match[0].length);
+      const start = performance.now();
+      const dur = this.duration;
+
+      const tick = (now) => {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const current = target * eased;
+        const text = decimals > 0
+          ? current.toFixed(decimals).replace('.', ',')
+          : Math.round(current).toString();
+        el.textContent = prefix + text + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
+    disconnectedCallback() {
+      if (this.observer) this.observer.disconnect();
+    }
+  }
+
+  if (!customElements.get('lp-metrics')) {
+    customElements.define('lp-metrics', LpMetrics);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LP · Metrics",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Zahlen, die für sich sprechen"
+    },
+    {
+      "type": "range",
+      "id": "count_duration",
+      "label": "Count-up duration",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "s",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Stat 1"
+    },
+    { "type": "text", "id": "stat_1_prefix", "label": "Prefix" },
+    { "type": "text", "id": "stat_1_value", "label": "Value", "default": "143" },
+    { "type": "text", "id": "stat_1_suffix", "label": "Suffix", "default": "%" },
+    { "type": "text", "id": "stat_1_label", "label": "Label", "default": "Mehr organische Sichtbarkeit" },
+    {
+      "type": "header",
+      "content": "Stat 2"
+    },
+    { "type": "text", "id": "stat_2_prefix", "label": "Prefix" },
+    { "type": "text", "id": "stat_2_value", "label": "Value", "default": "2.4" },
+    { "type": "text", "id": "stat_2_suffix", "label": "Suffix", "default": "×" },
+    { "type": "text", "id": "stat_2_label", "label": "Label", "default": "Durchschnittlicher ROAS" },
+    {
+      "type": "header",
+      "content": "Stat 3"
+    },
+    { "type": "text", "id": "stat_3_prefix", "label": "Prefix" },
+    { "type": "text", "id": "stat_3_value", "label": "Value", "default": "60" },
+    { "type": "text", "id": "stat_3_suffix", "label": "Suffix", "default": " Tage" },
+    { "type": "text", "id": "stat_3_label", "label": "Label", "default": "Bis zu ersten Ergebnissen" },
+    {
+      "type": "header",
+      "content": "Stat 4"
+    },
+    { "type": "text", "id": "stat_4_prefix", "label": "Prefix" },
+    { "type": "text", "id": "stat_4_value", "label": "Value", "default": "98" },
+    { "type": "text", "id": "stat_4_suffix", "label": "Suffix", "default": "%" },
+    { "type": "text", "id": "stat_4_label", "label": "Label", "default": "Weiterempfehlungsrate" }
+  ],
+  "presets": [
+    {
+      "name": "LP · Metrics",
+      "category": "Landing"
+    }
+  ]
+}
+{% endschema %}
