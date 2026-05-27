@@ -97,7 +97,7 @@
         "tabs": "All|Images|Shopping|News|Videos",
         "cycle_duration": 8,
         "typing_duration": 14,
-        "color_scheme": "",
+        "color_scheme": "scheme-sand",
         "accent_color": "#1c4948",
         "accent_soft": "#9ccfd0",
         "padding_top": 80,
