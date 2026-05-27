@@ -1,0 +1,181 @@
+/* section-service-aspects.css
+ * Scoped styles for sections/service-aspects.liquid.
+ * Equal-size aspect tiles laid out on a staggered "gallery wall":
+ * each desktop column carries a different vertical offset so the
+ * tiles do not line up in a straight row. Colour values flow in via
+ * CSS custom properties from the section's {% style %} block.
+ */
+
+.service-aspects {
+  position: relative;
+  padding-top: var(--sa-padding-top, 80px);
+  padding-bottom: var(--sa-padding-bottom, 80px);
+  background: var(--sa-bg, #ffffff);
+  color: var(--sa-text, #1f2328);
+}
+
+.service-aspects__inner {
+  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
+  margin: 0 auto;
+}
+
+/* ---- Head ---- */
+.service-aspects__head {
+  max-width: 720px;
+  margin: 0 0 clamp(36px, 5vw, 56px);
+}
+
+.service-aspects__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--sa-muted, #6b7280);
+  font-size: 0.92rem;
+  margin-bottom: 14px;
+}
+
+.service-aspects__kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.service-aspects__heading {
+  margin: 0;
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.service-aspects__intro {
+  margin: 16px 0 0;
+  color: var(--sa-muted, #6b7280);
+  font-size: clamp(1rem, 1.1vw, 1.12rem);
+  line-height: 1.6;
+}
+
+/* ---- Grid (mobile-first: single column, no stagger) ---- */
+.service-aspects__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2vw, 24px);
+}
+
+/* ---- Tile (equal size) ---- */
+.service-aspects__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(200px, 26vw, 300px);
+  padding: clamp(20px, 2vw, 28px);
+  border: 1.5px solid var(--sa-line-strong, rgba(31, 35, 40, 0.85));
+  border-radius: 18px;
+  background: var(--sa-card, #ffffff);
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.service-aspects__tile:hover {
+  border-color: var(--sa-accent, #4a7cff);
+  box-shadow: 0 18px 44px rgba(31, 35, 40, 0.12);
+}
+
+.service-aspects__tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.service-aspects__number {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--sa-accent, #4a7cff);
+}
+
+.service-aspects__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--sa-accent-soft, rgba(74, 124, 255, 0.12));
+  color: var(--sa-accent, #4a7cff);
+}
+
+.service-aspects__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.service-aspects__tile-body {
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.service-aspects__tile-title {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+.service-aspects__tile-text {
+  margin: 10px 0 0;
+  color: var(--sa-muted, #6b7280);
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
+.service-aspects__placeholder {
+  padding: 48px;
+  border: 1px dashed var(--sa-line-strong, rgba(31, 35, 40, 0.22));
+  border-radius: 16px;
+  text-align: center;
+  color: var(--sa-muted, #6b7280);
+}
+
+/* ---- Tablet: two columns with a gentle stagger ---- */
+@media (min-width: 680px) {
+  .service-aspects__grid {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: clamp(20px, 2.4vw, 28px);
+    padding-bottom: calc(var(--sa-stagger, 48px) * 0.7);
+  }
+
+  .service-aspects__tile:nth-child(2n + 1) { transform: translateY(0); }
+  .service-aspects__tile:nth-child(2n + 2) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.7)); }
+}
+
+/* ---- Desktop: 3 columns ---- */
+@media (min-width: 1000px) {
+  .service-aspects__grid--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+    padding-bottom: calc(var(--sa-stagger, 48px) * 1.4);
+  }
+
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(3n + 1) { transform: translateY(var(--sa-stagger, 48px)); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(3n + 2) { transform: translateY(0); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(3n + 3) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.55)); }
+
+  /* ---- Desktop: 4 columns ---- */
+  .service-aspects__grid--cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+    padding-bottom: calc(var(--sa-stagger, 48px) * 1.3);
+  }
+
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 1) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.6)); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 2) { transform: translateY(calc(var(--sa-stagger, 48px) * 1.2)); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 3) { transform: translateY(0); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 4) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.85)); }
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .service-aspects__tile {
+    transition: none;
+  }
+}
