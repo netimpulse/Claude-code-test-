@@ -2,9 +2,9 @@ import { test, expect } from "@playwright/test";
 import { QA, withTheme } from "../fixtures";
 
 /**
- * Tests for the NetImpulse landing blocks (ni-hero, ni-intro + ni-intro-card,
- * ni-deck + ni-deck-card). Rendered on the QA block page as the
- * "ni_landingpage_qa" section using the sand color scheme.
+ * Tests for the NetImpulse landing sections (sections/ni-hero, ni-intro,
+ * ni-deck) with their "card" section blocks. Rendered on the QA block page
+ * as the ni_hero_qa / ni_intro_qa / ni_deck_qa sections (sand color scheme).
  */
 async function passChallenge(page: import("@playwright/test").Page) {
   await page.waitForSelector('link[rel="canonical"]', { state: "attached", timeout: 45_000 });

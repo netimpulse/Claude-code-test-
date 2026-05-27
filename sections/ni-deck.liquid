@@ -1,0 +1,162 @@
+{% comment %}
+  NI Deck — vertical sticky service deck (sand design). Each card (a
+  section block) sticks near the top while the next one scrolls up and
+  layers over it. Full-bleed background with a soft radial wash.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  if accent == blank
+    assign accent = scheme.settings.accent
+  endif
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --lp-bg: {{ scheme.settings.background | default: '#f8f6f1' }};
+    --lp-surface: {{ scheme.settings.background_card | default: '#fffdf8' }};
+    --lp-text: {{ scheme.settings.text | default: '#050505' }};
+    --lp-muted: {{ scheme.settings.muted | default: '#6b665e' }};
+    --lp-line: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.12 }};
+    --lp-maxw: 1440px;
+    --lp-pad-top: {{ section.settings.padding_top }}px;
+    --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --lp-accent: {{ accent }};
+  }
+{% endstyle %}
+
+<ni-deck class="ni-deck full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+  <div class="ni-deck__shell">
+    <header class="ni-deck__head ni-reveal">
+      <div>
+        {%- if section.settings.kicker != blank -%}
+          <span class="ni-deck__kicker">{{ section.settings.kicker | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ni-deck__title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.text != blank -%}
+        <p class="ni-deck__text">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="ni-deck__stack">
+      {%- for block in section.blocks -%}
+        {%- assign tone = block.settings.tone | default: 'light' -%}
+        <article class="ni-deck-card ni-deck-card--{{ tone }}" {{ block.shopify_attributes }}>
+          <div class="ni-deck-card__copy">
+            <div class="ni-deck-card__topline">
+              <span>{{ block.settings.number | escape }}</span>
+              <span>{{ block.settings.label | escape }}</span>
+            </div>
+            <div class="ni-deck-card__lede">
+              {%- if block.settings.title != blank -%}
+                <h3 class="ni-deck-card__title">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p class="ni-deck-card__text">{{ block.settings.text | escape }}</p>
+              {%- endif -%}
+            </div>
+            <div class="ni-deck-card__actions">
+              <div class="ni-deck-card__tags">
+                {%- if block.settings.tag_1 != blank -%}<span>{{ block.settings.tag_1 | escape }}</span>{%- endif -%}
+                {%- if block.settings.tag_2 != blank -%}<span>{{ block.settings.tag_2 | escape }}</span>{%- endif -%}
+                {%- if block.settings.tag_3 != blank -%}<span>{{ block.settings.tag_3 | escape }}</span>{%- endif -%}
+              </div>
+              {%- if block.settings.link_url != blank -%}
+                <a class="ni-deck-card__link" href="{{ block.settings.link_url }}" aria-label="{{ block.settings.title | escape }}">→</a>
+              {%- endif -%}
+            </div>
+          </div>
+          <div class="ni-deck-card__visual" aria-hidden="true">
+            <div class="ni-device">
+              <div class="ni-device__bar">
+                <div class="ni-device__dots"><span></span><span></span><span></span></div>
+                {%- if block.settings.device_label != blank -%}
+                  <div class="ni-device__label">{{ block.settings.device_label | escape }}</div>
+                {%- endif -%}
+              </div>
+              <div class="ni-device__lines"><span></span><span></span><span></span><span></span></div>
+              <div class="ni-device__metrics"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </article>
+      {%- else -%}
+        <p class="ni-deck__empty">{{ 'landingpage.add_cards' | t | default: 'Add service cards in the theme editor.' }}</p>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.note != blank -%}
+      <p class="ni-deck__note ni-reveal">{{ section.settings.note | escape }}</p>
+    {%- endif -%}
+  </div>
+</ni-deck>
+
+{{ 'section-ni-deck.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ni-reveal.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "NI Deck",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Leistungen" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Ein Kartendeck, das beim Scrollen Schicht für Schicht arbeitet." },
+    { "type": "textarea", "id": "text", "label": "Intro text", "default": "Die nächste Leistung kommt von unten hoch, bleibt kurz im Fokus und legt sich über die vorherige Karte." },
+    { "type": "textarea", "id": "note", "label": "Closing note", "default": "Ein vertikaler Sticky-Stack: Beim Scrollen rückt jede Karte von unten nach und übernimmt den Fokus." },
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#050505" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Service card",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "select",
+          "id": "tone",
+          "label": "Tone",
+          "options": [
+            { "value": "light", "label": "Light (paper)" },
+            { "value": "sand", "label": "Sand" },
+            { "value": "sand-deep", "label": "Sand deep" },
+            { "value": "dark", "label": "Dark" },
+            { "value": "cream", "label": "Cream" }
+          ],
+          "default": "light"
+        },
+        { "type": "text", "id": "number", "label": "Number", "default": "01" },
+        { "type": "text", "id": "label", "label": "Label", "default": "SEO" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Gefunden werden" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Eine kurze Beschreibung dieser Leistung." },
+        { "type": "header", "content": "Tags" },
+        { "type": "text", "id": "tag_1", "label": "Tag 1", "default": "Strategie" },
+        { "type": "text", "id": "tag_2", "label": "Tag 2" },
+        { "type": "text", "id": "tag_3", "label": "Tag 3" },
+        { "type": "header", "content": "Visual & link" },
+        { "type": "text", "id": "device_label", "label": "Device label", "default": "Dashboard" },
+        { "type": "url", "id": "link_url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NI Deck",
+      "category": "Landing",
+      "blocks": [
+        { "type": "card", "settings": { "tone": "light", "number": "01", "label": "SEO", "title": "Gefunden werden", "text": "Technische Struktur, Inhalte und Suchintentionen werden so aufgebaut, dass eure Website langfristig Sichtbarkeit und Vertrauen gewinnt.", "tag_1": "Keyword Mapping", "tag_2": "Content", "tag_3": "Technik", "device_label": "Search Visibility" } },
+        { "type": "card", "settings": { "tone": "sand", "number": "02", "label": "SEA", "title": "Nachfrage aktivieren", "text": "Google Ads Kampagnen werden nicht nur gestartet, sondern sauber strukturiert, gemessen und auf rentable Anfragen ausgerichtet.", "tag_1": "Search", "tag_2": "Shopping", "tag_3": "Tracking", "device_label": "Campaign System" } },
+        { "type": "card", "settings": { "tone": "sand-deep", "number": "03", "label": "SMM", "title": "Aufmerksamkeit formen", "text": "Social Media wird als klare Marken- und Inhaltsfläche gedacht: mit Struktur, Wiedererkennung und Beiträgen, die zum Angebot passen.", "tag_1": "Content", "tag_2": "Paid Social", "tag_3": "Brand", "device_label": "Content Flow" } },
+        { "type": "card", "settings": { "tone": "dark", "number": "04", "label": "Webdesign", "title": "Website als Gespräch", "text": "Wir gestalten Seiten, die erklären, führen und verkaufen – clean, hochwertig und ohne das Gefühl eines ausgetauschten Standard-Templates.", "tag_1": "UX", "tag_2": "Designsystem", "tag_3": "Conversion", "device_label": "Interface" } },
+        { "type": "card", "settings": { "tone": "cream", "number": "05", "label": "Shopify", "title": "Shops, die skalieren", "text": "Custom Sections, Theme-Strukturen und Layouts, die im Editor pflegbar bleiben und trotzdem nicht wie ein Standard-Shop aussehen.", "tag_1": "Liquid", "tag_2": "OS 2.0", "tag_3": "Themes", "device_label": "Theme System" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
