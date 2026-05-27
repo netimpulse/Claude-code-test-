@@ -70,7 +70,7 @@
           "muted": "#6b665e",
           "accent": "#050505",
           "primary_button": "#ebe3d4",
-          "on_primary_button": "#050505",
+          "on_primary_button": "#FFFFFF",
           "primary_button_border": "#050505",
           "secondary_button": "#fffdf8",
           "on_secondary_button": "#050505",

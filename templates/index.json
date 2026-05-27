@@ -9,176 +9,6 @@
  */
 {
   "sections": {
-    "hero_pulse_gccCFK": {
-      "type": "hero-pulse",
-      "blocks": {
-        "stat_mG8fhX": {
-          "type": "stat",
-          "settings": {
-            "label": "Avg. revenue lift",
-            "value": "2.4×",
-            "style": "accent",
-            "live_counter": false,
-            "counter_rate": 3
-          }
-        },
-        "stat_DP9nip": {
-          "type": "stat",
-          "settings": {
-            "label": "Sessions · today",
-            "value": "12864",
-            "style": "mono",
-            "live_counter": true,
-            "counter_rate": 3
-          }
-        },
-        "stat_jDLdW4": {
-          "type": "stat",
-          "settings": {
-            "label": "Channels live",
-            "value": "4 / 4",
-            "style": "default",
-            "live_counter": false,
-            "counter_rate": 3
-          }
-        }
-      },
-      "block_order": [
-        "stat_mG8fhX",
-        "stat_DP9nip",
-        "stat_jDLdW4"
-      ],
-      "name": "Hero pulse",
-      "settings": {
-        "eyebrow": "Listening to your market · Live",
-        "heading_strong": "Signal that sells.",
-        "heading_muted": "Not noise.",
-        "body": "<p>SEO, paid search, social, and custom Shopify themes — built around what your buyers actually do. We track to revenue, not vanity metrics.</p>",
-        "primary_label": "Get a free audit",
-        "primary_url": "",
-        "secondary_label": "See recent work",
-        "secondary_url": "",
-        "signal_label": "Signal · Live",
-        "show_timer": false,
-        "bar_count": 56,
-        "accent_bars": 30,
-        "animation_speed": 13,
-        "accent_color": "#9ccfd0",
-        "color_scheme": "scheme-2",
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
-    },
-    "services_spotlight_J8T4KU": {
-      "type": "services-spotlight",
-      "blocks": {
-        "service_fdmG8T": {
-          "type": "service",
-          "settings": {
-            "icon": "compass",
-            "label": "Strategie",
-            "title": "Strategie & Beratung",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
-            "benefit_1": "Digitale Positionierung und Angebotsstruktur",
-            "benefit_2": "Customer Journey und Conversion-Potenziale",
-            "benefit_3": "Klare Prioritäten statt beliebiger Einzelmaßnahmen",
-            "primary_label": "",
-            "primary_url": ""
-          }
-        },
-        "service_RKg38n": {
-          "type": "service",
-          "settings": {
-            "icon": "layout",
-            "label": "Webdesign",
-            "title": "Webdesign & UX",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
-            "benefit_1": "Individuelle Seitenarchitektur statt Standard-Layout",
-            "benefit_2": "Klare Nutzerführung auf Desktop und Mobile",
-            "benefit_3": "Designsystem für konsistente Markenwirkung",
-            "primary_label": "",
-            "primary_url": ""
-          }
-        },
-        "service_bp3XGB": {
-          "type": "service",
-          "settings": {
-            "icon": "bag",
-            "label": "Shopify",
-            "title": "Shopify & Entwicklung",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
-            "benefit_1": "Custom Sections und flexible Theme-Editor-Steuerung",
-            "benefit_2": "Saubere technische Umsetzung mit Fokus auf Performance",
-            "benefit_3": "Strukturen, die später ohne Chaos erweitert werden können",
-            "primary_label": "",
-            "primary_url": ""
-          }
-        },
-        "service_NVWwwH": {
-          "type": "service",
-          "settings": {
-            "icon": "search",
-            "label": "SEO / GEO",
-            "title": "SEO & GEO",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
-            "benefit_1": "Technisches SEO und saubere Informationsarchitektur",
-            "benefit_2": "Content-Strukturen für relevante Suchintentionen",
-            "benefit_3": "GEO-orientierte Aufbereitung von Expertise und Entitäten",
-            "primary_label": "",
-            "primary_url": ""
-          }
-        },
-        "service_hwMEcN": {
-          "type": "service",
-          "settings": {
-            "icon": "chart",
-            "label": "Google Ads",
-            "title": "Google Ads & Performance",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
-            "benefit_1": "Such-, Shopping- und Performance-Strukturen mit Zielbezug",
-            "benefit_2": "Budgetsteuerung nach Wirtschaftlichkeit",
-            "benefit_3": "Kontinuierliche Auswertung und Verbesserung",
-            "primary_label": "",
-            "primary_url": ""
-          }
-        },
-        "service_7eci8q": {
-          "type": "service",
-          "settings": {
-            "icon": "quote",
-            "label": "Content",
-            "title": "Content & Storytelling",
-            "description": "<p>Wir bringen Klarheit in Angebot, Zielgruppe und Kommunikation – damit Website, SEO, Ads und Design gemeinsam auf Wachstum einzahlen.</p>",
-            "benefit_1": "Präzise Botschaften statt austauschbarer Werbetexte",
-            "benefit_2": "Leistungsseiten mit klarer Argumentationslinie",
-            "benefit_3": "Content, der Design und Conversion unterstützt",
-            "primary_label": "",
-            "primary_url": ""
-          }
-        }
-      },
-      "block_order": [
-        "service_fdmG8T",
-        "service_RKg38n",
-        "service_bp3XGB",
-        "service_NVWwwH",
-        "service_hwMEcN",
-        "service_7eci8q"
-      ],
-      "name": "t:services_spotlight.name",
-      "settings": {
-        "heading": "Unsere Leistungen",
-        "center_eyebrow": "Im Fokus",
-        "primary_label": "Mehr zur Leistung",
-        "primary_url": "",
-        "secondary_label": "Projekt anfragen",
-        "secondary_url": "",
-        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
-        "accent_color": "#9ccfd0",
-        "padding_top": 72,
-        "padding_bottom": 72
-      }
-    },
     "theme_store_preview_zMCVkD": {
       "type": "theme-store-preview",
       "name": "Theme store preview",
@@ -195,15 +25,13 @@
         "card_radius": 14,
         "cta_label": "Zum Theme-Store",
         "cta_url": "",
-        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
+        "color_scheme": "scheme-sand",
         "padding_top": 64,
         "padding_bottom": 64
       }
     }
   },
   "order": [
-    "hero_pulse_gccCFK",
-    "services_spotlight_J8T4KU",
     "theme_store_preview_zMCVkD"
   ]
 }
