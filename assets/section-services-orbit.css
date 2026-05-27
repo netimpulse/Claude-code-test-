@@ -79,7 +79,7 @@
   margin-top: 54px;
   padding: clamp(28px, 5vw, 70px);
   border: 1px solid var(--sorb-line, rgba(0, 0, 0, 0.12));
-  border-radius: clamp(28px, 4vw, 46px);
+  border-radius: 0;
   background: color-mix(in srgb, var(--sorb-paper, #fffdf8) 64%, transparent);
   box-shadow: 0 26px 70px rgba(20, 16, 10, 0.1);
   overflow: hidden;
@@ -270,7 +270,7 @@
   color: var(--sorb-muted, #6b665e);
   background: color-mix(in srgb, var(--sorb-paper, #fffdf8) 88%, transparent);
   border: 1px solid var(--sorb-line, rgba(0, 0, 0, 0.12));
-  border-radius: 999px;
+  border-radius: 0;
   padding: 6px 10px;
   transition: 180ms ease;
 }
@@ -421,7 +421,7 @@
   margin: 54px 0 0;
   padding: 48px;
   border: 1px dashed var(--sorb-line-strong, rgba(0, 0, 0, 0.22));
-  border-radius: 24px;
+  border-radius: 0;
   text-align: center;
   color: var(--sorb-muted, #6b665e);
 }

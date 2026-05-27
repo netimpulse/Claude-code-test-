@@ -91,7 +91,7 @@ services-overview { display: block; }
 .services-overview__tab {
   border: 1px solid var(--so-line);
   background: transparent;
-  border-radius: 999px;
+  border-radius: 0;
   padding: 12px 18px;
   display: inline-flex;
   align-items: center;
@@ -247,7 +247,7 @@ services-overview { display: block; }
 .services-overview__core-mark {
   width: 44px;
   height: 44px;
-  border-radius: 14px;
+  border-radius: 0;
   border: 1px solid rgba(255, 255, 255, 0.28);
   display: grid;
   place-items: center;
@@ -349,7 +349,7 @@ services-overview { display: block; }
   width: max-content;
   max-width: 150px;
   padding: 7px 12px;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid var(--so-line);
   background: rgba(255, 255, 255, 0.95);
   color: var(--so-text);
@@ -400,7 +400,7 @@ services-overview { display: block; }
   align-items: center;
   min-height: 32px;
   padding: 0 14px;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid var(--so-accent-glow);
   background: var(--so-accent-soft);
   color: var(--so-accent);
@@ -477,7 +477,7 @@ services-overview { display: block; }
 .services-overview__btn {
   min-height: 52px;
   padding: 0 22px;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid transparent;
   display: inline-flex;
   align-items: center;
