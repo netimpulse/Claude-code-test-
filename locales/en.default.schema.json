@@ -184,6 +184,28 @@
     "details_url_label": "Details link (optional)",
     "details_url_info": "When set, an info icon appears in the corner of the card."
   },
+  "image_with_text": {
+    "name": "Image with text",
+    "image_label": "Image",
+    "image_position_label": "Image position",
+    "position_left": "Left",
+    "position_right": "Right",
+    "content_header": "Content",
+    "heading_label": "Heading",
+    "body_label": "Body",
+    "link_label": "Button label",
+    "link_info": "Leave empty to hide the button.",
+    "link_url_label": "Button link",
+    "badge_header": "Floating badge",
+    "show_badge_label": "Show badge",
+    "badge_value_label": "Badge value",
+    "badge_label_label": "Badge label",
+    "appearance_header": "Appearance",
+    "color_scheme_label": "Color scheme",
+    "accent_color_label": "Accent color",
+    "padding_top_label": "Top padding",
+    "padding_bottom_label": "Bottom padding"
+  },
   "services_orbit": {
     "name": "Services orbit",
     "kicker_label": "Kicker",

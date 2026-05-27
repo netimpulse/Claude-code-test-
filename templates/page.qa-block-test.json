@@ -935,6 +935,23 @@
       },
       "block_order": ["sorb_seo", "sorb_sea", "sorb_smm", "sorb_webdesign", "sorb_shopify", "sorb_themes"]
     },
+    "image_with_text": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "right",
+        "heading": "SEO at Scale Is a Structural Problem.",
+        "body": "<p>SEO at scale isn't a checklist. You're managing thousands of pages, legacy tech stacks, and competing priorities across teams and business units. The problems that hold you back aren't about missing meta descriptions or thin content.</p><p>At this level, the problems are structural. Crawl budget limits, keyword cannibalization, and years of technical debt make standard optimizations ineffective. You need a partner who can execute <a href=\"#\">technical and content strategies</a> that produce measurable, durable results.</p>",
+        "link_label": "",
+        "link_url": "",
+        "show_badge": true,
+        "badge_value": "50+",
+        "badge_label": "Industries Served",
+        "color_scheme": "scheme-1",
+        "accent_color": "#b6e84f",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
     "team_overview": {
       "type": "team-overview",
       "blocks": {
@@ -1273,6 +1290,7 @@
     "services_overview",
     "services_spotlight",
     "services_orbit",
+    "image_with_text",
     "theme_store_preview",
     "team_overview",
     "qa",

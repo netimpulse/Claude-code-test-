@@ -1,0 +1,224 @@
+{% comment %}
+  Image with text
+  ----------------------------------------------------------------
+  A heading + rich-text column beside an image with an optional
+  floating stat badge. The merchant chooses which side the image
+  sits on (left / right) in the theme editor; the text takes the
+  other side. Stacks to a single column (image first) on mobile.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign position = section.settings.image_position | default: 'right'
+-%}
+
+{{ 'section-image-with-text.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .image-with-text {
+    --iwt-accent: {{ accent }};
+    --iwt-padding-top: {{ section.settings.padding_top }}px;
+    --iwt-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --iwt-bg: {{ scheme.settings.background }};
+      --iwt-text: {{ scheme.settings.text }};
+      --iwt-body: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --iwt-line: {{ scheme.settings.text | color_modify: 'alpha', 0.08 }};
+      --iwt-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
+      --iwt-badge-bg: {{ scheme.settings.text }};
+      --iwt-badge-text: {{ scheme.settings.background }};
+    {%- endif -%}
+    {%- if scheme.settings.on_primary_button != blank -%}
+      --iwt-on-accent: {{ scheme.settings.on_primary_button }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="image-with-text full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="iwt-heading-{{ section.id }}"{% endif %}
+>
+  <div class="image-with-text__inner">
+    <div class="image-with-text__grid image-with-text--image-{{ position }}">
+      <div class="image-with-text__media">
+        <div class="image-with-text__frame">
+          {%- if section.settings.image != blank -%}
+            {%- assign img_alt = section.settings.image.alt | default: section.settings.heading -%}
+            {{
+              section.settings.image
+              | image_url: width: 1600
+              | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 800, 1000, 1200, 1600',
+                sizes: '(min-width: 900px) 48vw, 100vw',
+                alt: img_alt,
+                class: 'image-with-text__image'
+            }}
+          {%- else -%}
+            <div class="image-with-text__placeholder" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                <rect x="6" y="9" width="36" height="30" rx="3"/>
+                <circle cx="17" cy="19" r="3"/>
+                <path d="M9 35l10-9 7 6 5-4 8 7"/>
+              </svg>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_badge -%}
+            <div class="image-with-text__badge">
+              <span class="image-with-text__badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <path d="M4 21V6l7-3v18"/><path d="M11 9h7v12"/><path d="M4 21h17"/>
+                  <path d="M7 8v0M7 12v0M7 16v0M14.5 12v0M14.5 16v0"/>
+                </svg>
+              </span>
+              <span class="image-with-text__badge-text">
+                {%- if section.settings.badge_value != blank -%}
+                  <span class="image-with-text__badge-value">{{ section.settings.badge_value | escape }}</span>
+                {%- endif -%}
+                {%- if section.settings.badge_label != blank -%}
+                  <span class="image-with-text__badge-label">{{ section.settings.badge_label | escape }}</span>
+                {%- endif -%}
+              </span>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="image-with-text__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 id="iwt-heading-{{ section.id }}" class="image-with-text__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <div class="image-with-text__body">{{ section.settings.body }}</div>
+        {%- endif -%}
+        {%- if section.settings.link_label != blank -%}
+          <div class="image-with-text__actions">
+            <a class="image-with-text__btn" href="{{ section.settings.link_url | default: '#' }}">
+              {{ section.settings.link_label | escape }}
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:image_with_text.name",
+  "tag": "section",
+  "class": "shopify-section--image-with-text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:image_with_text.image_label"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "t:image_with_text.image_position_label",
+      "options": [
+        { "value": "left", "label": "t:image_with_text.position_left" },
+        { "value": "right", "label": "t:image_with_text.position_right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "t:image_with_text.content_header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:image_with_text.heading_label",
+      "default": "SEO at Scale Is a Structural Problem."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "t:image_with_text.body_label",
+      "default": "<p>SEO at scale isn't a checklist. You're managing thousands of pages, legacy tech stacks, and competing priorities across teams and business units.</p><p>At this level, the problems are structural — crawl budget limits, keyword cannibalization, and years of technical debt. You need a partner who can execute <a href=\"#\">technical and content strategies</a> that produce durable results.</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "t:image_with_text.link_label",
+      "info": "t:image_with_text.link_info"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "t:image_with_text.link_url_label"
+    },
+    {
+      "type": "header",
+      "content": "t:image_with_text.badge_header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "t:image_with_text.show_badge_label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_value",
+      "label": "t:image_with_text.badge_value_label",
+      "default": "50+"
+    },
+    {
+      "type": "text",
+      "id": "badge_label",
+      "label": "t:image_with_text.badge_label_label",
+      "default": "Industries Served"
+    },
+    {
+      "type": "header",
+      "content": "t:image_with_text.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:image_with_text.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:image_with_text.accent_color_label",
+      "default": "#b6e84f"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:image_with_text.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:image_with_text.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:image_with_text.name",
+      "category": "t:general.section"
+    }
+  ]
+}
+{% endschema %}
