@@ -192,7 +192,7 @@
         "columns": "3",
         "stagger": 52,
         "show_numbers": true,
-        "color_scheme": "",
+        "color_scheme": "scheme-sand",
         "accent_color": "#4a7cff",
         "padding_top": 80,
         "padding_bottom": 80
