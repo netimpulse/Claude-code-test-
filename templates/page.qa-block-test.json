@@ -952,6 +952,72 @@
         "padding_bottom": 80
       }
     },
+    "service_aspects": {
+      "type": "service-aspects",
+      "settings": {
+        "kicker": "SEO",
+        "heading": "Was in einem SEO-Projekt steckt.",
+        "intro": "Jede Kachel steht für einen Baustein – von der Analyse bis zum laufenden Reporting.",
+        "columns": "3",
+        "stagger": 48,
+        "show_numbers": true,
+        "color_scheme": "scheme-1",
+        "accent_color": "#4a7cff",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "sa_audit": {
+          "type": "tile",
+          "settings": {
+            "icon": "search",
+            "title": "Audit",
+            "text": "Bestandsaufnahme von Technik, Inhalten und Rankings."
+          }
+        },
+        "sa_keywords": {
+          "type": "tile",
+          "settings": {
+            "icon": "compass",
+            "title": "Keyword-Recherche",
+            "text": "Suchintention, Volumen und Wettbewerb pro Thema."
+          }
+        },
+        "sa_onpage": {
+          "type": "tile",
+          "settings": {
+            "icon": "layout",
+            "title": "On-Page-Optimierung",
+            "text": "Struktur, Snippets und interne Verlinkung."
+          }
+        },
+        "sa_tech": {
+          "type": "tile",
+          "settings": {
+            "icon": "spark",
+            "title": "Technisches SEO",
+            "text": "Crawling, Indexierung und Core Web Vitals."
+          }
+        },
+        "sa_content": {
+          "type": "tile",
+          "settings": {
+            "icon": "quote",
+            "title": "Content-Strategie",
+            "text": "Themencluster und Inhalte mit klarer Intention."
+          }
+        },
+        "sa_report": {
+          "type": "tile",
+          "settings": {
+            "icon": "chart",
+            "title": "Monitoring & Reporting",
+            "text": "Laufende Auswertung von Sichtbarkeit und Traffic."
+          }
+        }
+      },
+      "block_order": ["sa_audit", "sa_keywords", "sa_onpage", "sa_tech", "sa_content", "sa_report"]
+    },
     "team_overview": {
       "type": "team-overview",
       "blocks": {
@@ -1291,6 +1357,7 @@
     "services_spotlight",
     "services_orbit",
     "image_with_text",
+    "service_aspects",
     "theme_store_preview",
     "team_overview",
     "qa",

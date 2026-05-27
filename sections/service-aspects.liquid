@@ -1,0 +1,287 @@
+{% comment %}
+  Service aspects
+  ----------------------------------------------------------------
+  Equal-size tiles describing the individual aspects of a service
+  (e.g. for SEO: Audit, Keyword research, On-page, ...). The tiles
+  are laid out on a staggered "gallery wall" — each desktop column
+  carries a different vertical offset so they do not sit in one
+  straight row. Each tile is a repeatable block (title + optional
+  number, icon and text).
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign columns = section.settings.columns | default: '3'
+  assign block_count = section.blocks.size
+-%}
+
+{{ 'section-service-aspects.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .service-aspects {
+    --sa-accent: {{ accent }};
+    --sa-accent-soft: {{ accent | color_modify: 'alpha', 0.12 }};
+    --sa-stagger: {{ section.settings.stagger }}px;
+    --sa-padding-top: {{ section.settings.padding_top }}px;
+    --sa-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --sa-bg: {{ scheme.settings.background }};
+      --sa-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --sa-text: {{ scheme.settings.text }};
+      --sa-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --sa-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.85 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="service-aspects full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="sa-heading-{{ section.id }}"{% endif %}
+>
+  <div class="service-aspects__inner">
+    {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
+      <div class="service-aspects__head">
+        {%- if section.settings.kicker != blank -%}
+          <div class="service-aspects__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="sa-heading-{{ section.id }}" class="service-aspects__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="service-aspects__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <div class="service-aspects__grid service-aspects__grid--cols-{{ columns }}">
+        {%- for block in section.blocks -%}
+          <article class="service-aspects__tile" {{ block.shopify_attributes }}>
+            {%- assign show_number = section.settings.show_numbers -%}
+            {%- assign has_icon = false -%}
+            {%- if block.settings.icon != blank and block.settings.icon != 'none' -%}
+              {%- assign has_icon = true -%}
+            {%- endif -%}
+            {%- if show_number or has_icon -%}
+              <div class="service-aspects__tile-top">
+                {%- if show_number -%}
+                  <span class="service-aspects__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                {%- else -%}
+                  <span></span>
+                {%- endif -%}
+                {%- if has_icon -%}
+                  <span class="service-aspects__icon" aria-hidden="true">
+                    {%- render 'services-overview-icon', name: block.settings.icon -%}
+                  </span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            <div class="service-aspects__tile-body">
+              {%- if block.settings.title != blank -%}
+                <h3 class="service-aspects__tile-title">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p class="service-aspects__tile-text">{{ block.settings.text | escape }}</p>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <p class="service-aspects__placeholder">
+        {{ 'service_aspects.add_tiles' | t | default: 'Add tile blocks to get started.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:service_aspects.name",
+  "tag": "section",
+  "class": "shopify-section--service-aspects",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "t:service_aspects.kicker_label",
+      "default": "SEO"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:service_aspects.heading_label",
+      "default": "Was in einem SEO-Projekt steckt."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "t:service_aspects.intro_label",
+      "default": "Jede Kachel steht für einen Baustein – von der Analyse bis zum laufenden Reporting."
+    },
+    {
+      "type": "header",
+      "content": "t:service_aspects.layout_header"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "t:service_aspects.columns_label",
+      "options": [
+        { "value": "3", "label": "t:service_aspects.columns_3" },
+        { "value": "4", "label": "t:service_aspects.columns_4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "stagger",
+      "label": "t:service_aspects.stagger_label",
+      "info": "t:service_aspects.stagger_info",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "t:service_aspects.show_numbers_label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:service_aspects.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:service_aspects.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:service_aspects.accent_color_label",
+      "default": "#4a7cff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:service_aspects.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:service_aspects.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "t:service_aspects.block_tile",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:service_aspects.icon_label",
+          "options": [
+            { "value": "none", "label": "t:service_aspects.icon_none" },
+            { "value": "search", "label": "t:services_overview.icon_search" },
+            { "value": "chart", "label": "t:services_overview.icon_chart" },
+            { "value": "layout", "label": "t:services_overview.icon_layout" },
+            { "value": "compass", "label": "t:services_overview.icon_compass" },
+            { "value": "bag", "label": "t:services_overview.icon_bag" },
+            { "value": "quote", "label": "t:services_overview.icon_quote" },
+            { "value": "spark", "label": "t:services_overview.icon_spark" },
+            { "value": "globe", "label": "t:services_overview.icon_globe" }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:service_aspects.tile_title_label",
+          "default": "Audit"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "t:service_aspects.tile_text_label",
+          "default": "Bestandsaufnahme von Technik, Inhalten und Rankings."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:service_aspects.name",
+      "category": "t:general.section",
+      "blocks": [
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "search",
+            "title": "Audit",
+            "text": "Bestandsaufnahme von Technik, Inhalten und Rankings."
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "compass",
+            "title": "Keyword-Recherche",
+            "text": "Suchintention, Volumen und Wettbewerb pro Thema."
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "layout",
+            "title": "On-Page-Optimierung",
+            "text": "Struktur, Snippets und interne Verlinkung."
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "spark",
+            "title": "Technisches SEO",
+            "text": "Crawling, Indexierung und Core Web Vitals."
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "quote",
+            "title": "Content-Strategie",
+            "text": "Themencluster und Inhalte mit klarer Intention."
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "chart",
+            "title": "Monitoring & Reporting",
+            "text": "Laufende Auswertung von Sichtbarkeit und Traffic."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

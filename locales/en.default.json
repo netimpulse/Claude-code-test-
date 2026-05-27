@@ -101,6 +101,9 @@
   "services_orbit": {
     "add_services": "Add service blocks to get started."
   },
+  "service_aspects": {
+    "add_tiles": "Add tile blocks to get started."
+  },
   "landingpage": {
     "empty": "Add landing-page blocks (Hero, Bento, Metrics, Case, Testimonial, Themes, CTA) to build your page.",
     "add_cards": "Add bento cards in the theme editor.",
