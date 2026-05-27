@@ -1,0 +1,436 @@
+{% comment %}
+  Services Orbit
+  ----------------------------------------------------------------
+  Section head (kicker + title + intro) above an interactive orbit
+  panel. Service blocks sit at fixed angles around a ring; selecting
+  one spins the ring so the chosen service lands at the top slot and
+  the detail column (label, headline, text, benefits, CTAs, counter)
+  swaps to match. Works without JS (first service shown); JS adds the
+  rotation, swapping and keyboard navigation.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+  assign step = 0
+  if block_count > 0
+    assign step = 360.0 | divided_by: block_count
+  endif
+-%}
+
+{{ 'section-services-orbit.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .services-orbit {
+    --sorb-accent: {{ accent }};
+    --sorb-accent-haze: {{ accent | color_modify: 'alpha', 0.12 }};
+    --sorb-padding-top: {{ section.settings.padding_top }}px;
+    --sorb-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --sorb-bg: {{ scheme.settings.background }};
+      --sorb-paper: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --sorb-paper-haze: {{ scheme.settings.background_card | default: scheme.settings.background | color_modify: 'alpha', 0.6 }};
+      --sorb-text: {{ scheme.settings.text }};
+      --sorb-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --sorb-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+      --sorb-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
+    {%- endif -%}
+    {%- if scheme.settings.on_primary_button != blank -%}
+      --sorb-on-accent: {{ scheme.settings.on_primary_button }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="services-orbit full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="sorb-heading-{{ section.id }}"{% endif %}
+>
+  <div class="services-orbit__inner">
+    {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
+      <div class="services-orbit__head">
+        <div>
+          {%- if section.settings.kicker != blank -%}
+            <div class="services-orbit__kicker">{{ section.settings.kicker | escape }}</div>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 id="sorb-heading-{{ section.id }}" class="services-orbit__title">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.intro != blank -%}
+          <p class="services-orbit__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <services-orbit class="services-orbit__panel" data-total="{{ block_count }}">
+        <div class="services-orbit__stage">
+          <div class="services-orbit__ring" aria-hidden="true"></div>
+          <div class="services-orbit__cross" aria-hidden="true"></div>
+
+          <div class="services-orbit__rotator" data-rotator>
+            {%- for block in section.blocks -%}
+              {%- assign angle = forloop.index0 | times: step | minus: 90 -%}
+              {%- assign node_label = block.settings.label | default: block.settings.title -%}
+              {%- assign node_center = block.settings.center_title | default: block.settings.title -%}
+              <button
+                type="button"
+                class="services-orbit__node{% if forloop.first %} is-active{% endif %}"
+                data-node
+                data-index="{{ forloop.index0 }}"
+                data-angle="{{ angle }}"
+                data-center="{{ node_center | escape }}"
+                style="--angle: {{ angle }}deg;"
+                aria-label="{{ block.settings.title | escape }}"
+                aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                <span class="services-orbit__node-icon" aria-hidden="true">
+                  {%- render 'services-orbit-icon', name: block.settings.icon -%}
+                </span>
+                <span class="services-orbit__node-label">{{ node_label | escape }}</span>
+              </button>
+            {%- endfor -%}
+          </div>
+
+          <div class="services-orbit__center" aria-hidden="true">
+            {%- if section.settings.center_eyebrow != blank -%}
+              <span class="services-orbit__center-eyebrow">{{ section.settings.center_eyebrow | escape }}</span>
+            {%- endif -%}
+            {%- assign first_center = section.blocks[0].settings.center_title | default: section.blocks[0].settings.title -%}
+            <strong class="services-orbit__center-title" data-center-title>{{ first_center | escape }}</strong>
+          </div>
+        </div>
+
+        <div class="services-orbit__detail">
+          {%- for block in section.blocks -%}
+            {%- assign detail_label = block.settings.label | default: block.settings.title -%}
+            <article
+              class="services-orbit__detail-panel{% if forloop.first %} is-active{% endif %}"
+              data-panel
+              data-index="{{ forloop.index0 }}"
+              aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="services-orbit__detail-label">
+                {{- forloop.index | prepend: '0' | slice: -2, 2 }} / {{ detail_label | escape -}}
+              </div>
+              <h3 class="services-orbit__detail-title">{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.description != blank -%}
+                <div class="services-orbit__detail-text">{{ block.settings.description }}</div>
+              {%- endif -%}
+
+              {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank or block.settings.benefit_3 != blank -%}
+                <ul class="services-orbit__benefits">
+                  {%- if block.settings.benefit_1 != blank -%}<li>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.benefit_2 != blank -%}<li>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.benefit_3 != blank -%}<li>{{ block.settings.benefit_3 | escape }}</li>{%- endif -%}
+                </ul>
+              {%- endif -%}
+
+              {%- assign primary_label = block.settings.primary_label | default: section.settings.primary_label -%}
+              {%- assign primary_url = block.settings.primary_url | default: section.settings.primary_url -%}
+              {%- assign secondary_label = section.settings.secondary_label -%}
+              {%- assign secondary_url = section.settings.secondary_url -%}
+              {%- if primary_label != blank or secondary_label != blank -%}
+                <div class="services-orbit__actions">
+                  {%- if primary_label != blank -%}
+                    <a class="services-orbit__btn services-orbit__btn--primary" href="{{ primary_url | default: '#' }}">
+                      {{ primary_label | escape }}
+                      <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  {%- endif -%}
+                  {%- if secondary_label != blank -%}
+                    <a class="services-orbit__btn services-orbit__btn--secondary" href="{{ secondary_url | default: '#' }}">
+                      {{ secondary_label | escape }}
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
+
+          <div class="services-orbit__counter">
+            <span data-count>01 / {{ block_count | prepend: '0' | slice: -2, 2 }}</span>
+            <div class="services-orbit__progress" aria-hidden="true">
+              {%- assign first_pct = 100.0 | divided_by: block_count -%}
+              <span data-progress style="--progress: {{ first_pct }}%"></span>
+            </div>
+          </div>
+        </div>
+
+        <p class="services-orbit__sr-live" data-live aria-live="polite"></p>
+      </services-orbit>
+    {%- else -%}
+      <p class="services-orbit__placeholder">
+        {{ 'services_orbit.add_services' | t | default: 'Add service blocks to get started.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'services-orbit.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:services_orbit.name",
+  "tag": "section",
+  "class": "shopify-section--services-orbit",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "t:services_orbit.kicker_label",
+      "default": "Unsere Leistungen"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:services_orbit.heading_label",
+      "default": "Ein System aus Sichtbarkeit, Design und Umsetzung."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "t:services_orbit.intro_label",
+      "default": "Leistung auswählen, der Kreis dreht sich zur aktiven Position und rechts erscheint die passende Einordnung."
+    },
+    {
+      "type": "text",
+      "id": "center_eyebrow",
+      "label": "t:services_orbit.center_eyebrow_label",
+      "default": "Fokus"
+    },
+    {
+      "type": "header",
+      "content": "t:services_orbit.actions_header"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "t:services_orbit.primary_label_label",
+      "default": "Mehr zur Leistung"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "t:services_orbit.primary_url_label"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "t:services_orbit.secondary_label_label",
+      "default": "Projekt anfragen"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "t:services_orbit.secondary_url_label"
+    },
+    {
+      "type": "header",
+      "content": "t:services_orbit.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:services_orbit.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:services_orbit.accent_color_label",
+      "default": "#df6c3d"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:services_orbit.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:services_orbit.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "t:services_orbit.block_service",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:services_orbit.icon_label",
+          "options": [
+            { "value": "seo", "label": "t:services_orbit.icon_seo" },
+            { "value": "sea", "label": "t:services_orbit.icon_sea" },
+            { "value": "smm", "label": "t:services_orbit.icon_smm" },
+            { "value": "webdesign", "label": "t:services_orbit.icon_webdesign" },
+            { "value": "shopify", "label": "t:services_orbit.icon_shopify" },
+            { "value": "themes", "label": "t:services_orbit.icon_themes" }
+          ],
+          "default": "seo"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:services_orbit.label_label",
+          "info": "t:services_orbit.label_info",
+          "default": "SEO"
+        },
+        {
+          "type": "text",
+          "id": "center_title",
+          "label": "t:services_orbit.center_title_label",
+          "info": "t:services_orbit.center_title_info"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:services_orbit.title_label",
+          "default": "Gefunden werden, bevor andere sichtbar sind."
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:services_orbit.description_label",
+          "default": "<p>Wir strukturieren eure Website so, dass Inhalte, Technik und Suchintention zusammenarbeiten – für bessere Sichtbarkeit bei den richtigen Suchanfragen.</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:services_orbit.benefits_header"
+        },
+        {
+          "type": "text",
+          "id": "benefit_1",
+          "label": "t:services_orbit.benefit_label",
+          "default": "Keyword- und Seitenstruktur mit klarer Suchintention"
+        },
+        {
+          "type": "text",
+          "id": "benefit_2",
+          "label": "t:services_orbit.benefit_label",
+          "default": "Technische SEO-Grundlagen für Performance und Indexierung"
+        },
+        {
+          "type": "text",
+          "id": "benefit_3",
+          "label": "t:services_orbit.benefit_label",
+          "default": "Content-Aufbau für Leistungen, Standorte und Zielgruppen"
+        },
+        {
+          "type": "header",
+          "content": "t:services_orbit.cta_override_header"
+        },
+        {
+          "type": "text",
+          "id": "primary_label",
+          "label": "t:services_orbit.primary_label_label",
+          "info": "t:services_orbit.cta_override_info"
+        },
+        {
+          "type": "url",
+          "id": "primary_url",
+          "label": "t:services_orbit.primary_url_label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:services_orbit.name",
+      "category": "t:general.section",
+      "blocks": [
+        {
+          "type": "service",
+          "settings": {
+            "icon": "seo",
+            "label": "SEO",
+            "center_title": "Suchmaschinenoptimierung",
+            "title": "Gefunden werden, bevor andere sichtbar sind.",
+            "benefit_1": "Keyword- und Seitenstruktur mit klarer Suchintention",
+            "benefit_2": "Technische SEO-Grundlagen für Performance und Indexierung",
+            "benefit_3": "Content-Aufbau für Leistungen, Standorte und Zielgruppen"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "sea",
+            "label": "SEA",
+            "center_title": "Google Ads",
+            "title": "Kampagnen, die Nachfrage gezielt aktivieren.",
+            "benefit_1": "Saubere Kampagnen- und Anzeigengruppen-Struktur",
+            "benefit_2": "Conversion-Tracking und klare Auswertung",
+            "benefit_3": "Optimierung nach Suchintention, Budget und Zielwerten"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "smm",
+            "label": "SMM",
+            "center_title": "Social Media Marketing",
+            "title": "Aufmerksamkeit mit Wiedererkennung und Richtung.",
+            "benefit_1": "Content-Struktur für wiederkehrende Formate",
+            "benefit_2": "Kampagnenideen passend zu Marke und Zielgruppe",
+            "benefit_3": "Visuelle Systeme für mehr Wiedererkennung"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "webdesign",
+            "label": "Webdesign",
+            "center_title": "Webdesign & UX",
+            "title": "Websites, die erklären, führen und verkaufen.",
+            "benefit_1": "Individuelle Layouts statt Standard-Template-Gefühl",
+            "benefit_2": "UX-Struktur für Leistungen, Vertrauen und Kontakt",
+            "benefit_3": "Responsive Design mit sauberer mobiler Führung"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "shopify",
+            "label": "Shopify",
+            "center_title": "Shopify Entwicklung",
+            "title": "Shopify-Auftritte, die im Alltag skalieren.",
+            "benefit_1": "Custom Sections mit Theme-Editor-Einstellungen",
+            "benefit_2": "Liquid, OS 2.0 und Dawn-kompatible Logik",
+            "benefit_3": "Performance, mobile Optimierung und saubere Pflege"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "themes",
+            "label": "Themes",
+            "center_title": "Theme Store",
+            "title": "Fertige Bausteine für schnellere Launches.",
+            "benefit_1": "Theme- und Section-Packs für verschiedene Branchen",
+            "benefit_2": "Schneller Start mit professioneller Grundstruktur",
+            "benefit_3": "Erweiterbare Bausteine für spätere Optimierung"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

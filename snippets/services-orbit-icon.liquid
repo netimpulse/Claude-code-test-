@@ -1,0 +1,23 @@
+{% doc %}
+  Inline SVG icon set used by sections/services-orbit.liquid.
+  Single-stroke line icons sized via the parent — stroke uses currentColor.
+
+  @param {string} name - One of: seo | sea | smm | webdesign | shopify | themes
+{% enddoc %}
+
+{%- case name -%}
+  {%- when 'sea' -%}
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 35h32"/><path d="M12 30l8-9 7 5 10-14"/><path d="M34 12h5v5"/></svg>
+  {%- when 'smm' -%}
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="10" y="10" width="28" height="28" rx="8"/><circle cx="24" cy="24" r="6"/><path d="M32 16h.1"/></svg>
+  {%- when 'webdesign' -%}
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="12" width="32" height="22" rx="3"/><path d="M16 40h16M21 34v6M27 34v6"/></svg>
+  {%- when 'shopify' -%}
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18h27l-4 14H18z"/><path d="M15 18l-3-7H6"/><circle cx="20" cy="39" r="2"/><circle cx="35" cy="39" r="2"/></svg>
+  {%- when 'themes' -%}
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="10" width="30" height="28" rx="3"/><path d="M9 18h30M17 26h14M17 32h8"/></svg>
+  {%- when 'seo' -%}
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="21" cy="21" r="10"/><path d="M29 29l10 10"/></svg>
+  {%- else -%}
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="24" cy="24" r="12"/><path d="M24 16v16M16 24h16"/></svg>
+{%- endcase -%}
