@@ -10,6 +10,9 @@
   --hg-signal-soft: #9ccfd0;
   --hg-signal-tint: rgba(28, 73, 72, 0.12);
   --hg-signal-tint-strong: rgba(28, 73, 72, 0.25);
+  /* Live "monitoring" indicator keeps its natural green (active/online),
+     hardcoded so it never washes out to grey with the colour scheme. */
+  --hg-online: #16a34a;
   --hg-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
 }
 .hero-geo *, .hero-geo *::before, .hero-geo *::after { box-sizing: border-box; }
@@ -179,7 +182,7 @@
 .hero-geo__monitoring-dot {
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--hg-signal);
+  background: var(--hg-online);
   animation: hg-blink 1.8s infinite ease-in-out;
 }
 @keyframes hg-blink {

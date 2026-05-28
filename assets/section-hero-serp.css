@@ -150,13 +150,19 @@
 }
 .hero-serp__cursor.is-on { opacity: 1; }
 .hero-serp__engine {
-  font-family: var(--hs-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--hs-text-soft, rgba(0,0,0,0.55));
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   flex-shrink: 0;
 }
+/* Google wordmark keeps its natural multi-colour letters,
+   hardcoded so it never washes out to grey with the scheme. */
+.hero-serp__engine .hs-g0 { color: #4285f4; } /* blue */
+.hero-serp__engine .hs-g1 { color: #ea4335; } /* red */
+.hero-serp__engine .hs-g2 { color: #fbbc05; } /* yellow */
+.hero-serp__engine .hs-g3 { color: #4285f4; } /* blue */
+.hero-serp__engine .hs-g4 { color: #34a853; } /* green */
+.hero-serp__engine .hs-g5 { color: #ea4335; } /* red */
 
 .hero-serp__tabs {
   display: flex;
@@ -174,9 +180,10 @@
   border-bottom: 2px solid transparent;
 }
 .hero-serp__tab--active {
-  color: var(--hs-signal);
+  /* Active tab keeps Google's natural blue, independent of scheme. */
+  color: #1a73e8;
   font-weight: 600;
-  border-bottom-color: var(--hs-signal);
+  border-bottom-color: #1a73e8;
 }
 
 .hero-serp__meta {
@@ -224,6 +231,15 @@
   font-family: var(--hs-mono);
   letter-spacing: 0.05em;
 }
+/* Non-brand favicons get natural, distinct brand-like colours
+   (hardcoded) so the results list looks real instead of grey. */
+.hero-serp__favicon--c0 { background: #4285f4; color: #ffffff; }
+.hero-serp__favicon--c1 { background: #ea4335; color: #ffffff; }
+.hero-serp__favicon--c2 { background: #34a853; color: #ffffff; }
+.hero-serp__favicon--c3 { background: #fbbc05; color: #1a1a1a; }
+.hero-serp__favicon--c4 { background: #9334e6; color: #ffffff; }
+.hero-serp__favicon--c5 { background: #ff6d00; color: #ffffff; }
+
 .hero-serp__row--brand .hero-serp__favicon {
   background: var(--hs-text, #0e1716);
   color: var(--hs-signal-soft);

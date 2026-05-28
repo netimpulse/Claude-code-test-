@@ -101,7 +101,13 @@
           <path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
         <div class="hero-serp__query"><span data-hs-typed></span><span class="hero-serp__cursor" data-hs-cursor></span></div>
-        <span class="hero-serp__engine">{{ section.settings.search_engine_label | escape }}</span>
+        <span class="hero-serp__engine">
+          {%- assign engine_chars = section.settings.search_engine_label | split: '' -%}
+          {%- for ch in engine_chars -%}
+            {%- assign ci = forloop.index0 | modulo: 6 -%}
+            <span class="hs-g{{ ci }}">{{ ch | escape }}</span>
+          {%- endfor -%}
+        </span>
       </div>
 
       <div class="hero-serp__tabs">
@@ -125,7 +131,8 @@
               {% if block.settings.is_brand %}data-is-brand="true"{% endif %}
               {{ block.shopify_attributes }}
             >
-              <span class="hero-serp__favicon">{{ block.settings.favicon | escape }}</span>
+              {%- assign fav_color = forloop.index0 | modulo: 6 -%}
+              <span class="hero-serp__favicon hero-serp__favicon--c{{ fav_color }}">{{ block.settings.favicon | escape }}</span>
               <div class="hero-serp__row-text">
                 <div class="hero-serp__row-url">{{ block.settings.url | escape }}</div>
                 <div class="hero-serp__row-title">{{ block.settings.title | escape }}</div>
