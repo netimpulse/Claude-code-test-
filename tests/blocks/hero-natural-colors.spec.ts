@@ -70,6 +70,14 @@ test.describe("Hero natural colours", () => {
     expect(await dot.evaluate(bg)).toBe("rgb(22, 163, 74)");
   });
 
+  test("Mock panels have a hardcoded white background", async ({ page }) => {
+    const white = "rgb(255, 255, 255)";
+    expect(await page.locator("[data-section-type='hero-geo'] .hero-geo__chat").first().evaluate(bg)).toBe(white);
+    expect(await page.locator("[data-section-type='hero-serp'] .hero-serp__mock").first().evaluate(bg)).toBe(white);
+    expect(await page.locator("[data-section-type='hero-ticker'] .hero-ticker__dashboard").first().evaluate(bg)).toBe(white);
+    expect(await page.locator("[data-section-type='hero-ad-cycler'] .hero-ac__card").first().evaluate(bg)).toBe(white);
+  });
+
   test("ni-deck window dots are red / amber / green", async ({ page }) => {
     const dots = page.locator(".ni-device__dots span");
     expect(await dots.count()).toBeGreaterThanOrEqual(3);

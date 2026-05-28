@@ -26,12 +26,12 @@
     --hg-accent-tint-strong: {{ accent | color_modify: 'alpha', 0.25 }};
     {%- if scheme.settings.background != blank -%}
       --hg-bg: {{ scheme.settings.background }};
-      --hg-bg-soft: {{ scheme.settings.background | color_modify: 'lightness', '-3' }};
+      --hg-bg-soft: #eff2f1;
       --hg-text: {{ scheme.settings.text }};
       --hg-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
       --hg-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
       --hg-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
-      --hg-card-bg: {{ scheme.settings.background_card | default: '#ffffff' }};
+      --hg-card-bg: #ffffff;
     {%- endif -%}
   }
 {% endstyle %}
