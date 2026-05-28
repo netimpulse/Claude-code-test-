@@ -1,0 +1,98 @@
+/* section-about-stats.css
+ * Scoped styles for sections/about-stats.liquid.
+ * Row of credibility numbers (value + label + small description).
+ */
+
+.about-stats {
+  position: relative;
+  padding-top: var(--as-padding-top, 64px);
+  padding-bottom: var(--as-padding-bottom, 64px);
+  background: var(--as-bg, #ffffff);
+  color: var(--as-text, #1f2328);
+}
+
+.about-stats__inner {
+  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
+  margin: 0 auto;
+}
+
+.about-stats__head {
+  max-width: 720px;
+  margin: 0 0 clamp(36px, 5vw, 56px);
+}
+
+.about-stats__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--as-muted, #6b665e);
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.about-stats__kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.about-stats__heading {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.about-stats__grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(20px, 3vw, 36px);
+  border-top: 1px solid var(--as-line, rgba(31, 35, 40, 0.18));
+  padding-top: clamp(28px, 4vw, 44px);
+}
+
+.about-stats__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.about-stats__value {
+  font-size: clamp(2.6rem, 5.4vw, 4.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  font-weight: 800;
+  color: var(--as-text, #1f2328);
+}
+
+.about-stats__label {
+  font-size: clamp(0.95rem, 1.05vw, 1.05rem);
+  font-weight: 700;
+}
+
+.about-stats__description {
+  margin: 6px 0 0;
+  color: var(--as-muted, #6b665e);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 32ch;
+}
+
+.about-stats__placeholder {
+  padding: 32px;
+  border: 1px dashed var(--as-line, rgba(31, 35, 40, 0.22));
+  text-align: center;
+  color: var(--as-muted, #6b665e);
+}
+
+/* ---- Responsive ---- */
+@media (min-width: 720px) {
+  .about-stats__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

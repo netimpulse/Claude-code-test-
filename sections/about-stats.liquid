@@ -1,0 +1,166 @@
+{% comment %}
+  About — Stats
+  ----------------------------------------------------------------
+  Row of credibility numbers. Each stat is a repeatable block
+  (value + label + optional short description). Stacks 2x2 below 720px.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+-%}
+
+{{ 'section-about-stats.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .about-stats {
+    --as-accent: {{ accent }};
+    --as-padding-top: {{ section.settings.padding_top }}px;
+    --as-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --as-bg: {{ scheme.settings.background }};
+      --as-text: {{ scheme.settings.text }};
+      --as-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --as-line: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="about-stats full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="as-heading-{{ section.id }}"{% endif %}
+>
+  <div class="about-stats__inner">
+    {%- if section.settings.kicker != blank or section.settings.heading != blank -%}
+      <div class="about-stats__head">
+        {%- if section.settings.kicker != blank -%}
+          <div class="about-stats__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="as-heading-{{ section.id }}" class="about-stats__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <ul class="about-stats__grid">
+        {%- for block in section.blocks -%}
+          <li class="about-stats__stat" {{ block.shopify_attributes }}>
+            {%- if block.settings.value != blank -%}
+              <span class="about-stats__value">{{ block.settings.value | escape }}</span>
+            {%- endif -%}
+            {%- if block.settings.label != blank -%}
+              <span class="about-stats__label">{{ block.settings.label | escape }}</span>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <p class="about-stats__description">{{ block.settings.description | escape }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p class="about-stats__placeholder">
+        {{ 'about_stats.add_stats' | t | default: 'Add stat blocks to get started.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:about_stats.name",
+  "tag": "section",
+  "class": "shopify-section--about-stats",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "t:about_stats.kicker_label",
+      "default": "In Zahlen"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:about_stats.heading_label",
+      "default": "Was unsere Arbeit greifbar macht."
+    },
+    {
+      "type": "header",
+      "content": "t:about_stats.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:about_stats.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:about_stats.accent_color_label",
+      "default": "#1f2328"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:about_stats.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:about_stats.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "t:about_stats.block_stat",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "t:about_stats.value_label",
+          "default": "120+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:about_stats.label_label",
+          "default": "Projekte"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "t:about_stats.description_label",
+          "default": "Über alle Disziplinen und Branchen hinweg."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:about_stats.name",
+      "category": "t:general.section",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "2019", "label": "Gegründet", "description": "Aus Marketing- und Theme-Erfahrung heraus." } },
+        { "type": "stat", "settings": { "value": "120+", "label": "Projekte", "description": "Über alle Disziplinen und Branchen hinweg." } },
+        { "type": "stat", "settings": { "value": "12 Mio.", "label": "Adbudget", "description": "Verantwortet und ausgewertet." } },
+        { "type": "stat", "settings": { "value": "9", "label": "Spezialist:innen", "description": "Strategie, Design, Code, Performance." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

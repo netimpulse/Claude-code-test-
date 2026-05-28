@@ -1,0 +1,182 @@
+{% comment %}
+  About — Timeline
+  ----------------------------------------------------------------
+  Horizontal milestone list (year + title + short description) on
+  desktop, vertical on mobile. Each milestone is a repeatable block.
+  Dots stay round per the theme's "true circles" rule.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+-%}
+
+{{ 'section-about-timeline.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .about-timeline {
+    --at-accent: {{ accent }};
+    --at-padding-top: {{ section.settings.padding_top }}px;
+    --at-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --at-bg: {{ scheme.settings.background }};
+      --at-text: {{ scheme.settings.text }};
+      --at-body: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --at-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --at-line: {{ scheme.settings.text | color_modify: 'alpha', 0.2 }};
+    {%- endif -%}
+  }
+
+  #shopify-section-{{ section.id }} .about-timeline__list {
+    --at-cols: {{ block_count | at_most: 6 | at_least: 1 }};
+  }
+{% endstyle %}
+
+<section
+  class="about-timeline full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="at-heading-{{ section.id }}"{% endif %}
+>
+  <div class="about-timeline__inner">
+    {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
+      <div class="about-timeline__head">
+        {%- if section.settings.kicker != blank -%}
+          <div class="about-timeline__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="at-heading-{{ section.id }}" class="about-timeline__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="about-timeline__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <ol class="about-timeline__list">
+        {%- for block in section.blocks -%}
+          <li class="about-timeline__step" {{ block.shopify_attributes }}>
+            <span class="about-timeline__dot" aria-hidden="true"></span>
+            {%- if block.settings.year != blank -%}
+              <span class="about-timeline__year">{{ block.settings.year | escape }}</span>
+            {%- endif -%}
+            {%- if block.settings.title != blank -%}
+              <h3 class="about-timeline__step-title">{{ block.settings.title | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="about-timeline__step-text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ol>
+    {%- else -%}
+      <p class="about-timeline__placeholder">
+        {{ 'about_timeline.add_milestones' | t | default: 'Add milestone blocks to get started.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:about_timeline.name",
+  "tag": "section",
+  "class": "shopify-section--about-timeline",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "t:about_timeline.kicker_label",
+      "default": "Unser Weg"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:about_timeline.heading_label",
+      "default": "Wo wir herkommen, wohin wir gehen."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "t:about_timeline.intro_label",
+      "default": "Kein Marketing-Märchen, sondern die Stationen, die uns zu dem gemacht haben, was wir heute liefern."
+    },
+    {
+      "type": "header",
+      "content": "t:about_timeline.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:about_timeline.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:about_timeline.accent_color_label",
+      "default": "#1f2328"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:about_timeline.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:about_timeline.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "t:about_timeline.block_milestone",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "year",
+          "label": "t:about_timeline.year_label",
+          "default": "2019"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:about_timeline.title_label",
+          "default": "Gründung"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "t:about_timeline.text_label",
+          "default": "Aus Erfahrung im Performance-Marketing und im Shopify-Theme-Bau entsteht NetImpulse."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:about_timeline.name",
+      "category": "t:general.section",
+      "blocks": [
+        { "type": "milestone", "settings": { "year": "2019", "title": "Gründung", "text": "Aus Erfahrung im Performance-Marketing und im Shopify-Theme-Bau entsteht NetImpulse." } },
+        { "type": "milestone", "settings": { "year": "2021", "title": "Shopify-Schwerpunkt", "text": "Fokus auf Custom-Themes und integrierte SEO/SEA-Setups für E-Commerce-Kunden." } },
+        { "type": "milestone", "settings": { "year": "2023", "title": "Eigenes Team", "text": "Wachstum auf interdisziplinäres Team aus Design, Code und Marketing." } },
+        { "type": "milestone", "settings": { "year": "2025", "title": "Theme Store", "text": "Launch eigener Shopify-Themes als Produktlinie neben den Kundenprojekten." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

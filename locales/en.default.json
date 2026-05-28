@@ -107,6 +107,15 @@
   "team_compact": {
     "add_members": "Add team member blocks to get started."
   },
+  "about_stats": {
+    "add_stats": "Add stat blocks to get started."
+  },
+  "about_values": {
+    "add_values": "Add value blocks to get started."
+  },
+  "about_timeline": {
+    "add_milestones": "Add milestone blocks to get started."
+  },
   "landingpage": {
     "empty": "Add landing-page blocks (Hero, Bento, Metrics, Case, Testimonial, Themes, CTA) to build your page.",
     "add_cards": "Add bento cards in the theme editor.",

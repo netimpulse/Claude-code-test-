@@ -1038,6 +1038,81 @@
       },
       "block_order": ["tc_niklas", "tc_tom", "tc_lara"]
     },
+    "about_intro": {
+      "type": "about-intro",
+      "settings": {
+        "kicker": "Über uns",
+        "heading": "Wir bauen digitale Strukturen, die im Alltag halten.",
+        "body": "<p>NetImpulse verbindet Strategie, Design, SEO/SEA und Shopify-Entwicklung in einem Team.</p>",
+        "cta_label": "Projekt anfragen",
+        "cta_url": "",
+        "chip_1_value": "Seit 2019",
+        "chip_1_label": "im Markt",
+        "chip_2_value": "120+",
+        "chip_2_label": "Projekte",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "about_stats": {
+      "type": "about-stats",
+      "settings": {
+        "kicker": "In Zahlen",
+        "heading": "Was unsere Arbeit greifbar macht.",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 64,
+        "padding_bottom": 64
+      },
+      "blocks": {
+        "as_founded": { "type": "stat", "settings": { "value": "2019", "label": "Gegründet", "description": "Aus Marketing- und Theme-Erfahrung heraus." } },
+        "as_projects": { "type": "stat", "settings": { "value": "120+", "label": "Projekte", "description": "Über alle Disziplinen hinweg." } },
+        "as_budget": { "type": "stat", "settings": { "value": "12 Mio.", "label": "Adbudget", "description": "Verantwortet und ausgewertet." } },
+        "as_team": { "type": "stat", "settings": { "value": "9", "label": "Spezialist:innen", "description": "Strategie, Design, Code, Performance." } }
+      },
+      "block_order": ["as_founded", "as_projects", "as_budget", "as_team"]
+    },
+    "about_values": {
+      "type": "about-values",
+      "settings": {
+        "kicker": "Was uns wichtig ist",
+        "heading": "Vier Werte, die unsere Arbeit prägen.",
+        "intro": "Wir arbeiten nach Prinzipien, die sich in echten Projekten bewährt haben.",
+        "columns": "4",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "av_clarity": { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun – und liefern, was wir versprechen." } },
+        "av_substance": { "type": "value", "settings": { "title": "Substanz", "text": "Lieber weniger Buzzwords, dafür Lösungen, die halten." } },
+        "av_responsibility": { "type": "value", "settings": { "title": "Verantwortung", "text": "Wir nehmen Budgets ernst und denken ans Geschäft." } },
+        "av_pace": { "type": "value", "settings": { "title": "Tempo mit Tiefgang", "text": "Schnell handeln, ohne Qualität zu opfern." } }
+      },
+      "block_order": ["av_clarity", "av_substance", "av_responsibility", "av_pace"]
+    },
+    "about_timeline": {
+      "type": "about-timeline",
+      "settings": {
+        "kicker": "Unser Weg",
+        "heading": "Wo wir herkommen, wohin wir gehen.",
+        "intro": "Die Stationen, die uns zu dem gemacht haben, was wir heute liefern.",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "at_2019": { "type": "milestone", "settings": { "year": "2019", "title": "Gründung", "text": "Aus Erfahrung im Performance-Marketing entsteht NetImpulse." } },
+        "at_2021": { "type": "milestone", "settings": { "year": "2021", "title": "Shopify-Schwerpunkt", "text": "Fokus auf Custom-Themes und SEO/SEA-Setups." } },
+        "at_2023": { "type": "milestone", "settings": { "year": "2023", "title": "Eigenes Team", "text": "Interdisziplinäres Team aus Design, Code und Marketing." } },
+        "at_2025": { "type": "milestone", "settings": { "year": "2025", "title": "Theme Store", "text": "Launch eigener Shopify-Themes als Produktlinie." } }
+      },
+      "block_order": ["at_2019", "at_2021", "at_2023", "at_2025"]
+    },
     "team_overview": {
       "type": "team-overview",
       "blocks": {
@@ -1380,6 +1455,10 @@
     "service_aspects",
     "theme_store_preview",
     "team_compact",
+    "about_intro",
+    "about_stats",
+    "about_values",
+    "about_timeline",
     "team_overview",
     "qa",
     "landingpage_qa",
