@@ -83,10 +83,10 @@
               {%- assign photo_alt = block.settings.photo.alt | default: block.settings.name -%}
               {{
                 block.settings.photo
-                | image_url: width: 600
+                | image_url: width: 800
                 | image_tag:
                   loading: 'lazy',
-                  widths: '200, 300, 400, 600',
+                  widths: '300, 400, 600, 800',
                   sizes: '(min-width: 1080px) 22vw, (min-width: 680px) 45vw, 100vw',
                   alt: photo_alt,
                   class: 'about-perspectives__photo'
