@@ -207,20 +207,22 @@
           "type": "member",
           "settings": {
             "name": "Niklas",
-            "initials": ""
+            "initials": "",
+            "photo": "shopify://shop_images/ChatGPT_Image_1._Mai_2026_00_40_56.png"
           }
         },
         "member_f6tJfd": {
           "type": "member",
           "settings": {
-            "name": "Tom",
-            "initials": ""
+            "name": "Luca",
+            "initials": "",
+            "photo": "shopify://shop_images/file_00000000ae4071f4b78aa23592f43e08.png"
           }
         },
         "member_Pd7ktn": {
           "type": "member",
           "settings": {
-            "name": "Lara",
+            "name": "Tom",
             "initials": ""
           }
         }
