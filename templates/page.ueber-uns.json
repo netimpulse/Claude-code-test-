@@ -34,6 +34,46 @@
     },
     "about_stats": {
       "type": "about-stats",
+      "blocks": {
+        "st_founded": {
+          "type": "stat",
+          "settings": {
+            "value": "2019",
+            "label": "Gegründet",
+            "description": "Aus Marketing- und Theme-Erfahrung heraus."
+          }
+        },
+        "st_projects": {
+          "type": "stat",
+          "settings": {
+            "value": "120+",
+            "label": "Projekte",
+            "description": "Über alle Disziplinen und Branchen hinweg."
+          }
+        },
+        "st_budget": {
+          "type": "stat",
+          "settings": {
+            "value": "12 Mio.",
+            "label": "Adbudget",
+            "description": "Verantwortet und ausgewertet."
+          }
+        },
+        "st_team": {
+          "type": "stat",
+          "settings": {
+            "value": "9",
+            "label": "Spezialist:innen",
+            "description": "Strategie, Design, Code, Performance."
+          }
+        }
+      },
+      "block_order": [
+        "st_founded",
+        "st_projects",
+        "st_budget",
+        "st_team"
+      ],
       "settings": {
         "kicker": "In Zahlen",
         "heading": "Was unsere Arbeit greifbar macht.",
@@ -41,17 +81,46 @@
         "accent_color": "#1f2328",
         "padding_top": 64,
         "padding_bottom": 64
-      },
-      "blocks": {
-        "st_founded": { "type": "stat", "settings": { "value": "2019", "label": "Gegründet", "description": "Aus Marketing- und Theme-Erfahrung heraus." } },
-        "st_projects": { "type": "stat", "settings": { "value": "120+", "label": "Projekte", "description": "Über alle Disziplinen und Branchen hinweg." } },
-        "st_budget": { "type": "stat", "settings": { "value": "12 Mio.", "label": "Adbudget", "description": "Verantwortet und ausgewertet." } },
-        "st_team": { "type": "stat", "settings": { "value": "9", "label": "Spezialist:innen", "description": "Strategie, Design, Code, Performance." } }
-      },
-      "block_order": ["st_founded", "st_projects", "st_budget", "st_team"]
+      }
     },
     "about_values": {
       "type": "about-values",
+      "blocks": {
+        "v_clarity": {
+          "type": "value",
+          "settings": {
+            "title": "Klarheit",
+            "text": "Wir sagen, was wir tun – und liefern, was wir versprechen."
+          }
+        },
+        "v_substance": {
+          "type": "value",
+          "settings": {
+            "title": "Substanz",
+            "text": "Lieber weniger Buzzwords, dafür Lösungen, die im Alltag halten."
+          }
+        },
+        "v_responsibility": {
+          "type": "value",
+          "settings": {
+            "title": "Verantwortung",
+            "text": "Wir nehmen Budgets ernst und denken ans Geschäft, nicht nur ans Tool."
+          }
+        },
+        "v_pace": {
+          "type": "value",
+          "settings": {
+            "title": "Tempo mit Tiefgang",
+            "text": "Schnell handeln, ohne Qualität, Pflege oder Wirkung zu opfern."
+          }
+        }
+      },
+      "block_order": [
+        "v_clarity",
+        "v_substance",
+        "v_responsibility",
+        "v_pace"
+      ],
       "settings": {
         "kicker": "Was uns wichtig ist",
         "heading": "Vier Werte, die unsere Arbeit prägen.",
@@ -61,17 +130,61 @@
         "accent_color": "#1f2328",
         "padding_top": 80,
         "padding_bottom": 80
-      },
-      "blocks": {
-        "v_clarity": { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun – und liefern, was wir versprechen." } },
-        "v_substance": { "type": "value", "settings": { "title": "Substanz", "text": "Lieber weniger Buzzwords, dafür Lösungen, die im Alltag halten." } },
-        "v_responsibility": { "type": "value", "settings": { "title": "Verantwortung", "text": "Wir nehmen Budgets ernst und denken ans Geschäft, nicht nur ans Tool." } },
-        "v_pace": { "type": "value", "settings": { "title": "Tempo mit Tiefgang", "text": "Schnell handeln, ohne Qualität, Pflege oder Wirkung zu opfern." } }
-      },
-      "block_order": ["v_clarity", "v_substance", "v_responsibility", "v_pace"]
+      }
     },
     "about_perspectives": {
       "type": "about-perspectives",
+      "blocks": {
+        "pp_strategie": {
+          "type": "perspective",
+          "settings": {
+            "category": "Founder&CEO",
+            "photo": "shopify://shop_images/ChatGPT_Image_1._Mai_2026_00_40_56.png",
+            "name": "Niklas",
+            "role": "Online Marketing & Shopify Entwicklung",
+            "text": "Verbindet Performance-Marketing, SEO-Struktur und Shopify-Umsetzung. Der Fokus liegt darauf, digitale Auftritte nicht nur schön, sondern messbar und pflegbar zu machen.",
+            "tag_1": "SEO",
+            "tag_2": "SEA",
+            "tag_3": "Shopify",
+            "tag_4": "Liquid",
+            "tag_5": ""
+          }
+        },
+        "pp_design": {
+          "type": "perspective",
+          "settings": {
+            "category": "Founder&CEO",
+            "photo": "shopify://shop_images/file_00000000ae4071f4b78aa23592f43e08.png",
+            "name": "Tom",
+            "role": "Design, Konzept & digitale Auftritte",
+            "text": "Arbeitet an Struktur, visueller Richtung und Nutzerführung. Ziel ist ein Auftritt, der hochwertig wirkt, klar erklärt und nicht nach Standard-Template aussieht.",
+            "tag_1": "Webdesign",
+            "tag_2": "UX",
+            "tag_3": "Branding",
+            "tag_4": "Content",
+            "tag_5": ""
+          }
+        },
+        "pp_umsetzung": {
+          "type": "perspective",
+          "settings": {
+            "category": "CEO",
+            "name": "Tom",
+            "role": "Content, Organisation & Projektunterstützung",
+            "text": "Unterstützt dabei, Inhalte, Abläufe und Projektbausteine sauber zusammenzuführen, damit aus Strategie, Design und Technik ein klarer Gesamtauftritt entsteht.",
+            "tag_1": "",
+            "tag_2": "",
+            "tag_3": "",
+            "tag_4": "",
+            "tag_5": ""
+          }
+        }
+      },
+      "block_order": [
+        "pp_strategie",
+        "pp_design",
+        "pp_umsetzung"
+      ],
       "settings": {
         "heading": "Drei Perspektiven, ein gemeinsamer Anspruch.",
         "intro": "NetImpulse ist bewusst klein aufgestellt. Dadurch bleiben Abstimmungen direkt, Entscheidungen klar und Strategie, Design und Umsetzung nah beieinander.",
@@ -85,43 +198,50 @@
         "accent_color": "#1f2328",
         "padding_top": 96,
         "padding_bottom": 96
-      },
-      "blocks": {
-        "pp_strategie": {
-          "type": "perspective",
-          "settings": {
-            "category": "Strategie",
-            "name": "Niklas",
-            "role": "Online Marketing & Shopify Entwicklung",
-            "text": "Verbindet Performance-Marketing, SEO-Struktur und Shopify-Umsetzung. Der Fokus liegt darauf, digitale Auftritte nicht nur schön, sondern messbar und pflegbar zu machen.",
-            "tag_1": "SEO", "tag_2": "SEA", "tag_3": "Shopify", "tag_4": "Liquid"
-          }
-        },
-        "pp_design": {
-          "type": "perspective",
-          "settings": {
-            "category": "Design",
-            "name": "Tom",
-            "role": "Design, Konzept & digitale Auftritte",
-            "text": "Arbeitet an Struktur, visueller Richtung und Nutzerführung. Ziel ist ein Auftritt, der hochwertig wirkt, klar erklärt und nicht nach Standard-Template aussieht.",
-            "tag_1": "Webdesign", "tag_2": "UX", "tag_3": "Branding", "tag_4": "Content"
-          }
-        },
-        "pp_umsetzung": {
-          "type": "perspective",
-          "settings": {
-            "category": "Umsetzung",
-            "name": "Lara",
-            "role": "Content, Organisation & Projektunterstützung",
-            "text": "Unterstützt dabei, Inhalte, Abläufe und Projektbausteine sauber zusammenzuführen, damit aus Strategie, Design und Technik ein klarer Gesamtauftritt entsteht.",
-            "tag_1": "Content", "tag_2": "Projektstruktur", "tag_3": "Kommunikation", "tag_4": "QA"
-          }
-        }
-      },
-      "block_order": ["pp_strategie", "pp_design", "pp_umsetzung"]
+      }
     },
     "about_timeline": {
       "type": "about-timeline",
+      "blocks": {
+        "m_2019": {
+          "type": "milestone",
+          "settings": {
+            "year": "2019",
+            "title": "Gründung",
+            "text": "Aus Erfahrung im Performance-Marketing und im Shopify-Theme-Bau entsteht NetImpulse."
+          }
+        },
+        "m_2021": {
+          "type": "milestone",
+          "settings": {
+            "year": "2021",
+            "title": "Shopify-Schwerpunkt",
+            "text": "Fokus auf Custom-Themes und integrierte SEO/SEA-Setups für E-Commerce-Kunden."
+          }
+        },
+        "m_2023": {
+          "type": "milestone",
+          "settings": {
+            "year": "2023",
+            "title": "Eigenes Team",
+            "text": "Wachstum auf interdisziplinäres Team aus Design, Code und Marketing."
+          }
+        },
+        "m_2025": {
+          "type": "milestone",
+          "settings": {
+            "year": "2025",
+            "title": "Theme Store",
+            "text": "Launch eigener Shopify-Themes als Produktlinie neben den Kundenprojekten."
+          }
+        }
+      },
+      "block_order": [
+        "m_2019",
+        "m_2021",
+        "m_2023",
+        "m_2025"
+      ],
       "settings": {
         "kicker": "Unser Weg",
         "heading": "Wo wir herkommen, wohin wir gehen.",
@@ -130,14 +250,7 @@
         "accent_color": "#1f2328",
         "padding_top": 80,
         "padding_bottom": 80
-      },
-      "blocks": {
-        "m_2019": { "type": "milestone", "settings": { "year": "2019", "title": "Gründung", "text": "Aus Erfahrung im Performance-Marketing und im Shopify-Theme-Bau entsteht NetImpulse." } },
-        "m_2021": { "type": "milestone", "settings": { "year": "2021", "title": "Shopify-Schwerpunkt", "text": "Fokus auf Custom-Themes und integrierte SEO/SEA-Setups für E-Commerce-Kunden." } },
-        "m_2023": { "type": "milestone", "settings": { "year": "2023", "title": "Eigenes Team", "text": "Wachstum auf interdisziplinäres Team aus Design, Code und Marketing." } },
-        "m_2025": { "type": "milestone", "settings": { "year": "2025", "title": "Theme Store", "text": "Launch eigener Shopify-Themes als Produktlinie neben den Kundenprojekten." } }
-      },
-      "block_order": ["m_2019", "m_2021", "m_2023", "m_2025"]
+      }
     },
     "team_overview_qD4ERV": {
       "type": "team-overview",
