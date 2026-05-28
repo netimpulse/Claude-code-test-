@@ -10,6 +10,10 @@
   --ac-signal-soft: #9ccfd0;
   --ac-signal-tint: rgba(156, 207, 208, 0.18);
   --ac-signal-tint-strong: rgba(156, 207, 208, 0.45);
+  /* Natural status colours: live = red, winning variant = green —
+     hardcoded so they keep their meaning regardless of scheme. */
+  --ac-live: #ff3b30;
+  --ac-win: #16a34a;
   --ac-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
 }
 .hero-ac *, .hero-ac *::before, .hero-ac *::after { box-sizing: border-box; }
@@ -139,13 +143,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--ac-signal);
+  color: var(--ac-live);
 }
 .hero-ac__test-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--ac-signal);
+  background: var(--ac-live);
   animation: ac-blink 1.6s infinite ease-in-out;
 }
 @keyframes ac-blink {
@@ -350,8 +354,8 @@
 }
 .hero-ac__tab.is-active .hero-ac__tab-label { color: var(--ac-signal); }
 .hero-ac__tab-win {
-  background: var(--ac-signal);
-  color: var(--ac-signal-soft);
+  background: var(--ac-win);
+  color: #ffffff;
   padding: 1px 4px;
   border-radius: 0;
   font-size: 9px;
