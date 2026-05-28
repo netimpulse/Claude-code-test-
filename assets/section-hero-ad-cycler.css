@@ -6,6 +6,10 @@
   color: var(--ac-text, #0e1716);
   overflow: hidden;
   font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --ac-signal: #1c4948;
+  --ac-signal-soft: #9ccfd0;
+  --ac-signal-tint: rgba(156, 207, 208, 0.18);
+  --ac-signal-tint-strong: rgba(156, 207, 208, 0.45);
   --ac-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
 }
 .hero-ac *, .hero-ac *::before, .hero-ac *::after { box-sizing: border-box; }
@@ -44,7 +48,7 @@
   gap: 0.05em;
   overflow-wrap: anywhere;
 }
-.hero-ac__heading-accent { color: var(--ac-accent, #1c4948); margin-right: 0.25em; }
+.hero-ac__heading-accent { color: var(--ac-signal); margin-right: 0.25em; }
 
 .hero-ac__body {
   margin: 0;
@@ -135,13 +139,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--ac-accent, #1c4948);
+  color: var(--ac-signal);
 }
 .hero-ac__test-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--ac-accent, #1c4948);
+  background: var(--ac-signal);
   animation: ac-blink 1.6s infinite ease-in-out;
 }
 @keyframes ac-blink {
@@ -170,7 +174,7 @@
   height: 28px;
   border-radius: 50%;
   background: var(--ac-text, #0e1716);
-  color: var(--ac-accent-soft, #9ccfd0);
+  color: var(--ac-signal-soft);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -202,7 +206,7 @@
   pointer-events: none;
 }
 .hero-ac__slide.is-active { opacity: 1; pointer-events: auto; }
-.hero-ac__slide--deep { background: var(--ac-accent, #1c4948); }
+.hero-ac__slide--deep { background: var(--ac-signal); }
 .hero-ac__slide--ink { background: #0e1716; }
 
 .hero-ac__pattern {
@@ -212,23 +216,23 @@
   opacity: 1;
 }
 .hero-ac__pattern[data-ac-pattern="stripes"] {
-  background-image: repeating-linear-gradient(108deg, transparent 0 14px, var(--ac-accent-tint) 14px 16px);
+  background-image: repeating-linear-gradient(108deg, transparent 0 14px, var(--ac-signal-tint) 14px 16px);
 }
 .hero-ac__pattern[data-ac-pattern="grid"] {
   background-image:
-    radial-gradient(circle at 78% 28%, var(--ac-accent-tint-strong) 0 28px, transparent 30px),
-    linear-gradient(to right, var(--ac-accent-tint) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--ac-accent-tint) 1px, transparent 1px);
+    radial-gradient(circle at 78% 28%, var(--ac-signal-tint-strong) 0 28px, transparent 30px),
+    linear-gradient(to right, var(--ac-signal-tint) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ac-signal-tint) 1px, transparent 1px);
   background-size: auto, 22px 22px, 22px 22px;
 }
 .hero-ac__pattern[data-ac-pattern="dots"] {
-  background-image: radial-gradient(var(--ac-accent-tint) 1.5px, transparent 1.6px);
+  background-image: radial-gradient(var(--ac-signal-tint) 1.5px, transparent 1.6px);
   background-size: 14px 14px;
 }
 .hero-ac__pattern[data-ac-pattern="wave"] {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 80%, var(--ac-accent-tint) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 30% 50%, var(--ac-accent-tint) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 50% at 50% 80%, var(--ac-signal-tint) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 30% 50%, var(--ac-signal-tint) 0%, transparent 60%);
 }
 
 .hero-ac__slide-top {
@@ -244,7 +248,7 @@
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ac-accent-soft, #9ccfd0);
+  color: var(--ac-signal-soft);
   background: rgba(0,0,0,0.25);
   padding: 4px 8px;
   border-radius: 0;
@@ -332,7 +336,7 @@
 }
 .hero-ac__tab.is-active {
   background: var(--ac-bg-soft, #e9eeed);
-  border-color: var(--ac-accent, #1c4948);
+  border-color: var(--ac-signal);
 }
 .hero-ac__tab-label {
   font-size: 10px;
@@ -344,10 +348,10 @@
   align-items: center;
   gap: 0.3rem;
 }
-.hero-ac__tab.is-active .hero-ac__tab-label { color: var(--ac-accent, #1c4948); }
+.hero-ac__tab.is-active .hero-ac__tab-label { color: var(--ac-signal); }
 .hero-ac__tab-win {
-  background: var(--ac-accent, #1c4948);
-  color: var(--ac-accent-soft, #9ccfd0);
+  background: var(--ac-signal);
+  color: var(--ac-signal-soft);
   padding: 1px 4px;
   border-radius: 0;
   font-size: 9px;

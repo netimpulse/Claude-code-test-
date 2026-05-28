@@ -6,6 +6,8 @@
   color: var(--hp-text, #ffffff);
   overflow: hidden;
   font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --hp-signal: #b5e8db;
+  --hp-signal-glow: rgba(181, 232, 219, 0.55);
   --hp-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
 }
 
@@ -44,7 +46,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--hp-accent, #b5e8db);
+  color: var(--hp-signal);
 }
 
 .hero-pulse__heading {
@@ -171,8 +173,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--hp-accent, #b5e8db);
-  box-shadow: 0 0 10px var(--hp-accent-glow, rgba(181, 232, 219, 0.55));
+  background: var(--hp-signal);
+  box-shadow: 0 0 10px var(--hp-signal-glow));
   animation: hp-blink 1.6s infinite ease-in-out;
 }
 
@@ -213,7 +215,7 @@
 }
 
 .hero-pulse__bar--accent {
-  background: var(--hp-accent, #b5e8db);
+  background: var(--hp-signal);
 }
 
 .hero-pulse__centerline {
@@ -253,7 +255,7 @@
 }
 
 .hero-pulse__stat--accent .hero-pulse__stat-value {
-  color: var(--hp-accent, #b5e8db);
+  color: var(--hp-signal);
 }
 
 .hero-pulse__stat--mono .hero-pulse__stat-value {
