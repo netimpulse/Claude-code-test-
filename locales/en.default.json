@@ -69,6 +69,11 @@
     "next": "Next theme",
     "add_collection": "Pick a collection in the theme editor to preview themes here."
   },
+  "theme_store_deck": {
+    "prev": "Previous",
+    "next": "Next",
+    "empty": "Add theme cards in the theme editor."
+  },
   "services_overview": {
     "tabs_label": "Choose a service",
     "in_focus": "In focus",
