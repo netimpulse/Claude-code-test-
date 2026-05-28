@@ -7,6 +7,13 @@
   overflow: hidden;
   font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
   --hs-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
+  /* Signal colors are locked to the brand teal/mint so the SERP
+     animation (brand row highlight, rank badge, active tab, accent
+     headline word) stays readable regardless of merchant scheme. */
+  --hs-signal: #1c4948;
+  --hs-signal-soft: #9ccfd0;
+  --hs-signal-tint: rgba(156, 207, 208, 0.18);
+  --hs-signal-border: rgba(28, 73, 72, 0.18);
 }
 
 .hero-serp *,
@@ -48,7 +55,7 @@
 }
 
 .hero-serp__heading-accent {
-  color: var(--hs-accent, #1c4948);
+  color: var(--hs-signal);
 }
 
 .hero-serp__body {
@@ -167,9 +174,9 @@
   border-bottom: 2px solid transparent;
 }
 .hero-serp__tab--active {
-  color: var(--hs-accent, #1c4948);
+  color: var(--hs-signal);
   font-weight: 600;
-  border-bottom-color: var(--hs-accent, #1c4948);
+  border-bottom-color: var(--hs-signal);
 }
 
 .hero-serp__meta {
@@ -197,8 +204,8 @@
   padding: 0 0.5rem;
 }
 .hero-serp__row--brand.is-lifted {
-  background: var(--hs-accent-tint, rgba(156,207,208,0.18));
-  border-color: var(--hs-accent-border, rgba(28,73,72,0.18));
+  background: var(--hs-signal-tint);
+  border-color: var(--hs-signal-border);
   padding: 0 0.875rem;
 }
 
@@ -219,7 +226,7 @@
 }
 .hero-serp__row--brand .hero-serp__favicon {
   background: var(--hs-text, #0e1716);
-  color: var(--hs-accent-soft, #9ccfd0);
+  color: var(--hs-signal-soft);
 }
 
 .hero-serp__row-text {
@@ -242,7 +249,7 @@
   text-overflow: ellipsis;
 }
 .hero-serp__row--brand .hero-serp__row-title {
-  color: var(--hs-accent, #1c4948);
+  color: var(--hs-signal);
   font-weight: 600;
 }
 
@@ -252,8 +259,8 @@
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
   border-radius: 0;
-  background: var(--hs-accent, #1c4948);
-  color: var(--hs-accent-soft, #9ccfd0);
+  background: var(--hs-signal);
+  color: var(--hs-signal-soft);
   font-family: var(--hs-mono);
   font-size: 11px;
   font-weight: 600;

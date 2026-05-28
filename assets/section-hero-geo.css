@@ -6,6 +6,10 @@
   color: var(--hg-text, #0e1716);
   overflow: hidden;
   font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --hg-signal: #1c4948;
+  --hg-signal-soft: #9ccfd0;
+  --hg-signal-tint: rgba(28, 73, 72, 0.12);
+  --hg-signal-tint-strong: rgba(28, 73, 72, 0.25);
   --hg-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
 }
 .hero-geo *, .hero-geo *::before, .hero-geo *::after { box-sizing: border-box; }
@@ -33,7 +37,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--hg-accent, #1c4948);
+  color: var(--hg-signal);
 }
 .hero-geo__eyebrow svg { width: 0.85em; height: 0.85em; }
 
@@ -49,7 +53,7 @@
   overflow-wrap: anywhere;
 }
 .hero-geo__heading-strong { color: var(--hg-text, #0e1716); }
-.hero-geo__heading-accent { color: var(--hg-accent, #1c4948); }
+.hero-geo__heading-accent { color: var(--hg-signal); }
 
 .hero-geo__body {
   margin: 0;
@@ -148,7 +152,7 @@
   flex: 0 0 24px;
   border-radius: 50%;
   background: var(--hg-text, #0e1716);
-  color: var(--hg-accent, #9ccfd0);
+  color: var(--hg-signal);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +179,7 @@
 .hero-geo__monitoring-dot {
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--hg-accent, #1c4948);
+  background: var(--hg-signal);
   animation: hg-blink 1.8s infinite ease-in-out;
 }
 @keyframes hg-blink {
@@ -224,13 +228,13 @@
 .hero-geo__thinking[data-step="2"] > span:nth-child(3) { opacity: 1; }
 
 .hero-geo__answer-text mark {
-  background: var(--hg-accent-tint-strong, rgba(28,73,72,0.25));
+  background: var(--hg-signal-tint-strong));
   border-radius: 0;
   padding: 1px 4px;
   margin: 0 -2px;
   color: var(--hg-text, #0e1716);
   font-weight: 600;
-  box-shadow: inset 0 -1px 0 var(--hg-accent, #1c4948);
+  box-shadow: inset 0 -1px 0 var(--hg-signal);
 }
 
 .hero-geo__cursor {
@@ -270,8 +274,8 @@
   color: var(--hg-text-soft, rgba(0,0,0,0.65));
 }
 .hero-geo__citation--brand {
-  background: var(--hg-accent-tint, rgba(28,73,72,0.12));
-  color: var(--hg-accent, #1c4948);
+  background: var(--hg-signal-tint));
+  color: var(--hg-signal);
   font-weight: 600;
 }
 

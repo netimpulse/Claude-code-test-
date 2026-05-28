@@ -7,6 +7,10 @@
   overflow: hidden;
   font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
   --ht-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
+  /* Signal color is locked to the brand teal so the live indicator,
+     pulse, trend deltas and sparklines stay readable regardless of
+     the merchant's chosen colour scheme / accent. */
+  --ht-signal: #1c4948;
 }
 .hero-ticker *, .hero-ticker *::before, .hero-ticker *::after { box-sizing: border-box; }
 
@@ -130,13 +134,13 @@
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ht-accent, #1c4948);
+  color: var(--ht-signal);
 }
 .hero-ticker__chrome-pulse {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--ht-accent, #1c4948);
+  background: var(--ht-signal);
   animation: ht-blink 1.8s infinite ease-in-out;
 }
 @keyframes ht-blink {
@@ -197,7 +201,7 @@
   gap: 0.2rem;
   font-size: 12px;
   font-weight: 600;
-  color: var(--ht-accent, #1c4948);
+  color: var(--ht-signal);
 }
 .hero-ticker__metric-delta svg { width: 12px; height: 12px; }
 
@@ -211,7 +215,7 @@
   height: 42px;
   margin-top: 0.25rem;
   display: block;
-  color: var(--ht-accent, #1c4948);
+  color: var(--ht-signal);
 }
 .hero-ticker__spark-area { fill: currentColor; opacity: 0.1; }
 .hero-ticker__spark-line { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
