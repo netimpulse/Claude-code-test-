@@ -40,7 +40,7 @@
     --ac-accent-tint-strong: {{ accent_soft | color_modify: 'alpha', 0.45 }};
     {%- if scheme.settings.background != blank -%}
       --ac-bg: {{ scheme.settings.background }};
-      --ac-bg-soft: {{ scheme.settings.background | color_modify: 'lightness', '-3' }};
+      --ac-bg-soft: #e9eeed;
       --ac-text: {{ scheme.settings.text }};
       --ac-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
       --ac-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
