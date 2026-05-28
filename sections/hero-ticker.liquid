@@ -23,7 +23,7 @@
     --ht-accent-soft: {{ accent | color_modify: 'alpha', 0.1 }};
     {%- if scheme.settings.background != blank -%}
       --ht-bg: {{ scheme.settings.background }};
-      --ht-bg-soft: {{ scheme.settings.background | color_modify: 'lightness', '-2' }};
+      --ht-bg-soft: #f6f8f8;
       --ht-text: {{ scheme.settings.text }};
       --ht-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
       --ht-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
