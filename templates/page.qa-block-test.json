@@ -1113,6 +1113,56 @@
       },
       "block_order": ["at_2019", "at_2021", "at_2023", "at_2025"]
     },
+    "about_perspectives": {
+      "type": "about-perspectives",
+      "settings": {
+        "heading": "Drei Perspektiven, ein gemeinsamer Anspruch.",
+        "intro": "NetImpulse ist bewusst klein aufgestellt. Dadurch bleiben Abstimmungen direkt, Entscheidungen klar und Strategie, Design und Umsetzung nah beieinander.",
+        "card_kicker": "Wer dahintersteht",
+        "card_heading": "Keine anonyme Agenturstruktur",
+        "card_text": "Jeder Bereich hat eine klare Verantwortung. So entsteht ein digitaler Auftritt, bei dem Marketing, Gestaltung und Technik nicht getrennt voneinander gedacht werden.",
+        "feature_bg": "#0c1c24",
+        "feature_text": "#ffffff",
+        "focus_label": "Fokusbereiche",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 96,
+        "padding_bottom": 96
+      },
+      "blocks": {
+        "p_strategie": {
+          "type": "perspective",
+          "settings": {
+            "category": "Strategie",
+            "name": "Niklas",
+            "role": "Online Marketing & Shopify Entwicklung",
+            "text": "Verbindet Performance-Marketing, SEO-Struktur und Shopify-Umsetzung. Der Fokus liegt darauf, digitale Auftritte nicht nur schön, sondern messbar und pflegbar zu machen.",
+            "tag_1": "SEO", "tag_2": "SEA", "tag_3": "Shopify", "tag_4": "Liquid"
+          }
+        },
+        "p_design": {
+          "type": "perspective",
+          "settings": {
+            "category": "Design",
+            "name": "Tom",
+            "role": "Design, Konzept & digitale Auftritte",
+            "text": "Arbeitet an Struktur, visueller Richtung und Nutzerführung. Ziel ist ein Auftritt, der hochwertig wirkt, klar erklärt und nicht nach Standard-Template aussieht.",
+            "tag_1": "Webdesign", "tag_2": "UX", "tag_3": "Branding", "tag_4": "Content"
+          }
+        },
+        "p_umsetzung": {
+          "type": "perspective",
+          "settings": {
+            "category": "Umsetzung",
+            "name": "Lara",
+            "role": "Content, Organisation & Projektunterstützung",
+            "text": "Unterstützt dabei, Inhalte, Abläufe und Projektbausteine sauber zusammenzuführen, damit aus Strategie, Design und Technik ein klarer Gesamtauftritt entsteht.",
+            "tag_1": "Content", "tag_2": "Projektstruktur", "tag_3": "Kommunikation", "tag_4": "QA"
+          }
+        }
+      },
+      "block_order": ["p_strategie", "p_design", "p_umsetzung"]
+    },
     "team_overview": {
       "type": "team-overview",
       "blocks": {
@@ -1459,6 +1509,7 @@
     "about_stats",
     "about_values",
     "about_timeline",
+    "about_perspectives",
     "team_overview",
     "qa",
     "landingpage_qa",
