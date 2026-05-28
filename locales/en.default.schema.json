@@ -184,6 +184,26 @@
     "details_url_label": "Details link (optional)",
     "details_url_info": "When set, an info icon appears in the corner of the card."
   },
+  "team_compact": {
+    "name": "Team compact",
+    "kicker_label": "Kicker",
+    "heading_label": "Heading",
+    "intro_label": "Intro",
+    "cta_header": "Call to action",
+    "cta_label_label": "CTA label",
+    "cta_url_label": "CTA link",
+    "appearance_header": "Appearance",
+    "color_scheme_label": "Color scheme",
+    "accent_color_label": "Accent color",
+    "padding_top_label": "Top padding",
+    "padding_bottom_label": "Bottom padding",
+    "block_member": "Team member",
+    "member_name_label": "Name",
+    "member_initials_label": "Initials",
+    "member_initials_info": "Auto-derived from the first letter of the name when empty.",
+    "member_photo_label": "Photo",
+    "member_photo_info": "Optional. Overrides the initials avatar when set."
+  },
   "service_aspects": {
     "name": "Service aspects",
     "kicker_label": "Kicker",

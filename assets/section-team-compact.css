@@ -1,0 +1,201 @@
+/* section-team-compact.css
+ * Scoped styles for sections/team-compact.liquid.
+ * Small team teaser: header column (kicker + heading + CTA), intro
+ * column and a row of circular avatars with name labels.
+ * Colour values flow in via CSS custom properties set in the section's
+ * {% style %} block (driven by the chosen color scheme + accent setting).
+ */
+
+.team-compact {
+  position: relative;
+  padding-top: var(--tc-padding-top, 64px);
+  padding-bottom: var(--tc-padding-bottom, 64px);
+  background: var(--tc-bg, #f4eee2);
+  color: var(--tc-text, #1f2328);
+}
+
+.team-compact__inner {
+  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
+  margin: 0 auto;
+}
+
+/* ---- Panel ---- */
+.team-compact__panel {
+  display: grid;
+  grid-template-columns: 1.05fr 1.05fr 0.7fr;
+  align-items: center;
+  gap: clamp(28px, 4vw, 60px);
+  padding: clamp(28px, 4vw, 56px);
+  background: var(--tc-card, #faf3e2);
+  border: 1px solid var(--tc-line, rgba(31, 35, 40, 0.1));
+  border-radius: 0;
+}
+
+/* ---- Header column ---- */
+.team-compact__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--tc-muted, #6b665e);
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.team-compact__kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.team-compact__heading {
+  margin: 0;
+  font-size: clamp(2.2rem, 4.6vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+.team-compact__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(26px, 3vw, 40px);
+  color: var(--tc-text, #1f2328);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.team-compact__cta:hover {
+  color: var(--tc-accent, #1f2328);
+}
+
+.team-compact__cta-arrow {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid var(--tc-line-strong, rgba(31, 35, 40, 0.4));
+  border-radius: 50%;
+  font-size: 1rem;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.team-compact__cta:hover .team-compact__cta-arrow {
+  background: var(--tc-text, #1f2328);
+  color: var(--tc-bg, #faf3e2);
+  border-color: var(--tc-text, #1f2328);
+}
+
+/* ---- Intro column ---- */
+.team-compact__intro {
+  margin: 0;
+  color: var(--tc-muted, #4a4a4a);
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  line-height: 1.6;
+  max-width: 46ch;
+}
+
+/* ---- Avatars column ---- */
+.team-compact__avatars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 28px 0;
+}
+
+.team-compact__member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-left: -14px;
+}
+
+.team-compact__member:first-child {
+  margin-left: 0;
+}
+
+.team-compact__avatar {
+  position: relative;
+  width: clamp(64px, 7vw, 92px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--tc-avatar-bg, #e6dcc8);
+  border: 2px solid var(--tc-card, #faf3e2);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--tc-text, #1f2328);
+  font-weight: 800;
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  letter-spacing: -0.02em;
+  box-shadow: 0 6px 16px rgba(20, 16, 10, 0.08);
+}
+
+.team-compact__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-compact__name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  background: var(--tc-card, #faf3e2);
+  border: 1px solid var(--tc-line, rgba(31, 35, 40, 0.12));
+  border-radius: 0;
+  white-space: nowrap;
+}
+
+.team-compact__placeholder {
+  padding: 32px;
+  border: 1px dashed var(--tc-line-strong, rgba(31, 35, 40, 0.22));
+  border-radius: 0;
+  text-align: center;
+  color: var(--tc-muted, #6b665e);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1100px) {
+  .team-compact__panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .team-compact__avatars {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .team-compact__member {
+    margin-left: -10px;
+  }
+}
+
+@media (max-width: 720px) {
+  .team-compact__panel {
+    grid-template-columns: 1fr;
+    padding: clamp(22px, 6vw, 32px);
+  }
+
+  .team-compact__heading {
+    font-size: clamp(2rem, 9vw, 2.8rem);
+  }
+
+  .team-compact__avatars {
+    justify-content: flex-start;
+  }
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .team-compact__cta,
+  .team-compact__cta-arrow {
+    transition: none;
+  }
+}
