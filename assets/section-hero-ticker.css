@@ -11,6 +11,11 @@
      pulse, trend deltas and sparklines stay readable regardless of
      the merchant's chosen colour scheme / accent. */
   --ht-signal: #1c4948;
+  /* Window-chrome "traffic light" controls keep their normal
+     red / amber / green colours regardless of the colour scheme. */
+  --ht-win-close: #ff5f57;
+  --ht-win-min: #febc2e;
+  --ht-win-max: #28c840;
 }
 .hero-ticker *, .hero-ticker *::before, .hero-ticker *::after { box-sizing: border-box; }
 
@@ -118,6 +123,9 @@
   width: 9px; height: 9px; border-radius: 50%;
   background: var(--ht-line, rgba(0,0,0,0.12));
 }
+.hero-ticker__chrome-dots > span:nth-child(1) { background: var(--ht-win-close, #ff5f57); }
+.hero-ticker__chrome-dots > span:nth-child(2) { background: var(--ht-win-min, #febc2e); }
+.hero-ticker__chrome-dots > span:nth-child(3) { background: var(--ht-win-max, #28c840); }
 .hero-ticker__chrome-label {
   font-family: var(--ht-mono);
   font-size: 10px;

@@ -171,10 +171,15 @@
   grid-template-rows: auto 1fr auto;
   gap: 18px;
 }
-.ni-device__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; opacity: 0.65; }
+.ni-device__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .ni-device__dots { display: flex; gap: 6px; }
-.ni-device__dots span { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 0.4; }
-.ni-device__label { font-size: 0.76rem; font-weight: 760; letter-spacing: 0.04em; text-transform: uppercase; }
+/* Window controls keep their normal red / amber / green colours,
+   hardcoded so they never wash out to grey with the colour scheme. */
+.ni-device__dots span { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 1; }
+.ni-device__dots span:nth-child(1) { background: #ff5f57; }
+.ni-device__dots span:nth-child(2) { background: #febc2e; }
+.ni-device__dots span:nth-child(3) { background: #28c840; }
+.ni-device__label { font-size: 0.76rem; font-weight: 760; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.65; }
 .ni-device__lines { display: grid; align-content: center; gap: 13px; }
 .ni-device__lines span { height: 13px; background: currentColor; opacity: 0.78; }
 .ni-device__lines span:nth-child(1) { width: 78%; height: 24px; }
