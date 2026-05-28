@@ -1,0 +1,362 @@
+{% comment %}
+  About — Perspectives
+  ----------------------------------------------------------------
+  Three-perspective layout for the About page: top headline +
+  supporting paragraph, then a row of cards (one dark feature card
+  on the left + repeatable perspective cards on the right). Clean
+  editorial look — no letter avatars and no numbering. Each
+  perspective is a repeatable block (category tag + optional photo
+  + name + role + text + up to five focus tags).
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+  assign total_cols = block_count | plus: 1
+-%}
+
+{{ 'section-about-perspectives.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .about-perspectives {
+    --ap-accent: {{ accent }};
+    --ap-padding-top: {{ section.settings.padding_top }}px;
+    --ap-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --ap-bg: {{ scheme.settings.background }};
+      --ap-card-bg: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --ap-text: {{ scheme.settings.text }};
+      --ap-body: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --ap-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --ap-line: {{ scheme.settings.text | color_modify: 'alpha', 0.14 }};
+      --ap-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.35 }};
+    {%- endif -%}
+    --ap-feature-bg: {{ section.settings.feature_bg | default: '#0c1c24' }};
+    --ap-feature-text: {{ section.settings.feature_text | default: '#ffffff' }};
+    --ap-feature-muted: {{ section.settings.feature_text | default: '#ffffff' | color_modify: 'alpha', 0.7 }};
+  }
+
+  #shopify-section-{{ section.id }} .about-perspectives__grid {
+    --ap-cols: {{ total_cols }};
+  }
+{% endstyle %}
+
+<section
+  class="about-perspectives full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="ap-heading-{{ section.id }}"{% endif %}
+>
+  <div class="about-perspectives__inner">
+    {%- if section.settings.heading != blank or section.settings.intro != blank -%}
+      <div class="about-perspectives__head">
+        {%- if section.settings.heading != blank -%}
+          <h2 id="ap-heading-{{ section.id }}" class="about-perspectives__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="about-perspectives__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="about-perspectives__grid">
+      <article class="about-perspectives__feature">
+        {%- if section.settings.card_kicker != blank -%}
+          <p class="about-perspectives__feature-kicker">{{ section.settings.card_kicker | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.card_heading != blank -%}
+          <h3 class="about-perspectives__feature-heading">{{ section.settings.card_heading }}</h3>
+        {%- endif -%}
+        {%- if section.settings.card_text != blank -%}
+          <p class="about-perspectives__feature-text">{{ section.settings.card_text }}</p>
+        {%- endif -%}
+      </article>
+
+      {%- if block_count > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign has_photo = false -%}
+          {%- if block.settings.photo != blank -%}{%- assign has_photo = true -%}{%- endif -%}
+          <article class="about-perspectives__card{% if has_photo %} about-perspectives__card--has-photo{% endif %}" {{ block.shopify_attributes }}>
+            {%- if has_photo -%}
+              {%- assign photo_alt = block.settings.photo.alt | default: block.settings.name -%}
+              <div class="about-perspectives__media">
+                {{
+                  block.settings.photo
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '300, 400, 600, 800',
+                    sizes: '(min-width: 1080px) 22vw, (min-width: 680px) 45vw, 100vw',
+                    alt: photo_alt,
+                    class: 'about-perspectives__photo'
+                }}
+                {%- if block.settings.category != blank -%}
+                  <span class="about-perspectives__category about-perspectives__category--on-photo">{{ block.settings.category | escape }}</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            <div class="about-perspectives__body">
+              {%- if block.settings.category != blank and has_photo == false -%}
+                <span class="about-perspectives__category">{{ block.settings.category | escape }}</span>
+              {%- endif -%}
+              {%- if block.settings.name != blank -%}
+                <h3 class="about-perspectives__name">{{ block.settings.name | escape }}</h3>
+              {%- endif -%}
+            {%- if block.settings.role != blank -%}
+              <p class="about-perspectives__role">{{ block.settings.role | escape }}</p>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="about-perspectives__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+
+            {%- assign has_tags = false -%}
+            {%- if block.settings.tag_1 != blank or block.settings.tag_2 != blank or block.settings.tag_3 != blank or block.settings.tag_4 != blank or block.settings.tag_5 != blank -%}
+              {%- assign has_tags = true -%}
+            {%- endif -%}
+
+            {%- if has_tags -%}
+              <div class="about-perspectives__divider" aria-hidden="true"></div>
+              {%- if section.settings.focus_label != blank -%}
+                <p class="about-perspectives__focus-label">{{ section.settings.focus_label | escape }}</p>
+              {%- endif -%}
+              <ul class="about-perspectives__tags">
+                {%- if block.settings.tag_1 != blank -%}<li class="about-perspectives__tag">{{ block.settings.tag_1 | escape }}</li>{%- endif -%}
+                {%- if block.settings.tag_2 != blank -%}<li class="about-perspectives__tag">{{ block.settings.tag_2 | escape }}</li>{%- endif -%}
+                {%- if block.settings.tag_3 != blank -%}<li class="about-perspectives__tag">{{ block.settings.tag_3 | escape }}</li>{%- endif -%}
+                {%- if block.settings.tag_4 != blank -%}<li class="about-perspectives__tag">{{ block.settings.tag_4 | escape }}</li>{%- endif -%}
+                {%- if block.settings.tag_5 != blank -%}<li class="about-perspectives__tag">{{ block.settings.tag_5 | escape }}</li>{%- endif -%}
+              </ul>
+            {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        <p class="about-perspectives__placeholder">
+          {{ 'about_perspectives.add_perspectives' | t | default: 'Add perspective blocks to get started.' }}
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:about_perspectives.name",
+  "tag": "section",
+  "class": "shopify-section--about-perspectives",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:about_perspectives.heading_label",
+      "default": "Drei Perspektiven, ein gemeinsamer Anspruch."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "t:about_perspectives.intro_label",
+      "default": "NetImpulse ist bewusst klein aufgestellt. Dadurch bleiben Abstimmungen direkt, Entscheidungen klar und Strategie, Design und Umsetzung nah beieinander."
+    },
+    {
+      "type": "header",
+      "content": "t:about_perspectives.feature_header"
+    },
+    {
+      "type": "text",
+      "id": "card_kicker",
+      "label": "t:about_perspectives.card_kicker_label",
+      "default": "Wer dahintersteht"
+    },
+    {
+      "type": "textarea",
+      "id": "card_heading",
+      "label": "t:about_perspectives.card_heading_label",
+      "default": "Keine anonyme Agenturstruktur"
+    },
+    {
+      "type": "textarea",
+      "id": "card_text",
+      "label": "t:about_perspectives.card_text_label",
+      "default": "Jeder Bereich hat eine klare Verantwortung. So entsteht ein digitaler Auftritt, bei dem Marketing, Gestaltung und Technik nicht getrennt voneinander gedacht werden."
+    },
+    {
+      "type": "color",
+      "id": "feature_bg",
+      "label": "t:about_perspectives.feature_bg_label",
+      "default": "#0c1c24"
+    },
+    {
+      "type": "color",
+      "id": "feature_text",
+      "label": "t:about_perspectives.feature_text_label",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "t:about_perspectives.tags_header"
+    },
+    {
+      "type": "text",
+      "id": "focus_label",
+      "label": "t:about_perspectives.focus_label_label",
+      "default": "Fokusbereiche"
+    },
+    {
+      "type": "header",
+      "content": "t:about_perspectives.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:about_perspectives.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:about_perspectives.accent_color_label",
+      "default": "#1f2328"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:about_perspectives.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:about_perspectives.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "perspective",
+      "name": "t:about_perspectives.block_perspective",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "category",
+          "label": "t:about_perspectives.category_label",
+          "default": "Strategie"
+        },
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "t:about_perspectives.photo_label",
+          "info": "t:about_perspectives.photo_info"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:about_perspectives.name_label",
+          "default": "Niklas"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "t:about_perspectives.role_label",
+          "default": "Online Marketing & Shopify Entwicklung"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "t:about_perspectives.text_label",
+          "default": "Verbindet Performance-Marketing, SEO-Struktur und Shopify-Umsetzung. Der Fokus liegt darauf, digitale Auftritte nicht nur schön, sondern messbar und pflegbar zu machen."
+        },
+        {
+          "type": "header",
+          "content": "t:about_perspectives.tags_header"
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "t:about_perspectives.tag_label",
+          "default": "SEO"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "t:about_perspectives.tag_label",
+          "default": "SEA"
+        },
+        {
+          "type": "text",
+          "id": "tag_3",
+          "label": "t:about_perspectives.tag_label",
+          "default": "Shopify"
+        },
+        {
+          "type": "text",
+          "id": "tag_4",
+          "label": "t:about_perspectives.tag_label",
+          "default": "Liquid"
+        },
+        {
+          "type": "text",
+          "id": "tag_5",
+          "label": "t:about_perspectives.tag_label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:about_perspectives.name",
+      "category": "t:general.section",
+      "blocks": [
+        {
+          "type": "perspective",
+          "settings": {
+            "category": "Strategie",
+            "name": "Niklas",
+            "role": "Online Marketing & Shopify Entwicklung",
+            "text": "Verbindet Performance-Marketing, SEO-Struktur und Shopify-Umsetzung. Der Fokus liegt darauf, digitale Auftritte nicht nur schön, sondern messbar und pflegbar zu machen.",
+            "tag_1": "SEO",
+            "tag_2": "SEA",
+            "tag_3": "Shopify",
+            "tag_4": "Liquid"
+          }
+        },
+        {
+          "type": "perspective",
+          "settings": {
+            "category": "Design",
+            "name": "Tom",
+            "role": "Design, Konzept & digitale Auftritte",
+            "text": "Arbeitet an Struktur, visueller Richtung und Nutzerführung. Ziel ist ein Auftritt, der hochwertig wirkt, klar erklärt und nicht nach Standard-Template aussieht.",
+            "tag_1": "Webdesign",
+            "tag_2": "UX",
+            "tag_3": "Branding",
+            "tag_4": "Content"
+          }
+        },
+        {
+          "type": "perspective",
+          "settings": {
+            "category": "Umsetzung",
+            "name": "Lara",
+            "role": "Content, Organisation & Projektunterstützung",
+            "text": "Unterstützt dabei, Inhalte, Abläufe und Projektbausteine sauber zusammenzuführen, damit aus Strategie, Design und Technik ein klarer Gesamtauftritt entsteht.",
+            "tag_1": "Content",
+            "tag_2": "Projektstruktur",
+            "tag_3": "Kommunikation",
+            "tag_4": "QA"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

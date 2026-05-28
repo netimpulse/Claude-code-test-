@@ -1,0 +1,225 @@
+/* section-about-perspectives.css
+ * Scoped styles for sections/about-perspectives.liquid.
+ * Clean three-perspective layout: top headline + supporting paragraph,
+ * then a row of cards (one dark feature card on the left + repeatable
+ * perspective cards). No avatar letters and no card numbering — the
+ * content does the work.
+ */
+
+.about-perspectives {
+  position: relative;
+  padding-top: var(--ap-padding-top, 96px);
+  padding-bottom: var(--ap-padding-bottom, 96px);
+  background: var(--ap-bg, #f4eee2);
+  color: var(--ap-text, #1f2328);
+}
+
+.about-perspectives__inner {
+  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
+  margin: 0 auto;
+}
+
+/* ---- Head ---- */
+.about-perspectives__head {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(28px, 5vw, 80px);
+  align-items: end;
+  margin-bottom: clamp(36px, 5vw, 56px);
+}
+
+.about-perspectives__heading {
+  margin: 0;
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  font-weight: 800;
+}
+
+.about-perspectives__intro {
+  margin: 0;
+  color: var(--ap-muted, #6b665e);
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  line-height: 1.6;
+  max-width: 42ch;
+}
+
+/* ---- Grid ---- */
+.about-perspectives__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ap-cols, 4), 1fr);
+  gap: clamp(16px, 1.6vw, 22px);
+  align-items: stretch;
+}
+
+/* ---- Feature card (dark, left) ---- */
+.about-perspectives__feature {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(26px, 2.6vw, 40px);
+  background: var(--ap-feature-bg, #0c1c24);
+  color: var(--ap-feature-text, #ffffff);
+  border-radius: 0;
+}
+
+.about-perspectives__feature-kicker {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ap-feature-muted, rgba(255, 255, 255, 0.6));
+}
+
+.about-perspectives__feature-heading {
+  margin: 0;
+  font-size: clamp(1.7rem, 2.4vw, 2.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.about-perspectives__feature-text {
+  margin: 0;
+  color: var(--ap-feature-muted, rgba(255, 255, 255, 0.74));
+  line-height: 1.6;
+  font-size: 0.98rem;
+}
+
+/* ---- Perspective card ---- */
+.about-perspectives__card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ap-card-bg, #faf7ef);
+  border: 1px solid var(--ap-line, rgba(31, 35, 40, 0.12));
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* Body holds everything that is NOT the edge-to-edge photo. */
+.about-perspectives__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(22px, 2vw, 32px);
+}
+
+/* When the card has a photo, the body keeps the side / bottom
+   padding but the photo above sits flush. */
+.about-perspectives__card--has-photo .about-perspectives__body {
+  padding-top: clamp(20px, 1.8vw, 28px);
+}
+
+.about-perspectives__category {
+  align-self: flex-start;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: 1px solid var(--ap-line-strong, rgba(31, 35, 40, 0.35));
+  color: var(--ap-text, #1f2328);
+  background: var(--ap-card-bg, #faf7ef);
+}
+
+/* ---- Media: photo as edge-to-edge top of the card ---- */
+.about-perspectives__media {
+  position: relative;
+  width: 100%;
+  margin: 0;
+}
+
+.about-perspectives__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0;
+  background: var(--ap-line, rgba(31, 35, 40, 0.08));
+}
+
+/* Category overlays the photo top-left when a photo is present. */
+.about-perspectives__category--on-photo {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--ap-card-bg, #faf7ef);
+  z-index: 2;
+}
+
+.about-perspectives__name {
+  margin: 4px 0 0;
+  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.about-perspectives__role {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--ap-text, #1f2328);
+}
+
+.about-perspectives__text {
+  margin: 0;
+  color: var(--ap-body, #4a4a4a);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.about-perspectives__divider {
+  height: 1px;
+  background: var(--ap-line, rgba(31, 35, 40, 0.16));
+  margin: 8px 0 4px;
+}
+
+.about-perspectives__focus-label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.about-perspectives__tags {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.about-perspectives__tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border: 1px solid var(--ap-line, rgba(31, 35, 40, 0.18));
+  border-radius: 0;
+  color: var(--ap-text, #1f2328);
+  background: var(--ap-card-bg, #ffffff);
+}
+
+.about-perspectives__placeholder {
+  padding: 32px;
+  border: 1px dashed var(--ap-line-strong, rgba(31, 35, 40, 0.22));
+  text-align: center;
+  color: var(--ap-muted, #6b665e);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1080px) {
+  .about-perspectives__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .about-perspectives__head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .about-perspectives__grid {
+    grid-template-columns: 1fr;
+  }
+}
