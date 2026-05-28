@@ -1,0 +1,217 @@
+{% comment %}
+  Team compact
+  ----------------------------------------------------------------
+  Small team teaser: kicker + heading + CTA on the left, intro
+  paragraph in the middle, a row of circular avatars (initials or
+  photo) with name labels on the right. Repeatable member blocks
+  (preset ships three members; up to eight allowed).
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+-%}
+
+{{ 'section-team-compact.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .team-compact {
+    --tc-accent: {{ accent }};
+    --tc-padding-top: {{ section.settings.padding_top }}px;
+    --tc-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --tc-bg: {{ scheme.settings.background }};
+      --tc-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --tc-text: {{ scheme.settings.text }};
+      --tc-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --tc-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --tc-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
+      --tc-avatar-bg: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="team-compact full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="tc-heading-{{ section.id }}"{% endif %}
+>
+  <div class="team-compact__inner">
+    <div class="team-compact__panel">
+      <div class="team-compact__column team-compact__column--header">
+        {%- if section.settings.kicker != blank -%}
+          <div class="team-compact__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="tc-heading-{{ section.id }}" class="team-compact__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.cta_label != blank -%}
+          <a class="team-compact__cta" href="{{ section.settings.cta_url | default: '#' }}">
+            <span>{{ section.settings.cta_label | escape }}</span>
+            <span class="team-compact__cta-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        {%- endif -%}
+      </div>
+
+      <div class="team-compact__column team-compact__column--intro">
+        {%- if section.settings.intro != blank -%}
+          <p class="team-compact__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="team-compact__column team-compact__column--avatars">
+        {%- if block_count > 0 -%}
+          <ul class="team-compact__avatars">
+            {%- for block in section.blocks -%}
+              {%- assign auto_initials = block.settings.name | strip | upcase | slice: 0, 1 -%}
+              {%- assign initials = block.settings.initials | default: auto_initials -%}
+              <li class="team-compact__member" {{ block.shopify_attributes }}>
+                <div class="team-compact__avatar" aria-hidden="{% if block.settings.name == blank %}true{% else %}false{% endif %}">
+                  {%- if block.settings.photo != blank -%}
+                    {%- assign photo_alt = block.settings.photo.alt | default: block.settings.name -%}
+                    {{
+                      block.settings.photo
+                      | image_url: width: 200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '80, 120, 160, 200, 280',
+                        sizes: '92px',
+                        alt: photo_alt
+                    }}
+                  {%- else -%}
+                    <span class="team-compact__initials">{{ initials | escape }}</span>
+                  {%- endif -%}
+                </div>
+                {%- if block.settings.name != blank -%}
+                  <span class="team-compact__name">{{ block.settings.name | escape }}</span>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- else -%}
+          <p class="team-compact__placeholder">
+            {{ 'team_compact.add_members' | t | default: 'Add team member blocks to get started.' }}
+          </p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:team_compact.name",
+  "tag": "section",
+  "class": "shopify-section--team-compact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "t:team_compact.kicker_label",
+      "default": "Team"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:team_compact.heading_label",
+      "default": "Direkt. Klar. Ohne Agentur-Umwege."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "t:team_compact.intro_label",
+      "default": "Bei NetImpulse arbeiten Strategie, Design, Marketing und Shopify-Umsetzung nah zusammen. So entstehen Websites, Kampagnen und Themes, die sich wie ein gemeinsames System anfühlen."
+    },
+    {
+      "type": "header",
+      "content": "t:team_compact.cta_header"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "t:team_compact.cta_label_label",
+      "default": "Team kennenlernen"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "t:team_compact.cta_url_label"
+    },
+    {
+      "type": "header",
+      "content": "t:team_compact.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:team_compact.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:team_compact.accent_color_label",
+      "default": "#1f2328"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:team_compact.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:team_compact.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "member",
+      "name": "t:team_compact.block_member",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:team_compact.member_name_label",
+          "default": "Niklas"
+        },
+        {
+          "type": "text",
+          "id": "initials",
+          "label": "t:team_compact.member_initials_label",
+          "info": "t:team_compact.member_initials_info"
+        },
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "t:team_compact.member_photo_label",
+          "info": "t:team_compact.member_photo_info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:team_compact.name",
+      "category": "t:general.section",
+      "blocks": [
+        { "type": "member", "settings": { "name": "Niklas" } },
+        { "type": "member", "settings": { "name": "Tom" } },
+        { "type": "member", "settings": { "name": "Lara" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

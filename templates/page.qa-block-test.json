@@ -1018,6 +1018,26 @@
       },
       "block_order": ["sa_audit", "sa_keywords", "sa_onpage", "sa_tech", "sa_content", "sa_report"]
     },
+    "team_compact": {
+      "type": "team-compact",
+      "settings": {
+        "kicker": "Team",
+        "heading": "Direkt. Klar. Ohne Agentur-Umwege.",
+        "intro": "Bei NetImpulse arbeiten Strategie, Design, Marketing und Shopify-Umsetzung nah zusammen. So entstehen Websites, Kampagnen und Themes, die sich wie ein gemeinsames System anfühlen.",
+        "cta_label": "Team kennenlernen",
+        "cta_url": "",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 64,
+        "padding_bottom": 64
+      },
+      "blocks": {
+        "tc_niklas": { "type": "member", "settings": { "name": "Niklas" } },
+        "tc_tom": { "type": "member", "settings": { "name": "Tom" } },
+        "tc_lara": { "type": "member", "settings": { "name": "Lara" } }
+      },
+      "block_order": ["tc_niklas", "tc_tom", "tc_lara"]
+    },
     "team_overview": {
       "type": "team-overview",
       "blocks": {
@@ -1359,6 +1379,7 @@
     "image_with_text",
     "service_aspects",
     "theme_store_preview",
+    "team_compact",
     "team_overview",
     "qa",
     "landingpage_qa",
