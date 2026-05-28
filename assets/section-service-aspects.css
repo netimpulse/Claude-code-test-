@@ -63,15 +63,18 @@
   gap: clamp(16px, 2vw, 24px);
 }
 
-/* ---- Tile (equal size) ---- */
+/* ---- Tile (equal size, portrait: taller than wide) ---- */
 .service-aspects__tile {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: clamp(200px, 26vw, 300px);
+  width: 100%;
+  max-width: 300px;
+  justify-self: center;
+  min-height: clamp(340px, 28vw, 400px);
   padding: clamp(20px, 2vw, 28px);
   border: 1.5px solid var(--sa-line-strong, rgba(31, 35, 40, 0.85));
-  border-radius: 18px;
+  border-radius: 0;
   background: var(--sa-card, #ffffff);
   transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
 }
@@ -100,7 +103,7 @@
   place-items: center;
   width: 42px;
   height: 42px;
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--sa-accent-soft, rgba(74, 124, 255, 0.12));
   color: var(--sa-accent, #4a7cff);
 }
@@ -133,7 +136,7 @@
 .service-aspects__placeholder {
   padding: 48px;
   border: 1px dashed var(--sa-line-strong, rgba(31, 35, 40, 0.22));
-  border-radius: 16px;
+  border-radius: 0;
   text-align: center;
   color: var(--sa-muted, #6b7280);
 }
