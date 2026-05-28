@@ -89,11 +89,24 @@
 .about-perspectives__card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: clamp(22px, 2vw, 32px);
   background: var(--ap-card-bg, #faf7ef);
   border: 1px solid var(--ap-line, rgba(31, 35, 40, 0.12));
   border-radius: 0;
+  overflow: hidden;
+}
+
+/* Body holds everything that is NOT the edge-to-edge photo. */
+.about-perspectives__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(22px, 2vw, 32px);
+}
+
+/* When the card has a photo, the body keeps the side / bottom
+   padding but the photo above sits flush. */
+.about-perspectives__card--has-photo .about-perspectives__body {
+  padding-top: clamp(20px, 1.8vw, 28px);
 }
 
 .about-perspectives__category {
@@ -105,6 +118,14 @@
   padding: 6px 12px;
   border: 1px solid var(--ap-line-strong, rgba(31, 35, 40, 0.35));
   color: var(--ap-text, #1f2328);
+  background: var(--ap-card-bg, #faf7ef);
+}
+
+/* ---- Media: photo as edge-to-edge top of the card ---- */
+.about-perspectives__media {
+  position: relative;
+  width: 100%;
+  margin: 0;
 }
 
 .about-perspectives__photo {
@@ -114,6 +135,15 @@
   object-fit: cover;
   border-radius: 0;
   background: var(--ap-line, rgba(31, 35, 40, 0.08));
+}
+
+/* Category overlays the photo top-left when a photo is present. */
+.about-perspectives__category--on-photo {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--ap-card-bg, #faf7ef);
+  z-index: 2;
 }
 
 .about-perspectives__name {

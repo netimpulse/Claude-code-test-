@@ -74,28 +74,35 @@
 
       {%- if block_count > 0 -%}
         {%- for block in section.blocks -%}
-          <article class="about-perspectives__card" {{ block.shopify_attributes }}>
-            {%- if block.settings.category != blank -%}
-              <span class="about-perspectives__category">{{ block.settings.category | escape }}</span>
-            {%- endif -%}
-
-            {%- if block.settings.photo != blank -%}
+          {%- assign has_photo = false -%}
+          {%- if block.settings.photo != blank -%}{%- assign has_photo = true -%}{%- endif -%}
+          <article class="about-perspectives__card{% if has_photo %} about-perspectives__card--has-photo{% endif %}" {{ block.shopify_attributes }}>
+            {%- if has_photo -%}
               {%- assign photo_alt = block.settings.photo.alt | default: block.settings.name -%}
-              {{
-                block.settings.photo
-                | image_url: width: 800
-                | image_tag:
-                  loading: 'lazy',
-                  widths: '300, 400, 600, 800',
-                  sizes: '(min-width: 1080px) 22vw, (min-width: 680px) 45vw, 100vw',
-                  alt: photo_alt,
-                  class: 'about-perspectives__photo'
-              }}
+              <div class="about-perspectives__media">
+                {{
+                  block.settings.photo
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '300, 400, 600, 800',
+                    sizes: '(min-width: 1080px) 22vw, (min-width: 680px) 45vw, 100vw',
+                    alt: photo_alt,
+                    class: 'about-perspectives__photo'
+                }}
+                {%- if block.settings.category != blank -%}
+                  <span class="about-perspectives__category about-perspectives__category--on-photo">{{ block.settings.category | escape }}</span>
+                {%- endif -%}
+              </div>
             {%- endif -%}
 
-            {%- if block.settings.name != blank -%}
-              <h3 class="about-perspectives__name">{{ block.settings.name | escape }}</h3>
-            {%- endif -%}
+            <div class="about-perspectives__body">
+              {%- if block.settings.category != blank and has_photo == false -%}
+                <span class="about-perspectives__category">{{ block.settings.category | escape }}</span>
+              {%- endif -%}
+              {%- if block.settings.name != blank -%}
+                <h3 class="about-perspectives__name">{{ block.settings.name | escape }}</h3>
+              {%- endif -%}
             {%- if block.settings.role != blank -%}
               <p class="about-perspectives__role">{{ block.settings.role | escape }}</p>
             {%- endif -%}
@@ -121,6 +128,7 @@
                 {%- if block.settings.tag_5 != blank -%}<li class="about-perspectives__tag">{{ block.settings.tag_5 | escape }}</li>{%- endif -%}
               </ul>
             {%- endif -%}
+            </div>
           </article>
         {%- endfor -%}
       {%- else -%}
