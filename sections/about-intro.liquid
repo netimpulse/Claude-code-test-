@@ -1,0 +1,229 @@
+{% comment %}
+  About — Intro
+  ----------------------------------------------------------------
+  Editorial intro for the About page: kicker + large headline + lead
+  paragraph + optional CTA on the left, with an optional portrait
+  photo and two highlight chips on the right.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+-%}
+
+{{ 'section-about-intro.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .about-intro {
+    --ai-accent: {{ accent }};
+    --ai-padding-top: {{ section.settings.padding_top }}px;
+    --ai-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --ai-bg: {{ scheme.settings.background }};
+      --ai-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --ai-text: {{ scheme.settings.text }};
+      --ai-body: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --ai-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --ai-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+      --ai-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
+    {%- endif -%}
+    {%- if scheme.settings.on_primary_button != blank -%}
+      --ai-on-accent: {{ scheme.settings.on_primary_button }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="about-intro full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="ai-heading-{{ section.id }}"{% endif %}
+>
+  <div class="about-intro__inner">
+    <div class="about-intro__grid">
+      <div class="about-intro__content">
+        {%- if section.settings.kicker != blank -%}
+          <div class="about-intro__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="ai-heading-{{ section.id }}" class="about-intro__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <div class="about-intro__body">{{ section.settings.body }}</div>
+        {%- endif -%}
+        {%- if section.settings.cta_label != blank -%}
+          <div class="about-intro__actions">
+            <a class="about-intro__btn" href="{{ section.settings.cta_url | default: '#' }}">
+              {{ section.settings.cta_label | escape }}
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="about-intro__media">
+        <div class="about-intro__frame">
+          {%- if section.settings.photo != blank -%}
+            {%- assign photo_alt = section.settings.photo.alt | default: section.settings.heading -%}
+            {{
+              section.settings.photo
+              | image_url: width: 1200
+              | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 800, 1000, 1200',
+                sizes: '(min-width: 900px) 38vw, 100vw',
+                alt: photo_alt,
+                class: 'about-intro__image'
+            }}
+          {%- else -%}
+            <div class="about-intro__placeholder" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                <rect x="6" y="9" width="36" height="30"/>
+                <circle cx="17" cy="19" r="3"/>
+                <path d="M9 35l10-9 7 6 5-4 8 7"/>
+              </svg>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.chip_1_value != blank or section.settings.chip_2_value != blank -%}
+          <div class="about-intro__chips">
+            {%- if section.settings.chip_1_value != blank -%}
+              <div class="about-intro__chip">
+                <span class="about-intro__chip-value">{{ section.settings.chip_1_value | escape }}</span>
+                {%- if section.settings.chip_1_label != blank -%}
+                  <span class="about-intro__chip-label">{{ section.settings.chip_1_label | escape }}</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            {%- if section.settings.chip_2_value != blank -%}
+              <div class="about-intro__chip">
+                <span class="about-intro__chip-value">{{ section.settings.chip_2_value | escape }}</span>
+                {%- if section.settings.chip_2_label != blank -%}
+                  <span class="about-intro__chip-label">{{ section.settings.chip_2_label | escape }}</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:about_intro.name",
+  "tag": "section",
+  "class": "shopify-section--about-intro",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "t:about_intro.kicker_label",
+      "default": "Über uns"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:about_intro.heading_label",
+      "default": "Wir bauen digitale Strukturen, die im Alltag halten."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "t:about_intro.body_label",
+      "default": "<p>NetImpulse verbindet Strategie, Design, SEO/SEA und Shopify-Entwicklung in einem Team. Wir arbeiten direkt mit den Menschen, die unsere Arbeit verantworten – und liefern Ergebnisse, die nicht nur gut aussehen, sondern messbar wirken.</p>"
+    },
+    {
+      "type": "header",
+      "content": "t:about_intro.cta_header"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "t:about_intro.cta_label_label",
+      "default": "Projekt anfragen"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "t:about_intro.cta_url_label"
+    },
+    {
+      "type": "header",
+      "content": "t:about_intro.media_header"
+    },
+    {
+      "type": "image_picker",
+      "id": "photo",
+      "label": "t:about_intro.photo_label"
+    },
+    {
+      "type": "text",
+      "id": "chip_1_value",
+      "label": "t:about_intro.chip_value_label",
+      "default": "Seit 2019"
+    },
+    {
+      "type": "text",
+      "id": "chip_1_label",
+      "label": "t:about_intro.chip_label_label",
+      "default": "im Markt"
+    },
+    {
+      "type": "text",
+      "id": "chip_2_value",
+      "label": "t:about_intro.chip_value_label",
+      "default": "120+"
+    },
+    {
+      "type": "text",
+      "id": "chip_2_label",
+      "label": "t:about_intro.chip_label_label",
+      "default": "Projekte"
+    },
+    {
+      "type": "header",
+      "content": "t:about_intro.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:about_intro.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:about_intro.accent_color_label",
+      "default": "#1f2328"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:about_intro.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:about_intro.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:about_intro.name",
+      "category": "t:general.section"
+    }
+  ]
+}
+{% endschema %}

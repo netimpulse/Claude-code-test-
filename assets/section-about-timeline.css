@@ -1,0 +1,155 @@
+/* section-about-timeline.css
+ * Scoped styles for sections/about-timeline.liquid.
+ * Horizontal milestone list (year + title + description) connected
+ * by a single line, with circular dots at each milestone. Stacks
+ * vertically with a vertical connecting line below 900px.
+ */
+
+.about-timeline {
+  position: relative;
+  padding-top: var(--at-padding-top, 80px);
+  padding-bottom: var(--at-padding-bottom, 80px);
+  background: var(--at-bg, #ffffff);
+  color: var(--at-text, #1f2328);
+}
+
+.about-timeline__inner {
+  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
+  margin: 0 auto;
+}
+
+.about-timeline__head {
+  max-width: 760px;
+  margin: 0 0 clamp(36px, 5vw, 56px);
+}
+
+.about-timeline__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--at-muted, #6b665e);
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.about-timeline__kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.about-timeline__heading {
+  margin: 0;
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.about-timeline__intro {
+  margin: 16px 0 0;
+  color: var(--at-muted, #6b665e);
+  font-size: clamp(1rem, 1.1vw, 1.12rem);
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+/* ---- Mobile-first: vertical timeline ---- */
+.about-timeline__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: clamp(28px, 4vw, 44px);
+  position: relative;
+}
+
+.about-timeline__list::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--at-line, rgba(31, 35, 40, 0.2));
+}
+
+.about-timeline__step {
+  position: relative;
+  padding-left: 32px;
+}
+
+.about-timeline__dot {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--at-accent, #1f2328);
+  border: 3px solid var(--at-bg, #ffffff);
+  box-shadow: 0 0 0 1px var(--at-line, rgba(31, 35, 40, 0.2));
+}
+
+.about-timeline__year {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--at-accent, #1f2328);
+  margin-bottom: 8px;
+}
+
+.about-timeline__step-title {
+  margin: 0;
+  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.about-timeline__step-text {
+  margin: 8px 0 0;
+  color: var(--at-body, #3a3f45);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  max-width: 40ch;
+}
+
+.about-timeline__placeholder {
+  padding: 32px;
+  border: 1px dashed var(--at-line, rgba(31, 35, 40, 0.22));
+  text-align: center;
+  color: var(--at-muted, #6b665e);
+}
+
+/* ---- Desktop: horizontal timeline ---- */
+@media (min-width: 900px) {
+  .about-timeline__list {
+    grid-template-columns: repeat(var(--at-cols, 4), 1fr);
+    gap: clamp(24px, 3vw, 40px);
+  }
+
+  .about-timeline__list::before {
+    left: 12px;
+    right: 12px;
+    top: 8px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+  }
+
+  .about-timeline__step {
+    padding-left: 0;
+    padding-top: 36px;
+  }
+
+  .about-timeline__dot {
+    left: 0;
+    top: 0;
+  }
+}
+
+/* ---- Reduced motion (no animations here, but keep the gate) ---- */
+@media (prefers-reduced-motion: reduce) { .about-timeline__step { transition: none; } }

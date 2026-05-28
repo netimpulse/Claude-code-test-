@@ -1,0 +1,180 @@
+{% comment %}
+  About — Values
+  ----------------------------------------------------------------
+  Grid of value cards (auto-numbered, title + short text). Each value
+  is a repeatable block; merchant chooses 3 or 4 desktop columns.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign columns = section.settings.columns | default: '3'
+  assign block_count = section.blocks.size
+-%}
+
+{{ 'section-about-values.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .about-values {
+    --av-accent: {{ accent }};
+    --av-padding-top: {{ section.settings.padding_top }}px;
+    --av-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --av-bg: {{ scheme.settings.background }};
+      --av-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --av-text: {{ scheme.settings.text }};
+      --av-body: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --av-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --av-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="about-values full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="av-heading-{{ section.id }}"{% endif %}
+>
+  <div class="about-values__inner">
+    {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
+      <div class="about-values__head">
+        {%- if section.settings.kicker != blank -%}
+          <div class="about-values__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="av-heading-{{ section.id }}" class="about-values__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="about-values__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <ul class="about-values__grid about-values__grid--cols-{{ columns }}">
+        {%- for block in section.blocks -%}
+          <li class="about-values__card" {{ block.shopify_attributes }}>
+            <span class="about-values__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            {%- if block.settings.title != blank -%}
+              <h3 class="about-values__card-title">{{ block.settings.title | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="about-values__card-text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p class="about-values__placeholder">
+        {{ 'about_values.add_values' | t | default: 'Add value blocks to get started.' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:about_values.name",
+  "tag": "section",
+  "class": "shopify-section--about-values",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "t:about_values.kicker_label",
+      "default": "Was uns wichtig ist"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:about_values.heading_label",
+      "default": "Vier Werte, die unsere Arbeit prägen."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "t:about_values.intro_label",
+      "default": "Wir arbeiten nicht nach Buzzwords, sondern nach Prinzipien, die sich in echten Projekten bewährt haben."
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "t:about_values.columns_label",
+      "options": [
+        { "value": "3", "label": "t:about_values.columns_3" },
+        { "value": "4", "label": "t:about_values.columns_4" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "header",
+      "content": "t:about_values.appearance_header"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:about_values.color_scheme_label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:about_values.accent_color_label",
+      "default": "#1f2328"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:about_values.padding_top_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:about_values.padding_bottom_label",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "t:about_values.block_value",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:about_values.title_label",
+          "default": "Klarheit"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "t:about_values.text_label",
+          "default": "Wir sagen, was wir tun – und liefern, was wir versprechen."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:about_values.name",
+      "category": "t:general.section",
+      "blocks": [
+        { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun – und liefern, was wir versprechen." } },
+        { "type": "value", "settings": { "title": "Substanz", "text": "Lieber weniger Buzzwords, dafür Lösungen, die im Alltag halten." } },
+        { "type": "value", "settings": { "title": "Verantwortung", "text": "Wir nehmen Budgets ernst und denken ans Geschäft, nicht nur ans Tool." } },
+        { "type": "value", "settings": { "title": "Tempo mit Tiefgang", "text": "Schnell handeln, ohne Qualität, Pflege oder Wirkung zu opfern." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
