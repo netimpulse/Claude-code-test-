@@ -11,18 +11,21 @@
   "sections": {
     "theme_store_deck": {
       "type": "theme-store-deck",
-      "blocks": {
-        "t1": { "type": "theme", "settings": { "title": "Meridian", "category": "Business Theme", "price": "149 €", "preview_style": "light", "tags": "Business, Cases" } },
-        "t2": { "type": "theme", "settings": { "title": "Loom", "category": "Fashion Theme", "price": "109 €", "preview_style": "dark", "tags": "Fashion, Shop" } },
-        "t3": { "type": "theme", "settings": { "title": "Blocks Kit", "category": "Section Pack", "price": "79 €", "preview_style": "light", "tags": "Sections, Editor" } },
-        "t4": { "type": "theme", "settings": { "title": "Atlas", "category": "Portfolio Theme", "price": "129 €", "preview_style": "light", "tags": "Portfolio, Studio" } },
-        "cta": { "type": "cta", "settings": { "label": "Theme Store", "heading": "Alle Themes und Packs ansehen.", "button_label": "Zum Store", "button_url": "/pages/qa-block-test" } }
-      },
-      "block_order": ["t1", "t2", "t3", "t4", "cta"],
       "settings": {
         "heading": "Unsere Themes & Packs.",
         "heading_highlight": "Packs",
         "subheading": "Performance-Themes und Section-Packs — sofort einsatzbereit.",
+        "collection": "fashion",
+        "products_to_show": 8,
+        "show_tags": true,
+        "max_tags": 2,
+        "card_background": "#ffffff",
+        "cta_label": "Theme Store",
+        "cta_heading": "Alle Themes und Packs ansehen.",
+        "cta_button_label": "Zum Store",
+        "cta_button_url": "/pages/qa-block-test",
+        "cta_background": "#0f0f0f",
+        "cta_text": "#ffffff",
         "color_scheme": "scheme-1",
         "padding_top": 80,
         "padding_bottom": 80

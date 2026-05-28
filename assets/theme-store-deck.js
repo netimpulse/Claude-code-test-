@@ -30,7 +30,7 @@
     }
 
     cardStep() {
-      var item = this.track.querySelector('.tsd__item');
+      var item = this.track.querySelector('.tsd__card');
       if (!item) return this.track.clientWidth * 0.8;
       var styles = window.getComputedStyle(this.track);
       var gap = parseFloat(styles.columnGap || styles.gap || 0) || 0;
