@@ -169,8 +169,8 @@
       ],
       "name": "NI Deck",
       "settings": {
-        "kicker": "Leistungen",
-        "heading": "Ein Kartendeck, das beim Scrollen Schicht für Schicht arbeitet.",
+        "kicker": "",
+        "heading": "Unsere Leistungen Im Überblick",
         "text": "Die nächste Leistung kommt von unten hoch, bleibt kurz im Fokus und legt sich über die vorherige Karte.",
         "note": "Ein vertikaler Sticky-Stack: Beim Scrollen rückt jede Karte von unten nach und übernimmt den Fokus.",
         "color_scheme": "",
