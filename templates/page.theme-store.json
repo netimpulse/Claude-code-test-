@@ -11,6 +11,7 @@
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
     },
     "theme_store_z7RH4r": {
@@ -74,6 +75,7 @@
       "name": "t:theme_store.name",
       "settings": {
         "heading": "Theme Store",
+        "subheading": "Engineered for high-growth e-commerce.",
         "search_placeholder": "Search themes…",
         "categories_heading": "Categories",
         "all_label": "All themes",
@@ -81,7 +83,9 @@
         "color_scheme": "",
         "heading_font": "work_sans_n7",
         "body_font": "work_sans_n4",
-        "card_radius": 14
+        "card_radius": 14,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },
