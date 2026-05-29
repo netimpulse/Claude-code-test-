@@ -9,7 +9,7 @@
   assign avatar = block.settings.avatar
 -%}
 
-<section class="lp-testimonial" {{ block.shopify_attributes }}>
+<section class="lp-testimonial" style="--lp-heading-scale: {{ block.settings.heading_scale | default: 100 | divided_by: 100.0 }}; --lp-text-scale: {{ block.settings.text_scale | default: 100 | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
   <figure class="lp-testimonial__inner">
     <span class="lp-testimonial__mark" aria-hidden="true">&ldquo;</span>
 
@@ -87,7 +87,7 @@
   .lp-testimonial__quote {
     margin: 0 auto 2rem;
     max-width: 48rem;
-    font-size: clamp(1.4rem, 3.4vw, 2.25rem);
+    font-size: calc(clamp(1.4rem, 3.4vw, 2.25rem) * var(--lp-heading-scale, 1));
     line-height: 1.32;
     font-weight: 600;
     letter-spacing: -0.015em;
@@ -116,9 +116,9 @@
   }
   .lp-testimonial__avatar-img { width: 100%; height: 100%; object-fit: cover; }
   .lp-testimonial__meta { display: flex; flex-direction: column; line-height: 1.3; }
-  .lp-testimonial__name { font-weight: 700; }
+  .lp-testimonial__name { font-weight: 700; font-size: calc(1rem * var(--lp-text-scale, 1)); }
   .lp-testimonial__role {
-    font-size: 0.92rem;
+    font-size: calc(0.92rem * var(--lp-text-scale, 1));
     color: color-mix(in srgb, var(--lp-text, #1f2328) 65%, transparent);
   }
 {% endstylesheet %}
@@ -169,6 +169,30 @@
       "id": "company",
       "label": "Company",
       "default": "Atelier Nord"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Quote size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Author text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
     }
   ],
   "presets": [

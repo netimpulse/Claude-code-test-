@@ -24,6 +24,11 @@
   {{ heading_font | font_face: font_display: 'swap' }}
   {{ body_font | font_face: font_display: 'swap' }}
 
+  #shopify-section-{{ section.id }} {
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+
   #shopify-section-{{ section.id }} .theme-store {
     --ts-heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
     --ts-body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
@@ -336,13 +341,13 @@
   }
   .theme-store__heading {
     margin: 0 0 0.4rem;
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--fs-heading, 1));
     font-weight: 700;
   }
   .theme-store__subheading {
     margin: 0;
     color: var(--ts-muted, #888);
-    font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+    font-size: calc(clamp(0.95rem, 1.4vw, 1.05rem) * var(--fs-text, 1));
   }
 
   /* --- Search bar --- */
@@ -367,7 +372,7 @@
     width: 100%;
     padding: 0.85rem 2.5rem 0.85rem 2.75rem;
     font: inherit;
-    font-size: 1rem;
+    font-size: calc(1rem * var(--fs-text, 1));
     color: var(--ts-text, inherit);
     background: var(--ts-bg-card, #fff);
     border: 1px solid color-mix(in srgb, var(--ts-text, #333) 12%, transparent);
@@ -388,7 +393,7 @@
     background: transparent;
     border: 0;
     border-radius: 50%;
-    font-size: 1.4rem; line-height: 1;
+    font-size: calc(1.4rem * var(--fs-text, 1)); line-height: 1;
     color: var(--ts-muted, #888);
     cursor: pointer;
   }
@@ -426,14 +431,14 @@
     width: 48px; height: 36px; object-fit: cover; border-radius: 0;
     background: color-mix(in srgb, var(--ts-text, #333) 6%, transparent);
   }
-  .theme-store__search-result-title { font-weight: 600; font-size: 0.95rem; }
-  .theme-store__search-result-meta { font-size: 0.8rem; color: var(--ts-muted, #888); }
-  .theme-store__search-result-price { font-size: 0.9rem; font-weight: 600; }
+  .theme-store__search-result-title { font-weight: 600; font-size: calc(0.95rem * var(--fs-heading, 1)); }
+  .theme-store__search-result-meta { font-size: calc(0.8rem * var(--fs-text, 1)); color: var(--ts-muted, #888); }
+  .theme-store__search-result-price { font-size: calc(0.9rem * var(--fs-text, 1)); font-weight: 600; }
   .theme-store__search-empty,
   .theme-store__search-suggest {
     padding: 0.85rem 1rem;
     color: var(--ts-muted, #888);
-    font-size: 0.9rem;
+    font-size: calc(0.9rem * var(--fs-text, 1));
   }
   .theme-store__search-suggest button {
     background: none; border: 0; padding: 0; margin: 0;
@@ -459,7 +464,7 @@
     align-items: center;
     justify-content: space-between;
     background: none; border: 0; padding: 0;
-    font: inherit; font-weight: 600; font-size: 1rem;
+    font: inherit; font-weight: 600; font-size: calc(1rem * var(--fs-text, 1));
     color: inherit; cursor: pointer;
   }
   .theme-store__sidebar-toggle svg { transition: transform .2s ease; }
@@ -472,7 +477,7 @@
 
   .theme-store__sidebar-heading {
     margin: 0 0 0.5rem;
-    font-size: 1.05rem;
+    font-size: calc(1.05rem * var(--fs-heading, 1));
     font-weight: 700;
   }
   .theme-store__sidebar-heading--secondary { margin-top: 1.25rem; }
@@ -498,14 +503,14 @@
   .theme-store__cat-count {
     font-variant-numeric: tabular-nums;
     color: var(--ts-muted, #888);
-    font-size: 0.9rem;
+    font-size: calc(0.9rem * var(--fs-text, 1));
   }
   .theme-store__cat-item.is-active .theme-store__cat-count { color: inherit; }
 
   .theme-store__feature-item {
     padding: 0.4rem 0.7rem;
     color: var(--ts-muted, #666);
-    font-size: 0.95rem;
+    font-size: calc(0.95rem * var(--fs-text, 1));
   }
 
   /* --- Product grid --- */
@@ -544,10 +549,10 @@
   }
   .theme-store__product-body { padding: 0.9rem 1rem 1.1rem; }
   .theme-store__product-title {
-    margin: 0 0 0.15rem; font-size: 1.05rem; font-weight: 700;
+    margin: 0 0 0.15rem; font-size: calc(1.05rem * var(--fs-heading, 1)); font-weight: 700;
   }
   .theme-store__product-type {
-    margin: 0 0 0.5rem; color: var(--ts-muted, #666); font-size: 0.9rem;
+    margin: 0 0 0.5rem; color: var(--ts-muted, #666); font-size: calc(0.9rem * var(--fs-text, 1));
   }
   .theme-store__product-price {
     margin: 0; font-weight: 700;
@@ -664,6 +669,22 @@
       "step": 1,
       "unit": "px",
       "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
     }
   ],
   "blocks": [

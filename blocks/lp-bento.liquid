@@ -4,7 +4,7 @@
   packed densely into an asymmetric grid. Self-contained palette.
 {% enddoc %}
 
-<section class="lp-bento" {{ block.shopify_attributes }}>
+<section class="lp-bento" style="--lp-heading-scale: {{ block.settings.heading_scale | default: 100 | divided_by: 100.0 }}; --lp-text-scale: {{ block.settings.text_scale | default: 100 | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
   <div class="lp-bento__inner">
     {%- if block.settings.heading != blank or block.settings.eyebrow != blank or block.settings.intro != blank -%}
       <header class="lp-bento__head">
@@ -40,7 +40,7 @@
   .lp-bento__head { margin-bottom: clamp(1.75rem, 4vw, 2.75rem); max-width: 46rem; }
   .lp-bento__eyebrow {
     display: inline-block;
-    font-size: 0.8rem;
+    font-size: calc(0.8rem * var(--lp-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -49,16 +49,18 @@
   }
   .lp-bento__heading {
     margin: 0;
-    font-size: clamp(1.6rem, 4vw, 2.75rem);
+    font-size: calc(clamp(1.6rem, 4vw, 2.75rem) * var(--lp-heading-scale, 1));
     line-height: 1.1;
     font-weight: 800;
     letter-spacing: -0.02em;
+    overflow-wrap: break-word;
   }
   .lp-bento__intro {
     margin: 0.9rem 0 0;
-    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    font-size: calc(clamp(1rem, 1.6vw, 1.15rem) * var(--lp-text-scale, 1));
     line-height: 1.55;
     color: color-mix(in srgb, var(--lp-text, #1f2328) 72%, transparent);
+    overflow-wrap: break-word;
   }
 
   .lp-bento__grid {
@@ -113,6 +115,30 @@
       "type": "text",
       "id": "intro",
       "label": "Intro"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
     }
   ],
   "presets": [

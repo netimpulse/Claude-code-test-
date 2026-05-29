@@ -7,7 +7,7 @@
 
 <div
   class="text {{ block.settings.text_style }}"
-  style="--text-align: {{ block.settings.alignment }}"
+  style="--text-align: {{ block.settings.alignment }}; --text-scale: {{ block.settings.font_scale | default: 100 | divided_by: 100.0 }};"
   {{ block.shopify_attributes }}
 >
   {{ block.settings.text }}
@@ -16,13 +16,14 @@
 {% stylesheet %}
   .text {
     text-align: var(--text-align);
+    font-size: calc(1rem * var(--text-scale, 1));
   }
   .text--title {
-    font-size: 2rem;
+    font-size: calc(2rem * var(--text-scale, 1));
     font-weight: 700;
   }
   .text--subtitle {
-    font-size: 1.5rem;
+    font-size: calc(1.5rem * var(--text-scale, 1));
   }
 {% endstylesheet %}
 
@@ -52,6 +53,16 @@
       "id": "alignment",
       "label": "t:labels.alignment",
       "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "font_scale",
+      "label": "t:labels.font_size",
+      "min": 70,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "default": 100
     }
   ],
   "presets": [{ "name": "t:general.text" }]

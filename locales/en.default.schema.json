@@ -60,7 +60,8 @@
     "page_width": "Page width",
     "show_payment_icons": "Show payment icons",
     "text_style": "Text style",
-    "text": "Text"
+    "text": "Text",
+    "font_size": "Font size"
   },
   "options": {
     "alignment": {

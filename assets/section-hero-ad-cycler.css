@@ -35,7 +35,7 @@
 .hero-ac__eyebrow {
   margin: 0;
   font-family: var(--ac-mono);
-  font-size: 0.72rem;
+  font-size: calc(0.72rem * var(--fs-heading, 1));
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ac-text-soft, rgba(0,0,0,0.65));
@@ -43,7 +43,7 @@
 
 .hero-ac__heading {
   margin: 0;
-  font-size: clamp(2.25rem, 5.4vw, 4rem);
+  font-size: calc(clamp(2.25rem, 5.4vw, 4rem) * var(--fs-heading, 1));
   line-height: 1.05;
   font-weight: 800;
   letter-spacing: -0.025em;
@@ -56,7 +56,7 @@
 
 .hero-ac__body {
   margin: 0;
-  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-size: calc(clamp(0.95rem, 1.1vw, 1.05rem) * var(--fs-text, 1));
   line-height: 1.55;
   color: var(--ac-text-soft, rgba(0,0,0,0.65));
   max-width: 44ch;
@@ -75,7 +75,7 @@
   border-radius: 0;
   font: inherit;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--fs-text, 1));
   line-height: 1;
   cursor: pointer;
   text-decoration: none;
@@ -108,7 +108,7 @@
 }
 .hero-ac__stat-label {
   font-family: var(--ac-mono);
-  font-size: 10px;
+  font-size: calc(10px * var(--fs-text, 1));
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ac-text-muted, rgba(0,0,0,0.5));
@@ -117,7 +117,7 @@
 .hero-ac__stat-value {
   font-family: var(--ac-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 1.25rem;
+  font-size: calc(1.25rem * var(--fs-text, 1));
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ac-text, #0e1716);
@@ -132,7 +132,7 @@
   align-items: center;
   margin-bottom: 0.875rem;
   font-family: var(--ac-mono);
-  font-size: 0.7rem;
+  font-size: calc(0.7rem * var(--fs-text, 1));
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ac-text-soft, rgba(0,0,0,0.65));
@@ -182,12 +182,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: calc(11px * var(--fs-text, 1));
   font-weight: 700;
 }
 .hero-ac__post-meta { display: flex; flex-direction: column; min-width: 0; }
-.hero-ac__post-name { font-size: 13px; font-weight: 600; color: var(--ac-text, #0e1716); }
-.hero-ac__post-sub { font-size: 11px; color: var(--ac-text-soft, rgba(0,0,0,0.65)); }
+.hero-ac__post-name { font-size: calc(13px * var(--fs-text, 1)); font-weight: 600; color: var(--ac-text, #0e1716); }
+.hero-ac__post-sub { font-size: calc(11px * var(--fs-text, 1)); color: var(--ac-text-soft, rgba(0,0,0,0.65)); }
 .hero-ac__post-more { margin-left: auto; color: var(--ac-text-muted, rgba(0,0,0,0.5)); font-size: 16px; letter-spacing: 0.1em; }
 
 .hero-ac__art {
@@ -249,7 +249,7 @@
 }
 .hero-ac__variant-tag {
   font-family: var(--ac-mono);
-  font-size: 10px;
+  font-size: calc(10px * var(--fs-text, 1));
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ac-signal-soft);
@@ -259,7 +259,7 @@
 }
 .hero-ac__ad-badge {
   font-family: var(--ac-mono);
-  font-size: 10px;
+  font-size: calc(10px * var(--fs-text, 1));
   letter-spacing: 0.08em;
   color: rgba(255,255,255,0.6);
   border: 1px solid rgba(255,255,255,0.18);
@@ -273,7 +273,7 @@
 }
 .hero-ac__slide-headline {
   margin: 0;
-  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  font-size: calc(clamp(1.3rem, 2vw, 1.75rem) * var(--fs-heading, 1));
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.1;
@@ -282,7 +282,7 @@
 }
 .hero-ac__slide-sub {
   margin-top: 0.5rem;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-text, 1));
   color: rgba(255,255,255,0.7);
 }
 
@@ -294,14 +294,14 @@
   padding: 0.875rem 1rem;
 }
 .hero-ac__cta-domain {
-  font-size: 11px;
+  font-size: calc(11px * var(--fs-text, 1));
   font-family: var(--ac-mono);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ac-text-muted, rgba(0,0,0,0.5));
 }
 .hero-ac__cta-line {
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-text, 1));
   font-weight: 600;
   color: var(--ac-text, #0e1716);
   margin-top: 2px;
@@ -317,7 +317,7 @@
   border: none;
   border-radius: 0;
   font: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-text, 1));
   font-weight: 600;
   cursor: pointer;
 }
@@ -343,7 +343,7 @@
   border-color: var(--ac-signal);
 }
 .hero-ac__tab-label {
-  font-size: 10px;
+  font-size: calc(10px * var(--fs-text, 1));
   font-family: var(--ac-mono);
   color: var(--ac-text-muted, rgba(0,0,0,0.5));
   text-transform: uppercase;
@@ -358,12 +358,12 @@
   color: #ffffff;
   padding: 1px 4px;
   border-radius: 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--fs-text, 1));
 }
 .hero-ac__tab-ctr {
   font-family: var(--ac-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 1.05rem;
+  font-size: calc(1.05rem * var(--fs-text, 1));
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-top: 4px;

@@ -262,6 +262,8 @@
      viewport (the .shopify-section grid would otherwise leave the side margins transparent). */
   #shopify-section-{{ section.id }} {
     background: {{ scheme.settings.background | default: '#FFFFFF' }};
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
   /* Sticky modes pin the wrapper from the start, so it never scrolls away in the first place. */
   #shopify-section-{{ section.id }}.is-sticky {
@@ -318,7 +320,7 @@
   }
   .sqe-header__logo-text {
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: calc(1.4rem * var(--fs-heading, 1));
     white-space: nowrap;
   }
 
@@ -348,7 +350,7 @@
   .sqe-header__nav-link {
     color: inherit;
     text-decoration: none;
-    font-size: var(--sqe-menu-size);
+    font-size: calc(var(--sqe-menu-size) * var(--fs-text, 1));
     font-weight: var(--sqe-menu-weight);
     line-height: 1;
     padding: .25rem 0;
@@ -379,7 +381,7 @@
     display: block;
     padding: .5rem 1rem;
     color: inherit; text-decoration: none;
-    font-size: calc(var(--sqe-menu-size) - 1px);
+    font-size: calc((var(--sqe-menu-size) - 1px) * var(--fs-text, 1));
   }
   .sqe-header__dropdown li a:hover { color: var(--sqe-accent); }
   .sqe-header__nav-item.has-children:hover .sqe-header__dropdown,
@@ -417,7 +419,7 @@
     background: var(--sqe-accent);
     color: var(--sqe-on-accent);
     border-radius: 0;
-    font-size: 11px; font-weight: 700; line-height: 1;
+    font-size: calc(11px * var(--fs-text, 1)); font-weight: 700; line-height: 1;
   }
   .sqe-header__cart-count[hidden] { display: none; }
 
@@ -427,7 +429,7 @@
     background: var(--sqe-accent);
     color: var(--sqe-on-accent);
     border-radius: 0;
-    font-size: var(--sqe-cta-size);
+    font-size: calc(var(--sqe-cta-size) * var(--fs-text, 1));
     font-weight: 700;
     text-decoration: none;
     transition: filter .15s ease, transform .12s ease;
@@ -470,7 +472,7 @@
     width: 100%;
     padding: .9rem 3rem .9rem 2.75rem;
     font: inherit;
-    font-size: 1rem;
+    font-size: calc(1rem * var(--fs-text, 1));
     color: var(--sqe-text);
     background: color-mix(in srgb, var(--sqe-text) 4%, transparent);
     border: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
@@ -506,7 +508,7 @@
   .sqe-search-group__heading {
     margin: 0;
     padding: .35rem .85rem;
-    font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    font-size: calc(.75rem * var(--fs-heading, 1)); font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
     color: var(--sqe-muted);
   }
   .sqe-search-result {
@@ -531,9 +533,9 @@
     background: color-mix(in srgb, var(--sqe-text) 6%, transparent);
   }
   .sqe-search-result__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .sqe-search-result__title { font-weight: 600; font-size: .95rem; }
-  .sqe-search-result__meta { font-size: .8rem; color: var(--sqe-muted); }
-  .sqe-search-result__price { font-size: .9rem; font-weight: 700; white-space: nowrap; }
+  .sqe-search-result__title { font-weight: 600; font-size: calc(.95rem * var(--fs-heading, 1)); }
+  .sqe-search-result__meta { font-size: calc(.8rem * var(--fs-text, 1)); color: var(--sqe-muted); }
+  .sqe-search-result__price { font-size: calc(.9rem * var(--fs-text, 1)); font-weight: 700; white-space: nowrap; }
   .sqe-search-result mark {
     background: color-mix(in srgb, var(--sqe-accent) 35%, transparent);
     color: inherit;
@@ -544,7 +546,7 @@
   .sqe-search-typo {
     padding: 1rem 1rem;
     color: var(--sqe-muted);
-    font-size: .9rem;
+    font-size: calc(.9rem * var(--fs-text, 1));
   }
   .sqe-search-typo button {
     background: none; border: 0; padding: 0;
@@ -571,7 +573,7 @@
   }
   .sqe-header__drawer-list a[aria-current="page"] { color: var(--sqe-accent); font-weight: 600; }
   .sqe-header__drawer-list ul { list-style: none; padding: 0 0 0 1rem; margin: 0; }
-  .sqe-header__drawer-list ul a { font-size: .9rem; color: var(--sqe-muted); }
+  .sqe-header__drawer-list ul a { font-size: calc(.9rem * var(--fs-text, 1)); color: var(--sqe-muted); }
   .sqe-header__drawer-cta {
     margin-top: .75rem;
     display: inline-block;
@@ -592,7 +594,7 @@
     .sqe-header__hamburger { display: grid; place-items: center; }
     .sqe-header__logo { left: 50%; transform: translate(-50%, -50%); }
     .sqe-header__logo-img,
-    .sqe-header__logo-text { max-height: var(--sqe-mobile-logo); font-size: 1.1rem; }
+    .sqe-header__logo-text { max-height: var(--sqe-mobile-logo); font-size: calc(1.1rem * var(--fs-heading, 1)); }
     .sqe-header__actions { right: 1rem; gap: .25rem; }
     .sqe-header__icon { width: var(--sqe-mobile-icon); height: var(--sqe-mobile-icon); }
     .sqe-header__cta { display: none; }
@@ -703,7 +705,21 @@
 
     { "type": "header", "content": "Mobile settings" },
     { "type": "range", "id": "mobile_logo_size", "label": "Mobile logo height", "min": 20, "max": 50, "step": 2, "unit": "px", "default": 36 },
-    { "type": "range", "id": "mobile_icon_size", "label": "Mobile icon size",   "min": 30, "max": 48, "step": 2, "unit": "px", "default": 38 }
+    { "type": "range", "id": "mobile_icon_size", "label": "Mobile icon size",   "min": 30, "max": 48, "step": 2, "unit": "px", "default": 38 },
+
+    { "type": "header", "content": "Typography" },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
+    }
   ],
   "presets": [
     { "name": "SQE Header", "category": "Header" }
