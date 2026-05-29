@@ -25,7 +25,7 @@
         "menu_bold": true,
         "show_cta": true,
         "cta_text": "Get a Quote",
-        "cta_link": "",
+        "cta_link": "shopify://pages/kontakt",
         "cta_font_size": 14,
         "show_search": true,
         "show_account": true,
@@ -47,7 +47,9 @@
         "hamburger_pos_x": 2,
         "hamburger_pos_y": 0,
         "mobile_logo_size": 36,
-        "mobile_icon_size": 38
+        "mobile_icon_size": 38,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },
