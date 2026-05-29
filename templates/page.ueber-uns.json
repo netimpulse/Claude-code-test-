@@ -22,14 +22,16 @@
         "body": "<p>NetImpulse verbindet Strategie, Design, SEO/SEA und Shopify-Entwicklung in einem Team. Wir arbeiten direkt mit den Menschen, die unsere Arbeit verantworten – und liefern Ergebnisse, die nicht nur gut aussehen, sondern messbar wirken.</p>",
         "cta_label": "Projekt anfragen",
         "cta_url": "",
-        "chip_1_value": "Seit 2019",
-        "chip_1_label": "im Markt",
-        "chip_2_value": "120+",
-        "chip_2_label": "Projekte",
+        "chip_1_value": "",
+        "chip_1_label": "",
+        "chip_2_value": "",
+        "chip_2_label": "",
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
         "padding_top": 96,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "about_values": {
@@ -78,7 +80,9 @@
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "about_perspectives": {
@@ -146,7 +150,9 @@
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
         "padding_top": 96,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "about_timeline": {
@@ -198,7 +204,9 @@
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },
