@@ -16,6 +16,10 @@
 {{ 'section-hero-ticker.css' | asset_url | stylesheet_tag }}
 
 {% style %}
+  #shopify-section-{{ section.id }} {
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
   #shopify-section-{{ section.id }} .hero-ticker {
     --ht-pad-top: {{ section.settings.padding_top }}px;
     --ht-pad-bottom: {{ section.settings.padding_bottom }}px;
@@ -169,7 +173,10 @@
     {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
     {"type": "color", "id": "accent_color", "label": "Accent / sparkline color", "default": "#1c4948"},
     {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
-    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80}
+    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
+    {"type": "header", "content": "Typography"},
+    {"type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100},
+    {"type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100}
   ],
   "blocks": [
     {

@@ -43,14 +43,14 @@
   gap: 14px;
   margin-bottom: 28px;
   color: var(--ni-soft);
-  font-size: 0.96rem;
+  font-size: calc(0.96rem * var(--fs-heading, 1));
 }
 .ni-hero__label::before { content: ""; width: 28px; height: 1px; background: var(--ni-text); }
 
 .ni-hero__title {
   margin: 0;
   max-width: 780px;
-  font-size: clamp(3.4rem, 7.4vw, 8.9rem);
+  font-size: calc(clamp(3.4rem, 7.4vw, 8.9rem) * var(--fs-heading, 1));
   line-height: 0.98;
   letter-spacing: -0.082em;
   font-weight: 860;
@@ -58,7 +58,7 @@
 .ni-hero__copy {
   margin: clamp(28px, 4vw, 46px) 0 0;
   max-width: 620px;
-  font-size: clamp(1.15rem, 1.75vw, 1.82rem);
+  font-size: calc(clamp(1.15rem, 1.75vw, 1.82rem) * var(--fs-text, 1));
   line-height: 1.55;
   color: var(--ni-soft);
   letter-spacing: -0.03em;
@@ -126,7 +126,7 @@
   gap: 14px;
 }
 .ni-hero__caption b { display: block; letter-spacing: -0.03em; margin-bottom: 3px; }
-.ni-hero__caption span { color: var(--ni-muted); font-size: 0.86rem; line-height: 1.38; }
+.ni-hero__caption span { color: var(--ni-muted); font-size: calc(0.86rem * var(--fs-text, 1)); line-height: 1.38; }
 
 .ni-pulse {
   position: relative;
@@ -168,7 +168,7 @@
   background: var(--ni-sand);
   color: var(--ni-text);
   font-weight: 760;
-  font-size: 1.05rem;
+  font-size: calc(1.05rem * var(--fs-text, 1));
   text-decoration: none;
   box-shadow: 0 14px 36px rgba(5, 5, 5, 0.12);
   transition: 180ms ease;

@@ -28,7 +28,7 @@
   align-items: center;
   gap: 12px;
   color: var(--at-muted, #6b665e);
-  font-size: 0.9rem;
+  font-size: calc(0.9rem * var(--fs-text, 1));
   margin-bottom: 14px;
 }
 
@@ -41,7 +41,7 @@
 
 .about-timeline__heading {
   margin: 0;
-  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  font-size: calc(clamp(2rem, 3.6vw, 3.2rem) * var(--fs-heading, 1));
   line-height: 1.04;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -50,7 +50,7 @@
 .about-timeline__intro {
   margin: 16px 0 0;
   color: var(--at-muted, #6b665e);
-  font-size: clamp(1rem, 1.1vw, 1.12rem);
+  font-size: calc(clamp(1rem, 1.1vw, 1.12rem) * var(--fs-text, 1));
   line-height: 1.6;
   max-width: 60ch;
 }
@@ -94,7 +94,7 @@
 
 .about-timeline__year {
   display: block;
-  font-size: 0.92rem;
+  font-size: calc(0.92rem * var(--fs-heading, 1));
   font-weight: 800;
   letter-spacing: 0.05em;
   color: var(--at-accent, #1f2328);
@@ -103,7 +103,7 @@
 
 .about-timeline__step-title {
   margin: 0;
-  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  font-size: calc(clamp(1.2rem, 1.6vw, 1.5rem) * var(--fs-heading, 1));
   line-height: 1.2;
   letter-spacing: -0.02em;
   font-weight: 800;
@@ -112,7 +112,7 @@
 .about-timeline__step-text {
   margin: 8px 0 0;
   color: var(--at-body, #3a3f45);
-  font-size: 0.98rem;
+  font-size: calc(0.98rem * var(--fs-text, 1));
   line-height: 1.55;
   max-width: 40ch;
 }

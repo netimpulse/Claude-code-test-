@@ -32,6 +32,8 @@
       --sa-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
       --sa-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.85 }};
     {%- endif -%}
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
 {% endstyle %}
 
@@ -187,6 +189,22 @@
       "step": 4,
       "unit": "px",
       "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
     }
   ],
   "blocks": [

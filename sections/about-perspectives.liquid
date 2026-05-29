@@ -19,6 +19,10 @@
 {{ 'section-about-perspectives.css' | asset_url | stylesheet_tag }}
 
 {% style %}
+  #shopify-section-{{ section.id }} {
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
   #shopify-section-{{ section.id }} .about-perspectives {
     --ap-accent: {{ accent }};
     --ap-padding-top: {{ section.settings.padding_top }}px;
@@ -237,6 +241,22 @@
       "step": 4,
       "unit": "px",
       "default": 96
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
     }
   ],
   "blocks": [

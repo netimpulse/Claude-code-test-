@@ -39,7 +39,7 @@
 .hero-serp__eyebrow {
   margin: 0;
   font-family: var(--hs-mono);
-  font-size: 0.72rem;
+  font-size: calc(0.72rem * var(--fs-heading, 1));
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--hs-text-soft, rgba(0,0,0,0.65));
@@ -47,7 +47,7 @@
 
 .hero-serp__heading {
   margin: 0;
-  font-size: clamp(2.25rem, 5.4vw, 4rem);
+  font-size: calc(clamp(2.25rem, 5.4vw, 4rem) * var(--fs-heading, 1));
   line-height: 1.05;
   font-weight: 800;
   letter-spacing: -0.025em;
@@ -60,7 +60,7 @@
 
 .hero-serp__body {
   margin: 0;
-  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-size: calc(clamp(0.95rem, 1.1vw, 1.05rem) * var(--fs-text, 1));
   line-height: 1.55;
   color: var(--hs-text-soft, rgba(0,0,0,0.65));
   max-width: 44ch;
@@ -79,7 +79,7 @@
   border-radius: 0;
   font: inherit;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--fs-text, 1));
   line-height: 1;
   cursor: pointer;
   text-decoration: none;
@@ -110,7 +110,7 @@
   border-radius: 0;
   padding: 1.25rem;
   box-shadow: 0 12px 32px rgba(11,11,14,0.06), 0 0 0 1px rgba(11,11,14,0.04);
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-text, 1));
   min-width: 0;
 }
 
@@ -133,7 +133,7 @@
 .hero-serp__query {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: calc(14px * var(--fs-text, 1));
   color: var(--hs-text, #0e1716);
   white-space: nowrap;
   overflow: hidden;
@@ -150,7 +150,7 @@
 }
 .hero-serp__cursor.is-on { opacity: 1; }
 .hero-serp__engine {
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-text, 1));
   font-weight: 700;
   letter-spacing: -0.01em;
   flex-shrink: 0;
@@ -168,7 +168,7 @@
   display: flex;
   gap: 1.125rem;
   margin: 0.875rem 0 0.625rem;
-  font-size: 12px;
+  font-size: calc(12px * var(--fs-text, 1));
   color: var(--hs-text-soft, rgba(0,0,0,0.55));
   border-bottom: 1px solid var(--hs-line, rgba(0,0,0,0.08));
   padding-bottom: 0.625rem;
@@ -187,7 +187,7 @@
 }
 
 .hero-serp__meta {
-  font-size: 11px;
+  font-size: calc(11px * var(--fs-text, 1));
   color: var(--hs-text-muted, rgba(0,0,0,0.45));
   margin-bottom: 0.625rem;
 }
@@ -226,7 +226,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: calc(9px * var(--fs-text, 1));
   font-weight: 700;
   font-family: var(--hs-mono);
   letter-spacing: 0.05em;
@@ -253,11 +253,11 @@
   gap: 2px;
 }
 .hero-serp__row-url {
-  font-size: 11px;
+  font-size: calc(11px * var(--fs-text, 1));
   color: var(--hs-text-soft, rgba(0,0,0,0.55));
 }
 .hero-serp__row-title {
-  font-size: 15px;
+  font-size: calc(15px * var(--fs-text, 1));
   color: #1a0dab;
   font-weight: 500;
   white-space: nowrap;
@@ -278,7 +278,7 @@
   background: var(--hs-signal);
   color: var(--hs-signal-soft);
   font-family: var(--hs-mono);
-  font-size: 11px;
+  font-size: calc(11px * var(--fs-text, 1));
   font-weight: 600;
   opacity: 0;
   transition: opacity 200ms ease;

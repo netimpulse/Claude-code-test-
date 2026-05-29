@@ -30,7 +30,7 @@
   align-items: center;
   gap: 12px;
   color: var(--sa-muted, #6b7280);
-  font-size: 0.92rem;
+  font-size: calc(0.92rem * var(--fs-text, 1));
   margin-bottom: 14px;
 }
 
@@ -43,7 +43,7 @@
 
 .service-aspects__heading {
   margin: 0;
-  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  font-size: calc(clamp(2rem, 3.6vw, 3.2rem) * var(--fs-heading, 1));
   line-height: 1.06;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -52,7 +52,7 @@
 .service-aspects__intro {
   margin: 16px 0 0;
   color: var(--sa-muted, #6b7280);
-  font-size: clamp(1rem, 1.1vw, 1.12rem);
+  font-size: calc(clamp(1rem, 1.1vw, 1.12rem) * var(--fs-text, 1));
   line-height: 1.6;
 }
 
@@ -92,7 +92,7 @@
 }
 
 .service-aspects__number {
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--fs-text, 1));
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--sa-accent, #4a7cff);
@@ -120,7 +120,7 @@
 
 .service-aspects__tile-title {
   margin: 0;
-  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+  font-size: calc(clamp(1.15rem, 1.5vw, 1.45rem) * var(--fs-heading, 1));
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-weight: 700;
@@ -129,7 +129,7 @@
 .service-aspects__tile-text {
   margin: 10px 0 0;
   color: var(--sa-muted, #6b7280);
-  font-size: 0.96rem;
+  font-size: calc(0.96rem * var(--fs-text, 1));
   line-height: 1.5;
 }
 

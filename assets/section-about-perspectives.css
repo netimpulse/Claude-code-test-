@@ -30,7 +30,7 @@
 
 .about-perspectives__heading {
   margin: 0;
-  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  font-size: calc(clamp(2.2rem, 5vw, 4.6rem) * var(--fs-heading, 1));
   line-height: 0.98;
   letter-spacing: -0.05em;
   font-weight: 800;
@@ -39,7 +39,7 @@
 .about-perspectives__intro {
   margin: 0;
   color: var(--ap-muted, #6b665e);
-  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  font-size: calc(clamp(1rem, 1.15vw, 1.12rem) * var(--fs-text, 1));
   line-height: 1.6;
   max-width: 42ch;
 }
@@ -65,14 +65,14 @@
 
 .about-perspectives__feature-kicker {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: calc(0.9rem * var(--fs-text, 1));
   font-weight: 600;
   color: var(--ap-feature-muted, rgba(255, 255, 255, 0.6));
 }
 
 .about-perspectives__feature-heading {
   margin: 0;
-  font-size: clamp(1.7rem, 2.4vw, 2.4rem);
+  font-size: calc(clamp(1.7rem, 2.4vw, 2.4rem) * var(--fs-heading, 1));
   line-height: 1.05;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -82,7 +82,7 @@
   margin: 0;
   color: var(--ap-feature-muted, rgba(255, 255, 255, 0.74));
   line-height: 1.6;
-  font-size: 0.98rem;
+  font-size: calc(0.98rem * var(--fs-text, 1));
 }
 
 /* ---- Perspective card ---- */
@@ -111,7 +111,7 @@
 
 .about-perspectives__category {
   align-self: flex-start;
-  font-size: 0.74rem;
+  font-size: calc(0.74rem * var(--fs-text, 1));
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -148,7 +148,7 @@
 
 .about-perspectives__name {
   margin: 4px 0 0;
-  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
+  font-size: calc(clamp(1.35rem, 1.8vw, 1.7rem) * var(--fs-heading, 1));
   line-height: 1.1;
   letter-spacing: -0.02em;
   font-weight: 800;
@@ -156,7 +156,7 @@
 
 .about-perspectives__role {
   margin: 0;
-  font-size: 0.96rem;
+  font-size: calc(0.96rem * var(--fs-text, 1));
   font-weight: 700;
   color: var(--ap-text, #1f2328);
 }
@@ -164,7 +164,7 @@
 .about-perspectives__text {
   margin: 0;
   color: var(--ap-body, #4a4a4a);
-  font-size: 0.94rem;
+  font-size: calc(0.94rem * var(--fs-text, 1));
   line-height: 1.55;
 }
 
@@ -176,7 +176,7 @@
 
 .about-perspectives__focus-label {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--fs-text, 1));
   font-weight: 800;
 }
 
@@ -190,7 +190,7 @@
 }
 
 .about-perspectives__tag {
-  font-size: 0.8rem;
+  font-size: calc(0.8rem * var(--fs-text, 1));
   font-weight: 600;
   padding: 5px 12px;
   border: 1px solid var(--ap-line, rgba(31, 35, 40, 0.18));
