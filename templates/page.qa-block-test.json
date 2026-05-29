@@ -9,8 +9,8 @@
  */
 {
   "sections": {
-    "theme_store_deck": {
-      "type": "theme-store-deck",
+    "theme_store_preview": {
+      "type": "theme-store-preview",
       "blocks": {
         "t1": { "type": "theme", "settings": { "title": "Meridian", "category": "Business Theme", "price": "149 €", "preview_style": "light", "tags": "Business, Cases" } },
         "t2": { "type": "theme", "settings": { "title": "Loom", "category": "Fashion Theme", "price": "109 €", "preview_style": "dark", "tags": "Fashion, Shop" } },
@@ -29,5 +29,5 @@
       }
     }
   },
-  "order": ["theme_store_deck"]
+  "order": ["theme_store_preview"]
 }

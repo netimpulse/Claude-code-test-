@@ -65,13 +65,9 @@
     "empty": "No themes match this filter yet."
   },
   "theme_store_preview": {
-    "prev": "Previous theme",
-    "next": "Next theme",
-    "add_collection": "Pick a collection in the theme editor to preview themes here."
-  },
-  "theme_store_deck": {
     "prev": "Previous",
     "next": "Next",
+    "region": "Themes",
     "empty": "Add theme cards in the theme editor."
   },
   "services_overview": {

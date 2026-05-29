@@ -182,19 +182,18 @@
     "theme_store_preview_zMCVkD": {
       "type": "theme-store-preview",
       "name": "Theme store preview",
+      "blocks": {
+        "theme_meridian": { "type": "theme", "settings": { "title": "Meridian", "category": "Business Theme", "price": "149 €", "preview_style": "light", "tags": "Business, Cases" } },
+        "theme_loom": { "type": "theme", "settings": { "title": "Loom", "category": "Fashion Theme", "price": "109 €", "preview_style": "dark", "tags": "Fashion, Shop" } },
+        "theme_blocks_kit": { "type": "theme", "settings": { "title": "Blocks Kit", "category": "Section Pack", "price": "79 €", "preview_style": "light", "tags": "Sections, Editor" } },
+        "theme_atlas": { "type": "theme", "settings": { "title": "Atlas", "category": "Portfolio Theme", "price": "129 €", "preview_style": "light", "tags": "Portfolio, Studio" } },
+        "store_cta": { "type": "cta", "settings": { "label": "Theme Store", "heading": "Alle Themes und Packs ansehen.", "button_label": "Zum Store", "button_url": "" } }
+      },
+      "block_order": ["theme_meridian", "theme_loom", "theme_blocks_kit", "theme_atlas", "store_cta"],
       "settings": {
-        "heading": "Hier geht es zum Theme-Store.",
-        "heading_highlight": "Theme-Store",
-        "subheading": "Eine Auswahl unserer Premium-Themes.",
-        "collection": "business",
-        "products_to_show": 6,
-        "show_price": true,
-        "show_details": true,
-        "details_label": "Details",
-        "card_aspect": "4 / 3",
-        "card_radius": 14,
-        "cta_label": "Zum Theme-Store",
-        "cta_url": "",
+        "heading": "Unsere Themes & Packs.",
+        "heading_highlight": "Packs",
+        "subheading": "Performance-Themes und Section-Packs — sofort einsatzbereit.",
         "color_scheme": "scheme-sand",
         "padding_top": 64,
         "padding_bottom": 64
