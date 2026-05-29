@@ -69,7 +69,7 @@
       ],
       "name": "NI Intro",
       "settings": {
-        "kicker": "Unternehmensvorstellung",
+        "kicker": "",
         "heading": "Ein Studio für digitale Auftritte mit System.",
         "text": "Wir verbinden Online-Marketing, Webdesign und Shopify-Entwicklung, damit aus einzelnen Maßnahmen ein klarer digitaler Auftritt entsteht.",
         "panel_image": "shopify://shop_images/ChatGPT_Image_28._Mai_2026_00_13_54.png",
@@ -172,7 +172,7 @@
         "kicker": "",
         "heading": "Unsere Leistungen Im Überblick",
         "text": "",
-        "note": "Ein vertikaler Sticky-Stack: Beim Scrollen rückt jede Karte von unten nach und übernimmt den Fokus.",
+        "note": "",
         "color_scheme": "",
         "accent_color": "#050505",
         "padding_top": 120,
