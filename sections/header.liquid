@@ -1,4 +1,4 @@
-<header>
+<header class="site-header">
   <h2 class="header__title">
     {{ shop.name | link_to: routes.root_url }}
   </h2>
@@ -27,13 +27,13 @@
 </header>
 
 {% stylesheet %}
-  header {
+  .site-header {
     height: 5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  header a {
+  .site-header a {
     position: relative;
     text-decoration: none;
     color: var(--color-foreground);
@@ -41,17 +41,17 @@
     align-items: center;
     justify-content: center;
   }
-  header a sup {
+  .site-header a sup {
     position: absolute;
     left: 100%;
     overflow: hidden;
     max-width: var(--page-margin);
   }
-  header svg {
+  .site-header svg {
     width: 2rem;
   }
-  header .header__menu,
-  header .header__icons {
+  .site-header .header__menu,
+  .site-header .header__icons {
     display: flex;
     gap: 1rem;
   }

@@ -11,7 +11,7 @@
 -%}
 
 <section class="lp-themes" data-block-type="lp-themes" {{ block.shopify_attributes }}>
-  <lp-themes class="lp-themes__inner" style="--lp-card-aspect: {{ aspect }}; --lp-card-radius: {{ block.settings.card_radius }}px;">
+  <lp-themes class="lp-themes__inner" style="--lp-card-aspect: {{ aspect }}; --lp-card-radius: {{ block.settings.card_radius }}px; --lp-heading-scale: {{ block.settings.heading_scale | default: 100 | divided_by: 100.0 }}; --lp-text-scale: {{ block.settings.text_scale | default: 100 | divided_by: 100.0 }};">
     <header class="lp-themes__head">
       <div class="lp-themes__intro">
         {%- if block.settings.eyebrow != blank -%}
@@ -103,7 +103,7 @@
   .lp-themes__intro { min-width: 0; flex: 1 1 22rem; }
   .lp-themes__eyebrow {
     display: inline-block;
-    font-size: 0.8rem;
+    font-size: calc(0.8rem * var(--lp-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -112,14 +112,14 @@
   }
   .lp-themes__heading {
     margin: 0 0 0.4rem;
-    font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+    font-size: calc(clamp(1.6rem, 3.6vw, 2.5rem) * var(--lp-heading-scale, 1));
     line-height: 1.12;
     font-weight: 800;
     letter-spacing: -0.02em;
   }
   .lp-themes__subheading {
     margin: 0;
-    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+    font-size: calc(clamp(0.95rem, 1.5vw, 1.1rem) * var(--lp-text-scale, 1));
     color: color-mix(in srgb, var(--lp-text, #1f2328) 68%, transparent);
   }
 
@@ -186,7 +186,7 @@
   .lp-themes__body { padding: 0.85rem 0.95rem 0.95rem; display: flex; flex-direction: column; gap: 0.45rem; }
   .lp-themes__title {
     margin: 0;
-    font-size: 1rem;
+    font-size: calc(1rem * var(--lp-heading-scale, 1));
     font-weight: 700;
     line-height: 1.25;
     overflow: hidden;
@@ -194,7 +194,7 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
   }
-  .lp-themes__meta { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.88rem; }
+  .lp-themes__meta { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: calc(0.88rem * var(--lp-text-scale, 1)); }
   .lp-themes__price { font-weight: 800; font-variant-numeric: tabular-nums; }
   .lp-themes__details { color: color-mix(in srgb, var(--lp-text, #1f2328) 70%, transparent); font-weight: 600; white-space: nowrap; }
   .lp-themes__card:hover .lp-themes__details { color: var(--lp-accent, #4a7cff); }
@@ -355,7 +355,31 @@
       "content": "Call to action"
     },
     { "type": "text", "id": "cta_label", "label": "Button label", "default": "Zum Theme-Store" },
-    { "type": "url", "id": "cta_url", "label": "Button link" }
+    { "type": "url", "id": "cta_url", "label": "Button link" },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
   "presets": [
     {

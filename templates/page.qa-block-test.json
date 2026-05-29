@@ -9,25 +9,139 @@
  */
 {
   "sections": {
-    "theme_store_deck": {
-      "type": "theme-store-deck",
+    "landingpage_qa": {
+      "type": "landingpage",
       "blocks": {
-        "t1": { "type": "theme", "settings": { "title": "Meridian", "category": "Business Theme", "price": "149 €", "preview_style": "light", "tags": "Business, Cases" } },
-        "t2": { "type": "theme", "settings": { "title": "Loom", "category": "Fashion Theme", "price": "109 €", "preview_style": "dark", "tags": "Fashion, Shop" } },
-        "t3": { "type": "theme", "settings": { "title": "Blocks Kit", "category": "Section Pack", "price": "79 €", "preview_style": "light", "tags": "Sections, Editor" } },
-        "t4": { "type": "theme", "settings": { "title": "Atlas", "category": "Portfolio Theme", "price": "129 €", "preview_style": "light", "tags": "Portfolio, Studio" } },
-        "cta": { "type": "cta", "settings": { "label": "Theme Store", "heading": "Alle Themes und Packs ansehen.", "button_label": "Zum Store", "button_url": "/pages/qa-block-test" } }
+        "hero": {
+          "type": "lp-hero",
+          "settings": {
+            "eyebrow": "Online-Marketing & Webdesign",
+            "heading_lead": "Wir bauen digitales",
+            "rotating_words": "Wachstum, Sichtbarkeit, Conversion, Markenkraft",
+            "heading_trail": "das sich rechnet.",
+            "body": "<p>Strategie, Webdesign, SEO und Performance-Marketing aus einer Hand.</p>",
+            "primary_label": "Kostenloses Audit",
+            "secondary_label": "Projekte ansehen",
+            "chip_1": "+143% organische Sichtbarkeit",
+            "chip_2": "2,4× ROAS",
+            "chip_3": "60 Tage bis zu Ergebnissen",
+            "heading_scale": 130,
+            "text_scale": 90
+          }
+        },
+        "metrics": {
+          "type": "lp-metrics",
+          "settings": {
+            "heading": "Zahlen, die für sich sprechen",
+            "stat_1_value": "143",
+            "stat_1_suffix": "%",
+            "stat_1_label": "Mehr organische Sichtbarkeit",
+            "stat_2_value": "2.4",
+            "stat_2_suffix": "×",
+            "stat_2_label": "Durchschnittlicher ROAS",
+            "stat_3_value": "60",
+            "stat_3_suffix": " Tage",
+            "stat_3_label": "Bis zu ersten Ergebnissen",
+            "stat_4_value": "98",
+            "stat_4_suffix": "%",
+            "stat_4_label": "Weiterempfehlungsrate",
+            "heading_scale": 115,
+            "text_scale": 100
+          }
+        },
+        "bento": {
+          "type": "lp-bento",
+          "blocks": {
+            "c1": { "type": "lp-bento-card", "settings": { "span": "feature", "icon": "compass", "title": "Strategie & Beratung", "text": "Klarheit in Angebot, Zielgruppe und Kommunikation.", "heading_scale": 120, "text_scale": 95 } },
+            "c2": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "layout", "title": "Webdesign & UX", "text": "Individuelle Seitenarchitektur statt Standard-Layout." } },
+            "c3": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "search", "title": "SEO & GEO", "text": "Content für relevante Suchintentionen." } },
+            "c4": { "type": "lp-bento-card", "settings": { "span": "wide", "icon": "chart", "title": "Google Ads & Performance", "text": "Kampagnen, gesteuert nach Wirtschaftlichkeit." } },
+            "c5": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "bag", "title": "Shopify & Entwicklung", "text": "Performante Umsetzung, flexibel steuerbar." } }
+          },
+          "block_order": ["c1", "c2", "c3", "c4", "c5"],
+          "settings": {
+            "eyebrow": "Was wir können",
+            "heading": "Ein System für digitales Wachstum",
+            "intro": "Strategie, Design, SEO und Performance — als ein zusammenhängendes System.",
+            "heading_scale": 110,
+            "text_scale": 90
+          }
+        },
+        "themes": {
+          "type": "lp-themes",
+          "settings": {
+            "eyebrow": "Aus unserem Theme-Store",
+            "heading": "Premium-Themes zum Kaufen",
+            "subheading": "Eine Auswahl unserer fertigen Shopify-Themes.",
+            "collection": "qa-test-collection",
+            "products_to_show": 8,
+            "cta_label": "Zum Theme-Store",
+            "heading_scale": 125,
+            "text_scale": 110
+          }
+        },
+        "case": {
+          "type": "lp-case",
+          "settings": {
+            "eyebrow": "Case Study",
+            "heading": "Vorher / Nachher",
+            "text": "<p>Ein Redesign, das messbar mehr verkauft.</p>",
+            "label_before": "Vorher",
+            "label_after": "Nachher",
+            "heading_scale": 90,
+            "text_scale": 105
+          }
+        },
+        "testimonial": {
+          "type": "lp-testimonial",
+          "settings": {
+            "quote": "<p>Endlich eine Agentur, die Design, Technik und Marketing zusammen denkt.</p>",
+            "author": "Sarah König",
+            "role": "Geschäftsführerin",
+            "company": "Atelier Nord",
+            "rating": 5,
+            "heading_scale": 85,
+            "text_scale": 120
+          }
+        },
+        "cta": {
+          "type": "lp-cta",
+          "settings": {
+            "heading": "Bereit für planbares Wachstum?",
+            "text": "Lass uns in einem kostenlosen Audit deinen größten Hebel finden.",
+            "primary_label": "Kostenloses Audit anfragen",
+            "secondary_label": "Erstgespräch buchen",
+            "heading_scale": 80,
+            "text_scale": 120
+          }
+        },
+        "qa_text": {
+          "type": "text",
+          "settings": {
+            "text": "QA Text-Block Skalierung",
+            "text_style": "text--title",
+            "alignment": "left",
+            "font_scale": 150
+          }
+        },
+        "qa_group": {
+          "type": "group",
+          "settings": {
+            "layout_direction": "group--vertical",
+            "alignment": "flex-start",
+            "padding": 0,
+            "font_scale": 120
+          }
+        }
       },
-      "block_order": ["t1", "t2", "t3", "t4", "cta"],
+      "block_order": ["hero", "metrics", "bento", "themes", "case", "testimonial", "cta", "qa_text", "qa_group"],
       "settings": {
-        "heading": "Unsere Themes & Packs.",
-        "heading_highlight": "Packs",
-        "subheading": "Performance-Themes und Section-Packs — sofort einsatzbereit.",
         "color_scheme": "scheme-1",
-        "padding_top": 80,
-        "padding_bottom": 80
+        "accent_color": "#4a7cff",
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     }
   },
-  "order": ["theme_store_deck"]
+  "order": ["landingpage_qa"]
 }

@@ -10,7 +10,7 @@
   assign ratio = block.settings.ratio | default: '16 / 10'
 -%}
 
-<section class="lp-case" {{ block.shopify_attributes }}>
+<section class="lp-case" style="--lp-heading-scale: {{ block.settings.heading_scale | default: 100 | divided_by: 100.0 }}; --lp-text-scale: {{ block.settings.text_scale | default: 100 | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
   <div class="lp-case__inner">
     {%- if block.settings.eyebrow != blank or block.settings.heading != blank or block.settings.text != blank -%}
       <header class="lp-case__head">
@@ -82,7 +82,7 @@
   .lp-case__head { margin-bottom: clamp(1.75rem, 4vw, 2.5rem); max-width: 46rem; }
   .lp-case__eyebrow {
     display: inline-block;
-    font-size: 0.8rem;
+    font-size: calc(0.8rem * var(--lp-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -91,14 +91,14 @@
   }
   .lp-case__heading {
     margin: 0;
-    font-size: clamp(1.6rem, 4vw, 2.75rem);
+    font-size: calc(clamp(1.6rem, 4vw, 2.75rem) * var(--lp-heading-scale, 1));
     line-height: 1.1;
     font-weight: 800;
     letter-spacing: -0.02em;
   }
   .lp-case__text {
     margin: 0.9rem 0 0;
-    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    font-size: calc(clamp(1rem, 1.6vw, 1.15rem) * var(--lp-text-scale, 1));
     line-height: 1.55;
     color: color-mix(in srgb, var(--lp-text, #1f2328) 72%, transparent);
   }
@@ -328,6 +328,30 @@
         { "value": "21 / 9", "label": "Cinematic (21:9)" }
       ],
       "default": "16 / 10"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
     }
   ],
   "presets": [

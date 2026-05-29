@@ -17,7 +17,7 @@
   assign stat_indexes = stats | split: ','
 -%}
 
-<section class="lp-metrics" {{ block.shopify_attributes }}>
+<section class="lp-metrics" style="--lp-heading-scale: {{ block.settings.heading_scale | default: 100 | divided_by: 100.0 }}; --lp-text-scale: {{ block.settings.text_scale | default: 100 | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
   <div class="lp-metrics__inner">
     {%- if block.settings.heading != blank or block.settings.eyebrow != blank -%}
       <header class="lp-metrics__head">
@@ -67,7 +67,7 @@
   .lp-metrics__head { margin-bottom: clamp(1.75rem, 4vw, 2.75rem); max-width: 42rem; }
   .lp-metrics__eyebrow {
     display: inline-block;
-    font-size: 0.8rem;
+    font-size: calc(0.8rem * var(--lp-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -76,7 +76,7 @@
   }
   .lp-metrics__heading {
     margin: 0;
-    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    font-size: calc(clamp(1.5rem, 3.5vw, 2.5rem) * var(--lp-heading-scale, 1));
     line-height: 1.12;
     font-weight: 800;
     letter-spacing: -0.015em;
@@ -92,7 +92,7 @@
     display: flex;
     align-items: baseline;
     gap: 0.05em;
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: calc(clamp(2.5rem, 6vw, 4rem) * var(--lp-heading-scale, 1));
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.03em;
@@ -118,7 +118,7 @@
 
   .lp-metrics__label {
     margin-top: 0.85rem;
-    font-size: 0.98rem;
+    font-size: calc(0.98rem * var(--lp-text-scale, 1));
     line-height: 1.45;
     color: color-mix(in srgb, var(--lp-text, #1f2328) 72%, transparent);
     max-width: 22ch;
@@ -250,7 +250,31 @@
     { "type": "text", "id": "stat_4_prefix", "label": "Prefix" },
     { "type": "text", "id": "stat_4_value", "label": "Value", "default": "98" },
     { "type": "text", "id": "stat_4_suffix", "label": "Suffix", "default": "%" },
-    { "type": "text", "id": "stat_4_label", "label": "Label", "default": "Weiterempfehlungsrate" }
+    { "type": "text", "id": "stat_4_label", "label": "Label", "default": "Weiterempfehlungsrate" },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading & number size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
   "presets": [
     {

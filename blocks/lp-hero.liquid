@@ -13,6 +13,7 @@
 
 <section
   class="lp-hero{% if block.settings.image != blank %} lp-hero--has-media{% endif %}"
+  style="--lp-heading-scale: {{ block.settings.heading_scale | default: 100 | divided_by: 100.0 }}; --lp-text-scale: {{ block.settings.text_scale | default: 100 | divided_by: 100.0 }};"
   {{ block.shopify_attributes }}
 >
   <div class="lp-hero__inner">
@@ -136,7 +137,7 @@
     padding: 0.4rem 0.85rem;
     border: 1px solid var(--lp-line-strong, color-mix(in srgb, currentcolor 22%, transparent));
     border-radius: 0;
-    font-size: 0.8rem;
+    font-size: calc(0.8rem * var(--lp-text-scale, 1));
     font-weight: 600;
     letter-spacing: 0.02em;
     text-transform: uppercase;
@@ -153,7 +154,7 @@
 
   .lp-hero__title {
     margin: 1.25rem 0 0;
-    font-size: clamp(2.2rem, 6vw, 4.25rem);
+    font-size: calc(clamp(2.2rem, 6vw, 4.25rem) * var(--lp-heading-scale, 1));
     line-height: 1.04;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -178,7 +179,7 @@
   .lp-hero__body {
     margin-top: 1.5rem;
     max-width: 42rem;
-    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    font-size: calc(clamp(1rem, 1.6vw, 1.2rem) * var(--lp-text-scale, 1));
     line-height: 1.6;
     color: color-mix(in srgb, var(--lp-text, #1f2328) 78%, transparent);
   }
@@ -198,7 +199,7 @@
     padding: 0.95rem 1.6rem;
     border-radius: 0;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: calc(1rem * var(--lp-text-scale, 1));
     text-decoration: none;
     border: 1px solid transparent;
     transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
@@ -240,7 +241,7 @@
     background: var(--lp-surface, color-mix(in srgb, var(--lp-text, #1f2328) 4%, transparent));
     border: 1px solid var(--lp-line, color-mix(in srgb, currentcolor 12%, transparent));
     border-radius: 0;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--lp-text-scale, 1));
     font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
@@ -417,6 +418,30 @@
       "id": "image",
       "label": "Side image",
       "info": "Optional. When set, the hero becomes a two-column layout on desktop."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
     }
   ],
   "presets": [

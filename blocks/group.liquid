@@ -16,6 +16,7 @@
   style="
     --padding: {{ block.settings.padding }}px;
     --alignment: {{ block.settings.alignment }};
+    --group-font-scale: {{ block.settings.font_scale | default: 100 | divided_by: 100.0 }};
   "
   {{ block.shopify_attributes }}
 >
@@ -28,6 +29,7 @@
     flex-wrap: nowrap;
     overflow: hidden;
     width: 100%;
+    font-size: calc(1em * var(--group-font-scale, 1));
   }
 
   .group--horizontal {
@@ -80,6 +82,16 @@
       "max": 200,
       "step": 2,
       "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "font_scale",
+      "label": "t:labels.font_size",
+      "default": 100,
+      "min": 70,
+      "max": 200,
+      "step": 5,
+      "unit": "%"
     }
   ],
   "presets": [
