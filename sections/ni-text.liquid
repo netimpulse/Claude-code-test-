@@ -1,0 +1,94 @@
+{% comment %}
+  NI Text — simple text block.
+  Heading + body text with independent alignment controls per element
+  (left / center / right) plus the usual color-scheme, padding and
+  typography scaling settings used across the NI sections.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign heading_align = section.settings.heading_align | default: 'left'
+  assign text_align = section.settings.text_align | default: 'left'
+  assign max_width = section.settings.max_width | default: 760
+-%}
+
+{{ 'section-ni-text.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank %}--ni-text-bg-fallback: {{ scheme.settings.background }};{% endif %}
+    {%- if scheme.settings.text != blank %}--ni-text-text-fallback: {{ scheme.settings.text }};{% endif %}
+    {%- if section.settings.bg_color != blank %}--ni-text-bg: {{ section.settings.bg_color }};{% endif %}
+    {%- if section.settings.text_color != blank %}--ni-text-text: {{ section.settings.text_color }};{% endif %}
+    --ni-text-pad-top: {{ section.settings.padding_top }}px;
+    --ni-text-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --ni-text-maxw: {{ max_width }}px;
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+
+<section class="ni-text full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+  <div class="ni-text__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="ni-text__heading ni-text--align-{{ heading_align }}">
+        {{- section.settings.heading | escape -}}
+      </h2>
+    {%- endif -%}
+    {%- if section.settings.body != blank -%}
+      <div class="ni-text__body ni-text--align-{{ text_align }}">
+        {{ section.settings.body }}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Text block",
+  "tag": "section",
+  "settings": [
+    { "type": "textarea", "id": "heading", "label": "Überschrift", "default": "Eine kurze, klare Überschrift" },
+    {
+      "type": "select",
+      "id": "heading_align",
+      "label": "Überschrift-Ausrichtung",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Zentriert" },
+        { "value": "right", "label": "Rechts" }
+      ],
+      "default": "left"
+    },
+    { "type": "richtext", "id": "body", "label": "Text", "default": "<p>Schreibe hier den Fließtext. Du kannst <strong>Fett</strong>, <em>Kursiv</em> und Links nutzen.</p>" },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text-Ausrichtung",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Zentriert" },
+        { "value": "right", "label": "Rechts" }
+      ],
+      "default": "left"
+    },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max. Textbreite", "min": 480, "max": 1200, "step": 20, "unit": "px", "default": 760 },
+
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "color", "id": "bg_color", "label": "Hintergrund", "info": "Leer = Color-Scheme" },
+    { "type": "color", "id": "text_color", "label": "Textfarbe" },
+    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_scale", "label": "Überschrift-Größe", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_scale", "label": "Text-Größe", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
+  ],
+  "presets": [
+    { "name": "Text block", "category": "Text" }
+  ]
+}
+{% endschema %}

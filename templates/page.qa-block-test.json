@@ -141,7 +141,22 @@
         "padding_top": 0,
         "padding_bottom": 0
       }
+    },
+    "ni_text_qa": {
+      "type": "ni-text",
+      "settings": {
+        "heading": "QA: text block heading",
+        "heading_align": "right",
+        "body": "<p>QA: this is the <strong>body</strong> paragraph used to verify alignment, color and padding controls of the text block section.</p>",
+        "text_align": "center",
+        "max_width": 760,
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
-  "order": ["landingpage_qa"]
+  "order": ["landingpage_qa", "ni_text_qa"]
 }
