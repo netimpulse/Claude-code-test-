@@ -26,6 +26,13 @@
     --lp-accent: {{ accent }};
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+    {%- if section.settings.primary_btn_bg != blank %}--ni-btn-primary-bg: {{ section.settings.primary_btn_bg }};{% endif %}
+    {%- if section.settings.primary_btn_text != blank %}--ni-btn-primary-text: {{ section.settings.primary_btn_text }};{% endif %}
+    {%- if section.settings.primary_btn_bg_hover != blank %}--ni-btn-primary-bg-hover: {{ section.settings.primary_btn_bg_hover }};{% endif %}
+    {%- if section.settings.primary_btn_text_hover != blank %}--ni-btn-primary-text-hover: {{ section.settings.primary_btn_text_hover }};{% endif %}
+    {%- if section.settings.secondary_btn_bg != blank %}--ni-btn-secondary-bg: {{ section.settings.secondary_btn_bg }};{% endif %}
+    {%- if section.settings.secondary_btn_text != blank %}--ni-btn-secondary-text: {{ section.settings.secondary_btn_text }};{% endif %}
+    {%- if section.settings.secondary_btn_border != blank %}--ni-btn-secondary-border: {{ section.settings.secondary_btn_border }};{% endif %}
   }
 {% endstyle %}
 
@@ -115,6 +122,14 @@
     { "type": "text", "id": "caption_text", "label": "Caption text", "default": "Strategie, Gestaltung und Umsetzung arbeiten als ein System." },
     { "type": "text", "id": "book_label", "label": "Floating tag label", "default": "Termin buchen" },
     { "type": "url", "id": "book_url", "label": "Floating tag link" },
+    { "type": "header", "content": "Button colors", "info": "Leer lassen, um die Farben des Color Schemes zu verwenden." },
+    { "type": "color", "id": "primary_btn_bg", "label": "Primary button background" },
+    { "type": "color", "id": "primary_btn_text", "label": "Primary button text" },
+    { "type": "color", "id": "primary_btn_bg_hover", "label": "Primary button background (hover)" },
+    { "type": "color", "id": "primary_btn_text_hover", "label": "Primary button text (hover)" },
+    { "type": "color", "id": "secondary_btn_bg", "label": "Secondary button background" },
+    { "type": "color", "id": "secondary_btn_text", "label": "Secondary button text" },
+    { "type": "color", "id": "secondary_btn_border", "label": "Secondary button border" },
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
     { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#050505" },
