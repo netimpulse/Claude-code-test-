@@ -15,8 +15,16 @@
     return ROOT_URL.replace(/\/?$/, "/") + "cart/add.js";
   }
 
+  function cartUpdateUrl() {
+    return ROOT_URL.replace(/\/?$/, "/") + "cart/update.js";
+  }
+
   function checkoutUrl() {
     return ROOT_URL.replace(/\/?$/, "/") + "checkout";
+  }
+
+  function cartUrl() {
+    return ROOT_URL.replace(/\/?$/, "/") + "cart";
   }
 
   class ProductDetail extends HTMLElement {
@@ -35,11 +43,13 @@
       this._onDec = () => this._stepQty(-1);
       this._onInc = () => this._stepQty(1);
       this._onBuyNow = (e) => this._buyNow(e);
+      this._onSubmit = (e) => this._onFormSubmit(e);
       this._onVariantChange = () => this._onVariantSwitched();
 
       if (this.qtyDec) this.qtyDec.addEventListener("click", this._onDec);
       if (this.qtyInc) this.qtyInc.addEventListener("click", this._onInc);
       if (this.buyNow) this.buyNow.addEventListener("click", this._onBuyNow);
+      if (this.form && this._hasAddons()) this.form.addEventListener("submit", this._onSubmit);
       if (this.variantSelect)
         this.variantSelect.addEventListener("change", this._onVariantChange);
     }
@@ -48,8 +58,35 @@
       if (this.qtyDec) this.qtyDec.removeEventListener("click", this._onDec);
       if (this.qtyInc) this.qtyInc.removeEventListener("click", this._onInc);
       if (this.buyNow) this.buyNow.removeEventListener("click", this._onBuyNow);
+      if (this.form) this.form.removeEventListener("submit", this._onSubmit);
       if (this.variantSelect)
         this.variantSelect.removeEventListener("change", this._onVariantChange);
+    }
+
+    _hasAddons() {
+      return this.querySelectorAll("[data-pd-addon]").length > 0;
+    }
+
+    /**
+     * Returns { items: [{id, quantity}], attributes: {key: value} }
+     * built from the currently checked add-on checkboxes.
+     * - fixed_price → extra cart item
+     * - interest_only → cart attribute the merchant sees on the order
+     */
+    _collectAddons() {
+      const items = [];
+      const attributes = {};
+      this.querySelectorAll("[data-pd-addon]:checked").forEach((cb) => {
+        const mode = cb.getAttribute("data-addon-mode");
+        const title = cb.getAttribute("data-addon-title") || "";
+        if (mode === "fixed_price") {
+          const id = cb.getAttribute("data-addon-variant-id");
+          if (id) items.push({ id: Number(id), quantity: 1 });
+        } else if (mode === "interest_only") {
+          attributes[`Service auf Anfrage: ${title}`] = "Ja";
+        }
+      });
+      return { items, attributes };
     }
 
     _stepQty(delta) {
@@ -87,21 +124,57 @@
       this.buyNow.disabled = true;
       this.buyNow.classList.add("is-loading");
       try {
-        const fd = new FormData(this.form);
-        const res = await fetch(cartAddUrl(), {
-          method: "POST",
-          body: fd,
-          headers: { Accept: "application/json" },
-        });
-        if (res.ok) {
-          window.location.href = checkoutUrl();
-          return;
-        }
+        await this._addMainAndAddons();
+        window.location.href = checkoutUrl();
+        return;
       } catch (err) {
         /* swallow; reset UI below */
       }
       this.buyNow.disabled = false;
       this.buyNow.classList.remove("is-loading");
+    }
+
+    async _onFormSubmit(e) {
+      const { items: addonItems, attributes } = this._collectAddons();
+      if (addonItems.length === 0 && Object.keys(attributes).length === 0) {
+        // No add-ons selected — let the form submit normally.
+        return;
+      }
+      // Intercept: do AJAX so we can add the main product + the add-ons
+      // in one request and write cart attributes for interest_only ones.
+      e.preventDefault();
+      if (!this.addBtn || this.addBtn.disabled) return;
+      this.addBtn.disabled = true;
+      try {
+        await this._addMainAndAddons();
+        window.location.href = cartUrl();
+      } catch (err) {
+        this.addBtn.disabled = false;
+      }
+    }
+
+    async _addMainAndAddons() {
+      const variantId = this.variantId ? Number(this.variantId.value) : null;
+      const qty = this.qtyInput ? Math.max(1, parseInt(this.qtyInput.value, 10) || 1) : 1;
+      const { items: addonItems, attributes } = this._collectAddons();
+      const items = [];
+      if (variantId) items.push({ id: variantId, quantity: qty });
+      addonItems.forEach((a) => items.push(a));
+
+      const addRes = await fetch(cartAddUrl(), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      if (!addRes.ok) throw new Error("cart add failed");
+
+      if (Object.keys(attributes).length > 0) {
+        await fetch(cartUpdateUrl(), {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ attributes }),
+        });
+      }
     }
   }
 
