@@ -175,7 +175,7 @@
         "note": "",
         "color_scheme": "",
         "accent_color": "#050505",
-        "padding_top": 94,
+        "padding_top": 92,
         "padding_bottom": 68
       }
     },
@@ -201,8 +201,8 @@
         "cta_label": "Zum Theme-Store",
         "cta_url": "",
         "color_scheme": "scheme-sand",
-        "padding_top": 50,
-        "padding_bottom": 50
+        "padding_top": 52,
+        "padding_bottom": 52
       }
     },
     "team_compact_V7PNeF": {
@@ -246,8 +246,8 @@
         "cta_url": "shopify://pages/ueber-uns",
         "color_scheme": "scheme-sand",
         "accent_color": "#1f2328",
-        "padding_top": 50,
-        "padding_bottom": 50
+        "padding_top": 52,
+        "padding_bottom": 52
       }
     }
   },

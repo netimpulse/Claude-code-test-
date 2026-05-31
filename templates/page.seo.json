@@ -100,8 +100,8 @@
         "color_scheme": "scheme-sand",
         "accent_color": "#1c4948",
         "accent_soft": "#9ccfd0",
-        "padding_top": 62,
-        "padding_bottom": 62
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     },
     "image_with_text_eNBga8": {
@@ -118,8 +118,8 @@
         "badge_label": "Industries Served",
         "color_scheme": "scheme-sand",
         "accent_color": "#b6e84f",
-        "padding_top": 62,
-        "padding_bottom": 62
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     }
   },

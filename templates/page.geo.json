@@ -95,8 +95,8 @@
         "answer_duration": 70,
         "color_scheme": "scheme-sand",
         "accent_color": "#1c4948",
-        "padding_top": 62,
-        "padding_bottom": 62
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     },
     "image_with_text_TTGNGW": {
@@ -113,8 +113,8 @@
         "badge_label": "Industries Served",
         "color_scheme": "scheme-sand",
         "accent_color": "#b6e84f",
-        "padding_top": 62,
-        "padding_bottom": 62
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     },
     "service_aspects_bt3faw": {
@@ -187,8 +187,8 @@
         "show_numbers": true,
         "color_scheme": "scheme-sand",
         "accent_color": "#4a7cff",
-        "padding_top": 62,
-        "padding_bottom": 62
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     }
   },
