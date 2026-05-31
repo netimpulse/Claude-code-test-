@@ -1,9 +1,145 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
+    },
+    "contact_form_fPKwEN": {
+      "type": "contact-form",
+      "blocks": {
+        "field_6ye6NT": {
+          "type": "field",
+          "settings": {
+            "type": "text",
+            "label": "Name",
+            "name": "name",
+            "placeholder": "Dein Name",
+            "required": true,
+            "width": "half",
+            "options": "Option 1\nOption 2\nOption 3"
+          }
+        },
+        "field_GdFUDd": {
+          "type": "field",
+          "settings": {
+            "type": "email",
+            "label": "E-Mail",
+            "name": "email",
+            "placeholder": "deine@email.de",
+            "required": true,
+            "width": "half",
+            "options": "Option 1\nOption 2\nOption 3"
+          }
+        },
+        "field_ywmJPt": {
+          "type": "field",
+          "settings": {
+            "type": "tel",
+            "label": "Telefon",
+            "name": "phone",
+            "placeholder": "+49 …",
+            "required": false,
+            "width": "half",
+            "options": "Option 1\nOption 2\nOption 3"
+          }
+        },
+        "field_MyHMDM": {
+          "type": "field",
+          "settings": {
+            "type": "text",
+            "label": "Unternehmen",
+            "name": "company",
+            "placeholder": "Dein Unternehmen",
+            "required": false,
+            "width": "half",
+            "options": "Option 1\nOption 2\nOption 3"
+          }
+        },
+        "field_BKVMbb": {
+          "type": "field",
+          "settings": {
+            "type": "select",
+            "label": "Worum geht's?",
+            "name": "topic",
+            "placeholder": "Bitte wählen …",
+            "required": false,
+            "width": "full",
+            "options": "Strategie & Beratung\nWebdesign & UX\nSEO & Performance\nShopify-Theme\nSonstiges"
+          }
+        },
+        "field_XVDrhq": {
+          "type": "field",
+          "settings": {
+            "type": "textarea",
+            "label": "Nachricht",
+            "name": "body",
+            "placeholder": "Erzähl uns von deinem Projekt …",
+            "required": true,
+            "width": "full",
+            "options": "Option 1\nOption 2\nOption 3"
+          }
+        },
+        "info_CLiefT": {
+          "type": "info",
+          "settings": {
+            "label": "Adresse",
+            "content": "<p>NetImpulse<br>Musterstraße 1<br>12345 Musterstadt</p>"
+          }
+        },
+        "info_LA93aE": {
+          "type": "info",
+          "settings": {
+            "label": "Telefon",
+            "content": "<p>+49 (0) 1234 567890</p>"
+          }
+        },
+        "info_cFQ3Mw": {
+          "type": "info",
+          "settings": {
+            "label": "E-Mail",
+            "content": "<p>hallo@netimpulse.de</p>"
+          }
+        }
+      },
+      "block_order": [
+        "field_6ye6NT",
+        "field_GdFUDd",
+        "field_ywmJPt",
+        "field_MyHMDM",
+        "field_BKVMbb",
+        "field_XVDrhq",
+        "info_CLiefT",
+        "info_LA93aE",
+        "info_cFQ3Mw"
+      ],
+      "name": "Contact form",
+      "settings": {
+        "heading": "Lass uns reden.",
+        "subheading": "Erzähl uns von deinem Projekt — wir melden uns innerhalb von 48 Stunden mit klaren nächsten Schritten.",
+        "submit_label": "Nachricht senden",
+        "success_message": "Danke! Wir melden uns innerhalb von 48 Stunden.",
+        "info_heading": "Kontakt",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#1f2328",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "contact_form_fPKwEN"
+  ]
 }
