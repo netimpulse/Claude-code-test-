@@ -156,7 +156,59 @@
         "heading_scale": 100,
         "text_scale": 100
       }
+    },
+    "addon_services_qa": {
+      "type": "addon-services",
+      "blocks": {
+        "card1": {
+          "type": "card",
+          "settings": {
+            "title": "Theme Setup",
+            "description": "Für einen schnellen, sauberen Start.",
+            "price": "ab 200 €",
+            "features": "Theme-Installation\nGrund-Konfiguration\nLogo & Farben\nE-Mail-Support",
+            "highlight": false,
+            "show_button": true,
+            "button_label": "Jetzt anfragen"
+          }
+        },
+        "card2": {
+          "type": "card",
+          "settings": {
+            "title": "Bestehendes Theme customizen",
+            "description": "Wenn dein Theme steht, aber noch nicht überzeugt.",
+            "price": "Preis auf Anfrage",
+            "features": "Section- & Block-Anpassungen\nPerformance-Optimierung\nMobile-Feinschliff\nPrioritäts-Support",
+            "highlight": true,
+            "badge_label": "BELIEBT",
+            "show_button": true,
+            "button_label": "Jetzt anfragen"
+          }
+        },
+        "card3": {
+          "type": "card",
+          "settings": {
+            "title": "Komplett Custom Theme",
+            "description": "Maßgeschneidert für deine Marke.",
+            "price": "Preis auf Anfrage",
+            "features": "Individuelles Design\nVolle Section-Architektur\nDedizierter Account-Manager\nSLA & Custom Onboarding",
+            "highlight": false,
+            "show_button": false,
+            "button_label": "Jetzt anfragen"
+          }
+        }
+      },
+      "block_order": ["card1", "card2", "card3"],
+      "settings": {
+        "heading": "Welche Zusatzleistungen bieten wir an?",
+        "subheading": "Von einem schnellen Setup bis zu komplett individuellen Themes.",
+        "color_scheme": "scheme-1",
+        "accent_color": "#4361FF",
+        "card_radius": 18,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
-  "order": ["landingpage_qa", "ni_text_qa"]
+  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa"]
 }

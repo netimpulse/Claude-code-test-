@@ -1,0 +1,200 @@
+.addon-services {
+  background: var(--as-bg, #ffffff);
+  color: var(--as-text, #0e1116);
+  padding: var(--as-pad-top, 80px) clamp(1rem, 3vw, 2rem) var(--as-pad-bottom, 80px);
+  font-family: inherit;
+}
+
+.addon-services *,
+.addon-services *::before,
+.addon-services *::after {
+  box-sizing: border-box;
+}
+
+.addon-services__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.addon-services__header {
+  text-align: center;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.addon-services__heading {
+  margin: 0;
+  font-size: clamp(1.625rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--as-text, #0e1116);
+}
+
+.addon-services__subheading {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--as-muted, #6b7280);
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  line-height: 1.55;
+}
+
+/* Grid: 1 column mobile, auto-fit cards from 280px wide on desktop */
+.addon-services__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  align-items: stretch;
+}
+
+@media (min-width: 750px) {
+  .addon-services__grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+.addon-services__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--as-card-bg, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--as-text, #0e1116) 10%, transparent);
+  border-radius: var(--as-card-radius, 18px);
+  padding: clamp(1.5rem, 2.5vw, 2rem);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.addon-services__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.addon-services__card.is-highlighted {
+  border: 2px solid var(--as-accent, #4361ff);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--as-accent, #4361ff) 18%, transparent);
+}
+
+.addon-services__badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--as-accent, #4361ff);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.addon-services__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  flex: 1;
+}
+
+.addon-services__card-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--as-text, #0e1116);
+}
+
+.addon-services__card-desc {
+  margin: 0;
+  color: var(--as-muted, #6b7280);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.addon-services__price {
+  margin: 0.5rem 0 0.25rem;
+  font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+  font-weight: 700;
+  color: var(--as-text, #0e1116);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.addon-services__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.addon-services__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--as-text, #0e1116);
+}
+
+.addon-services__feature-icon {
+  flex-shrink: 0;
+  color: var(--as-accent, #4361ff);
+  margin-top: 0.15rem;
+}
+
+.addon-services__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--as-text, #0e1116) 6%, transparent);
+  color: var(--as-text, #0e1116);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.addon-services__btn:hover {
+  background: color-mix(in srgb, var(--as-text, #0e1116) 12%, transparent);
+}
+
+.addon-services__btn--primary {
+  background: var(--as-accent, #4361ff);
+  color: #ffffff;
+}
+
+.addon-services__btn--primary:hover {
+  background: color-mix(in srgb, var(--as-accent, #4361ff) 88%, #000);
+}
+
+.addon-services__empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--as-muted, #6b7280);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .addon-services__card,
+  .addon-services__btn {
+    transition: none;
+  }
+  .addon-services__card:hover {
+    transform: none;
+  }
+}

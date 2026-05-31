@@ -1,0 +1,313 @@
+{% comment %}
+  Addon Services
+  ----------------------------------------------------------------
+  Pricing-card-Layout für Zusatzleistungen. Jede Karte ist ein Block,
+  Merchants können beliebig viele hinzufügen, entfernen, umsortieren.
+  Pro Karte: Titel, Beschreibung, Preis-Text (frei, z. B. "ab 200 €"
+  oder "Preis auf Anfrage"), Feature-Liste, optional ein hervorgehobenes
+  Badge ("BELIEBT") und ein optionaler "Jetzt anfragen"-Button.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+-%}
+
+{{ 'section-addon-services.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}
+      --color-background: {{ scheme.settings.background }};
+    {%- endif -%}
+    {%- if scheme.settings.text != blank -%}
+      --color-foreground: {{ scheme.settings.text }};
+    {%- endif -%}
+  }
+  #shopify-section-{{ section.id }} .addon-services {
+    --as-pad-top: {{ section.settings.padding_top }}px;
+    --as-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --as-accent: {{ section.settings.accent_color | default: '#4361FF' }};
+    --as-bg: {{ scheme.settings.background | default: '#FFFFFF' }};
+    --as-card-bg: {{ scheme.settings.background_card | default: '#FFFFFF' }};
+    --as-text: {{ scheme.settings.text | default: '#0E1116' }};
+    --as-muted: {{ scheme.settings.muted | default: '#6B7280' }};
+    --as-card-radius: {{ section.settings.card_radius }}px;
+  }
+{% endstyle %}
+
+<section
+  class="addon-services full-width color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  aria-labelledby="addon-services-heading-{{ section.id }}"
+>
+  <div class="addon-services__inner">
+    {%- if heading != blank or subheading != blank -%}
+      <header class="addon-services__header">
+        {%- if heading != blank -%}
+          <h2 id="addon-services-heading-{{ section.id }}" class="addon-services__heading">
+            {{ heading | escape }}
+          </h2>
+        {%- endif -%}
+        {%- if subheading != blank -%}
+          <p class="addon-services__subheading">{{ subheading | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="addon-services__grid" role="list">
+        {%- for block in section.blocks -%}
+          {%- assign features = block.settings.features | newline_to_br | split: '<br />' -%}
+          {%- assign is_highlighted = block.settings.highlight -%}
+          <li
+            class="addon-services__card{% if is_highlighted %} is-highlighted{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if is_highlighted and block.settings.badge_label != blank -%}
+              <span class="addon-services__badge">{{ block.settings.badge_label | escape }}</span>
+            {%- endif -%}
+
+            <div class="addon-services__card-body">
+              {%- if block.settings.title != blank -%}
+                <h3 class="addon-services__card-title">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+
+              {%- if block.settings.description != blank -%}
+                <p class="addon-services__card-desc">{{ block.settings.description | escape }}</p>
+              {%- endif -%}
+
+              {%- if block.settings.price != blank -%}
+                <p class="addon-services__price">{{ block.settings.price | escape }}</p>
+              {%- endif -%}
+
+              {%- if features.size > 0 -%}
+                <ul class="addon-services__features" role="list">
+                  {%- for feature in features -%}
+                    {%- assign feat = feature | strip_html | strip -%}
+                    {%- if feat != blank -%}
+                      <li class="addon-services__feature">
+                        <svg
+                          class="addon-services__feature-icon"
+                          viewBox="0 0 20 20"
+                          width="18"
+                          height="18"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path
+                            d="M4 10.5l4 4 8-8"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.25"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        <span>{{ feat }}</span>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+
+            {%- if block.settings.show_button -%}
+              <a
+                class="addon-services__btn{% if is_highlighted %} addon-services__btn--primary{% endif %}"
+                href="{{ block.settings.button_url | default: '#' }}"
+              >
+                {{ block.settings.button_label | default: 'Jetzt anfragen' | escape }}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p class="addon-services__empty">
+        Füge im Theme-Editor Karten hinzu.
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Zusatzleistungen",
+  "tag": "section",
+  "class": "shopify-section--addon-services",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Überschrift",
+      "default": "Welche Zusatzleistungen bieten wir an?"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Untertitel",
+      "default": "Von einem schnellen Setup bis zu komplett individuellen Themes — wir liefern, was zu deinem Shop passt."
+    },
+    { "type": "header", "content": "Darstellung" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farbschema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Akzentfarbe",
+      "info": "Wird für hervorgehobene Karten, Badge und Primary-Button genutzt.",
+      "default": "#4361FF"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Karten-Rundung",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    { "type": "header", "content": "Abstand" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding oben",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding unten",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Leistungs-Karte",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Theme Setup"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Kurzbeschreibung",
+          "default": "Für einen schnellen, sauberen Start."
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Preis-Text",
+          "info": "Freitext — z. B. „ab 200 €“ oder „Preis auf Anfrage“.",
+          "default": "ab 200 €"
+        },
+        {
+          "type": "textarea",
+          "id": "features",
+          "label": "Features",
+          "info": "Eine Zeile pro Feature.",
+          "default": "Theme-Installation\nGrund-Konfiguration\nLogo & Farben"
+        },
+        { "type": "header", "content": "Hervorhebung" },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Karte hervorheben",
+          "info": "Hebt diese Karte visuell hervor (farbiger Rahmen + Primary-Button).",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "badge_label",
+          "label": "Badge-Text",
+          "info": "Wird nur angezeigt, wenn die Karte hervorgehoben ist.",
+          "default": "BELIEBT"
+        },
+        { "type": "header", "content": "Button" },
+        {
+          "type": "checkbox",
+          "id": "show_button",
+          "label": "Button anzeigen",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button-Text",
+          "default": "Jetzt anfragen"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button-Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Zusatzleistungen",
+      "category": "Pricing",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "title": "Theme Setup",
+            "description": "Für einen schnellen, sauberen Start.",
+            "price": "ab 200 €",
+            "features": "Theme-Installation\nGrund-Konfiguration\nLogo & Farben\nE-Mail-Support",
+            "highlight": false,
+            "show_button": true,
+            "button_label": "Jetzt anfragen"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Bestehendes Theme customizen",
+            "description": "Wenn dein Theme steht, aber noch nicht überzeugt.",
+            "price": "Preis auf Anfrage",
+            "features": "Section- & Block-Anpassungen\nPerformance-Optimierung\nMobile-Feinschliff\nPrioritäts-Support",
+            "highlight": true,
+            "badge_label": "BELIEBT",
+            "show_button": true,
+            "button_label": "Jetzt anfragen"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Komplett Custom Theme",
+            "description": "Maßgeschneidert für deine Marke.",
+            "price": "Preis auf Anfrage",
+            "features": "Individuelles Design\nVolle Section-Architektur\nDedizierter Account-Manager\nSLA & Custom Onboarding",
+            "highlight": false,
+            "show_button": true,
+            "button_label": "Jetzt anfragen"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}
