@@ -170,25 +170,71 @@
                 </div>
 
               {%- when 'legal_column' -%}
+                {%- liquid
+                  assign privacy_url = block.settings.privacy_url
+                  if privacy_url == blank and shop.privacy_policy != blank
+                    assign privacy_url = shop.privacy_policy.url
+                  endif
+                  assign privacy_label = block.settings.privacy_label
+                  if privacy_label == blank and shop.privacy_policy != blank
+                    assign privacy_label = shop.privacy_policy.title
+                  endif
+
+                  assign terms_url = block.settings.terms_url
+                  if terms_url == blank and shop.terms_of_service != blank
+                    assign terms_url = shop.terms_of_service.url
+                  endif
+                  assign terms_label = block.settings.terms_label
+                  if terms_label == blank and shop.terms_of_service != blank
+                    assign terms_label = shop.terms_of_service.title
+                  endif
+
+                  assign refund_url = block.settings.refund_url
+                  if refund_url == blank and shop.refund_policy != blank
+                    assign refund_url = shop.refund_policy.url
+                  endif
+                  assign refund_label = block.settings.refund_label
+                  if refund_label == blank and shop.refund_policy != blank
+                    assign refund_label = shop.refund_policy.title
+                  endif
+
+                  assign shipping_url = block.settings.shipping_url
+                  if shipping_url == blank and shop.shipping_policy != blank
+                    assign shipping_url = shop.shipping_policy.url
+                  endif
+                  assign shipping_label = block.settings.shipping_label
+                  if shipping_label == blank and shop.shipping_policy != blank
+                    assign shipping_label = shop.shipping_policy.title
+                  endif
+
+                  assign subscription_url = block.settings.subscription_url
+                  if subscription_url == blank and shop.subscription_policy != blank
+                    assign subscription_url = shop.subscription_policy.url
+                  endif
+                  assign subscription_label = block.settings.subscription_label
+                  if subscription_label == blank and shop.subscription_policy != blank
+                    assign subscription_label = shop.subscription_policy.title
+                  endif
+                -%}
                 <div class="ni-footer__col" {{ block.shopify_attributes }}>
                   {%- if block.settings.heading != blank -%}
                     <h2 class="ni-footer__col-title">{{ block.settings.heading | escape }}</h2>
                   {%- endif -%}
                   <ul class="ni-footer__col-list" role="list">
-                    {%- if block.settings.show_privacy and shop.privacy_policy != blank -%}
-                      <li><a class="ni-footer__link" href="{{ shop.privacy_policy.url }}">{{ shop.privacy_policy.title | escape }}</a></li>
+                    {%- if block.settings.show_privacy and privacy_url != blank and privacy_label != blank -%}
+                      <li><a class="ni-footer__link" href="{{ privacy_url }}">{{ privacy_label | escape }}</a></li>
                     {%- endif -%}
-                    {%- if block.settings.show_terms and shop.terms_of_service != blank -%}
-                      <li><a class="ni-footer__link" href="{{ shop.terms_of_service.url }}">{{ shop.terms_of_service.title | escape }}</a></li>
+                    {%- if block.settings.show_terms and terms_url != blank and terms_label != blank -%}
+                      <li><a class="ni-footer__link" href="{{ terms_url }}">{{ terms_label | escape }}</a></li>
                     {%- endif -%}
-                    {%- if block.settings.show_refund and shop.refund_policy != blank -%}
-                      <li><a class="ni-footer__link" href="{{ shop.refund_policy.url }}">{{ shop.refund_policy.title | escape }}</a></li>
+                    {%- if block.settings.show_refund and refund_url != blank and refund_label != blank -%}
+                      <li><a class="ni-footer__link" href="{{ refund_url }}">{{ refund_label | escape }}</a></li>
                     {%- endif -%}
-                    {%- if block.settings.show_shipping and shop.shipping_policy != blank -%}
-                      <li><a class="ni-footer__link" href="{{ shop.shipping_policy.url }}">{{ shop.shipping_policy.title | escape }}</a></li>
+                    {%- if block.settings.show_shipping and shipping_url != blank and shipping_label != blank -%}
+                      <li><a class="ni-footer__link" href="{{ shipping_url }}">{{ shipping_label | escape }}</a></li>
                     {%- endif -%}
-                    {%- if block.settings.show_subscription and shop.subscription_policy != blank -%}
-                      <li><a class="ni-footer__link" href="{{ shop.subscription_policy.url }}">{{ shop.subscription_policy.title | escape }}</a></li>
+                    {%- if block.settings.show_subscription and subscription_url != blank and subscription_label != blank -%}
+                      <li><a class="ni-footer__link" href="{{ subscription_url }}">{{ subscription_label | escape }}</a></li>
                     {%- endif -%}
                     {%- if block.settings.extra_menu.links.size > 0 -%}
                       {%- for link in block.settings.extra_menu.links -%}
@@ -293,13 +339,35 @@
       "limit": 1,
       "settings": [
         { "type": "text", "id": "heading", "label": "Überschrift", "default": "LEGAL" },
-        { "type": "paragraph", "content": "Die folgenden Links zeigen auf die Shopify-Policy-Seiten und aktualisieren sich automatisch, sobald du dort etwas änderst." },
-        { "type": "checkbox", "id": "show_privacy", "label": "Datenschutz (privacy_policy)", "default": true },
-        { "type": "checkbox", "id": "show_terms", "label": "AGB / Nutzungsbedingungen (terms_of_service)", "default": true },
-        { "type": "checkbox", "id": "show_refund", "label": "Rückgaberecht (refund_policy)", "default": false },
-        { "type": "checkbox", "id": "show_shipping", "label": "Versandinformationen (shipping_policy)", "default": false },
-        { "type": "checkbox", "id": "show_subscription", "label": "Abo-Bedingungen (subscription_policy)", "default": false },
-        { "type": "link_list", "id": "extra_menu", "label": "Zusätzliche Links", "info": "Z.B. Impressum — verlinke das Menü mit den Seiten, die kein Shopify-Policy-Pendant haben." }
+        { "type": "paragraph", "content": "Pro Eintrag: Sichtbarkeit toggeln, optional Label umbenennen und/oder eine eigene URL setzen. Leer = Shopify-Policy-Titel und -URL aus Admin → Einstellungen → Richtlinien. Ist die Policy dort nicht befüllt UND keine eigene URL gesetzt, wird der Eintrag automatisch ausgeblendet." },
+
+        { "type": "header", "content": "Datenschutz" },
+        { "type": "checkbox", "id": "show_privacy", "label": "Anzeigen", "default": true },
+        { "type": "text", "id": "privacy_label", "label": "Label", "info": "Leer = Shopify-Titel (z.B. „Privacy policy“)" },
+        { "type": "url", "id": "privacy_url", "label": "URL", "info": "Leer = Shopify-Policy-URL" },
+
+        { "type": "header", "content": "AGB / Nutzungsbedingungen" },
+        { "type": "checkbox", "id": "show_terms", "label": "Anzeigen", "default": true },
+        { "type": "text", "id": "terms_label", "label": "Label" },
+        { "type": "url", "id": "terms_url", "label": "URL" },
+
+        { "type": "header", "content": "Rückgaberecht" },
+        { "type": "checkbox", "id": "show_refund", "label": "Anzeigen", "default": false },
+        { "type": "text", "id": "refund_label", "label": "Label" },
+        { "type": "url", "id": "refund_url", "label": "URL" },
+
+        { "type": "header", "content": "Versandinformationen" },
+        { "type": "checkbox", "id": "show_shipping", "label": "Anzeigen", "default": false },
+        { "type": "text", "id": "shipping_label", "label": "Label" },
+        { "type": "url", "id": "shipping_url", "label": "URL" },
+
+        { "type": "header", "content": "Abo-Bedingungen" },
+        { "type": "checkbox", "id": "show_subscription", "label": "Anzeigen", "default": false },
+        { "type": "text", "id": "subscription_label", "label": "Label" },
+        { "type": "url", "id": "subscription_url", "label": "URL" },
+
+        { "type": "header", "content": "Zusätzliche Links" },
+        { "type": "link_list", "id": "extra_menu", "label": "Menü", "info": "Z.B. Impressum — verlinke das Menü mit den Seiten, die kein Shopify-Policy-Pendant haben." }
       ]
     }
   ],
