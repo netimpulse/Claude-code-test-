@@ -246,7 +246,7 @@
         "heading_highlight": "Theme-Store",
         "subheading": "Eine Auswahl unserer Premium-Themes.",
         "show_intro": true,
-        "card_bg_light": "#c0eff2",
+        "card_bg_light": "rgba(0,0,0,0)",
         "card_bg_dark": "",
         "card_border": "",
         "color_scheme": "scheme-sand",
