@@ -1,56 +1,316 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
+{% comment %}
+  NetImpulse footer — "Zelt"-inspired editorial dark footer.
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
+  Left column:   wordmark + social icon row
+  Middle:        up to 4 menu columns (manual menu_column blocks) plus
+                 an optional legal_column block that auto-renders the
+                 Shopify-managed policies (privacy, terms, refund,
+                 shipping, subscription, contact) so they always stay
+                 in sync with the merchant's policy texts.
+  Right column:  QR code image with caption
 
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+  Bottom: small copyright row.
+
+  Each social network has its own setting pair (show + url) so the
+  merchant can hide individual icons. The QR area can be turned off
+  entirely. All colours fall back to scheme tokens.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+
+  assign wordmark = section.settings.wordmark_text
+  if wordmark == blank
+    assign wordmark = shop.name
+  endif
+
+  assign socials_count = 0
+  if section.settings.show_linkedin and section.settings.linkedin_url != blank
+    assign socials_count = socials_count | plus: 1
+  endif
+  if section.settings.show_twitter and section.settings.twitter_url != blank
+    assign socials_count = socials_count | plus: 1
+  endif
+  if section.settings.show_instagram and section.settings.instagram_url != blank
+    assign socials_count = socials_count | plus: 1
+  endif
+  if section.settings.show_medium and section.settings.medium_url != blank
+    assign socials_count = socials_count | plus: 1
+  endif
+  if section.settings.show_facebook and section.settings.facebook_url != blank
+    assign socials_count = socials_count | plus: 1
+  endif
+  if section.settings.show_youtube and section.settings.youtube_url != blank
+    assign socials_count = socials_count | plus: 1
+  endif
+  if section.settings.show_tiktok and section.settings.tiktok_url != blank
+    assign socials_count = socials_count | plus: 1
+  endif
+
+  assign show_qr = section.settings.show_qr
+  if section.settings.qr_image == blank
+    assign show_qr = false
+  endif
+-%}
+
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if section.settings.bg_color != blank %}--ni-footer-bg: {{ section.settings.bg_color }};{% endif %}
+    {%- if section.settings.text_color != blank %}--ni-footer-text: {{ section.settings.text_color }};{% endif %}
+    {%- if section.settings.muted_color != blank %}--ni-footer-muted: {{ section.settings.muted_color }};{% endif %}
+    {%- if scheme.settings.background != blank %}--ni-footer-bg-fallback: {{ scheme.settings.background }};{% endif %}
+    {%- if scheme.settings.text != blank %}--ni-footer-text-fallback: {{ scheme.settings.text }};{% endif %}
+    --ni-footer-wordmark-family: {{ section.settings.wordmark_font.family }}, {{ section.settings.wordmark_font.fallback_families }};
+    --ni-footer-wordmark-style: {{ section.settings.wordmark_font.style }};
+    --ni-footer-wordmark-weight: {{ section.settings.wordmark_font.weight }};
+    --ni-footer-wordmark-size: {{ section.settings.wordmark_size }}px;
+    --ni-footer-pad-top: {{ section.settings.padding_top }}px;
+    --ni-footer-pad-bottom: {{ section.settings.padding_bottom }}px;
+    {{ section.settings.wordmark_font | font_face: font_display: 'swap' }}
+  }
+{% endstyle %}
+
+<footer class="ni-footer color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+  <div class="ni-footer__inner">
+    <div class="ni-footer__grid">
+
+      <div class="ni-footer__brand">
+        <a class="ni-footer__wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+          {{- wordmark | escape -}}
+        </a>
+
+        {%- if socials_count > 0 -%}
+          <ul class="ni-footer__socials" role="list">
+            {%- if section.settings.show_linkedin and section.settings.linkedin_url != blank -%}
+              <li>
+                <a class="ni-footer__social" href="{{ section.settings.linkedin_url }}" aria-label="LinkedIn" rel="noopener" target="_blank">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 11-.02 5.01A2.5 2.5 0 014.98 3.5zM3 9h4v12H3V9zm7 0h3.84v1.64h.05c.54-1 1.84-2.04 3.78-2.04 4.05 0 4.8 2.66 4.8 6.12V21h-4v-5.4c0-1.29-.03-2.95-1.8-2.95-1.8 0-2.07 1.4-2.07 2.85V21h-4V9z"/>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if section.settings.show_twitter and section.settings.twitter_url != blank -%}
+              <li>
+                <a class="ni-footer__social" href="{{ section.settings.twitter_url }}" aria-label="X / Twitter" rel="noopener" target="_blank">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231L18.244 2.25zm-1.16 17.52h1.833L7.084 4.126H5.117L17.084 19.77z"/>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if section.settings.show_instagram and section.settings.instagram_url != blank -%}
+              <li>
+                <a class="ni-footer__social" href="{{ section.settings.instagram_url }}" aria-label="Instagram" rel="noopener" target="_blank">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.94c-3.14 0-3.51.01-4.75.07-1.07.05-1.65.23-2.04.38-.51.2-.88.44-1.27.83-.39.39-.63.76-.83 1.27-.15.39-.33.97-.38 2.04-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.05 1.07.23 1.65.38 2.04.2.51.44.88.83 1.27.39.39.76.63 1.27.83.39.15.97.33 2.04.38 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c1.07-.05 1.65-.23 2.04-.38.51-.2.88-.44 1.27-.83.39-.39.63-.76.83-1.27.15-.39.33-.97.38-2.04.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-1.07-.23-1.65-.38-2.04-.2-.51-.44-.88-.83-1.27-.39-.39-.76-.63-1.27-.83-.39-.15-.97-.33-2.04-.38C15.51 4.11 15.14 4.1 12 4.1zm0 3.3a4.6 4.6 0 110 9.2 4.6 4.6 0 010-9.2zm0 7.6a3 3 0 100-6 3 3 0 000 6zm5.85-7.85a1.08 1.08 0 11-2.16 0 1.08 1.08 0 012.16 0z"/>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if section.settings.show_medium and section.settings.medium_url != blank -%}
+              <li>
+                <a class="ni-footer__social" href="{{ section.settings.medium_url }}" aria-label="Medium" rel="noopener" target="_blank">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M2.5 5.2c.4.2.6.7.6 1.2v11.2c0 .5-.1.9-.4 1.1L1 20.4v.3h6.2v-.3l-1.7-1.5c-.3-.3-.4-.6-.4-1.1V7.7l5.4 13.2h.6l4.7-13.2v10.5c0 .3 0 .4-.2.6l-1.3 1.3v.3h6.4v-.3l-1.3-1.3c-.2-.2-.2-.3-.2-.6V5.7c0-.3 0-.4.2-.6l1.3-1.3v-.3H17l-3.4 9.7L9.7 3.5H4.5v.3l1.5 1.8c.3.4.4.4.5.6z"/>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if section.settings.show_facebook and section.settings.facebook_url != blank -%}
+              <li>
+                <a class="ni-footer__social" href="{{ section.settings.facebook_url }}" aria-label="Facebook" rel="noopener" target="_blank">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.13 8.44 9.88V14.9H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.9h-2.33v6.98C18.34 21.13 22 16.99 22 12z"/>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if section.settings.show_youtube and section.settings.youtube_url != blank -%}
+              <li>
+                <a class="ni-footer__social" href="{{ section.settings.youtube_url }}" aria-label="YouTube" rel="noopener" target="_blank">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M23.5 6.2a3 3 0 00-2.1-2.1C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.6A3 3 0 00.5 6.2C0 8 0 12 0 12s0 4 .5 5.8a3 3 0 002.1 2.1c1.8.6 9.4.6 9.4.6s7.6 0 9.4-.6a3 3 0 002.1-2.1C24 16 24 12 24 12s0-4-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if section.settings.show_tiktok and section.settings.tiktok_url != blank -%}
+              <li>
+                <a class="ni-footer__social" href="{{ section.settings.tiktok_url }}" aria-label="TikTok" rel="noopener" target="_blank">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M19.6 6.7a5.6 5.6 0 01-3.3-1.1 5.6 5.6 0 01-2.2-3.6h-3.4v13.1a2.7 2.7 0 11-1.9-2.6V9a6 6 0 105.3 6V8.7a8.9 8.9 0 005.5 1.9V6.7z"/>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <nav class="ni-footer__nav" aria-label="Footer">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+
+              {%- when 'menu_column' -%}
+                <div class="ni-footer__col" {{ block.shopify_attributes }}>
+                  {%- if block.settings.heading != blank -%}
+                    <h2 class="ni-footer__col-title">{{ block.settings.heading | escape }}</h2>
+                  {%- endif -%}
+                  {%- if block.settings.menu.links.size > 0 -%}
+                    <ul class="ni-footer__col-list" role="list">
+                      {%- for link in block.settings.menu.links -%}
+                        <li><a class="ni-footer__link" href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+
+              {%- when 'legal_column' -%}
+                <div class="ni-footer__col" {{ block.shopify_attributes }}>
+                  {%- if block.settings.heading != blank -%}
+                    <h2 class="ni-footer__col-title">{{ block.settings.heading | escape }}</h2>
+                  {%- endif -%}
+                  <ul class="ni-footer__col-list" role="list">
+                    {%- if block.settings.show_privacy and shop.privacy_policy != blank -%}
+                      <li><a class="ni-footer__link" href="{{ shop.privacy_policy.url }}">{{ shop.privacy_policy.title | escape }}</a></li>
+                    {%- endif -%}
+                    {%- if block.settings.show_terms and shop.terms_of_service != blank -%}
+                      <li><a class="ni-footer__link" href="{{ shop.terms_of_service.url }}">{{ shop.terms_of_service.title | escape }}</a></li>
+                    {%- endif -%}
+                    {%- if block.settings.show_refund and shop.refund_policy != blank -%}
+                      <li><a class="ni-footer__link" href="{{ shop.refund_policy.url }}">{{ shop.refund_policy.title | escape }}</a></li>
+                    {%- endif -%}
+                    {%- if block.settings.show_shipping and shop.shipping_policy != blank -%}
+                      <li><a class="ni-footer__link" href="{{ shop.shipping_policy.url }}">{{ shop.shipping_policy.title | escape }}</a></li>
+                    {%- endif -%}
+                    {%- if block.settings.show_subscription and shop.subscription_policy != blank -%}
+                      <li><a class="ni-footer__link" href="{{ shop.subscription_policy.url }}">{{ shop.subscription_policy.title | escape }}</a></li>
+                    {%- endif -%}
+                    {%- if block.settings.extra_menu.links.size > 0 -%}
+                      {%- for link in block.settings.extra_menu.links -%}
+                        <li><a class="ni-footer__link" href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                      {%- endfor -%}
+                    {%- endif -%}
+                  </ul>
+                </div>
+
+            {%- endcase -%}
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+
+      {%- if show_qr -%}
+        <div class="ni-footer__qr">
+          {%- assign qr_alt = section.settings.qr_image.alt | default: section.settings.qr_caption | default: 'QR code' -%}
+          {{
+            section.settings.qr_image
+            | image_url: width: 320
+            | image_tag:
+              loading: 'lazy',
+              widths: '160, 240, 320',
+              sizes: '160px',
+              alt: qr_alt,
+              class: 'ni-footer__qr-img'
+          }}
+          {%- if section.settings.qr_caption != blank -%}
+            <span class="ni-footer__qr-caption">{{ section.settings.qr_caption | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+    </div>
+
+    {%- if section.settings.show_copyright -%}
+      <div class="ni-footer__base">
+        <small class="ni-footer__copyright">
+          &copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}.
+          {%- if section.settings.copyright_suffix != blank %} {{ section.settings.copyright_suffix | escape }}{% endif -%}
+        </small>
+      </div>
+    {%- endif -%}
   </div>
 </footer>
 
-{% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-  footer a {
-    text-decoration: none;
-    color: var(--color-foreground);
-  }
-  footer .footer__links,
-  footer .footer__payment {
-    display: flex;
-    gap: 1rem;
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
-  "name": "t:general.footer",
+  "name": "Footer",
   "settings": [
+    { "type": "header", "content": "Wordmark" },
+    { "type": "text", "id": "wordmark_text", "label": "Wordmark text", "info": "Leer = Shop-Name", "default": "zelt" },
+    { "type": "font_picker", "id": "wordmark_font", "label": "Wordmark font", "default": "assistant_n4" },
+    { "type": "range", "id": "wordmark_size", "label": "Wordmark size", "min": 28, "max": 96, "step": 2, "unit": "px", "default": 52 },
+
+    { "type": "header", "content": "Social icons", "info": "Pro Netzwerk Checkbox aktivieren UND eine URL eingeben, damit das Icon erscheint." },
+    { "type": "checkbox", "id": "show_linkedin", "label": "LinkedIn anzeigen", "default": true },
+    { "type": "url", "id": "linkedin_url", "label": "LinkedIn URL" },
+    { "type": "checkbox", "id": "show_twitter", "label": "X / Twitter anzeigen", "default": true },
+    { "type": "url", "id": "twitter_url", "label": "X / Twitter URL" },
+    { "type": "checkbox", "id": "show_instagram", "label": "Instagram anzeigen", "default": true },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL" },
+    { "type": "checkbox", "id": "show_medium", "label": "Medium anzeigen", "default": false },
+    { "type": "url", "id": "medium_url", "label": "Medium URL" },
+    { "type": "checkbox", "id": "show_facebook", "label": "Facebook anzeigen", "default": false },
+    { "type": "url", "id": "facebook_url", "label": "Facebook URL" },
+    { "type": "checkbox", "id": "show_youtube", "label": "YouTube anzeigen", "default": false },
+    { "type": "url", "id": "youtube_url", "label": "YouTube URL" },
+    { "type": "checkbox", "id": "show_tiktok", "label": "TikTok anzeigen", "default": false },
+    { "type": "url", "id": "tiktok_url", "label": "TikTok URL" },
+
+    { "type": "header", "content": "QR code" },
+    { "type": "checkbox", "id": "show_qr", "label": "QR-Code anzeigen", "default": true },
+    { "type": "image_picker", "id": "qr_image", "label": "QR-Code Bild" },
+    { "type": "text", "id": "qr_caption", "label": "QR-Caption", "default": "Scan with iPhone" },
+
+    { "type": "header", "content": "Copyright" },
+    { "type": "checkbox", "id": "show_copyright", "label": "Copyright-Zeile anzeigen", "default": true },
+    { "type": "text", "id": "copyright_suffix", "label": "Suffix-Text", "info": "z.B. „Alle Rechte vorbehalten.“" },
+
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
+    { "type": "color", "id": "bg_color", "label": "Hintergrund", "info": "Überschreibt das Color-Scheme. Leer = Scheme." },
+    { "type": "color", "id": "text_color", "label": "Textfarbe" },
+    { "type": "color", "id": "muted_color", "label": "Spalten-Überschriften / sekundäre Farbe" },
+    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "blocks": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "menu_column",
+      "name": "Menu column",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Überschrift", "default": "PRODUCT" },
+        { "type": "link_list", "id": "menu", "label": "Menü", "info": "Erstelle ein Menü unter Online-Shop → Navigation und wähle es hier aus." }
+      ]
     },
     {
-      "type": "checkbox",
-      "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
-      "default": true
+      "type": "legal_column",
+      "name": "Legal column",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Überschrift", "default": "LEGAL" },
+        { "type": "paragraph", "content": "Die folgenden Links zeigen auf die Shopify-Policy-Seiten und aktualisieren sich automatisch, sobald du dort etwas änderst." },
+        { "type": "checkbox", "id": "show_privacy", "label": "Datenschutz (privacy_policy)", "default": true },
+        { "type": "checkbox", "id": "show_terms", "label": "AGB / Nutzungsbedingungen (terms_of_service)", "default": true },
+        { "type": "checkbox", "id": "show_refund", "label": "Rückgaberecht (refund_policy)", "default": false },
+        { "type": "checkbox", "id": "show_shipping", "label": "Versandinformationen (shipping_policy)", "default": false },
+        { "type": "checkbox", "id": "show_subscription", "label": "Abo-Bedingungen (subscription_policy)", "default": false },
+        { "type": "link_list", "id": "extra_menu", "label": "Zusätzliche Links", "info": "Z.B. Impressum — verlinke das Menü mit den Seiten, die kein Shopify-Policy-Pendant haben." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "menu_column", "settings": { "heading": "PRODUCT" } },
+        { "type": "menu_column", "settings": { "heading": "RESOURCES" } },
+        { "type": "legal_column" }
+      ]
     }
   ]
 }
