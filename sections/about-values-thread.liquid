@@ -1,0 +1,187 @@
+{% comment %}
+  About — Values (Thread)
+  ----------------------------------------------------------------
+  3-Spalten-Layout: linke Werte | mittlere SVG-Linie | rechte Werte.
+  Werte alternieren zeilenweise links/rechts. Die SVG-Linie nutzt
+  eine 1:1-Pixelabbildung (kein Aspect-Ratio-Stretch), damit die
+  Knotenpunkte echte Kreise bleiben und die Linie nicht verzogen
+  wirkt. Beim Scrollen in den Viewport zeichnet sich die Linie
+  progressiv (stroke-dashoffset).
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+  assign step = 220
+  assign track_w = 120
+  assign vb_h = block_count | times: step
+-%}
+
+{{ 'section-about-values-thread.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+  #shopify-section-{{ section.id }} .avt {
+    --avt-accent: {{ accent }};
+    --avt-pad-top: {{ section.settings.padding_top }}px;
+    --avt-pad-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --avt-bg: {{ scheme.settings.background }};
+      --avt-text: {{ scheme.settings.text }};
+      --avt-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --avt-line: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="avt full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="avt-heading-{{ section.id }}"{% endif %}
+>
+  <div class="avt__inner">
+    {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
+      <header class="avt__head">
+        {%- if section.settings.kicker != blank -%}
+          <div class="avt__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="avt-heading-{{ section.id }}" class="avt__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="avt__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <values-thread
+        class="avt__stage"
+        style="--avt-rows: {{ block_count }}; --avt-step: {{ step }}px; --avt-track: {{ track_w }}px;"
+      >
+        <div class="avt__track" aria-hidden="true">
+          <svg
+            class="avt__svg"
+            viewBox="0 0 {{ track_w }} {{ vb_h }}"
+            preserveAspectRatio="xMidYMid meet"
+            focusable="false"
+          >
+            {%- comment -%} Build a smooth bezier weaving through the nodes {%- endcomment -%}
+            {%- assign mid_x = track_w | divided_by: 2 -%}
+            {%- assign left_x = 24 -%}
+            {%- assign right_x = track_w | minus: 24 -%}
+            {%- capture path -%}
+              {%- for block in section.blocks -%}
+                {%- assign m = forloop.index0 | modulo: 2 -%}
+                {%- if m == 0 -%}{%- assign cx = left_x -%}{%- else -%}{%- assign cx = right_x -%}{%- endif -%}
+                {%- assign cy = forloop.index0 | times: step | plus: 110 -%}
+                {%- if forloop.first -%}
+                  M {{ cx }} 0 L {{ cx }} {{ cy }}
+                {%- else -%}
+                  {%- assign prev_m = forloop.index0 | minus: 1 | modulo: 2 -%}
+                  {%- if prev_m == 0 -%}{%- assign prev_x = left_x -%}{%- else -%}{%- assign prev_x = right_x -%}{%- endif -%}
+                  {%- assign prev_y = forloop.index0 | minus: 1 | times: step | plus: 110 -%}
+                  {%- assign mid_y = prev_y | plus: cy | divided_by: 2 -%}
+                  C {{ prev_x }} {{ mid_y }}, {{ cx }} {{ mid_y }}, {{ cx }} {{ cy }}
+                {%- endif -%}
+                {%- if forloop.last -%}
+                  L {{ cx }} {{ vb_h }}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+
+            <path
+              class="avt__path avt__path--ghost"
+              d="{{ path | strip_newlines | strip }}"
+              pathLength="1"
+            />
+            <path
+              class="avt__path avt__path--draw"
+              d="{{ path | strip_newlines | strip }}"
+              pathLength="1"
+            />
+
+            {%- for block in section.blocks -%}
+              {%- assign m = forloop.index0 | modulo: 2 -%}
+              {%- if m == 0 -%}{%- assign cx = left_x -%}{%- else -%}{%- assign cx = right_x -%}{%- endif -%}
+              {%- assign cy = forloop.index0 | times: step | plus: 110 -%}
+              <circle class="avt__node" data-avt-node cx="{{ cx }}" cy="{{ cy }}" r="7" />
+            {%- endfor -%}
+          </svg>
+        </div>
+
+        <ol class="avt__list" role="list">
+          {%- for block in section.blocks -%}
+            {%- assign m = forloop.index0 | modulo: 2 -%}
+            {%- assign num = forloop.index | prepend: '0' | slice: -2, 2 -%}
+            <li
+              class="avt__item avt__item--{% if m == 0 %}left{% else %}right{% endif %}"
+              style="grid-row: {{ forloop.index }};"
+              {{ block.shopify_attributes }}
+            >
+              <div class="avt__card">
+                <span class="avt__num">{{ num }}</span>
+                {%- if block.settings.title != blank -%}
+                  <h3 class="avt__title">{{ block.settings.title | escape }}</h3>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="avt__text">{{ block.settings.text | escape }}</p>
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endfor -%}
+        </ol>
+      </values-thread>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'about-values-thread.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "About: Thread",
+  "tag": "section",
+  "class": "shopify-section--avt",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Was uns wichtig ist" },
+    { "type": "textarea", "id": "heading", "label": "Überschrift", "default": "Werte, die sich durchziehen." },
+    { "type": "textarea", "id": "intro", "label": "Begleittext", "default": "Vier Prinzipien, die in jedem Projekt einen roten Faden bilden." },
+    { "type": "header", "content": "Darstellung" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Farbschema", "default": "scheme-1" },
+    { "type": "color", "id": "accent_color", "label": "Akzentfarbe (Linie, Knoten)", "default": "#1f2328" },
+    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Typografie" },
+    { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Wert",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Wert (Titel)", "default": "Klarheit" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About: Thread",
+      "category": "About",
+      "blocks": [
+        { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." } },
+        { "type": "value", "settings": { "title": "Substanz", "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt." } },
+        { "type": "value", "settings": { "title": "Direktheit", "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager." } },
+        { "type": "value", "settings": { "title": "Tempo", "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen." } }
+      ]
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}

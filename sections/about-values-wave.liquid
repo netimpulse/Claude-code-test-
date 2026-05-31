@@ -1,0 +1,172 @@
+{% comment %}
+  About — Values (Wave)
+  ----------------------------------------------------------------
+  Werte stehen horizontal als typografische Statements. Darunter
+  fließt kontinuierlich eine SVG-Sinus-Welle. Klick auf einen Wert
+  morpht die Welle: ein Peak wandert unter den aktiven Wert und ein
+  Detail-Text fadet darunter ein. Welle läuft langsam weiter, sodass
+  immer Bewegung in der Section bleibt.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign block_count = section.blocks.size
+-%}
+
+{{ 'section-about-values-wave.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+  #shopify-section-{{ section.id }} .avw {
+    --avw-accent: {{ accent }};
+    --avw-pad-top: {{ section.settings.padding_top }}px;
+    --avw-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --avw-flow: {{ section.settings.flow_duration | default: 18 }}s;
+    {%- if scheme.settings.background != blank -%}
+      --avw-bg: {{ scheme.settings.background }};
+      --avw-text: {{ scheme.settings.text }};
+      --avw-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --avw-line: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<section
+  class="avw full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="avw-heading-{{ section.id }}"{% endif %}
+>
+  <div class="avw__inner">
+    {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
+      <header class="avw__head">
+        {%- if section.settings.kicker != blank -%}
+          <div class="avw__kicker">{{ section.settings.kicker | escape }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="avw-heading-{{ section.id }}" class="avw__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="avw__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <values-wave class="avw__stage">
+        <ul class="avw__row" role="list">
+          {%- for block in section.blocks -%}
+            <li class="avw__cell" {{ block.shopify_attributes }}>
+              <button
+                type="button"
+                class="avw__word{% if forloop.first %} is-active{% endif %}"
+                data-avw-word
+                data-index="{{ forloop.index0 }}"
+                aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+              >{{ block.settings.title | escape }}</button>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <div class="avw__wave-wrap" aria-hidden="true">
+          <svg class="avw__wave" viewBox="0 0 1200 120" preserveAspectRatio="none" focusable="false">
+            <defs>
+              {%- comment -%} Layered sine waves: two paths drift continuously for organic movement {%- endcomment -%}
+              <path
+                id="avw-sine-{{ section.id }}"
+                d="M -1200 60
+                   C -1050 20, -900 100, -750 60
+                   S -450 20, -300 60
+                   S 0 100, 150 60
+                   S 450 20, 600 60
+                   S 900 100, 1050 60
+                   S 1350 20, 1500 60
+                   S 1800 100, 1950 60
+                   S 2250 20, 2400 60"
+              />
+            </defs>
+            <use href="#avw-sine-{{ section.id }}" class="avw__wave-line avw__wave-line--back" />
+            <use href="#avw-sine-{{ section.id }}" class="avw__wave-line avw__wave-line--front" />
+            <line
+              class="avw__pin"
+              data-avw-pin
+              x1="0" y1="60" x2="0" y2="60"
+              vector-effect="non-scaling-stroke"
+            />
+            <circle
+              class="avw__pin-dot"
+              data-avw-pin-dot
+              cx="0" cy="60" r="6"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+        </div>
+
+        <div class="avw__panel" role="region" aria-live="polite">
+          {%- for block in section.blocks -%}
+            <div
+              class="avw__detail{% if forloop.first %} is-active{% endif %}"
+              data-avw-detail
+              data-index="{{ forloop.index0 }}"
+            >
+              {%- if block.settings.text != blank -%}
+                <p class="avw__detail-text">{{ block.settings.text | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </values-wave>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'about-values-wave.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "About: Wave",
+  "tag": "section",
+  "class": "shopify-section--avw",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Was uns wichtig ist" },
+    { "type": "textarea", "id": "heading", "label": "Überschrift", "default": "Werte im Fluss." },
+    { "type": "textarea", "id": "intro", "label": "Begleittext", "default": "Wähle einen Wert — die Welle führt dich zur Definition." },
+    { "type": "header", "content": "Animation" },
+    { "type": "range", "id": "flow_duration", "label": "Wellen-Tempo", "min": 8, "max": 40, "step": 2, "unit": "s", "default": 18 },
+    { "type": "header", "content": "Darstellung" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Farbschema", "default": "scheme-1" },
+    { "type": "color", "id": "accent_color", "label": "Akzentfarbe (Welle, Pin)", "default": "#1f2328" },
+    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Typografie" },
+    { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Wert",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Wert (Wort)", "default": "Klarheit" },
+        { "type": "textarea", "id": "text", "label": "Definition", "default": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About: Wave",
+      "category": "About",
+      "blocks": [
+        { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." } },
+        { "type": "value", "settings": { "title": "Substanz", "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt." } },
+        { "type": "value", "settings": { "title": "Direktheit", "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager." } },
+        { "type": "value", "settings": { "title": "Tempo", "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen." } }
+      ]
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}

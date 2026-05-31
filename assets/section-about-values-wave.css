@@ -1,0 +1,244 @@
+/* section-about-values-wave.css
+ * Horizontal row of value words above a continuously flowing sine wave.
+ * Clicking a word moves a pin/dot along the wave under the active word
+ * and reveals the matching definition.
+ */
+
+.avw {
+  position: relative;
+  padding-top: var(--avw-pad-top, 80px);
+  padding-bottom: var(--avw-pad-bottom, 80px);
+  background: var(--avw-bg, #f4eee2);
+  color: var(--avw-text, #1f2328);
+  overflow: hidden;
+}
+
+.avw__inner {
+  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
+  margin: 0 auto;
+}
+
+/* ---- Head ---- */
+.avw__head {
+  max-width: 60ch;
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+
+.avw__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--avw-muted, #6b665e);
+  font-size: calc(0.9rem * var(--fs-text, 1));
+  margin-bottom: 14px;
+}
+
+.avw__kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.avw__heading {
+  margin: 0 0 14px;
+  font-size: calc(clamp(1.9rem, 4.2vw, 3.2rem) * var(--fs-heading, 1));
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+.avw__intro {
+  margin: 0;
+  color: var(--avw-muted, #4a4a4a);
+  font-size: calc(clamp(0.95rem, 1.2vw, 1.05rem) * var(--fs-text, 1));
+  line-height: 1.55;
+}
+
+/* ---- Stage ---- */
+.avw__stage {
+  display: block;
+  position: relative;
+}
+
+/* ---- Words row ---- */
+.avw__row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--avw-cols, 4), minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.avw__cell {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+
+.avw__word {
+  background: none;
+  border: 0;
+  padding: 0 6px 18px;
+  margin: 0;
+  font: inherit;
+  font-family: inherit;
+  font-size: calc(clamp(1.6rem, 3.8vw, 3.2rem) * var(--fs-heading, 1));
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--avw-text, #1f2328);
+  cursor: pointer;
+  position: relative;
+  transition: color 220ms ease, transform 220ms ease, opacity 220ms ease;
+  opacity: 0.42;
+}
+
+.avw__word:hover,
+.avw__word:focus-visible {
+  opacity: 0.85;
+  outline: none;
+}
+
+.avw__word:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.avw__word.is-active {
+  opacity: 1;
+  color: var(--avw-accent, #1f2328);
+  transform: translateY(-2px);
+}
+
+/* ---- Wave SVG ---- */
+.avw__wave-wrap {
+  position: relative;
+  width: 100%;
+  height: clamp(64px, 8vw, 96px);
+  margin-top: -8px;
+  z-index: 1;
+}
+
+.avw__wave {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.avw__wave-line {
+  fill: none;
+  stroke: var(--avw-accent, #1f2328);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.avw__wave-line--back {
+  stroke: var(--avw-line, rgba(31, 35, 40, 0.18));
+  stroke-width: 1.5;
+  animation: avw-flow var(--avw-flow, 18s) linear infinite;
+  animation-delay: -3s;
+}
+
+.avw__wave-line--front {
+  stroke-width: 1.8;
+  animation: avw-flow var(--avw-flow, 18s) linear infinite;
+}
+
+@keyframes avw-flow {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(600px, 0, 0); }
+}
+
+.avw__pin {
+  stroke: var(--avw-accent, #1f2328);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+  opacity: 0.55;
+  transition: x1 380ms cubic-bezier(0.6, 0, 0.2, 1),
+              x2 380ms cubic-bezier(0.6, 0, 0.2, 1),
+              y1 380ms cubic-bezier(0.6, 0, 0.2, 1);
+}
+
+.avw__pin-dot {
+  fill: var(--avw-accent, #1f2328);
+  stroke: var(--avw-bg, #f4eee2);
+  stroke-width: 2;
+  transition: cx 380ms cubic-bezier(0.6, 0, 0.2, 1),
+              cy 380ms cubic-bezier(0.6, 0, 0.2, 1);
+}
+
+/* ---- Detail panel ---- */
+.avw__panel {
+  position: relative;
+  margin-top: clamp(20px, 3vw, 32px);
+  padding-top: clamp(20px, 2.5vw, 28px);
+  border-top: 1px solid var(--avw-line, rgba(31, 35, 40, 0.18));
+  min-height: 5em;
+}
+
+.avw__detail {
+  position: absolute;
+  inset: clamp(20px, 2.5vw, 28px) 0 0 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 280ms ease-out, transform 320ms ease-out;
+  pointer-events: none;
+  max-width: 72ch;
+}
+
+.avw__detail.is-active {
+  position: relative;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.avw__detail-text {
+  margin: 0;
+  font-size: calc(clamp(1rem, 1.3vw, 1.2rem) * var(--fs-text, 1));
+  line-height: 1.6;
+  color: var(--avw-text, #1f2328);
+}
+
+/* ---- Mobile: scroll-row + vertical wave ---- */
+@media (max-width: 720px) {
+  .avw__row {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: clamp(20px, 6vw, 32px);
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .avw__cell {
+    scroll-snap-align: center;
+  }
+  .avw__word {
+    font-size: calc(clamp(2rem, 11vw, 3.2rem) * var(--fs-heading, 1));
+  }
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .avw__wave-line--front,
+  .avw__wave-line--back {
+    animation: none;
+  }
+  .avw__word,
+  .avw__pin,
+  .avw__pin-dot,
+  .avw__detail {
+    transition: none;
+  }
+}
