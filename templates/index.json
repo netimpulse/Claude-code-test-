@@ -219,7 +219,7 @@
         "theme_3": {
           "type": "theme",
           "settings": {
-            "product": "",
+            "product": "forge",
             "category": "Section Pack",
             "tags": "Sections, Editor",
             "preview_style": "light"
