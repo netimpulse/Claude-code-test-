@@ -5,8 +5,12 @@
   Two modes per add-on, controlled by each add-on product's
   `custom.addon_mode` metafield:
 
-  - "fixed_price"  → checkbox adds the add-on's first available variant
-                     as an extra line item alongside the main product.
+  - "fixed_price"  → checkbox adds the add-on's variant as an extra
+                     line item alongside the main product. When the
+                     add-on product has multiple variants (e.g. pricing
+                     tiers by shop size), a radio group appears under
+                     the checkbox so the customer can pick one. With a
+                     single variant the radio group is omitted.
   - "interest_only"→ checkbox sets a cart attribute "Service auf Anfrage:
                      <Title>" = "Ja" so the merchant sees the interest on
                      the order and follows up with an individual quote.
@@ -33,30 +37,38 @@
         {%- liquid
           assign mode = addon.metafields.custom.addon_mode | default: 'fixed_price'
           assign info = addon.metafields.custom.addon_info
-          assign addon_variant = addon.selected_or_first_available_variant
-          assign addon_available = false
-          if addon_variant != blank and addon_variant.available
-            assign addon_available = true
+          assign first_variant = addon.selected_or_first_available_variant
+          assign first_available = false
+          if first_variant != blank and first_variant.available
+            assign first_available = true
           endif
+          assign multi_variant = false
+          if mode == 'fixed_price' and addon.variants.size > 1
+            assign multi_variant = true
+          endif
+          assign check_id = 'pd-addon-' | append: section.id | append: '-' | append: addon.id
         -%}
-        <li class="pd-addons__item pd-addons__item--{{ mode }}">
-          <label class="pd-addons__label{% unless addon_available or mode == 'interest_only' %} is-unavailable{% endunless %}">
-            <input
-              type="checkbox"
-              class="pd-addons__check"
-              data-pd-addon
-              data-addon-mode="{{ mode }}"
-              {%- if mode == 'fixed_price' and addon_variant != blank %} data-addon-variant-id="{{ addon_variant.id }}"{% endif %}
-              data-addon-handle="{{ addon.handle }}"
-              data-addon-title="{{ addon.title | escape }}"
-              {% unless addon_available or mode == 'interest_only' %}disabled{% endunless %}
-            >
+        <li class="pd-addons__item pd-addons__item--{{ mode }}{% if multi_variant %} pd-addons__item--has-variants{% endif %}">
+          <input
+            type="checkbox"
+            class="pd-addons__check"
+            id="{{ check_id }}"
+            data-pd-addon
+            data-addon-mode="{{ mode }}"
+            {%- if mode == 'fixed_price' and multi_variant == false and first_variant != blank %} data-addon-variant-id="{{ first_variant.id }}"{% endif %}
+            data-addon-handle="{{ addon.handle }}"
+            data-addon-title="{{ addon.title | escape }}"
+            {% unless first_available or mode == 'interest_only' %}disabled{% endunless %}
+          >
+          <label class="pd-addons__label{% unless first_available or mode == 'interest_only' %} is-unavailable{% endunless %}" for="{{ check_id }}">
             <span class="pd-addons__box" aria-hidden="true"></span>
             <span class="pd-addons__text">
               <span class="pd-addons__name">{{ addon.title | escape }}</span>
               {%- if mode == 'fixed_price' -%}
-                {%- if addon_variant != blank -%}
-                  <span class="pd-addons__price">{{ addon_variant.price | money }}</span>
+                {%- if multi_variant -%}
+                  <span class="pd-addons__price">ab {{ addon.price_min | money }}</span>
+                {%- elsif first_variant != blank -%}
+                  <span class="pd-addons__price">{{ first_variant.price | money }}</span>
                 {%- endif -%}
               {%- else -%}
                 <span class="pd-addons__price pd-addons__price--quote">Preis auf Anfrage</span>
@@ -66,6 +78,29 @@
               {%- endif -%}
             </span>
           </label>
+          {%- if multi_variant -%}
+            <fieldset class="pd-addons__variants" data-pd-addon-variants>
+              <legend class="visually-hidden">{{ addon.title | escape }} — Variante wählen</legend>
+              {%- for variant in addon.variants -%}
+                <label class="pd-addons__variant{% unless variant.available %} is-unavailable{% endunless %}">
+                  <input
+                    type="radio"
+                    class="pd-addons__variant-radio"
+                    name="addon-variant-{{ addon.id }}-{{ section.id }}"
+                    value="{{ variant.id }}"
+                    data-pd-addon-variant
+                    {% if forloop.first %}checked{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}
+                  >
+                  <span class="pd-addons__variant-dot" aria-hidden="true"></span>
+                  <span class="pd-addons__variant-text">
+                    <span class="pd-addons__variant-name">{{ variant.title | escape }}</span>
+                    <span class="pd-addons__variant-price">{{ variant.price | money }}{% unless variant.available %} · ausverkauft{% endunless %}</span>
+                  </span>
+                </label>
+              {%- endfor -%}
+            </fieldset>
+          {%- endif -%}
         </li>
       {%- endfor -%}
     </ul>

@@ -70,7 +70,10 @@
     /**
      * Returns { items: [{id, quantity}], attributes: {key: value} }
      * built from the currently checked add-on checkboxes.
-     * - fixed_price → extra cart item
+     * - fixed_price → extra cart item. For multi-variant addons the
+     *   variant id comes from the selected radio inside the addon's
+     *   sibling fieldset; for single-variant addons it comes from
+     *   data-addon-variant-id on the checkbox itself.
      * - interest_only → cart attribute the merchant sees on the order
      */
     _collectAddons() {
@@ -80,7 +83,12 @@
         const mode = cb.getAttribute("data-addon-mode");
         const title = cb.getAttribute("data-addon-title") || "";
         if (mode === "fixed_price") {
-          const id = cb.getAttribute("data-addon-variant-id");
+          let id = cb.getAttribute("data-addon-variant-id");
+          const li = cb.closest(".pd-addons__item");
+          if (li) {
+            const picked = li.querySelector("[data-pd-addon-variant]:checked");
+            if (picked) id = picked.value;
+          }
           if (id) items.push({ id: Number(id), quantity: 1 });
         } else if (mode === "interest_only") {
           attributes[`Service auf Anfrage: ${title}`] = "Ja";
