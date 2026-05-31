@@ -12,7 +12,7 @@
   --to-card-radius: 8px;
 
   position: relative;
-  padding: var(--to-padding-top, 72px) clamp(1rem, 3vw, 2rem) var(--to-padding-bottom, 72px);
+  padding: var(--to-padding-top, 56px) clamp(1rem, 3vw, 2rem) var(--to-padding-bottom, 56px);
   font-family: var(--font-body-family, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif);
   color: var(--to-text);
   background: var(--to-bg);
@@ -30,7 +30,7 @@
 
 .team-overview__heading {
   margin: 0 auto 14px;
-  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  font-size: clamp(1.4rem, 2.5vw, 2.34rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
   font-weight: 800;
@@ -43,7 +43,7 @@
   max-width: 640px;
   text-align: center;
   color: var(--to-muted);
-  font-size: clamp(1rem, 1.4vw, 1.1rem);
+  font-size: clamp(0.78rem, 1.09vw, 0.86rem);
   line-height: 1.6;
 }
 
@@ -105,7 +105,7 @@
 
 .team-overview__initials {
   font-weight: 800;
-  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  font-size: clamp(2.73rem, 6.24vw, 5.07rem);
   line-height: 1;
   letter-spacing: -0.06em;
   /* Slight lighten/darken on the card colour for a faded look */
@@ -190,7 +190,7 @@
 
 .team-overview__name {
   margin: 0;
-  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  font-size: clamp(0.9rem, 1.25vw, 1.09rem);
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1.2;
