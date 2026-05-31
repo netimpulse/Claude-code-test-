@@ -210,7 +210,7 @@
         "theme_2": {
           "type": "theme",
           "settings": {
-            "product": "",
+            "product": "nova",
             "category": "Fashion Theme",
             "tags": "Fashion, Shop",
             "preview_style": "light"
