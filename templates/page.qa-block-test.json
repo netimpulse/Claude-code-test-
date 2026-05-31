@@ -252,7 +252,29 @@
         "heading_scale": 100,
         "text_scale": 100
       }
+    },
+    "avt_qa": {
+      "type": "about-values-thread",
+      "blocks": {
+        "v1": { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." } },
+        "v2": { "type": "value", "settings": { "title": "Substanz", "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt." } },
+        "v3": { "type": "value", "settings": { "title": "Direktheit", "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager." } },
+        "v4": { "type": "value", "settings": { "title": "Tempo", "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen." } }
+      },
+      "block_order": ["v1", "v2", "v3", "v4"],
+      "settings": { "kicker": "Variation 1", "heading": "Werte, die sich durchziehen.", "intro": "Zigzag-Layout mit progressiv gezeichneter SVG-Linie.", "color_scheme": "scheme-1", "accent_color": "#1f2328", "padding_top": 80, "padding_bottom": 80 }
+    },
+    "avw_qa": {
+      "type": "about-values-wave",
+      "blocks": {
+        "v1": { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." } },
+        "v2": { "type": "value", "settings": { "title": "Substanz", "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt." } },
+        "v3": { "type": "value", "settings": { "title": "Direktheit", "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager." } },
+        "v4": { "type": "value", "settings": { "title": "Tempo", "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen." } }
+      },
+      "block_order": ["v1", "v2", "v3", "v4"],
+      "settings": { "kicker": "Variation 2", "heading": "Werte im Fluss.", "intro": "Horizontale Werte mit kontinuierlich fließender Sinus-Welle.", "flow_duration": 18, "color_scheme": "scheme-1", "accent_color": "#1f2328", "padding_top": 80, "padding_bottom": 80 }
     }
   },
-  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa"]
+  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa", "avt_qa", "avw_qa"]
 }
