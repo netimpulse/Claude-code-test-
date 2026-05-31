@@ -66,8 +66,8 @@
   padding: 0.75rem 0.25rem 1.5rem;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 80%;
-  gap: clamp(1rem, 2vw, 1.75rem);
+  grid-auto-columns: 84%;
+  gap: clamp(0.85rem, 1.8vw, 1.5rem);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -83,9 +83,12 @@
 
 .tsp__item { scroll-snap-align: start; min-width: 0; display: flex; }
 
-@media (min-width: 640px) { .tsp__track { grid-auto-columns: 46%; } }
-@media (min-width: 960px) { .tsp__track { grid-auto-columns: 31%; } }
-@media (min-width: 1280px) { .tsp__track { grid-auto-columns: 23%; } }
+@media (min-width: 560px) { .tsp__track { grid-auto-columns: 47%; } }
+@media (min-width: 820px) { .tsp__track { grid-auto-columns: 31%; } }
+/* Desktop: exactly three theme cards + the CTA card fit with no scrolling. */
+@media (min-width: 1040px) {
+  .tsp__track { gap: 1.5rem; grid-auto-columns: calc((100% - 4.5rem) / 4); }
+}
 
 /* --- Card (preview + info as one liftable unit on the background) --- */
 .tsp__card {
@@ -158,9 +161,10 @@
 .tsp__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.35rem; }
 .tsp__tag {
   font-size: calc(0.78rem * var(--fs-text, 1));
-  padding: 0.3rem 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--color-foreground, #14110b) 18%, transparent);
-  color: color-mix(in srgb, var(--color-foreground, #14110b) 70%, transparent);
+  padding: 0.32rem 0.7rem;
+  background: color-mix(in srgb, var(--color-foreground, #14110b) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-foreground, #14110b) 9%, transparent);
+  color: color-mix(in srgb, var(--color-foreground, #14110b) 72%, transparent);
   white-space: nowrap;
 }
 

@@ -94,6 +94,17 @@ test.describe("Theme Store Preview – Section", () => {
     expect(afterDrag).toBeLessThan(afterArrow);
   });
 
+  test("Three theme cards + the CTA fit without scrolling on desktop", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
+    const root = page.locator("[data-section-type='theme-store-preview']").first();
+    await expect(root.locator(".tsp__card--theme")).toHaveCount(3);
+    await expect(root.locator(".tsp__card--cta")).toHaveCount(1);
+    const track = root.locator("[data-tsp-track]");
+    const overflow = await track.evaluate((el) => el.scrollWidth > el.clientWidth + 2);
+    expect(overflow).toBe(false);
+  });
+
   test("No horizontal overflow at 320px viewport", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
