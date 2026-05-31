@@ -1,0 +1,54 @@
+/* section-ni-text.css
+ * Simple editorial text block with independent alignment per element.
+ */
+
+.ni-text {
+  --ni-text-bg: var(--ni-text-bg-fallback, var(--color-background, #f8f6f1));
+  --ni-text-text: var(--ni-text-text-fallback, var(--color-foreground, #050505));
+
+  display: block;
+  background: var(--ni-text-bg);
+  color: var(--ni-text-text);
+  padding: var(--ni-text-pad-top, 64px) clamp(1rem, 4vw, 3rem) var(--ni-text-pad-bottom, 64px);
+}
+
+.ni-text__inner {
+  max-width: var(--ni-text-maxw, 760px);
+  margin: 0 auto;
+}
+
+.ni-text__heading {
+  margin: 0;
+  font-size: calc(clamp(1.6rem, 3.2vw, 2.6rem) * var(--fs-heading, 1));
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+.ni-text__body {
+  margin-top: clamp(16px, 2vw, 24px);
+  font-size: calc(clamp(0.94rem, 1.1vw, 1.05rem) * var(--fs-text, 1));
+  line-height: 1.62;
+}
+
+.ni-text__body > :first-child { margin-top: 0; }
+.ni-text__body > :last-child { margin-bottom: 0; }
+.ni-text__body p { margin: 0 0 1em; }
+.ni-text__body a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ni-text__body a:hover { opacity: 0.7; }
+.ni-text__body strong { font-weight: 700; }
+.ni-text__body em { font-style: italic; }
+
+/* Alignment utilities — applied independently to heading and body via
+   the merchant's select settings. */
+.ni-text--align-left { text-align: left; }
+.ni-text--align-center { text-align: center; }
+.ni-text--align-right { text-align: right; }
+
+/* Reading paragraphs that are centered still need a sensible measure;
+   otherwise super-wide lines feel awkward. The outer max-width handles
+   the cap, the inline alignment just shifts the words within it. */
