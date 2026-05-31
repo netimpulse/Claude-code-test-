@@ -201,7 +201,7 @@
         "theme_1": {
           "type": "theme",
           "settings": {
-            "product": "atelier",
+            "product": "aurora",
             "category": "Business Theme",
             "tags": "Business, Cases",
             "preview_style": "light"
@@ -247,8 +247,8 @@
         "heading_highlight": "Theme-Store",
         "subheading": "Eine Auswahl unserer Premium-Themes.",
         "show_intro": true,
-        "card_bg_light": "rgba(0,0,0,0)",
-        "card_bg_dark": "",
+        "card_bg_light": "#f6fafa",
+        "card_bg_dark": "#f6fafa",
         "card_border": "",
         "color_scheme": "scheme-sand",
         "padding_top": 52,
