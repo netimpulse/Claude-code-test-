@@ -50,6 +50,9 @@
     {%- endif -%}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+    {%- if section.settings.card_bg_light != blank %}--tsp-card-bg-light: {{ section.settings.card_bg_light }};{% endif %}
+    {%- if section.settings.card_bg_dark != blank %}--tsp-card-bg-dark: {{ section.settings.card_bg_dark }};{% endif %}
+    {%- if section.settings.card_border != blank %}--tsp-card-border: {{ section.settings.card_border }};{% endif %}
   }
   #shopify-section-{{ section.id }} .tsp {
     --tsp-pad-top: {{ section.settings.padding_top }}px;
@@ -228,6 +231,7 @@
       var max = track.scrollWidth - track.clientWidth - 1;
       if (prev) prev.toggleAttribute('disabled', track.scrollLeft <= 0);
       if (next) next.toggleAttribute('disabled', track.scrollLeft >= max);
+      root.classList.toggle('tsp--no-overflow', max <= 0);
     }
 
     if (prev) prev.addEventListener('click', function () {
@@ -249,27 +253,37 @@
       track.scrollLeft += e.deltaY;
     }, { passive: false });
 
-    /* Drag to scroll with the mouse. */
-    var down = false, startX = 0, startLeft = 0, moved = false;
+    /* Drag to scroll with the mouse. Does NOT preventDefault on
+       pointerdown so the underlying <a> still receives its click. We
+       only switch into "dragging" mode (and suppress the click) once
+       the pointer has actually moved past a small threshold. */
+    var down = false, startX = 0, startLeft = 0, moved = false, dragging = false;
     track.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
-      down = true; moved = false;
+      down = true; moved = false; dragging = false;
       startX = e.clientX;
       startLeft = track.scrollLeft;
-      track.classList.add('is-dragging');
-      e.preventDefault();
-      try { track.setPointerCapture(e.pointerId); } catch (err) {}
     });
     track.addEventListener('pointermove', function (e) {
       if (!down) return;
       var dx = e.clientX - startX;
-      if (Math.abs(dx) > 4) moved = true;
-      track.scrollLeft = startLeft - dx;
+      if (!dragging && Math.abs(dx) > 4) {
+        dragging = true; moved = true;
+        track.classList.add('is-dragging');
+        try { track.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      if (dragging) {
+        e.preventDefault();
+        track.scrollLeft = startLeft - dx;
+      }
     });
     function endDrag() {
       if (!down) return;
       down = false;
-      track.classList.remove('is-dragging');
+      if (dragging) {
+        dragging = false;
+        track.classList.remove('is-dragging');
+      }
     }
     track.addEventListener('pointerup', endDrag);
     track.addEventListener('pointercancel', endDrag);
@@ -309,6 +323,10 @@
       "default": "Performance-Themes und Section-Packs — sofort einsatzbereit."
     },
     { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
+    { "type": "header", "content": "Card colors", "info": "Leer lassen, um die Standard-Farben zu verwenden." },
+    { "type": "color", "id": "card_bg_light", "label": "Helle Karte – Hintergrund" },
+    { "type": "color", "id": "card_bg_dark", "label": "Dunkle Karte – Hintergrund" },
+    { "type": "color", "id": "card_border", "label": "Kartenrand" },
     {
       "type": "header",
       "content": "Appearance"

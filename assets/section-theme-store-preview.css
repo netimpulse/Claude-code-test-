@@ -41,6 +41,7 @@
 }
 
 .tsp__nav { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.tsp--no-overflow .tsp__nav { display: none; }
 .tsp__nav-btn {
   width: 44px;
   height: 44px;
@@ -134,12 +135,12 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #faf7f0;
-  border: 1px solid color-mix(in srgb, var(--color-foreground, #14110b) 12%, transparent);
+  background: var(--tsp-card-bg-light, #faf7f0);
+  border: 1px solid var(--tsp-card-border, color-mix(in srgb, var(--color-foreground, #14110b) 12%, transparent));
 }
 .tsp__card--dark .tsp__preview {
-  background: linear-gradient(135deg, #2a2a2a, #0f0f0f);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--tsp-card-bg-dark, linear-gradient(135deg, #2a2a2a, #0f0f0f));
+  border-color: var(--tsp-card-border, rgba(255, 255, 255, 0.1));
 }
 .tsp__preview-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -161,8 +162,9 @@
 .tsp__line--2 { width: 54%; }
 .tsp__card--dark .tsp__line { background: rgba(255, 255, 255, 0.16); }
 
-/* Info row beneath the preview, sitting directly on the section bg */
-.tsp__info { padding: clamp(14px, 1.4vw, 18px) 2px 0; display: flex; flex-direction: column; gap: 0.55rem; }
+/* Info row beneath the preview, sitting directly on the section bg.
+   Bottom padding gives the tag chips a comfortable gap from the card edge. */
+.tsp__info { padding: clamp(14px, 1.4vw, 18px) 2px clamp(12px, 1.4vw, 18px); display: flex; flex-direction: column; gap: 0.55rem; }
 .tsp__row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
 .tsp__name {
   margin: 0;
