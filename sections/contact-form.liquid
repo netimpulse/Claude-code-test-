@@ -1,0 +1,280 @@
+{% comment %}
+  Contact form
+  ----------------------------------------------------------------
+  Links: heading + Kontaktformular mit beliebig vielen Feldern.
+  Rechts: Kontaktinfos (Adresse, Telefon, E-Mail, ...).
+  Keine Karte. Form nutzt {% form 'contact' %} -> Submissions
+  gehen an die in der Shop-Konfig hinterlegte E-Mail.
+
+  Field-Blocks: text, email, tel, textarea, select (Dropdown).
+  Pro Feld: required-Toggle, optionale Spaltenbreite, bei "select"
+  eine Option-Liste (eine Zeile = eine Option).
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+  assign anchor_id = 'ContactForm-' | append: section.id
+-%}
+
+{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .contact-form {
+    --cf-accent: {{ accent }};
+    --cf-padding-top: {{ section.settings.padding_top }}px;
+    --cf-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --cf-bg: {{ scheme.settings.background }};
+      --cf-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --cf-text: {{ scheme.settings.text }};
+      --cf-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --cf-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+      --cf-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.32 }};
+      --cf-input-bg: {{ scheme.settings.text | color_modify: 'alpha', 0.04 }};
+    {%- endif -%}
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+
+<section
+  class="contact-form full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="cf-heading-{{ section.id }}"{% endif %}
+>
+  <div class="contact-form__inner">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <header class="contact-form__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 id="cf-heading-{{ section.id }}" class="contact-form__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="contact-form__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="contact-form__grid">
+      <aside class="contact-form__info-col" aria-label="{{ section.settings.info_heading | default: 'Kontaktinformationen' | escape }}">
+        {%- if section.settings.info_heading != blank -%}
+          <h3 class="contact-form__info-heading">{{ section.settings.info_heading | escape }}</h3>
+        {%- endif -%}
+
+        <ul class="contact-form__info-list" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'info' -%}
+              <li class="contact-form__info-item" {{ block.shopify_attributes }}>
+                {%- if block.settings.label != blank -%}
+                  <span class="contact-form__info-label">{{ block.settings.label | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.content != blank -%}
+                  <div class="contact-form__info-content">{{ block.settings.content }}</div>
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </aside>
+
+      <div class="contact-form__form-col" id="{{ anchor_id }}">
+        {%- form 'contact', class: 'contact-form__form', id: anchor_id -%}
+          {%- if form.posted_successfully? -%}
+            <p class="contact-form__success" role="status">
+              {{ section.settings.success_message | default: 'Danke! Deine Nachricht ist angekommen.' | escape }}
+            </p>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <div class="contact-form__errors" role="alert">
+              <p class="contact-form__errors-title">{{ 'general.errors_title' | t | default: 'Bitte überprüfe folgende Felder:' | escape }}</p>
+              <ul>
+                {%- for field in form.errors -%}
+                  <li>
+                    {%- if field == 'form' -%}
+                      {{ form.errors.messages[field] }}
+                    {%- else -%}
+                      {{ form.errors.translated_fields[field] }} {{ form.errors.messages[field] }}
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          <div class="contact-form__fields">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'field' -%}
+                {%- assign field_id = 'CFField-' | append: section.id | append: '-' | append: block.id -%}
+                {%- assign field_name = block.settings.name | default: 'field' -%}
+                {%- assign input_name = 'contact[' | append: field_name | append: ']' -%}
+                {%- assign required = block.settings.required -%}
+                {%- assign width = block.settings.width | default: 'full' -%}
+
+                <div class="contact-form__field contact-form__field--{{ width }}{% if block.settings.type == 'textarea' %} contact-form__field--block{% endif %}" {{ block.shopify_attributes }}>
+                  <label class="contact-form__label" for="{{ field_id }}">
+                    {{ block.settings.label | escape }}
+                    {%- if required -%}<span class="contact-form__required" aria-hidden="true">*</span>{%- endif -%}
+                  </label>
+
+                  {%- case block.settings.type -%}
+                    {%- when 'textarea' -%}
+                      <textarea
+                        id="{{ field_id }}"
+                        name="{{ input_name }}"
+                        class="contact-form__input contact-form__textarea"
+                        rows="5"
+                        placeholder="{{ block.settings.placeholder | escape }}"
+                        {% if required %}required aria-required="true"{% endif %}
+                      ></textarea>
+
+                    {%- when 'select' -%}
+                      {%- assign options = block.settings.options | newline_to_br | split: '<br />' -%}
+                      <select
+                        id="{{ field_id }}"
+                        name="{{ input_name }}"
+                        class="contact-form__input contact-form__select"
+                        {% if required %}required aria-required="true"{% endif %}
+                      >
+                        {%- if block.settings.placeholder != blank -%}
+                          <option value="" disabled selected>{{ block.settings.placeholder | escape }}</option>
+                        {%- endif -%}
+                        {%- for option in options -%}
+                          {%- assign opt = option | strip_html | strip -%}
+                          {%- if opt != blank -%}
+                            <option value="{{ opt | escape }}">{{ opt | escape }}</option>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </select>
+
+                    {%- else -%}
+                      {%- assign input_type = block.settings.type | default: 'text' -%}
+                      {%- assign autocomplete = '' -%}
+                      {%- if input_type == 'email' -%}{%- assign autocomplete = 'email' -%}{%- endif -%}
+                      {%- if input_type == 'tel' -%}{%- assign autocomplete = 'tel' -%}{%- endif -%}
+                      {%- if field_name == 'name' -%}{%- assign autocomplete = 'name' -%}{%- endif -%}
+                      {%- if field_name == 'company' -%}{%- assign autocomplete = 'organization' -%}{%- endif -%}
+                      <input
+                        type="{{ input_type }}"
+                        id="{{ field_id }}"
+                        name="{{ input_name }}"
+                        class="contact-form__input"
+                        placeholder="{{ block.settings.placeholder | escape }}"
+                        {% if autocomplete != blank %}autocomplete="{{ autocomplete }}"{% endif %}
+                        {% if required %}required aria-required="true"{% endif %}
+                      >
+                  {%- endcase -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="contact-form__actions">
+            <button type="submit" class="contact-form__submit">
+              {{ section.settings.submit_label | default: 'Nachricht senden' | escape }}
+            </button>
+          </div>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "section",
+  "class": "shopify-section--contact-form",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Lass uns reden." },
+    { "type": "textarea", "id": "subheading", "label": "Untertitel", "default": "Erzähl uns von deinem Projekt — wir melden uns innerhalb von 48 Stunden mit klaren nächsten Schritten." },
+    { "type": "header", "content": "Formular" },
+    { "type": "text", "id": "submit_label", "label": "Button-Text", "default": "Nachricht senden" },
+    { "type": "text", "id": "success_message", "label": "Erfolgsmeldung", "default": "Danke! Wir melden uns innerhalb von 48 Stunden." },
+    { "type": "header", "content": "Info-Spalte" },
+    { "type": "text", "id": "info_heading", "label": "Info-Überschrift", "default": "Kontakt" },
+    { "type": "header", "content": "Darstellung" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Farbschema", "default": "scheme-1" },
+    { "type": "color", "id": "accent_color", "label": "Akzentfarbe (Submit-Button)", "default": "#1f2328" },
+    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Typografie" },
+    { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
+  ],
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Formular-Feld",
+      "settings": [
+        {
+          "type": "select",
+          "id": "type",
+          "label": "Feld-Typ",
+          "options": [
+            { "value": "text", "label": "Text" },
+            { "value": "email", "label": "E-Mail" },
+            { "value": "tel", "label": "Telefon" },
+            { "value": "textarea", "label": "Mehrzeiliger Text" },
+            { "value": "select", "label": "Dropdown" }
+          ],
+          "default": "text"
+        },
+        { "type": "text", "id": "label", "label": "Label", "default": "Name" },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Feld-Name (intern)",
+          "info": "Wird als contact[<name>] versendet. Nur lowercase + underscore. Pflicht für E-Mail: \"email\".",
+          "default": "name"
+        },
+        { "type": "text", "id": "placeholder", "label": "Platzhalter", "default": "Dein Name" },
+        { "type": "checkbox", "id": "required", "label": "Pflichtfeld", "default": false },
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Spaltenbreite",
+          "options": [
+            { "value": "full", "label": "Voll" },
+            { "value": "half", "label": "Halb" }
+          ],
+          "default": "full"
+        },
+        {
+          "type": "textarea",
+          "id": "options",
+          "label": "Dropdown-Optionen",
+          "info": "Nur für Feld-Typ \"Dropdown\". Eine Option pro Zeile.",
+          "default": "Option 1\nOption 2\nOption 3"
+        }
+      ]
+    },
+    {
+      "type": "info",
+      "name": "Info-Eintrag",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Adresse" },
+        { "type": "richtext", "id": "content", "label": "Inhalt", "default": "<p>NetImpulse<br>Musterstraße 1<br>12345 Musterstadt</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form",
+      "category": "Contact",
+      "blocks": [
+        { "type": "field", "settings": { "type": "text", "label": "Name", "name": "name", "placeholder": "Dein Name", "required": true, "width": "half" } },
+        { "type": "field", "settings": { "type": "email", "label": "E-Mail", "name": "email", "placeholder": "deine@email.de", "required": true, "width": "half" } },
+        { "type": "field", "settings": { "type": "tel", "label": "Telefon", "name": "phone", "placeholder": "+49 …", "required": false, "width": "half" } },
+        { "type": "field", "settings": { "type": "text", "label": "Unternehmen", "name": "company", "placeholder": "Dein Unternehmen", "required": false, "width": "half" } },
+        { "type": "field", "settings": { "type": "select", "label": "Worum geht's?", "name": "topic", "placeholder": "Bitte wählen …", "required": false, "width": "full", "options": "Strategie & Beratung\nWebdesign & UX\nSEO & Performance\nShopify-Theme\nSonstiges" } },
+        { "type": "field", "settings": { "type": "textarea", "label": "Nachricht", "name": "body", "placeholder": "Erzähl uns von deinem Projekt …", "required": true, "width": "full" } },
+        { "type": "info", "settings": { "label": "Adresse", "content": "<p>NetImpulse<br>Musterstraße 1<br>12345 Musterstadt</p>" } },
+        { "type": "info", "settings": { "label": "Telefon", "content": "<p>+49 (0) 1234 567890</p>" } },
+        { "type": "info", "settings": { "label": "E-Mail", "content": "<p>hallo@netimpulse.de</p>" } }
+      ]
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}

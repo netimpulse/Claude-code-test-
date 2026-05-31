@@ -224,7 +224,35 @@
         "heading_scale": 100,
         "text_scale": 100
       }
+    },
+    "contact_form_qa": {
+      "type": "contact-form",
+      "blocks": {
+        "f_name": { "type": "field", "settings": { "type": "text", "label": "Name", "name": "name", "placeholder": "Dein Name", "required": true, "width": "half" } },
+        "f_email": { "type": "field", "settings": { "type": "email", "label": "E-Mail", "name": "email", "placeholder": "deine@email.de", "required": true, "width": "half" } },
+        "f_phone": { "type": "field", "settings": { "type": "tel", "label": "Telefon", "name": "phone", "placeholder": "+49 …", "required": false, "width": "half" } },
+        "f_company": { "type": "field", "settings": { "type": "text", "label": "Unternehmen", "name": "company", "placeholder": "Dein Unternehmen", "required": false, "width": "half" } },
+        "f_topic": { "type": "field", "settings": { "type": "select", "label": "Worum geht's?", "name": "topic", "placeholder": "Bitte wählen …", "required": false, "width": "full", "options": "Strategie & Beratung\nWebdesign & UX\nSEO & Performance\nShopify-Theme\nSonstiges" } },
+        "f_message": { "type": "field", "settings": { "type": "textarea", "label": "Nachricht", "name": "body", "placeholder": "Erzähl uns von deinem Projekt …", "required": true, "width": "full" } },
+        "i_address": { "type": "info", "settings": { "label": "Adresse", "content": "<p>NetImpulse<br>Musterstraße 1<br>12345 Musterstadt</p>" } },
+        "i_phone": { "type": "info", "settings": { "label": "Telefon", "content": "<p>+49 (0) 1234 567890</p>" } },
+        "i_email": { "type": "info", "settings": { "label": "E-Mail", "content": "<p>hallo@netimpulse.de</p>" } }
+      },
+      "block_order": ["f_name", "f_email", "f_phone", "f_company", "f_topic", "f_message", "i_address", "i_phone", "i_email"],
+      "settings": {
+        "heading": "Lass uns reden.",
+        "subheading": "Erzähl uns von deinem Projekt — wir melden uns innerhalb von 48 Stunden mit klaren nächsten Schritten.",
+        "submit_label": "Nachricht senden",
+        "success_message": "Danke! Wir melden uns innerhalb von 48 Stunden.",
+        "info_heading": "Kontakt",
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
-  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa"]
+  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa"]
 }
