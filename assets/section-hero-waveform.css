@@ -16,7 +16,7 @@
 .hero-wt__stage {
   position: relative;
   width: 100%;
-  min-height: clamp(420px, 70vh, 720px);
+  min-height: clamp(328px, 55vh, 562px);
   overflow: hidden;
 }
 
@@ -63,7 +63,7 @@
   justify-content: center;
   text-align: center;
   padding: 4rem 1.5rem;
-  min-height: clamp(420px, 70vh, 720px);
+  min-height: clamp(328px, 55vh, 562px);
   pointer-events: none;
 }
 
@@ -98,7 +98,7 @@
 
 .hero-wt__heading {
   margin: 0;
-  font-size: clamp(3rem, 9vw, 8rem);
+  font-size: clamp(2.34rem, 7.02vw, 6.24rem);
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 1;
@@ -112,7 +112,7 @@
 .hero-wt__body {
   margin: 1.25rem 0 0;
   max-width: 38rem;
-  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  font-size: clamp(0.78rem, 1.09vw, 0.88rem);
   line-height: 1.5;
   color: var(--wt-text-soft, rgba(255,255,255,0.78));
   text-shadow: 0 0 24px color-mix(in srgb, var(--wt-bg, #0e1716) 90%, transparent);

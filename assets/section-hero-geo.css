@@ -1,7 +1,7 @@
 .hero-geo {
   position: relative;
   display: block;
-  padding: var(--hg-pad-top, 80px) clamp(1.25rem, 4vw, 4rem) var(--hg-pad-bottom, 80px);
+  padding: var(--hg-pad-top, 62px) clamp(1.25rem, 4vw, 4rem) var(--hg-pad-bottom, 62px);
   background: var(--hg-bg, #eef3f2);
   color: var(--hg-text, #0e1716);
   overflow: hidden;
@@ -46,7 +46,7 @@
 
 .hero-geo__heading {
   margin: 0;
-  font-size: calc(clamp(2.25rem, 5.4vw, 4rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.76rem, 4.21vw, 3.12rem) * var(--fs-heading, 1));
   line-height: 1.05;
   font-weight: 800;
   letter-spacing: -0.025em;
@@ -60,7 +60,7 @@
 
 .hero-geo__body {
   margin: 0;
-  font-size: calc(clamp(0.95rem, 1.1vw, 1.05rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.74rem, 0.86vw, 0.82rem) * var(--fs-text, 1));
   line-height: 1.55;
   color: var(--hg-text-soft, rgba(0,0,0,0.65));
   max-width: 44ch;
@@ -133,7 +133,7 @@
   border: 1px solid var(--hg-line, rgba(0,0,0,0.08));
   border-radius: 0;
   padding: 1.25rem;
-  min-height: clamp(360px, 36vw, 440px);
+  min-height: clamp(281px, 36vw, 343px);
   display: flex;
   flex-direction: column;
   gap: 1.125rem;

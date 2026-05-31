@@ -5,8 +5,8 @@
 
 .about-stats {
   position: relative;
-  padding-top: var(--as-padding-top, 64px);
-  padding-bottom: var(--as-padding-bottom, 64px);
+  padding-top: var(--as-padding-top, 50px);
+  padding-bottom: var(--as-padding-bottom, 50px);
   background: var(--as-bg, #ffffff);
   color: var(--as-text, #1f2328);
 }
@@ -39,7 +39,7 @@
 
 .about-stats__heading {
   margin: 0;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-size: clamp(1.4rem, 2.34vw, 2.03rem);
   line-height: 1.08;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -63,7 +63,7 @@
 }
 
 .about-stats__value {
-  font-size: clamp(2.6rem, 5.4vw, 4.4rem);
+  font-size: clamp(2.03rem, 4.21vw, 3.43rem);
   line-height: 0.95;
   letter-spacing: -0.05em;
   font-weight: 800;
@@ -71,7 +71,7 @@
 }
 
 .about-stats__label {
-  font-size: clamp(0.95rem, 1.05vw, 1.05rem);
+  font-size: clamp(0.74rem, 0.82vw, 0.82rem);
   font-weight: 700;
 }
 

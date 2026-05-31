@@ -7,8 +7,8 @@
 
 .about-intro {
   position: relative;
-  padding-top: var(--ai-padding-top, 96px);
-  padding-bottom: var(--ai-padding-bottom, 96px);
+  padding-top: var(--ai-padding-top, 75px);
+  padding-bottom: var(--ai-padding-bottom, 75px);
   background: var(--ai-bg, #f8f6f1);
   color: var(--ai-text, #1f2328);
 }
@@ -44,7 +44,7 @@
 
 .about-intro__heading {
   margin: 0;
-  font-size: calc(clamp(2.4rem, 5.4vw, 5.2rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.87rem, 4.21vw, 4.06rem) * var(--fs-heading, 1));
   line-height: 0.98;
   letter-spacing: -0.05em;
   font-weight: 800;
@@ -54,7 +54,7 @@
 .about-intro__body {
   margin: clamp(22px, 3vw, 34px) 0 0;
   color: var(--ai-body, #3a3f45);
-  font-size: calc(clamp(1.05rem, 1.18vw, 1.2rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.82rem, 0.92vw, 0.94rem) * var(--fs-text, 1));
   line-height: 1.62;
   max-width: 56ch;
 }
@@ -71,7 +71,7 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
+  min-height: 44px;
   padding: 0 30px;
   font-weight: 700;
   border: 1px solid transparent;
@@ -139,7 +139,7 @@
 }
 
 .about-intro__chip-value {
-  font-size: calc(1.1rem * var(--fs-heading, 1));
+  font-size: calc(0.86rem * var(--fs-heading, 1));
   font-weight: 800;
   letter-spacing: -0.02em;
 }

@@ -28,8 +28,8 @@
         "chip_2_label": "",
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
-        "padding_top": 96,
-        "padding_bottom": 96,
+        "padding_top": 76,
+        "padding_bottom": 76,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -79,8 +79,8 @@
         "columns": "4",
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
-        "padding_top": 80,
-        "padding_bottom": 80,
+        "padding_top": 64,
+        "padding_bottom": 64,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -149,8 +149,8 @@
         "focus_label": "Fokusbereiche",
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
-        "padding_top": 96,
-        "padding_bottom": 96,
+        "padding_top": 76,
+        "padding_bottom": 76,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -203,8 +203,8 @@
         "intro": "Kein Marketing-Märchen, sondern die Stationen, die uns zu dem gemacht haben, was wir heute liefern.",
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
-        "padding_top": 80,
-        "padding_bottom": 80,
+        "padding_top": 64,
+        "padding_bottom": 64,
         "heading_scale": 100,
         "text_scale": 100
       }

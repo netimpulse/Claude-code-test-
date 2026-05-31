@@ -27,8 +27,8 @@
         "book_url": "",
         "color_scheme": "",
         "accent_color": "#050505",
-        "padding_top": 48,
-        "padding_bottom": 88
+        "padding_top": 36,
+        "padding_bottom": 68
       }
     },
     "ni_intro_6VnTbr": {
@@ -77,8 +77,8 @@
         "panel_text": "Ob Relaunch, SEO-Aufbau und Pflege, Google Ads, GEO oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten.",
         "color_scheme": "",
         "accent_color": "#050505",
-        "padding_top": 112,
-        "padding_bottom": 112
+        "padding_top": 88,
+        "padding_bottom": 88
       }
     },
     "ni_deck_dtycEA": {
@@ -175,8 +175,8 @@
         "note": "",
         "color_scheme": "",
         "accent_color": "#050505",
-        "padding_top": 120,
-        "padding_bottom": 88
+        "padding_top": 92,
+        "padding_bottom": 68
       }
     },
     "theme_store_preview_zMCVkD": {
@@ -201,8 +201,8 @@
         "cta_label": "Zum Theme-Store",
         "cta_url": "",
         "color_scheme": "scheme-sand",
-        "padding_top": 64,
-        "padding_bottom": 64
+        "padding_top": 52,
+        "padding_bottom": 52
       }
     },
     "team_compact_V7PNeF": {
@@ -246,8 +246,8 @@
         "cta_url": "shopify://pages/ueber-uns",
         "color_scheme": "scheme-sand",
         "accent_color": "#1f2328",
-        "padding_top": 64,
-        "padding_bottom": 64
+        "padding_top": 52,
+        "padding_bottom": 52
       }
     }
   },

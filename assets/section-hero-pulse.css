@@ -1,7 +1,7 @@
 .hero-pulse {
   position: relative;
   display: block;
-  padding: var(--hp-pad-top, 80px) clamp(1.25rem, 4vw, 4rem) var(--hp-pad-bottom, 80px);
+  padding: var(--hp-pad-top, 62px) clamp(1.25rem, 4vw, 4rem) var(--hp-pad-bottom, 62px);
   background: var(--hp-bg, #0e1716);
   color: var(--hp-text, #ffffff);
   overflow: hidden;
@@ -51,7 +51,7 @@
 
 .hero-pulse__heading {
   margin: 0;
-  font-size: clamp(2.25rem, 6.4vw, 4.75rem);
+  font-size: clamp(1.76rem, 4.99vw, 3.71rem);
   line-height: 1.02;
   font-weight: 800;
   letter-spacing: -0.025em;
@@ -71,7 +71,7 @@
 
 .hero-pulse__body {
   margin: 0;
-  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-size: clamp(0.74rem, 0.86vw, 0.82rem);
   line-height: 1.55;
   color: var(--hp-text-soft, rgba(255, 255, 255, 0.65));
   max-width: 44ch;
@@ -147,7 +147,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 1.25rem;
-  min-height: clamp(280px, 36vw, 420px);
+  min-height: clamp(218px, 36vw, 328px);
   min-width: 0;
 }
 
@@ -196,7 +196,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: clamp(160px, 22vw, 240px);
+  height: clamp(125px, 22vw, 187px);
   gap: clamp(1px, 0.45vw, 3px);
   padding: 0;
   overflow: hidden;
@@ -246,7 +246,7 @@
 }
 
 .hero-pulse__stat-value {
-  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  font-size: clamp(1.09rem, 1.72vw, 1.37rem);
   font-weight: 700;
   letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;

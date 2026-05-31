@@ -8,8 +8,8 @@
 
 .service-aspects {
   position: relative;
-  padding-top: var(--sa-padding-top, 80px);
-  padding-bottom: var(--sa-padding-bottom, 80px);
+  padding-top: var(--sa-padding-top, 62px);
+  padding-bottom: var(--sa-padding-bottom, 62px);
   background: var(--sa-bg, #ffffff);
   color: var(--sa-text, #1f2328);
 }
@@ -43,7 +43,7 @@
 
 .service-aspects__heading {
   margin: 0;
-  font-size: calc(clamp(2rem, 3.6vw, 3.2rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.56rem, 2.81vw, 2.5rem) * var(--fs-heading, 1));
   line-height: 1.06;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -52,7 +52,7 @@
 .service-aspects__intro {
   margin: 16px 0 0;
   color: var(--sa-muted, #6b7280);
-  font-size: calc(clamp(1rem, 1.1vw, 1.12rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.78rem, 0.86vw, 0.87rem) * var(--fs-text, 1));
   line-height: 1.6;
 }
 
@@ -71,7 +71,7 @@
   width: 100%;
   max-width: 300px;
   justify-self: center;
-  min-height: clamp(340px, 28vw, 400px);
+  min-height: clamp(265px, 28vw, 312px);
   padding: clamp(20px, 2vw, 28px);
   border: 1.5px solid var(--sa-line-strong, rgba(31, 35, 40, 0.85));
   border-radius: 0;
@@ -120,7 +120,7 @@
 
 .service-aspects__tile-title {
   margin: 0;
-  font-size: calc(clamp(1.15rem, 1.5vw, 1.45rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(0.9rem, 1.17vw, 1.13rem) * var(--fs-heading, 1));
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-weight: 700;

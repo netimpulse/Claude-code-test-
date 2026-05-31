@@ -6,8 +6,8 @@
 
 .image-with-text {
   position: relative;
-  padding-top: var(--iwt-padding-top, 80px);
-  padding-bottom: var(--iwt-padding-bottom, 80px);
+  padding-top: var(--iwt-padding-top, 62px);
+  padding-bottom: var(--iwt-padding-bottom, 62px);
   background: var(--iwt-bg, #f8f6f1);
   color: var(--iwt-text, #1f2328);
 }
@@ -35,7 +35,7 @@
 /* ---- Content ---- */
 .image-with-text__heading {
   margin: 0;
-  font-size: calc(clamp(2.2rem, 4vw, 3.6rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.72rem, 3.12vw, 2.81rem) * var(--fs-heading, 1));
   line-height: 1.05;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -44,7 +44,7 @@
 
 .image-with-text__body {
   margin: clamp(18px, 2.4vw, 28px) 0 0;
-  font-size: calc(clamp(1rem, 1.15vw, 1.18rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.78rem, 0.9vw, 0.92rem) * var(--fs-text, 1));
   line-height: 1.6;
   color: var(--iwt-body, #3a3f45);
   max-width: 60ch;
@@ -69,7 +69,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-height: 54px;
+  min-height: 42px;
   padding: 0 30px;
   font-weight: 700;
   border: 1px solid transparent;
@@ -156,7 +156,7 @@
 }
 
 .image-with-text__badge-value {
-  font-size: calc(1.5rem * var(--fs-text, 1));
+  font-size: calc(1.17rem * var(--fs-text, 1));
   font-weight: 800;
   letter-spacing: -0.02em;
 }
