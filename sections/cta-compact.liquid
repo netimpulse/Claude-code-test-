@@ -1,0 +1,167 @@
+{% comment %}
+  CTA compact
+  ----------------------------------------------------------------
+  Selbe Panel-Dimensionen wie team-compact, aber ohne Avatare.
+  Links: kicker + heading. Rechts: intro paragraph.
+  Unten zentriert: ein primärer Button.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
+-%}
+
+{{ 'section-cta-compact.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .cta-compact {
+    --ctac-accent: {{ accent }};
+    --ctac-padding-top: {{ section.settings.padding_top }}px;
+    --ctac-padding-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if scheme.settings.background != blank -%}
+      --ctac-bg: {{ scheme.settings.background }};
+      --ctac-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
+      --ctac-text: {{ scheme.settings.text }};
+      --ctac-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
+      --ctac-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
+      --ctac-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
+    {%- endif -%}
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+
+<section
+  class="cta-compact full-width color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  {% if section.settings.heading != blank %}aria-labelledby="ctac-heading-{{ section.id }}"{% endif %}
+>
+  <div class="cta-compact__inner">
+    <div class="cta-compact__panel">
+      <div class="cta-compact__row">
+        <div class="cta-compact__column cta-compact__column--header">
+          {%- if section.settings.kicker != blank -%}
+            <div class="cta-compact__kicker">{{ section.settings.kicker | escape }}</div>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 id="ctac-heading-{{ section.id }}" class="cta-compact__heading">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+        </div>
+
+        <div class="cta-compact__column cta-compact__column--intro">
+          {%- if section.settings.intro != blank and section.settings.show_intro -%}
+            <p class="cta-compact__intro">{{ section.settings.intro }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if section.settings.button_label != blank -%}
+        <div class="cta-compact__actions">
+          <a class="cta-compact__btn" href="{{ section.settings.button_url | default: '#' }}">
+            {{ section.settings.button_label | escape }}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTA compact",
+  "tag": "section",
+  "class": "shopify-section--cta-compact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "Kontakt"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Überschrift",
+      "default": "Bereit für planbares Wachstum?"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Begleittext",
+      "default": "Lass uns in einem kostenlosen Audit deinen größten Hebel finden — Strategie, Design und Performance aus einer Hand."
+    },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
+    { "type": "header", "content": "Button" },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button-Text",
+      "default": "Jetzt anfragen"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button-Link"
+    },
+    { "type": "header", "content": "Darstellung" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Farbschema",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Akzentfarbe",
+      "default": "#1f2328"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding oben",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding unten",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    { "type": "header", "content": "Typografie" },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_scale",
+      "label": "Text size",
+      "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTA compact",
+      "category": "Call to action",
+      "settings": {
+        "kicker": "Kontakt",
+        "heading": "Bereit für planbares Wachstum?",
+        "intro": "Lass uns in einem kostenlosen Audit deinen größten Hebel finden — Strategie, Design und Performance aus einer Hand.",
+        "button_label": "Jetzt anfragen"
+      }
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}
