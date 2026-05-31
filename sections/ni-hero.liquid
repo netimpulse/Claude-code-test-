@@ -28,6 +28,7 @@
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
     {%- if section.settings.primary_btn_bg != blank %}--ni-btn-primary-bg: {{ section.settings.primary_btn_bg }};{% endif %}
     {%- if section.settings.primary_btn_text != blank %}--ni-btn-primary-text: {{ section.settings.primary_btn_text }};{% endif %}
+    {%- if section.settings.primary_btn_border != blank %}--ni-btn-primary-border: {{ section.settings.primary_btn_border }};{% endif %}
     {%- if section.settings.primary_btn_bg_hover != blank %}--ni-btn-primary-bg-hover: {{ section.settings.primary_btn_bg_hover }};{% endif %}
     {%- if section.settings.primary_btn_text_hover != blank %}--ni-btn-primary-text-hover: {{ section.settings.primary_btn_text_hover }};{% endif %}
     {%- if section.settings.secondary_btn_bg != blank %}--ni-btn-secondary-bg: {{ section.settings.secondary_btn_bg }};{% endif %}
@@ -125,6 +126,7 @@
     { "type": "header", "content": "Button colors", "info": "Leer lassen, um die Farben des Color Schemes zu verwenden." },
     { "type": "color", "id": "primary_btn_bg", "label": "Primary button background" },
     { "type": "color", "id": "primary_btn_text", "label": "Primary button text" },
+    { "type": "color", "id": "primary_btn_border", "label": "Primary button border" },
     { "type": "color", "id": "primary_btn_bg_hover", "label": "Primary button background (hover)" },
     { "type": "color", "id": "primary_btn_text_hover", "label": "Primary button text (hover)" },
     { "type": "color", "id": "secondary_btn_bg", "label": "Secondary button background" },
