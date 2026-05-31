@@ -34,57 +34,6 @@
         "text_scale": 100
       }
     },
-    "about_values": {
-      "type": "about-values",
-      "blocks": {
-        "v_clarity": {
-          "type": "value",
-          "settings": {
-            "title": "Klarheit",
-            "text": "Wir sagen, was wir tun – und liefern, was wir versprechen."
-          }
-        },
-        "v_substance": {
-          "type": "value",
-          "settings": {
-            "title": "Substanz",
-            "text": "Lieber weniger Buzzwords, dafür Lösungen, die im Alltag halten."
-          }
-        },
-        "v_responsibility": {
-          "type": "value",
-          "settings": {
-            "title": "Verantwortung",
-            "text": "Wir nehmen Budgets ernst und denken ans Geschäft, nicht nur ans Tool."
-          }
-        },
-        "v_pace": {
-          "type": "value",
-          "settings": {
-            "title": "Tempo mit Tiefgang",
-            "text": "Schnell handeln, ohne Qualität, Pflege oder Wirkung zu opfern."
-          }
-        }
-      },
-      "block_order": [
-        "v_clarity",
-        "v_substance",
-        "v_responsibility",
-        "v_pace"
-      ],
-      "settings": {
-        "kicker": "Was uns wichtig ist",
-        "heading": "Vier Werte, die unsere Arbeit prägen.",
-        "intro": "Wir arbeiten nicht nach Buzzwords, sondern nach Prinzipien, die sich in echten Projekten bewährt haben.",
-        "columns": "4",
-        "color_scheme": "scheme-1",
-        "accent_color": "#1f2328",
-        "padding_top": 64,
-        "padding_bottom": 64,
-        "heading_scale": 100,
-        "text_scale": 100
-      }
-    },
     "about_perspectives": {
       "type": "about-perspectives",
       "blocks": {
@@ -141,6 +90,7 @@
       "settings": {
         "heading": "Drei Perspektiven, ein gemeinsamer Anspruch.",
         "intro": "NetImpulse ist bewusst klein aufgestellt. Dadurch bleiben Abstimmungen direkt, Entscheidungen klar und Strategie, Design und Umsetzung nah beieinander.",
+        "show_intro": true,
         "card_kicker": "Wer dahintersteht",
         "card_heading": "Keine anonyme Agenturstruktur",
         "card_text": "Jeder Bereich hat eine klare Verantwortung. So entsteht ein digitaler Auftritt, bei dem Marketing, Gestaltung und Technik nicht getrennt voneinander gedacht werden.",
@@ -201,6 +151,7 @@
         "kicker": "Unser Weg",
         "heading": "Wo wir herkommen, wohin wir gehen.",
         "intro": "Kein Marketing-Märchen, sondern die Stationen, die uns zu dem gemacht haben, was wir heute liefern.",
+        "show_intro": true,
         "color_scheme": "scheme-1",
         "accent_color": "#1f2328",
         "padding_top": 64,
@@ -213,8 +164,7 @@
   "order": [
     "main",
     "about_intro",
-    "about_values",
-    "about_perspectives",
-    "about_timeline"
+    "about_timeline",
+    "about_perspectives"
   ]
 }
