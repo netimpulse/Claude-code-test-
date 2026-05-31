@@ -26,10 +26,117 @@
         "chip_1_label": "",
         "chip_2_value": "",
         "chip_2_label": "",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-sand",
         "accent_color": "#1f2328",
         "padding_top": 76,
         "padding_bottom": 76,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
+    "about_values_thread_EG4kt9": {
+      "type": "about-values-thread",
+      "blocks": {
+        "value_ppijtq": {
+          "type": "value",
+          "settings": {
+            "title": "Klarheit",
+            "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen."
+          }
+        },
+        "value_ejmjpr": {
+          "type": "value",
+          "settings": {
+            "title": "Substanz",
+            "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt."
+          }
+        },
+        "value_prKt6i": {
+          "type": "value",
+          "settings": {
+            "title": "Direktheit",
+            "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager."
+          }
+        },
+        "value_87TiYW": {
+          "type": "value",
+          "settings": {
+            "title": "Tempo",
+            "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen."
+          }
+        }
+      },
+      "block_order": [
+        "value_ppijtq",
+        "value_ejmjpr",
+        "value_prKt6i",
+        "value_87TiYW"
+      ],
+      "name": "About: Thread",
+      "settings": {
+        "kicker": "Was uns wichtig ist",
+        "heading": "Werte, die sich durchziehen.",
+        "intro": "Vier Prinzipien, die in jedem Projekt einen roten Faden bilden.",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#1f2328",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
+    "about_timeline": {
+      "type": "about-timeline",
+      "blocks": {
+        "m_2019": {
+          "type": "milestone",
+          "settings": {
+            "year": "2019",
+            "title": "Gründung",
+            "text": "Aus Erfahrung im Performance-Marketing und im Shopify-Theme-Bau entsteht NetImpulse."
+          }
+        },
+        "m_2021": {
+          "type": "milestone",
+          "settings": {
+            "year": "2021",
+            "title": "Shopify-Schwerpunkt",
+            "text": "Fokus auf Custom-Themes und integrierte SEO/SEA-Setups für E-Commerce-Kunden."
+          }
+        },
+        "m_2023": {
+          "type": "milestone",
+          "settings": {
+            "year": "2023",
+            "title": "Eigenes Team",
+            "text": "Wachstum auf interdisziplinäres Team aus Design, Code und Marketing."
+          }
+        },
+        "m_2025": {
+          "type": "milestone",
+          "settings": {
+            "year": "2025",
+            "title": "Theme Store",
+            "text": "Launch eigener Shopify-Themes als Produktlinie neben den Kundenprojekten."
+          }
+        }
+      },
+      "block_order": [
+        "m_2019",
+        "m_2021",
+        "m_2023",
+        "m_2025"
+      ],
+      "disabled": true,
+      "settings": {
+        "kicker": "Unser Weg",
+        "heading": "Wo wir herkommen, wohin wir gehen.",
+        "intro": "Kein Marketing-Märchen, sondern die Stationen, die uns zu dem gemacht haben, was wir heute liefern.",
+        "show_intro": true,
+        "color_scheme": "scheme-1",
+        "accent_color": "#1f2328",
+        "padding_top": 64,
+        "padding_bottom": 64,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -97,65 +204,10 @@
         "feature_bg": "#0c1c24",
         "feature_text": "#ffffff",
         "focus_label": "Fokusbereiche",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-sand",
         "accent_color": "#1f2328",
         "padding_top": 76,
         "padding_bottom": 76,
-        "heading_scale": 100,
-        "text_scale": 100
-      }
-    },
-    "about_timeline": {
-      "type": "about-timeline",
-      "blocks": {
-        "m_2019": {
-          "type": "milestone",
-          "settings": {
-            "year": "2019",
-            "title": "Gründung",
-            "text": "Aus Erfahrung im Performance-Marketing und im Shopify-Theme-Bau entsteht NetImpulse."
-          }
-        },
-        "m_2021": {
-          "type": "milestone",
-          "settings": {
-            "year": "2021",
-            "title": "Shopify-Schwerpunkt",
-            "text": "Fokus auf Custom-Themes und integrierte SEO/SEA-Setups für E-Commerce-Kunden."
-          }
-        },
-        "m_2023": {
-          "type": "milestone",
-          "settings": {
-            "year": "2023",
-            "title": "Eigenes Team",
-            "text": "Wachstum auf interdisziplinäres Team aus Design, Code und Marketing."
-          }
-        },
-        "m_2025": {
-          "type": "milestone",
-          "settings": {
-            "year": "2025",
-            "title": "Theme Store",
-            "text": "Launch eigener Shopify-Themes als Produktlinie neben den Kundenprojekten."
-          }
-        }
-      },
-      "block_order": [
-        "m_2019",
-        "m_2021",
-        "m_2023",
-        "m_2025"
-      ],
-      "settings": {
-        "kicker": "Unser Weg",
-        "heading": "Wo wir herkommen, wohin wir gehen.",
-        "intro": "Kein Marketing-Märchen, sondern die Stationen, die uns zu dem gemacht haben, was wir heute liefern.",
-        "show_intro": true,
-        "color_scheme": "scheme-1",
-        "accent_color": "#1f2328",
-        "padding_top": 64,
-        "padding_bottom": 64,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -164,6 +216,7 @@
   "order": [
     "main",
     "about_intro",
+    "about_values_thread_EG4kt9",
     "about_timeline",
     "about_perspectives"
   ]
