@@ -1,0 +1,83 @@
+{%- comment -%}
+  product-addons — renders the list of recommended add-ons configured
+  on the product's `custom.recommended_addons` metafield.
+
+  Two modes per add-on, controlled by each add-on product's
+  `custom.addon_mode` metafield:
+
+  - "fixed_price"  → checkbox adds the add-on's first available variant
+                     as an extra line item alongside the main product.
+  - "interest_only"→ checkbox sets a cart attribute "Service auf Anfrage:
+                     <Title>" = "Ja" so the merchant sees the interest on
+                     the order and follows up with an individual quote.
+                     No line item is added (the product price is ignored).
+
+  Both modes pass their state to product-detail.js via data-attributes;
+  the JS reads them when the user adds the main product to the cart.
+{%- endcomment -%}
+
+{%- liquid
+  assign addons = product.metafields.custom.recommended_addons.value
+  if addons == blank
+    assign has_addons = false
+  else
+    assign has_addons = true
+  endif
+-%}
+
+{%- if has_addons -%}
+  <div class="pd-addons" data-pd-addons>
+    <h3 class="pd-addons__title">Zusatzleistungen</h3>
+    <ul class="pd-addons__list" role="list">
+      {%- for addon in addons -%}
+        {%- liquid
+          assign mode = addon.metafields.custom.addon_mode | default: 'fixed_price'
+          assign info = addon.metafields.custom.addon_info
+          assign addon_variant = addon.selected_or_first_available_variant
+          assign addon_available = false
+          if addon_variant != blank and addon_variant.available
+            assign addon_available = true
+          endif
+        -%}
+        <li class="pd-addons__item pd-addons__item--{{ mode }}">
+          <label class="pd-addons__label{% unless addon_available or mode == 'interest_only' %} is-unavailable{% endunless %}">
+            <input
+              type="checkbox"
+              class="pd-addons__check"
+              data-pd-addon
+              data-addon-mode="{{ mode }}"
+              {%- if mode == 'fixed_price' and addon_variant != blank %} data-addon-variant-id="{{ addon_variant.id }}"{% endif %}
+              data-addon-handle="{{ addon.handle }}"
+              data-addon-title="{{ addon.title | escape }}"
+              {% unless addon_available or mode == 'interest_only' %}disabled{% endunless %}
+            >
+            <span class="pd-addons__box" aria-hidden="true"></span>
+            <span class="pd-addons__text">
+              <span class="pd-addons__name">{{ addon.title | escape }}</span>
+              {%- if mode == 'fixed_price' -%}
+                {%- if addon_variant != blank -%}
+                  <span class="pd-addons__price">{{ addon_variant.price | money }}</span>
+                {%- endif -%}
+              {%- else -%}
+                <span class="pd-addons__price pd-addons__price--quote">Preis auf Anfrage</span>
+              {%- endif -%}
+              {%- if info != blank -%}
+                <span class="pd-addons__info">{{ info | escape }}</span>
+              {%- endif -%}
+            </span>
+          </label>
+        </li>
+      {%- endfor -%}
+    </ul>
+    {%- comment -%}
+      Tiny hint that explains the interest_only flow only when at least
+      one such add-on is on the product.
+    {%- endcomment -%}
+    {%- for addon in addons -%}
+      {%- if addon.metafields.custom.addon_mode == 'interest_only' -%}
+        <p class="pd-addons__hint">Bei „Preis auf Anfrage"-Leistungen vermerken wir dein Interesse mit der Bestellung. Du erhältst danach ein individuelles Angebot per Mail.</p>
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}
