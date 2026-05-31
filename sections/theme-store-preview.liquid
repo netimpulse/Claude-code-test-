@@ -68,7 +68,7 @@
         {%- if heading != blank -%}
           <h2 class="tsp__heading">{{ heading_html }}</h2>
         {%- endif -%}
-        {%- if subheading != blank -%}
+        {%- if subheading != blank and section.settings.show_intro -%}
           <p class="tsp__subheading">{{ subheading | escape }}</p>
         {%- endif -%}
       </div>
@@ -308,6 +308,7 @@
       "label": "Subheading",
       "default": "Performance-Themes und Section-Packs — sofort einsatzbereit."
     },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     {
       "type": "header",
       "content": "Appearance"

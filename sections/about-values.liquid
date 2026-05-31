@@ -48,7 +48,7 @@
         {%- if section.settings.heading != blank -%}
           <h2 id="av-heading-{{ section.id }}" class="about-values__heading">{{ section.settings.heading }}</h2>
         {%- endif -%}
-        {%- if section.settings.intro != blank -%}
+        {%- if section.settings.intro != blank and section.settings.show_intro -%}
           <p class="about-values__intro">{{ section.settings.intro }}</p>
         {%- endif -%}
       </div>
@@ -100,6 +100,7 @@
       "label": "t:about_values.intro_label",
       "default": "Wir arbeiten nicht nach Buzzwords, sondern nach Prinzipien, die sich in echten Projekten bewährt haben."
     },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     {
       "type": "select",
       "id": "columns",

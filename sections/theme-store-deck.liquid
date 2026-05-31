@@ -57,7 +57,7 @@
         {%- if heading != blank -%}
           <h2 class="tsd__heading">{{ heading_html }}</h2>
         {%- endif -%}
-        {%- if subheading != blank -%}
+        {%- if subheading != blank and section.settings.show_intro -%}
           <p class="tsd__subheading">{{ subheading | escape }}</p>
         {%- endif -%}
       </div>
@@ -180,6 +180,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Unsere Themes & Packs." },
     { "type": "text", "id": "heading_highlight", "label": "Highlighted word", "info": "Word inside the heading that gets the accent style. Must match exactly.", "default": "Packs" },
     { "type": "text", "id": "subheading", "label": "Subheading", "default": "Performance-Themes und Section-Packs — sofort einsatzbereit." },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },

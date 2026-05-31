@@ -51,7 +51,7 @@
         {%- if section.settings.heading != blank -%}
           <h2 id="at-heading-{{ section.id }}" class="about-timeline__heading">{{ section.settings.heading }}</h2>
         {%- endif -%}
-        {%- if section.settings.intro != blank -%}
+        {%- if section.settings.intro != blank and section.settings.show_intro -%}
           <p class="about-timeline__intro">{{ section.settings.intro }}</p>
         {%- endif -%}
       </div>
@@ -106,6 +106,7 @@
       "label": "t:about_timeline.intro_label",
       "default": "Kein Marketing-Märchen, sondern die Stationen, die uns zu dem gemacht haben, was wir heute liefern."
     },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     {
       "type": "header",
       "content": "t:about_timeline.appearance_header"

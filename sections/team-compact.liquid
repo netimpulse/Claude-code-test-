@@ -57,7 +57,7 @@
       </div>
 
       <div class="team-compact__column team-compact__column--intro">
-        {%- if section.settings.intro != blank -%}
+        {%- if section.settings.intro != blank and section.settings.show_intro -%}
           <p class="team-compact__intro">{{ section.settings.intro }}</p>
         {%- endif -%}
       </div>
@@ -125,6 +125,7 @@
       "label": "t:team_compact.intro_label",
       "default": "Bei NetImpulse arbeiten Strategie, Design, Marketing und Shopify-Umsetzung nah zusammen. So entstehen Websites, Kampagnen und Themes, die sich wie ein gemeinsames System anfühlen."
     },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     {
       "type": "header",
       "content": "t:team_compact.cta_header"

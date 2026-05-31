@@ -40,7 +40,7 @@
           <h2 class="ni-intro__title">{{ section.settings.heading | escape }}</h2>
         {%- endif -%}
       </div>
-      {%- if section.settings.text != blank -%}
+      {%- if section.settings.text != blank and section.settings.show_intro -%}
         <p class="ni-intro__text">{{ section.settings.text | escape }}</p>
       {%- endif -%}
     </header>
@@ -116,6 +116,7 @@
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "Unternehmensvorstellung" },
     { "type": "textarea", "id": "heading", "label": "Heading", "default": "Ein Studio für digitale Auftritte mit System." },
     { "type": "textarea", "id": "text", "label": "Intro text", "default": "Wir verbinden Online-Marketing, Webdesign und Shopify-Entwicklung, damit aus einzelnen Maßnahmen ein klarer digitaler Auftritt entsteht." },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     { "type": "header", "content": "Image panel" },
     { "type": "image_picker", "id": "panel_image", "label": "Panel image" },
     { "type": "textarea", "id": "panel_heading", "label": "Panel heading", "default": "Von der ersten Idee bis zur laufenden Optimierung." },
