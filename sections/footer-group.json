@@ -13,9 +13,52 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "col_product": {
+          "type": "menu_column",
+          "settings": {
+            "heading": "PRODUCT"
+          }
+        },
+        "col_resources": {
+          "type": "menu_column",
+          "settings": {
+            "heading": "RESOURCES"
+          }
+        },
+        "col_legal": {
+          "type": "legal_column",
+          "settings": {
+            "heading": "LEGAL",
+            "show_privacy": true,
+            "show_terms": true,
+            "show_refund": false,
+            "show_shipping": false,
+            "show_subscription": false
+          }
+        }
+      },
+      "block_order": [
+        "col_product",
+        "col_resources",
+        "col_legal"
+      ],
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
+        "wordmark_text": "netimpulse",
+        "wordmark_size": 52,
+        "show_linkedin": true,
+        "show_twitter": true,
+        "show_instagram": true,
+        "show_medium": false,
+        "show_facebook": false,
+        "show_youtube": false,
+        "show_tiktok": false,
+        "show_qr": true,
+        "qr_caption": "Scan with iPhone",
+        "show_copyright": true,
+        "color_scheme": "scheme-3",
+        "padding_top": 56,
+        "padding_bottom": 40
       }
     }
   },
