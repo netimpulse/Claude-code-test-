@@ -304,6 +304,24 @@
         "heading_scale": 100,
         "text_scale": 100
       }
+    },
+    "cta_compact_AHAeKj": {
+      "type": "cta-compact",
+      "name": "CTA compact",
+      "settings": {
+        "kicker": "Kontakt",
+        "heading": "Bereit für planbares Wachstum?",
+        "intro": "Lass uns in einem kostenlosen Audit deinen größten Hebel finden — Strategie, Design und Performance aus einer Hand.",
+        "show_intro": true,
+        "button_label": "Jetzt anfragen",
+        "button_url": "",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#1f2328",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
   "order": [
@@ -311,6 +329,7 @@
     "ni_intro_6VnTbr",
     "ni_deck_dtycEA",
     "theme_store_preview_zMCVkD",
-    "team_compact_V7PNeF"
+    "team_compact_V7PNeF",
+    "cta_compact_AHAeKj"
   ]
 }
