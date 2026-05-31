@@ -5,8 +5,8 @@
 
 .about-values {
   position: relative;
-  padding-top: var(--av-padding-top, 80px);
-  padding-bottom: var(--av-padding-bottom, 80px);
+  padding-top: var(--av-padding-top, 62px);
+  padding-bottom: var(--av-padding-bottom, 62px);
   background: var(--av-bg, #f4eee2);
   color: var(--av-text, #1f2328);
 }
@@ -39,7 +39,7 @@
 
 .about-values__heading {
   margin: 0;
-  font-size: calc(clamp(2rem, 3.6vw, 3.2rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.56rem, 2.81vw, 2.5rem) * var(--fs-heading, 1));
   line-height: 1.04;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -48,7 +48,7 @@
 .about-values__intro {
   margin: 16px 0 0;
   color: var(--av-muted, #6b665e);
-  font-size: calc(clamp(1rem, 1.1vw, 1.12rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.78rem, 0.86vw, 0.87rem) * var(--fs-text, 1));
   line-height: 1.6;
   max-width: 60ch;
 }
@@ -88,7 +88,7 @@
 
 .about-values__card-title {
   margin: 0;
-  font-size: calc(clamp(1.3rem, 1.6vw, 1.6rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.01rem, 1.25vw, 1.25rem) * var(--fs-heading, 1));
   line-height: 1.15;
   letter-spacing: -0.02em;
   font-weight: 800;

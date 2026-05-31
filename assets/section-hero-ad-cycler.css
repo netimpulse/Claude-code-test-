@@ -1,7 +1,7 @@
 .hero-ac {
   position: relative;
   display: block;
-  padding: var(--ac-pad-top, 80px) clamp(1.25rem, 4vw, 4rem) var(--ac-pad-bottom, 80px);
+  padding: var(--ac-pad-top, 62px) clamp(1.25rem, 4vw, 4rem) var(--ac-pad-bottom, 62px);
   background: var(--ac-bg, #f3f6f6);
   color: var(--ac-text, #0e1716);
   overflow: hidden;
@@ -43,7 +43,7 @@
 
 .hero-ac__heading {
   margin: 0;
-  font-size: calc(clamp(2.25rem, 5.4vw, 4rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.76rem, 4.21vw, 3.12rem) * var(--fs-heading, 1));
   line-height: 1.05;
   font-weight: 800;
   letter-spacing: -0.025em;

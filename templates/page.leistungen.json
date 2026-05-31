@@ -128,8 +128,8 @@
         "secondary_url": "",
         "color_scheme": "scheme-sand",
         "accent_color": "#dce7e9",
-        "padding_top": 96,
-        "padding_bottom": 96
+        "padding_top": 75,
+        "padding_bottom": 75
       }
     }
   },

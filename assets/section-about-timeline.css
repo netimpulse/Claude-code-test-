@@ -7,8 +7,8 @@
 
 .about-timeline {
   position: relative;
-  padding-top: var(--at-padding-top, 80px);
-  padding-bottom: var(--at-padding-bottom, 80px);
+  padding-top: var(--at-padding-top, 62px);
+  padding-bottom: var(--at-padding-bottom, 62px);
   background: var(--at-bg, #ffffff);
   color: var(--at-text, #1f2328);
 }
@@ -41,7 +41,7 @@
 
 .about-timeline__heading {
   margin: 0;
-  font-size: calc(clamp(2rem, 3.6vw, 3.2rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.56rem, 2.81vw, 2.5rem) * var(--fs-heading, 1));
   line-height: 1.04;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -50,7 +50,7 @@
 .about-timeline__intro {
   margin: 16px 0 0;
   color: var(--at-muted, #6b665e);
-  font-size: calc(clamp(1rem, 1.1vw, 1.12rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.78rem, 0.86vw, 0.87rem) * var(--fs-text, 1));
   line-height: 1.6;
   max-width: 60ch;
 }

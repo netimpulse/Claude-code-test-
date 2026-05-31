@@ -8,8 +8,8 @@
 
 .about-perspectives {
   position: relative;
-  padding-top: var(--ap-padding-top, 96px);
-  padding-bottom: var(--ap-padding-bottom, 96px);
+  padding-top: var(--ap-padding-top, 75px);
+  padding-bottom: var(--ap-padding-bottom, 75px);
   background: var(--ap-bg, #f4eee2);
   color: var(--ap-text, #1f2328);
 }
@@ -30,7 +30,7 @@
 
 .about-perspectives__heading {
   margin: 0;
-  font-size: calc(clamp(2.2rem, 5vw, 4.6rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.72rem, 3.9vw, 3.59rem) * var(--fs-heading, 1));
   line-height: 0.98;
   letter-spacing: -0.05em;
   font-weight: 800;
@@ -39,7 +39,7 @@
 .about-perspectives__intro {
   margin: 0;
   color: var(--ap-muted, #6b665e);
-  font-size: calc(clamp(1rem, 1.15vw, 1.12rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.78rem, 0.9vw, 0.87rem) * var(--fs-text, 1));
   line-height: 1.6;
   max-width: 42ch;
 }
@@ -72,7 +72,7 @@
 
 .about-perspectives__feature-heading {
   margin: 0;
-  font-size: calc(clamp(1.7rem, 2.4vw, 2.4rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.33rem, 1.87vw, 1.87rem) * var(--fs-heading, 1));
   line-height: 1.05;
   letter-spacing: -0.03em;
   font-weight: 800;
@@ -148,7 +148,7 @@
 
 .about-perspectives__name {
   margin: 4px 0 0;
-  font-size: calc(clamp(1.35rem, 1.8vw, 1.7rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.05rem, 1.4vw, 1.33rem) * var(--fs-heading, 1));
   line-height: 1.1;
   letter-spacing: -0.02em;
   font-weight: 800;
