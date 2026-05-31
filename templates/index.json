@@ -182,12 +182,17 @@
     "theme_store_preview_zMCVkD": {
       "type": "theme-store-preview",
       "name": "Theme store preview",
+      "blocks": {
+        "theme_1": { "type": "theme", "settings": { "preview_style": "light", "category": "Business Theme", "tags": "Business, Cases" } },
+        "theme_2": { "type": "theme", "settings": { "preview_style": "dark", "category": "Fashion Theme", "tags": "Fashion, Shop" } },
+        "theme_3": { "type": "theme", "settings": { "preview_style": "light", "category": "Section Pack", "tags": "Sections, Editor" } },
+        "store_cta": { "type": "cta", "settings": { "label": "Theme Store", "heading": "Alle Themes und Packs ansehen.", "button_label": "Zum Store" } }
+      },
+      "block_order": ["theme_1", "theme_2", "theme_3", "store_cta"],
       "settings": {
         "heading": "Hier geht es zum Theme-Store.",
         "heading_highlight": "Theme-Store",
         "subheading": "Eine Auswahl unserer Premium-Themes.",
-        "collection": "business",
-        "products_to_show": 6,
         "show_price": true,
         "show_details": true,
         "details_label": "Details",

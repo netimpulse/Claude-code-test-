@@ -1,39 +1,46 @@
 {% comment %}
   Theme Store Preview
   ----------------------------------------------------------------
-  Landing-page teaser for the full theme-store. Renders a heading
-  with an optional highlighted accent word, a short subheading,
-  a horizontal scroll-snap carousel of compact theme cards with
-  prev/next arrows, and a primary CTA button below.
+  A theme deck: a horizontally scrollable row of theme cards plus a
+  FIXED store CTA card that never scrolls. Each theme is added
+  individually as a "theme" block via a product picker — the
+  product's image, title and price are used. When the product has no
+  image, an editorial browser-window mock is shown instead.
+
+  Layout: on desktop the themes scroll inside a flex region while the
+  CTA card stays pinned to the right; on mobile they stack (themes
+  scroll, CTA banner below). Only the themes scroll — no matter how
+  many there are. Cards lift on hover. Themes scroll via the arrows,
+  the mouse wheel or by dragging.
 {% endcomment %}
 
 {%- liquid
   assign scheme = section.settings.color_scheme
-  assign source = section.settings.collection
-  assign products_to_show = section.settings.products_to_show
   assign heading = section.settings.heading
   assign highlight = section.settings.heading_highlight
   assign subheading = section.settings.subheading
-  assign cta_label = section.settings.cta_label
-  assign cta_url = section.settings.cta_url
-  assign details_label = section.settings.details_label
-  assign show_price = section.settings.show_price
-  assign show_details = section.settings.show_details
-  assign card_radius = section.settings.card_radius
-  assign card_aspect = section.settings.card_aspect
 
-  assign heading_html = heading
+  assign heading_html = heading | escape
   if highlight != blank and heading contains highlight
-    assign accent_span = '<span class="tsp__heading-accent">' | append: highlight | append: '</span>'
-    assign heading_html = heading | replace: highlight, accent_span
+    assign hl_esc = highlight | escape
+    assign accent_span = '<span class="tsp__heading-accent">' | append: hl_esc | append: '</span>'
+    assign heading_html = heading_html | replace: hl_esc, accent_span
   endif
+
+  assign theme_count = 0
+  assign has_cta = false
+  for block in section.blocks
+    if block.type == 'theme'
+      assign theme_count = theme_count | plus: 1
+    elsif block.type == 'cta'
+      assign has_cta = true
+    endif
+  endfor
 -%}
 
+{{ 'section-theme-store-preview.css' | asset_url | stylesheet_tag }}
+
 {% style %}
-  /* Apply the section's color scheme by overriding the global color tokens
-     within this section's scope. Without this, the section would inherit the
-     global background/foreground from settings.background_color and the
-     color_scheme setting would have no visible effect. */
   #shopify-section-{{ section.id }} {
     {%- if scheme.settings.background != blank -%}
       --color-background: {{ scheme.settings.background }};
@@ -44,18 +51,16 @@
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
+  #shopify-section-{{ section.id }} .tsp {
+    --tsp-pad-top: {{ section.settings.padding_top }}px;
+    --tsp-pad-bottom: {{ section.settings.padding_bottom }}px;
+  }
 {% endstyle %}
 
 <section
-  class="tsp full-width color-{{ scheme.id }}"
+  class="tsp full-width color-scheme color-{{ scheme.id }}{% if has_cta %} tsp--has-cta{% endif %}"
   data-section-id="{{ section.id }}"
   data-section-type="theme-store-preview"
-  style="
-    --tsp-radius: {{ card_radius }}px;
-    --tsp-card-aspect: {{ card_aspect }};
-    --tsp-pad-top: {{ section.settings.padding_top }}px;
-    --tsp-pad-bottom: {{ section.settings.padding_bottom }}px;
-  "
 >
   <div class="tsp__inner">
     <header class="tsp__header">
@@ -68,12 +73,12 @@
         {%- endif -%}
       </div>
 
-      <div class="tsp__nav" data-tsp-nav>
+      <div class="tsp__nav">
         <button
           type="button"
           class="tsp__nav-btn"
           data-tsp-prev
-          aria-label="{{ 'theme_store_preview.prev' | t | default: 'Previous theme' }}"
+          aria-label="{{ 'theme_store_preview.prev' | t | default: 'Vorheriges' }}"
         >
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
             <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -83,7 +88,7 @@
           type="button"
           class="tsp__nav-btn"
           data-tsp-next
-          aria-label="{{ 'theme_store_preview.next' | t | default: 'Next theme' }}"
+          aria-label="{{ 'theme_store_preview.next' | t | default: 'Nächstes' }}"
         >
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
             <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -92,58 +97,109 @@
       </div>
     </header>
 
-    {%- if source != blank and source.products.size > 0 -%}
-      <ul class="tsp__track" data-tsp-track>
-        {%- for product in source.products limit: products_to_show -%}
-          <li class="tsp__card">
-            <a class="tsp__card-link" href="{{ product.url }}">
-              <div class="tsp__media">
-                {%- if product.featured_image -%}
-                  {%- render 'image',
-                    image: product.featured_image,
-                    class: 'tsp__media-img',
-                    width: 600,
-                    height: 450,
-                    crop: 'center'
-                  -%}
-                {%- else -%}
-                  <div class="tsp__media-placeholder" aria-hidden="true">
-                    {{ 'product-1' | placeholder_svg_tag: 'tsp__placeholder-svg' }}
+    <div class="tsp__deck">
+      {%- if theme_count > 0 -%}
+        <ul class="tsp__track" data-tsp-track>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'theme' -%}
+              {%- liquid
+                assign product = block.settings.product
+                assign style = block.settings.preview_style | default: 'light'
+                assign category = block.settings.category
+                if category == blank and product != blank
+                  assign category = product.type
+                endif
+                assign tags_src = block.settings.tags
+                if tags_src == blank and product != blank
+                  assign tags_src = product.tags | join: ', '
+                endif
+                assign tags = tags_src | split: ','
+              -%}
+              <li class="tsp__item" {{ block.shopify_attributes }}>
+                <a class="tsp__card tsp__card--theme tsp__card--{{ style }}" href="{{ product.url | default: '#' }}" draggable="false">
+                  <div class="tsp__preview" aria-hidden="true">
+                    {%- if product != blank and product.featured_image -%}
+                      {%- render 'image',
+                        image: product.featured_image,
+                        class: 'tsp__preview-img',
+                        width: 800,
+                        height: 572,
+                        crop: 'center'
+                      -%}
+                    {%- else -%}
+                      <div class="tsp__chrome">
+                        <span class="tsp__dots"><i></i><i></i><i></i></span>
+                        <span class="tsp__chrome-bar"></span>
+                      </div>
+                      <span class="tsp__rule"></span>
+                      <div class="tsp__screen">
+                        <span class="tsp__accent-bar"></span>
+                        <span class="tsp__line tsp__line--1"></span>
+                        <span class="tsp__line tsp__line--2"></span>
+                      </div>
+                    {%- endif -%}
                   </div>
-                {%- endif -%}
-              </div>
-              <div class="tsp__body">
-                <h3 class="tsp__title">{{ product.title | escape }}</h3>
-                <div class="tsp__meta">
-                  {%- if show_price -%}
-                    <span class="tsp__price">{{ product.price | money }}</span>
-                  {%- endif -%}
-                  {%- if show_details -%}
-                    <span class="tsp__details">
-                      {{ details_label | default: 'Details' | escape }}
-                      <span aria-hidden="true">→</span>
-                    </span>
-                  {%- endif -%}
-                </div>
-              </div>
-            </a>
-          </li>
-        {%- endfor -%}
-      </ul>
-    {%- else -%}
-      <p class="tsp__placeholder">
-        {{ 'theme_store_preview.add_collection' | t | default: 'Pick a collection in the theme editor to preview themes here.' }}
-      </p>
-    {%- endif -%}
 
-    {%- if cta_label != blank -%}
-      <div class="tsp__footer">
-        <a class="tsp__cta" href="{{ cta_url | default: '#' }}">
-          {{ cta_label | escape }}
-          <span aria-hidden="true">→</span>
-        </a>
-      </div>
-    {%- endif -%}
+                  <div class="tsp__info">
+                    <div class="tsp__row">
+                      <h3 class="tsp__name">
+                        {%- if product != blank -%}
+                          {{ product.title | escape }}
+                        {%- else -%}
+                          {{ 'theme_store_preview.pick_product' | t | default: 'Theme auswählen' }}
+                        {%- endif -%}
+                      </h3>
+                      {%- if product != blank -%}
+                        <span class="tsp__price">{{ product.price | money }}</span>
+                      {%- endif -%}
+                    </div>
+                    {%- if category != blank -%}
+                      <p class="tsp__category">{{ category | escape }}</p>
+                    {%- endif -%}
+                    {%- if tags.size > 0 -%}
+                      <div class="tsp__tags">
+                        {%- for tag in tags -%}
+                          {%- assign tag_clean = tag | strip -%}
+                          {%- if tag_clean != blank -%}
+                            <span class="tsp__tag">{{ tag_clean | escape }}</span>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <p class="tsp__empty">
+          {{ 'theme_store_preview.add_themes' | t | default: 'Füge Theme-Karten im Editor hinzu und wähle pro Karte ein Produkt.' }}
+        </p>
+      {%- endif -%}
+
+      {%- comment -%} Fixed store CTA card — lives outside the scroller. {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'cta' -%}
+          <aside class="tsp__store" {{ block.shopify_attributes }}>
+            <a class="tsp__card tsp__card--cta" href="{{ block.settings.button_url | default: '#' }}" draggable="false">
+              {%- if block.settings.label != blank -%}
+                <span class="tsp__cta-label">
+                  <span class="tsp__cta-dot" aria-hidden="true"></span>
+                  {{ block.settings.label | escape }}
+                </span>
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                <h3 class="tsp__cta-heading">{{ block.settings.heading | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.button_label != blank -%}
+                <span class="tsp__cta-btn">{{ block.settings.button_label | escape }}</span>
+              {%- endif -%}
+            </a>
+          </aside>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
   </div>
 </section>
 
@@ -154,342 +210,103 @@
     var track = root.querySelector('[data-tsp-track]');
     var prev = root.querySelector('[data-tsp-prev]');
     var next = root.querySelector('[data-tsp-next]');
-    if (!track || !prev || !next) return;
+    if (!track) {
+      if (prev) prev.disabled = true;
+      if (next) next.disabled = true;
+      return;
+    }
 
     function step() {
-      var card = track.querySelector('.tsp__card');
-      if (!card) return track.clientWidth * 0.8;
+      var item = track.querySelector('.tsp__item');
+      if (!item) return track.clientWidth * 0.8;
       var styles = window.getComputedStyle(track);
       var gap = parseFloat(styles.columnGap || styles.gap || 0) || 0;
-      return card.getBoundingClientRect().width + gap;
+      return item.getBoundingClientRect().width + gap;
     }
 
     function update() {
       var max = track.scrollWidth - track.clientWidth - 1;
-      prev.toggleAttribute('disabled', track.scrollLeft <= 0);
-      next.toggleAttribute('disabled', track.scrollLeft >= max);
+      if (prev) prev.toggleAttribute('disabled', track.scrollLeft <= 0);
+      if (next) next.toggleAttribute('disabled', track.scrollLeft >= max);
     }
 
-    prev.addEventListener('click', function () {
+    if (prev) prev.addEventListener('click', function () {
       track.scrollBy({ left: -step(), behavior: 'smooth' });
     });
-    next.addEventListener('click', function () {
+    if (next) next.addEventListener('click', function () {
       track.scrollBy({ left: step(), behavior: 'smooth' });
     });
     track.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
+
+    /* Mouse wheel -> horizontal scroll. */
+    track.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      var max = track.scrollWidth - track.clientWidth;
+      if (max <= 0) return;
+      if ((track.scrollLeft <= 0 && e.deltaY < 0) || (track.scrollLeft >= max - 1 && e.deltaY > 0)) return;
+      e.preventDefault();
+      track.scrollLeft += e.deltaY;
+    }, { passive: false });
+
+    /* Drag to scroll with the mouse. */
+    var down = false, startX = 0, startLeft = 0, moved = false;
+    track.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      down = true; moved = false;
+      startX = e.clientX;
+      startLeft = track.scrollLeft;
+      track.classList.add('is-dragging');
+      e.preventDefault();
+      try { track.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    track.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      track.scrollLeft = startLeft - dx;
+    });
+    function endDrag() {
+      if (!down) return;
+      down = false;
+      track.classList.remove('is-dragging');
+    }
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('lostpointercapture', endDrag);
+    track.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+
     update();
   })();
 </script>
-
-{% stylesheet %}
-  .tsp {
-    background: var(--color-background, #fff);
-    color: var(--color-foreground, #1a1a1a);
-    padding: var(--tsp-pad-top, 64px) var(--page-margin, 20px) var(--tsp-pad-bottom, 64px);
-  }
-  .tsp *,
-  .tsp *::before,
-  .tsp *::after { box-sizing: border-box; }
-
-  .tsp__inner {
-    max-width: var(--page-width, 90rem);
-    margin: 0 auto;
-  }
-
-  /* --- Header: intro left, arrows right --- */
-  .tsp__header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .tsp__intro { min-width: 0; flex: 1 1 auto; }
-  .tsp__heading {
-    margin: 0 0 0.4rem;
-    font-size: calc(clamp(1.5rem, 3.5vw, 2.5rem) * var(--fs-heading, 1));
-    line-height: 1.15;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    overflow-wrap: anywhere;
-  }
-  .tsp__heading-accent {
-    font-style: italic;
-    font-weight: 500;
-    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 75%, transparent);
-  }
-  .tsp__subheading {
-    margin: 0;
-    font-size: calc(clamp(0.95rem, 1.5vw, 1.05rem) * var(--fs-text, 1));
-    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 65%, transparent);
-  }
-
-  .tsp__nav {
-    display: flex;
-    gap: 0.5rem;
-    flex-shrink: 0;
-  }
-  .tsp__nav-btn {
-    width: 38px;
-    height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    color: inherit;
-    border: 1px solid color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
-    border-radius: 0;
-    cursor: pointer;
-    transition: background .15s ease, color .15s ease, border-color .15s ease, opacity .15s ease;
-  }
-  .tsp__nav-btn:hover {
-    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 8%, transparent);
-  }
-  .tsp__nav-btn[disabled] {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
-
-  /* --- Track --- */
-  .tsp__track {
-    list-style: none;
-    padding: 0 0 0.5rem;
-    margin: 0;
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(min(220px, 100%), 1fr);
-    gap: 1rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    max-width: 100%;
-  }
-  .tsp__track::-webkit-scrollbar { display: none; }
-
-  .tsp__card {
-    scroll-snap-align: start;
-    background: var(--color-background, #fff);
-    border: 1px solid color-mix(in srgb, var(--color-foreground, #1a1a1a) 10%, transparent);
-    border-radius: 0;
-    overflow: hidden;
-    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  }
-  .tsp__card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px color-mix(in srgb, var(--color-foreground, #1a1a1a) 12%, transparent);
-    border-color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
-  }
-  .tsp__card-link {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    color: inherit;
-    text-decoration: none;
-  }
-  .tsp__media {
-    aspect-ratio: var(--tsp-card-aspect, 4 / 3);
-    overflow: hidden;
-    background: color-mix(in srgb, var(--color-foreground, #1a1a1a) 5%, transparent);
-  }
-  .tsp__media-img,
-  .tsp__media-placeholder {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .tsp__placeholder-svg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.4;
-  }
-
-  /* Compact body: title row + meta row, minimal padding */
-  .tsp__body {
-    padding: 0.7rem 0.85rem 0.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .tsp__title {
-    margin: 0;
-    font-size: calc(0.95rem * var(--fs-heading, 1));
-    font-weight: 700;
-    line-height: 1.25;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-  }
-  .tsp__meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    font-size: calc(0.85rem * var(--fs-text, 1));
-  }
-  .tsp__price {
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-  .tsp__details {
-    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 70%, transparent);
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .tsp__card:hover .tsp__details {
-    color: var(--color-foreground, #1a1a1a);
-  }
-
-  .tsp__placeholder {
-    padding: 2rem;
-    text-align: center;
-    color: color-mix(in srgb, var(--color-foreground, #1a1a1a) 55%, transparent);
-    border: 1px dashed color-mix(in srgb, var(--color-foreground, #1a1a1a) 18%, transparent);
-    border-radius: 0;
-  }
-
-  /* --- Footer CTA --- */
-  .tsp__footer {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.75rem;
-  }
-  .tsp__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.85rem 1.5rem;
-    background: var(--color-foreground, #1a1a1a);
-    color: var(--color-background, #fff);
-    border-radius: 0;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: calc(0.95rem * var(--fs-text, 1));
-    transition: transform .15s ease, opacity .15s ease;
-  }
-  .tsp__cta:hover {
-    transform: translateY(-1px);
-    opacity: 0.92;
-  }
-  .tsp__cta span { transition: transform .15s ease; }
-  .tsp__cta:hover span { transform: translateX(2px); }
-
-  /* --- Responsive card sizing: smaller cards, less empty space --- */
-  @media (min-width: 600px) {
-    .tsp__track { grid-auto-columns: minmax(220px, calc((100% - 1rem) / 2)); }
-  }
-  @media (min-width: 900px) {
-    .tsp__track { grid-auto-columns: minmax(220px, calc((100% - 2rem) / 3)); }
-  }
-  @media (min-width: 1200px) {
-    .tsp__track { grid-auto-columns: minmax(240px, calc((100% - 3rem) / 4)); }
-  }
-{% endstylesheet %}
 
 {% schema %}
 {
   "name": "Theme store preview",
   "tag": "section",
   "class": "shopify-section--theme-store-preview",
+  "max_blocks": 13,
   "settings": [
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Hier geht es zum Theme-Store."
+      "default": "Unsere Themes & Packs."
     },
     {
       "type": "text",
       "id": "heading_highlight",
       "label": "Highlighted word",
       "info": "Word inside the heading that gets the italic accent style. Must match exactly.",
-      "default": "Theme-Store"
+      "default": "Packs"
     },
     {
       "type": "text",
       "id": "subheading",
       "label": "Subheading",
-      "default": "Eine Auswahl unserer Premium-Themes."
-    },
-    {
-      "type": "header",
-      "content": "Source"
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Themes collection"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "label": "Themes to show",
-      "min": 3,
-      "max": 12,
-      "step": 1,
-      "default": 6
-    },
-    {
-      "type": "header",
-      "content": "Card"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_price",
-      "label": "Show price",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_details",
-      "label": "Show details link",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "details_label",
-      "label": "Details link label",
-      "default": "Details"
-    },
-    {
-      "type": "select",
-      "id": "card_aspect",
-      "label": "Card image aspect",
-      "options": [
-        { "value": "16 / 10", "label": "Wide (16:10)" },
-        { "value": "4 / 3", "label": "Standard (4:3)" },
-        { "value": "1 / 1", "label": "Square (1:1)" }
-      ],
-      "default": "4 / 3"
-    },
-    {
-      "type": "range",
-      "id": "card_radius",
-      "label": "Card corner radius",
-      "min": 0,
-      "max": 32,
-      "step": 1,
-      "unit": "px",
-      "default": 14
-    },
-    {
-      "type": "header",
-      "content": "Call to action"
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "Button label",
-      "default": "Zum Theme-Store"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "Button link"
+      "default": "Performance-Themes und Section-Packs — sofort einsatzbereit."
     },
     {
       "type": "header",
@@ -506,7 +323,7 @@
       "id": "padding_top",
       "label": "Top padding",
       "min": 0,
-      "max": 160,
+      "max": 200,
       "step": 4,
       "unit": "px",
       "default": 64
@@ -516,7 +333,7 @@
       "id": "padding_bottom",
       "label": "Bottom padding",
       "min": 0,
-      "max": 160,
+      "max": 200,
       "step": 4,
       "unit": "px",
       "default": 64
@@ -538,10 +355,64 @@
       "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100
     }
   ],
+  "blocks": [
+    {
+      "type": "theme",
+      "name": "Theme",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Theme product",
+          "info": "The product's image, title and price are used. No image? An editorial mock is shown."
+        },
+        {
+          "type": "text",
+          "id": "category",
+          "label": "Category",
+          "info": "Optional. Falls back to the product type."
+        },
+        {
+          "type": "text",
+          "id": "tags",
+          "label": "Tags",
+          "info": "Comma-separated. Optional — falls back to the product tags."
+        },
+        {
+          "type": "select",
+          "id": "preview_style",
+          "label": "Mock preview style",
+          "info": "Used only when the product has no image.",
+          "options": [
+            { "value": "light", "label": "Light" },
+            { "value": "dark", "label": "Dark" }
+          ],
+          "default": "light"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "name": "Store CTA card",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Eyebrow label", "default": "Theme Store" },
+        { "type": "textarea", "id": "heading", "label": "Heading", "default": "Alle Themes und Packs ansehen." },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "Zum Store" },
+        { "type": "url", "id": "button_url", "label": "Button link" }
+      ]
+    }
+  ],
   "presets": [
     {
       "name": "Theme store preview",
-      "category": "Theme store"
+      "category": "Theme store",
+      "blocks": [
+        { "type": "theme", "settings": { "preview_style": "light", "category": "Business Theme", "tags": "Business, Cases" } },
+        { "type": "theme", "settings": { "preview_style": "dark", "category": "Fashion Theme", "tags": "Fashion, Shop" } },
+        { "type": "theme", "settings": { "preview_style": "light", "category": "Section Pack", "tags": "Sections, Editor" } },
+        { "type": "cta", "settings": { "label": "Theme Store", "heading": "Alle Themes und Packs ansehen.", "button_label": "Zum Store" } }
+      ]
     }
   ]
 }
