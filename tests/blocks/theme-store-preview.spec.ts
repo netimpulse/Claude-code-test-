@@ -6,11 +6,11 @@ import { QA, withTheme } from "../fixtures";
  * Block-based: each theme is a "theme" block with a product picker
  * (no collection); the product's image/title/price are used (an
  * editorial browser mock is shown when the product has no image).
- * Cards sit directly on the background; the card lifts on hover; the
- * deck scrolls via arrows, wheel and pointer drag. An optional dark
- * "cta" card closes the deck.
+ * Theme cards sit directly on the background and lift on hover. Only
+ * the themes scroll (arrows / wheel / pointer drag); the dark store
+ * "cta" card is pinned outside the scroller and never moves.
  *
- * Expects the section on the QA block page, hosted with three "theme"
+ * Expects the section on the QA block page, hosted with six "theme"
  * blocks (product = qa-test-produkt) and one "cta" block.
  */
 test.describe("Theme Store Preview – Section", () => {
@@ -31,7 +31,7 @@ test.describe("Theme Store Preview – Section", () => {
 
   test("Renders one theme card per block with name, price and preview", async ({ page }) => {
     const root = page.locator("[data-section-type='theme-store-preview']").first();
-    await expect(root.locator(".tsp__card--theme")).toHaveCount(3);
+    await expect(root.locator(".tsp__card--theme")).toHaveCount(6);
     const first = root.locator(".tsp__card--theme").first();
     await expect(first.locator(".tsp__name")).not.toBeEmpty();
     await expect(first.locator(".tsp__price")).toBeVisible();
@@ -47,7 +47,6 @@ test.describe("Theme Store Preview – Section", () => {
     });
     expect(style.bg).toMatch(/rgba\(0, 0, 0, 0\)|transparent/);
     expect(style.border).toBe("0px");
-    // only the framed preview window carries a border
     const previewBorder = await root.locator(".tsp__preview").first()
       .evaluate((el) => getComputedStyle(el).borderTopWidth);
     expect(parseFloat(previewBorder)).toBeGreaterThan(0);
@@ -64,14 +63,32 @@ test.describe("Theme Store Preview – Section", () => {
     expect(after).not.toBe("none");
   });
 
-  test("Closes with a dark store CTA card", async ({ page }) => {
+  test("Store CTA card lives outside the scroller and stays fixed while themes scroll", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
     const root = page.locator("[data-section-type='theme-store-preview']").first();
+
+    // CTA exists, but NOT inside the scrolling track
+    await expect(root.locator(".tsp__store .tsp__card--cta")).toHaveCount(1);
+    await expect(root.locator("[data-tsp-track] .tsp__card--cta")).toHaveCount(0);
+    await expect(root.locator(".tsp__card--cta .tsp__cta-btn")).toContainText("Zum Store");
+
+    const track = root.locator("[data-tsp-track]");
     const cta = root.locator(".tsp__card--cta");
-    await expect(cta).toHaveCount(1);
-    await expect(cta.locator(".tsp__cta-btn")).toContainText("Zum Store");
+    const ctaXBefore = (await cta.boundingBox())!.x;
+    const scrollBefore = await track.evaluate((el) => el.scrollLeft);
+
+    // scroll the themes track
+    await track.evaluate((el) => { el.scrollLeft = el.scrollWidth; });
+    await page.waitForTimeout(250);
+
+    const scrollAfter = await track.evaluate((el) => el.scrollLeft);
+    const ctaXAfter = (await cta.boundingBox())!.x;
+    expect(scrollAfter).toBeGreaterThan(scrollBefore); // themes scrolled
+    expect(Math.abs(ctaXAfter - ctaXBefore)).toBeLessThan(2); // CTA did not move
   });
 
-  test("Arrow scrolls the track and drag scrolls it back", async ({ page }) => {
+  test("Themes scroll via arrow and pointer drag", async ({ page }) => {
     await page.setViewportSize({ width: 500, height: 800 });
     const root = page.locator("[data-section-type='theme-store-preview']").first();
     const track = root.locator("[data-tsp-track]");
@@ -92,17 +109,6 @@ test.describe("Theme Store Preview – Section", () => {
     }
     const afterDrag = await track.evaluate((el) => el.scrollLeft);
     expect(afterDrag).toBeLessThan(afterArrow);
-  });
-
-  test("Three theme cards + the CTA fit without scrolling on desktop", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
-    const root = page.locator("[data-section-type='theme-store-preview']").first();
-    await expect(root.locator(".tsp__card--theme")).toHaveCount(3);
-    await expect(root.locator(".tsp__card--cta")).toHaveCount(1);
-    const track = root.locator("[data-tsp-track]");
-    const overflow = await track.evaluate((el) => el.scrollWidth > el.clientWidth + 2);
-    expect(overflow).toBe(false);
   });
 
   test("No horizontal overflow at 320px viewport", async ({ page }) => {

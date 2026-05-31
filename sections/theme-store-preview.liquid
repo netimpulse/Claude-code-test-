@@ -1,16 +1,17 @@
 {% comment %}
   Theme Store Preview
   ----------------------------------------------------------------
-  A horizontally scrollable deck of theme cards that sit directly on
-  the section background (no outer panel). Each theme is added
+  A theme deck: a horizontally scrollable row of theme cards plus a
+  FIXED store CTA card that never scrolls. Each theme is added
   individually as a "theme" block via a product picker — the
   product's image, title and price are used. When the product has no
-  image, an editorial browser-window mock is shown instead. An
-  optional dark "store" CTA card can be added at the end.
+  image, an editorial browser-window mock is shown instead.
 
-  - Heading + optional highlighted accent word and subheading.
-  - Cards lift on hover.
-  - The deck scrolls with the arrows, the mouse wheel, or by dragging.
+  Layout: on desktop the themes scroll inside a flex region while the
+  CTA card stays pinned to the right; on mobile they stack (themes
+  scroll, CTA banner below). Only the themes scroll — no matter how
+  many there are. Cards lift on hover. Themes scroll via the arrows,
+  the mouse wheel or by dragging.
 {% endcomment %}
 
 {%- liquid
@@ -25,6 +26,16 @@
     assign accent_span = '<span class="tsp__heading-accent">' | append: hl_esc | append: '</span>'
     assign heading_html = heading_html | replace: hl_esc, accent_span
   endif
+
+  assign theme_count = 0
+  assign has_cta = false
+  for block in section.blocks
+    if block.type == 'theme'
+      assign theme_count = theme_count | plus: 1
+    elsif block.type == 'cta'
+      assign has_cta = true
+    endif
+  endfor
 -%}
 
 {{ 'section-theme-store-preview.css' | asset_url | stylesheet_tag }}
@@ -47,7 +58,7 @@
 {% endstyle %}
 
 <section
-  class="tsp full-width color-scheme color-{{ scheme.id }}"
+  class="tsp full-width color-scheme color-{{ scheme.id }}{% if has_cta %} tsp--has-cta{% endif %}"
   data-section-id="{{ section.id }}"
   data-section-type="theme-store-preview"
 >
@@ -86,103 +97,109 @@
       </div>
     </header>
 
-    {%- if section.blocks.size > 0 -%}
-      <ul class="tsp__track" data-tsp-track>
-        {%- for block in section.blocks -%}
-          {%- case block.type -%}
-          {%- when 'theme' -%}
-            {%- liquid
-              assign product = block.settings.product
-              assign style = block.settings.preview_style | default: 'light'
-              assign category = block.settings.category
-              if category == blank and product != blank
-                assign category = product.type
-              endif
-              assign tags_src = block.settings.tags
-              if tags_src == blank and product != blank
-                assign tags_src = product.tags | join: ', '
-              endif
-              assign tags = tags_src | split: ','
-            -%}
-            <li class="tsp__item" {{ block.shopify_attributes }}>
-              <a class="tsp__card tsp__card--theme tsp__card--{{ style }}" href="{{ product.url | default: '#' }}" draggable="false">
-                <div class="tsp__preview" aria-hidden="true">
-                  {%- if product != blank and product.featured_image -%}
-                    {%- render 'image',
-                      image: product.featured_image,
-                      class: 'tsp__preview-img',
-                      width: 800,
-                      height: 572,
-                      crop: 'center'
-                    -%}
-                  {%- else -%}
-                    <div class="tsp__chrome">
-                      <span class="tsp__dots"><i></i><i></i><i></i></span>
-                      <span class="tsp__chrome-bar"></span>
-                    </div>
-                    <span class="tsp__rule"></span>
-                    <div class="tsp__screen">
-                      <span class="tsp__accent-bar"></span>
-                      <span class="tsp__line tsp__line--1"></span>
-                      <span class="tsp__line tsp__line--2"></span>
-                    </div>
-                  {%- endif -%}
-                </div>
-
-                <div class="tsp__info">
-                  <div class="tsp__row">
-                    <h3 class="tsp__name">
-                      {%- if product != blank -%}
-                        {{ product.title | escape }}
-                      {%- else -%}
-                        {{ 'theme_store_preview.pick_product' | t | default: 'Theme auswählen' }}
-                      {%- endif -%}
-                    </h3>
-                    {%- if product != blank -%}
-                      <span class="tsp__price">{{ product.price | money }}</span>
+    <div class="tsp__deck">
+      {%- if theme_count > 0 -%}
+        <ul class="tsp__track" data-tsp-track>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'theme' -%}
+              {%- liquid
+                assign product = block.settings.product
+                assign style = block.settings.preview_style | default: 'light'
+                assign category = block.settings.category
+                if category == blank and product != blank
+                  assign category = product.type
+                endif
+                assign tags_src = block.settings.tags
+                if tags_src == blank and product != blank
+                  assign tags_src = product.tags | join: ', '
+                endif
+                assign tags = tags_src | split: ','
+              -%}
+              <li class="tsp__item" {{ block.shopify_attributes }}>
+                <a class="tsp__card tsp__card--theme tsp__card--{{ style }}" href="{{ product.url | default: '#' }}" draggable="false">
+                  <div class="tsp__preview" aria-hidden="true">
+                    {%- if product != blank and product.featured_image -%}
+                      {%- render 'image',
+                        image: product.featured_image,
+                        class: 'tsp__preview-img',
+                        width: 800,
+                        height: 572,
+                        crop: 'center'
+                      -%}
+                    {%- else -%}
+                      <div class="tsp__chrome">
+                        <span class="tsp__dots"><i></i><i></i><i></i></span>
+                        <span class="tsp__chrome-bar"></span>
+                      </div>
+                      <span class="tsp__rule"></span>
+                      <div class="tsp__screen">
+                        <span class="tsp__accent-bar"></span>
+                        <span class="tsp__line tsp__line--1"></span>
+                        <span class="tsp__line tsp__line--2"></span>
+                      </div>
                     {%- endif -%}
                   </div>
-                  {%- if category != blank -%}
-                    <p class="tsp__category">{{ category | escape }}</p>
-                  {%- endif -%}
-                  {%- if tags.size > 0 -%}
-                    <div class="tsp__tags">
-                      {%- for tag in tags -%}
-                        {%- assign tag_clean = tag | strip -%}
-                        {%- if tag_clean != blank -%}
-                          <span class="tsp__tag">{{ tag_clean | escape }}</span>
+
+                  <div class="tsp__info">
+                    <div class="tsp__row">
+                      <h3 class="tsp__name">
+                        {%- if product != blank -%}
+                          {{ product.title | escape }}
+                        {%- else -%}
+                          {{ 'theme_store_preview.pick_product' | t | default: 'Theme auswählen' }}
                         {%- endif -%}
-                      {%- endfor -%}
+                      </h3>
+                      {%- if product != blank -%}
+                        <span class="tsp__price">{{ product.price | money }}</span>
+                      {%- endif -%}
                     </div>
-                  {%- endif -%}
-                </div>
-              </a>
-            </li>
-          {%- when 'cta' -%}
-            <li class="tsp__item tsp__item--cta" {{ block.shopify_attributes }}>
-              <a class="tsp__card tsp__card--cta" href="{{ block.settings.button_url | default: '#' }}" draggable="false">
-                {%- if block.settings.label != blank -%}
-                  <span class="tsp__cta-label">
-                    <span class="tsp__cta-dot" aria-hidden="true"></span>
-                    {{ block.settings.label | escape }}
-                  </span>
-                {%- endif -%}
-                {%- if block.settings.heading != blank -%}
-                  <h3 class="tsp__cta-heading">{{ block.settings.heading | escape }}</h3>
-                {%- endif -%}
-                {%- if block.settings.button_label != blank -%}
-                  <span class="tsp__cta-btn">{{ block.settings.button_label | escape }}</span>
-                {%- endif -%}
-              </a>
-            </li>
-          {%- endcase -%}
-        {%- endfor -%}
-      </ul>
-    {%- else -%}
-      <p class="tsp__empty">
-        {{ 'theme_store_preview.add_themes' | t | default: 'Füge Theme-Karten im Editor hinzu und wähle pro Karte ein Produkt.' }}
-      </p>
-    {%- endif -%}
+                    {%- if category != blank -%}
+                      <p class="tsp__category">{{ category | escape }}</p>
+                    {%- endif -%}
+                    {%- if tags.size > 0 -%}
+                      <div class="tsp__tags">
+                        {%- for tag in tags -%}
+                          {%- assign tag_clean = tag | strip -%}
+                          {%- if tag_clean != blank -%}
+                            <span class="tsp__tag">{{ tag_clean | escape }}</span>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <p class="tsp__empty">
+          {{ 'theme_store_preview.add_themes' | t | default: 'Füge Theme-Karten im Editor hinzu und wähle pro Karte ein Produkt.' }}
+        </p>
+      {%- endif -%}
+
+      {%- comment -%} Fixed store CTA card — lives outside the scroller. {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'cta' -%}
+          <aside class="tsp__store" {{ block.shopify_attributes }}>
+            <a class="tsp__card tsp__card--cta" href="{{ block.settings.button_url | default: '#' }}" draggable="false">
+              {%- if block.settings.label != blank -%}
+                <span class="tsp__cta-label">
+                  <span class="tsp__cta-dot" aria-hidden="true"></span>
+                  {{ block.settings.label | escape }}
+                </span>
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                <h3 class="tsp__cta-heading">{{ block.settings.heading | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.button_label != blank -%}
+                <span class="tsp__cta-btn">{{ block.settings.button_label | escape }}</span>
+              {%- endif -%}
+            </a>
+          </aside>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
   </div>
 </section>
 
@@ -257,7 +274,6 @@
     track.addEventListener('pointerup', endDrag);
     track.addEventListener('pointercancel', endDrag);
     track.addEventListener('lostpointercapture', endDrag);
-    /* Swallow the click that ends a drag so the card link doesn't fire. */
     track.addEventListener('click', function (e) {
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
     }, true);

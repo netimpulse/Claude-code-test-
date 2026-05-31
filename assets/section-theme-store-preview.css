@@ -58,8 +58,20 @@
 .tsp__nav-btn:focus-visible { outline: 2px solid var(--color-foreground, #14110b); outline-offset: 2px; }
 .tsp__nav-btn[disabled] { opacity: 0.3; cursor: not-allowed; }
 
-/* --- Track: cards sit directly on the background --- */
+/* --- Deck: scrolling themes + a fixed CTA card beside them --- */
+.tsp__deck {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  align-items: stretch;
+}
+.tsp__store { display: flex; min-width: 0; }
+.tsp__store .tsp__card--cta { width: 100%; }
+
+/* --- Track: theme cards sit directly on the background --- */
 .tsp__track {
+  flex: 1 1 auto;
+  min-width: 0;
   list-style: none;
   margin: 0;
   /* Padding gives the hover lift + shadow room so it is never clipped. */
@@ -85,9 +97,12 @@
 
 @media (min-width: 560px) { .tsp__track { grid-auto-columns: 47%; } }
 @media (min-width: 820px) { .tsp__track { grid-auto-columns: 31%; } }
-/* Desktop: exactly three theme cards + the CTA card fit with no scrolling. */
+/* Desktop: the CTA card is pinned to the right; three theme cards fit in
+   the scrolling region and any extras scroll — the CTA never moves. */
 @media (min-width: 1040px) {
-  .tsp__track { gap: 1.5rem; grid-auto-columns: calc((100% - 4.5rem) / 4); }
+  .tsp__deck { flex-direction: row; }
+  .tsp__track { gap: 1.5rem; grid-auto-columns: calc((100% - 3rem) / 3); }
+  .tsp--has-cta .tsp__store { flex: 0 0 clamp(260px, 24%, 330px); }
 }
 
 /* --- Card (preview + info as one liftable unit on the background) --- */
