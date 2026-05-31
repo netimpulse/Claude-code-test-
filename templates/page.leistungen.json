@@ -196,11 +196,30 @@
         "padding_top": 80,
         "padding_bottom": 80
       }
+    },
+    "ni_text_FcbrXq": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Wie wird Abgerechnet",
+        "heading_align": "center",
+        "body": "<p>Das sich der Arbeitsaufwand für die einzelnen Leistungen stark nach der Größe des unternhemens; dem Umfang der Website und der Anzahl der Produkte richtet, gibt es für die Leistungen einen Einheitspreis sondern nur auf Anfrage. Nachdem wir mit ihnen ein kostenloses erstgespräch geführt haben werden wir ihnen ein Angebot zukommen lassen welches den Preis mit genauer auffürhung der zu erbringenden Leistungen beinhaltet </p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
   "order": [
     "main",
     "services_orbit_X8nLCF",
+    "ni_text_FcbrXq",
     "addon_services_dU8FzY"
   ]
 }
