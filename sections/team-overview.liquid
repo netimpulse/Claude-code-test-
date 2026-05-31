@@ -49,7 +49,7 @@
       </h2>
     {%- endif -%}
 
-    {%- if section.settings.intro != blank -%}
+    {%- if section.settings.intro != blank and section.settings.show_intro -%}
       <p class="team-overview__intro">{{ section.settings.intro }}</p>
     {%- endif -%}
 
@@ -160,6 +160,7 @@
       "id": "intro",
       "label": "t:team_overview.intro_label"
     },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     {
       "type": "header",
       "content": "t:team_overview.layout_header"

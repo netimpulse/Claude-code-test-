@@ -39,7 +39,7 @@
           <h2 class="ni-deck__title">{{ section.settings.heading | escape }}</h2>
         {%- endif -%}
       </div>
-      {%- if section.settings.text != blank -%}
+      {%- if section.settings.text != blank and section.settings.show_intro -%}
         <p class="ni-deck__text">{{ section.settings.text | escape }}</p>
       {%- endif -%}
     </header>
@@ -107,6 +107,7 @@
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "Leistungen" },
     { "type": "textarea", "id": "heading", "label": "Heading", "default": "Ein Kartendeck, das beim Scrollen Schicht für Schicht arbeitet." },
     { "type": "textarea", "id": "text", "label": "Intro text", "default": "Die nächste Leistung kommt von unten hoch, bleibt kurz im Fokus und legt sich über die vorherige Karte." },
+    { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     { "type": "textarea", "id": "note", "label": "Closing note", "default": "Ein vertikaler Sticky-Stack: Beim Scrollen rückt jede Karte von unten nach und übernimmt den Fokus." },
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
