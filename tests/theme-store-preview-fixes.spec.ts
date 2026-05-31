@@ -42,6 +42,16 @@ test.describe("theme-store-preview fixes", () => {
     expect(padBottom).toBeGreaterThanOrEqual(12);
   });
 
+  test("Card background covers both the preview area AND the info area", async ({ page }) => {
+    const cardBg = await page.locator(".tsp .tsp__card--theme").first().evaluate((el) => {
+      return getComputedStyle(el).backgroundColor;
+    });
+    // The card itself must have a real, non-transparent background now
+    // (previously it was transparent and only the preview was tinted).
+    expect(cardBg).not.toBe("rgba(0, 0, 0, 0)");
+    expect(cardBg).not.toBe("transparent");
+  });
+
   test("Theme cards expose a navigable href (clicking does not get eaten)", async ({ page }) => {
     const cards = page.locator(".tsp .tsp__card--theme");
     const count = await cards.count();
