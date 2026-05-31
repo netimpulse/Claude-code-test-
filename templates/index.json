@@ -28,7 +28,9 @@
         "color_scheme": "",
         "accent_color": "#050505",
         "padding_top": 36,
-        "padding_bottom": 68
+        "padding_bottom": 68,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "ni_intro_6VnTbr": {
@@ -72,13 +74,16 @@
         "kicker": "",
         "heading": "Ein Studio für digitale Auftritte mit System.",
         "text": "Wir verbinden Online-Marketing, Webdesign und Shopify-Entwicklung, damit aus einzelnen Maßnahmen ein klarer digitaler Auftritt entsteht.",
+        "show_intro": true,
         "panel_image": "shopify://shop_images/ChatGPT_Image_28._Mai_2026_00_13_54.png",
         "panel_heading": "Von der ersten Idee bis zur laufenden Optimierung.",
         "panel_text": "Ob Relaunch, SEO-Aufbau und Pflege, Google Ads, GEO oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten.",
         "color_scheme": "",
         "accent_color": "#050505",
         "padding_top": 88,
-        "padding_bottom": 88
+        "padding_bottom": 88,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "ni_deck_dtycEA": {
@@ -172,37 +177,73 @@
         "kicker": "",
         "heading": "Unsere Leistungen Im Überblick",
         "text": "",
+        "show_intro": true,
         "note": "",
         "color_scheme": "",
         "accent_color": "#050505",
         "padding_top": 92,
-        "padding_bottom": 68
+        "padding_bottom": 68,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "theme_store_preview_zMCVkD": {
       "type": "theme-store-preview",
-      "name": "Theme store preview",
       "blocks": {
-        "theme_1": { "type": "theme", "settings": { "preview_style": "light", "category": "Business Theme", "tags": "Business, Cases" } },
-        "theme_2": { "type": "theme", "settings": { "preview_style": "dark", "category": "Fashion Theme", "tags": "Fashion, Shop" } },
-        "theme_3": { "type": "theme", "settings": { "preview_style": "light", "category": "Section Pack", "tags": "Sections, Editor" } },
-        "store_cta": { "type": "cta", "settings": { "label": "Theme Store", "heading": "Alle Themes und Packs ansehen.", "button_label": "Zum Store" } }
+        "theme_1": {
+          "type": "theme",
+          "settings": {
+            "product": "atelier",
+            "category": "Business Theme",
+            "tags": "Business, Cases",
+            "preview_style": "light"
+          }
+        },
+        "theme_2": {
+          "type": "theme",
+          "settings": {
+            "product": "",
+            "category": "Fashion Theme",
+            "tags": "Fashion, Shop",
+            "preview_style": "dark"
+          }
+        },
+        "theme_3": {
+          "type": "theme",
+          "settings": {
+            "product": "",
+            "category": "Section Pack",
+            "tags": "Sections, Editor",
+            "preview_style": "light"
+          }
+        },
+        "store_cta": {
+          "type": "cta",
+          "settings": {
+            "label": "Theme Store",
+            "heading": "Alle Themes und Packs ansehen.",
+            "button_label": "Zum Store",
+            "button_url": ""
+          }
+        }
       },
-      "block_order": ["theme_1", "theme_2", "theme_3", "store_cta"],
+      "block_order": [
+        "theme_1",
+        "theme_2",
+        "theme_3",
+        "store_cta"
+      ],
+      "name": "Theme store preview",
       "settings": {
         "heading": "Hier geht es zum Theme-Store.",
         "heading_highlight": "Theme-Store",
         "subheading": "Eine Auswahl unserer Premium-Themes.",
-        "show_price": true,
-        "show_details": true,
-        "details_label": "Details",
-        "card_aspect": "4 / 3",
-        "card_radius": 14,
-        "cta_label": "Zum Theme-Store",
-        "cta_url": "",
+        "show_intro": true,
         "color_scheme": "scheme-sand",
         "padding_top": 52,
-        "padding_bottom": 52
+        "padding_bottom": 52,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "team_compact_V7PNeF": {
@@ -242,12 +283,15 @@
         "kicker": "Team",
         "heading": "Direkt. Klar. Ohne Agentur-Umwege.",
         "intro": "Bei NetImpulse arbeiten Strategie, Design, Marketing und Shopify-Umsetzung nah zusammen. So entstehen Websites, Kampagnen und Themes, die sich wie ein gemeinsames System anfühlen.",
+        "show_intro": true,
         "cta_label": "Team kennenlernen",
         "cta_url": "shopify://pages/ueber-uns",
         "color_scheme": "scheme-sand",
         "accent_color": "#1f2328",
         "padding_top": 52,
-        "padding_bottom": 52
+        "padding_bottom": 52,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },
