@@ -14,49 +14,74 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "col_product": {
-          "type": "menu_column",
-          "settings": {
-            "heading": "PRODUCT"
-          }
-        },
-        "col_resources": {
-          "type": "menu_column",
-          "settings": {
-            "heading": "RESOURCES"
-          }
-        },
-        "col_legal": {
+        "legal_column_xLYhmd": {
           "type": "legal_column",
           "settings": {
             "heading": "LEGAL",
             "show_privacy": true,
+            "privacy_label": "",
+            "privacy_url": "",
             "show_terms": true,
+            "terms_label": "",
+            "terms_url": "",
             "show_refund": false,
+            "refund_label": "",
+            "refund_url": "",
             "show_shipping": false,
-            "show_subscription": false
+            "shipping_label": "",
+            "shipping_url": "",
+            "show_subscription": false,
+            "subscription_label": "",
+            "subscription_url": "",
+            "extra_menu": ""
+          }
+        },
+        "menu_column_Tyz3eg": {
+          "type": "menu_column",
+          "settings": {
+            "heading": "PRODUCT",
+            "menu": ""
+          }
+        },
+        "menu_column_YVVQFc": {
+          "type": "menu_column",
+          "settings": {
+            "heading": "PRODUCT",
+            "menu": ""
           }
         }
       },
       "block_order": [
-        "col_product",
-        "col_resources",
-        "col_legal"
+        "legal_column_xLYhmd",
+        "menu_column_Tyz3eg",
+        "menu_column_YVVQFc"
       ],
       "settings": {
-        "wordmark_text": "netimpulse",
+        "wordmark_text": "zelt",
+        "wordmark_font": "assistant_n4",
         "wordmark_size": 52,
         "show_linkedin": true,
+        "linkedin_url": "",
         "show_twitter": true,
+        "twitter_url": "",
         "show_instagram": true,
+        "instagram_url": "",
         "show_medium": false,
+        "medium_url": "",
         "show_facebook": false,
+        "facebook_url": "",
         "show_youtube": false,
+        "youtube_url": "",
         "show_tiktok": false,
+        "tiktok_url": "",
         "show_qr": true,
         "qr_caption": "Scan with iPhone",
         "show_copyright": true,
-        "color_scheme": "scheme-3",
+        "copyright_suffix": "",
+        "color_scheme": "scheme-2",
+        "bg_color": "",
+        "text_color": "",
+        "muted_color": "",
         "padding_top": 56,
         "padding_bottom": 40
       }
