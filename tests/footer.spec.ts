@@ -82,6 +82,17 @@ test.describe("Footer", () => {
     expect(overflow).toBe(false);
   });
 
+  test("Footer spans the full viewport width (no side gutters)", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    const dims = await page.locator(".ni-footer").first().evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return { width: r.width, left: r.left, viewport: window.innerWidth };
+    });
+    // Allow at most 1px rounding tolerance.
+    expect(dims.left, "footer left offset").toBeLessThanOrEqual(1);
+    expect(dims.width, "footer width").toBeGreaterThanOrEqual(dims.viewport - 1);
+  });
+
   test("Captures footer screenshot (desktop + mobile)", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(withTheme(QA.paths.home), { waitUntil: "load" });
