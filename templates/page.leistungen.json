@@ -135,6 +135,24 @@
         "text_scale": 100
       }
     },
+    "ni_text_FcbrXq": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Wie wird Abgerechnet",
+        "heading_align": "center",
+        "body": "<p>Das sich der Arbeitsaufwand für die einzelnen Leistungen stark nach der Größe des unternhemens; dem Umfang der Website und der Anzahl der Produkte richtet, gibt es für die Leistungen einen Einheitspreis sondern nur auf Anfrage. Nachdem wir mit ihnen ein kostenloses erstgespräch geführt haben werden wir ihnen ein Angebot zukommen lassen welches den Preis mit genauer auffürhung der zu erbringenden Leistungen beinhaltet </p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
     "addon_services_dU8FzY": {
       "type": "addon-services",
       "blocks": {
@@ -197,18 +215,18 @@
         "padding_bottom": 80
       }
     },
-    "ni_text_FcbrXq": {
-      "type": "ni-text",
-      "name": "Text block",
+    "cta_compact_wtkPDL": {
+      "type": "cta-compact",
+      "name": "CTA compact",
       "settings": {
-        "heading": "Wie wird Abgerechnet",
-        "heading_align": "center",
-        "body": "<p>Das sich der Arbeitsaufwand für die einzelnen Leistungen stark nach der Größe des unternhemens; dem Umfang der Website und der Anzahl der Produkte richtet, gibt es für die Leistungen einen Einheitspreis sondern nur auf Anfrage. Nachdem wir mit ihnen ein kostenloses erstgespräch geführt haben werden wir ihnen ein Angebot zukommen lassen welches den Preis mit genauer auffürhung der zu erbringenden Leistungen beinhaltet </p>",
-        "text_align": "left",
-        "max_width": 760,
-        "color_scheme": "",
-        "bg_color": "",
-        "text_color": "",
+        "kicker": "Kontakt",
+        "heading": "Bereit für planbares Wachstum?",
+        "intro": "Lass uns in einem kostenlosen Audit deinen größten Hebel finden — Strategie, Design und Performance aus einer Hand.",
+        "show_intro": true,
+        "button_label": "Jetzt anfragen",
+        "button_url": "",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#1f2328",
         "padding_top": 64,
         "padding_bottom": 64,
         "heading_scale": 100,
@@ -220,6 +238,7 @@
     "main",
     "services_orbit_X8nLCF",
     "ni_text_FcbrXq",
-    "addon_services_dU8FzY"
+    "addon_services_dU8FzY",
+    "cta_compact_wtkPDL"
   ]
 }
