@@ -21,10 +21,10 @@
           "type": "variant",
           "settings": {
             "letter": "A",
-            "tag": "Variant A · Direct",
-            "headline": "Stop guessing what your customers want.",
-            "sub": "Free 30-min audit. No pitch.",
-            "cta": "Book a slot",
+            "tag": "Zielgruppenanalyse",
+            "headline": "Hör auf zu raten, was deine Kunden wollen!",
+            "sub": "Analysiere deine Zielgruppe",
+            "cta": "Analyse anfordern",
             "ctr": "1.8%",
             "color_tone": "deep",
             "art_kind": "stripes"
@@ -72,22 +72,22 @@
         "stat_R69Mkx": {
           "type": "stat",
           "settings": {
-            "label": "Variants live",
+            "label": "Posts Live",
             "value": "34"
           }
         },
         "stat_CNaTzC": {
           "type": "stat",
           "settings": {
-            "label": "Avg. winner lift",
+            "label": "Engagement Anstieg",
             "value": "+58%"
           }
         },
         "stat_bBnikp": {
           "type": "stat",
           "settings": {
-            "label": "Spend on autopilot",
-            "value": "€12K/wk"
+            "label": "MONATL. REICHWEITE",
+            "value": "120K+"
           }
         }
       },
@@ -103,14 +103,14 @@
       "name": "Hero ad cycler",
       "settings": {
         "eyebrow": "Paid social · A/B always-on",
-        "heading_line_1": "Creative that",
-        "heading_accent": "converts.",
-        "heading_line_2": "Tested",
-        "heading_line_3": "until it does.",
-        "body": "<p>We ship 4–8 ad variants every week, then quietly kill the ones that don't pay. Your spend follows the winners — automatically.</p>",
-        "primary_label": "Plan a campaign",
+        "heading_line_1": "Social Media,",
+        "heading_accent": "das nicht einfach nur postet.",
+        "heading_line_2": "",
+        "heading_line_3": "",
+        "body": "<p>Auf Social Media entscheidet sich oft schon früh, ob Menschen einer Marke vertrauen, sie wiedererkennen oder überhaupt im Kopf behalten. Wir entwickeln Inhalte, die nicht beliebig wirken, sondern zu eurer Marke passen, Aufmerksamkeit schaffen und eure Zielgruppe regelmäßig erreichen.</p>",
+        "primary_label": "Kampagne planen",
         "primary_url": "",
-        "secondary_label": "Recent creatives",
+        "secondary_label": "Weitere Leistungen",
         "secondary_url": "",
         "test_label": "Live · A/B test #248",
         "impressions_label": "impressions",
@@ -128,7 +128,9 @@
         "accent_color": "#1c4948",
         "accent_soft": "#9ccfd0",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "image_with_text_eiKVxi": {
@@ -146,7 +148,9 @@
         "color_scheme": "scheme-sand",
         "accent_color": "#b6e84f",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "service_aspects_FwrPeb": {
@@ -214,13 +218,16 @@
         "kicker": "SEO",
         "heading": "Was in einem SEO-Projekt steckt.",
         "intro": "Jede Kachel steht für einen Baustein – von der Analyse bis zum laufenden Reporting.",
+        "show_intro": true,
         "columns": "3",
         "stagger": 48,
         "show_numbers": true,
         "color_scheme": "scheme-sand",
         "accent_color": "#4a7cff",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },

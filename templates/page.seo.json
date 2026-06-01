@@ -108,6 +108,7 @@
     },
     "ni_text_ePYJef": {
       "type": "ni-text",
+      "disabled": true,
       "name": "Text block",
       "settings": {
         "heading": "Unser SEO: Kein Schnick Schnack! Mehr Sichtbarkeit, relevante Besucher und Umsatz",
@@ -128,7 +129,7 @@
       "type": "image-with-text",
       "name": "t:image_with_text.name",
       "settings": {
-        "image_position": "right",
+        "image_position": "left",
         "heading": "Was ist das NetImpulse SEO?",
         "body": "<p>Wir entwickeln keine Standardlösungen, sondern nehmen uns<br/>die Zeit euer Geschäftsmodell und eure Zielgruppe zu verstehen, sodass wir eine<br/>perfekt auf euch zu geschneiderte SEO-Strategie erstellen können.</p><p><strong>Unsere Leistungen im Bereich SEO:</strong><br/>•\tKeyword-Recherche<br/>•\tTechnisches SEO<br/>•\tEntwicklung von Content Strategien<br/>•\tLinkbuilding<br/>•\tDatenanalyse & kontinuierliche Optimierung<br/></p>",
         "link_label": "",
@@ -166,7 +167,7 @@
       "type": "image-with-text",
       "name": "t:image_with_text.name",
       "settings": {
-        "image_position": "left",
+        "image_position": "right",
         "heading": "Wie starten wir bei einem Auftrag zur SEO-Betreuung?",
         "body": "<p>Als aller erstes analysieren wir den aktuellen Stand ihrer Website: Welche Potentiale gibt es? Welche Maßnahmen wären sinnvoll? Macht SEO für sie überhaupt Sinn?<br/>Darauf aufbauend entwickeln wir eine klare Priorisierung der zu erledigenden Maßnahmen und setzen die Optimierungen um.</p><p><br/><strong>Dabei achten wir vor allem auf:</strong><br/>•\tSaubere technische Grundlagen<br/>•\tInhalte mit echtem Mehrwert <br/>•\tSuchintention statt Keyword Dichte</p>",
         "link_label": "",
