@@ -91,10 +91,10 @@
       "name": "Hero Ticker",
       "settings": {
         "eyebrow": "Performance · Always on",
-        "heading_strong": "Numbers tied to revenue.",
-        "heading_muted": "Not clicks.",
-        "body": "<p>Every channel reports to one dashboard. We watch what moves money — and quietly throw out what doesn't.</p>",
-        "primary_label": "See your audit",
+        "heading_strong": "Ihr wollt schnell sichtbar werden?",
+        "heading_muted": "Dann ist SEA das richtige für euch!",
+        "body": "<p>Mit Google Ads erreicht ihr gezielt Menschen, die bereits nach euren Produkten oder Leistungen suchen. Wir entwickeln und optimieren Kampagnen mit Fokus auf Effizienz und Conversions.</p>",
+        "primary_label": "Audit anfragen",
         "primary_url": "",
         "secondary_label": "Watch a demo",
         "secondary_url": "",
@@ -103,16 +103,18 @@
         "color_scheme": "scheme-sand",
         "accent_color": "#333333",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "image_with_text_xBBwxJ": {
       "type": "image-with-text",
       "name": "t:image_with_text.name",
       "settings": {
-        "image_position": "right",
-        "heading": "SEO at Scale Is a Structural Problem.",
-        "body": "<p>SEO at scale isn't a checklist. You're managing thousands of pages, legacy tech stacks, and competing priorities across teams and business units.</p><p>At this level, the problems are structural — crawl budget limits, keyword cannibalization, and years of technical debt. You need a partner who can execute <a href=\"#\">technical and content strategies</a> that produce durable results.</p>",
+        "image_position": "left",
+        "heading": "Was ist das NetImpulse SEA?",
+        "body": "<p>Wir betreuen Google Ads nicht nach Bauchgefühl, sondern datenbasiert: Jede unserer Kampagnen wird auf Ziel, Zielgruppe und Wirtschaftlichkeit ausgerichtet.</p><p><br/><strong>Unsere Leistungen im Bereich SEA:</strong><br/>•\tKonto und Kampagnen audits<br/>•\tStrategie und Kampagnenstruktur<br/>•\tKeyword-Recherche und Suchintentionanalyse<br/>•\tSearch, Shopping, Remarketing und Pmax Kampagnen<br/>•\tAnzeigentexte und Creatives<br/>•\tConversion-Tracking und Setup<br/>•\tBudgetsteuerung und Gebotsstrategien<br/>•\tLaufende Optimierung und Reportings<br/></p>",
         "link_label": "",
         "link_url": "",
         "show_badge": false,
@@ -121,7 +123,9 @@
         "color_scheme": "scheme-sand",
         "accent_color": "#b6e84f",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "service_aspects_dQbJRi": {
@@ -131,28 +135,29 @@
           "type": "tile",
           "settings": {
             "icon": "search",
-            "title": "Audit",
-            "text": "Bestandsaufnahme von Technik, Inhalten und Rankings."
+            "title": "Suchbegriffe und Keywords",
+            "text": "Wir analysieren, wonach eure Zielgruppe aktiv sucht, welche Begriffe kaufnah sind und welche Suchanfragen ausgeschlossen werden sollten."
           }
         },
         "tile_fdMzgJ": {
           "type": "tile",
           "settings": {
-            "icon": "compass",
-            "title": "Keyword-Recherche",
-            "text": "Suchintention, Volumen und Wettbewerb pro Thema."
+            "icon": "quote",
+            "title": "Anzeigen und Assets",
+            "text": "Wir erstellen passende Anzeigentexte, Erweiterungen und Assets, die zur Suchintention passen und Nutzer gezielt zur Handlung führen."
           }
         },
         "tile_W8t6Jb": {
           "type": "tile",
           "settings": {
-            "icon": "layout",
-            "title": "On-Page-Optimierung",
-            "text": "Struktur, Snippets und interne Verlinkung."
+            "icon": "bag",
+            "title": "Budgets und Gebote",
+            "text": "Wir verteilen das Budget sinnvoll, steuern Gebote nach Leistung und optimieren Kampagnen auf effiziente Conversions."
           }
         },
         "tile_rtexGX": {
           "type": "tile",
+          "disabled": true,
           "settings": {
             "icon": "spark",
             "title": "Technisches SEO",
@@ -161,6 +166,7 @@
         },
         "tile_eyHBGj": {
           "type": "tile",
+          "disabled": true,
           "settings": {
             "icon": "quote",
             "title": "Content-Strategie",
@@ -169,6 +175,7 @@
         },
         "tile_gizEiC": {
           "type": "tile",
+          "disabled": true,
           "settings": {
             "icon": "chart",
             "title": "Monitoring & Reporting",
@@ -186,16 +193,37 @@
       ],
       "name": "t:service_aspects.name",
       "settings": {
-        "kicker": "SEO",
-        "heading": "Was in einem SEO-Projekt steckt.",
-        "intro": "Jede Kachel steht für einen Baustein – von der Analyse bis zum laufenden Reporting.",
+        "kicker": "SEA",
+        "heading": "Die wichtigsten Bausteine eines SEA-Projekts.",
+        "intro": "Am Anfang steht natürlich die Frage: Was soll Google Ads für euch leisten? – Mehr Leads, mehr Umsatz, mehr Anfragen, oder mehr Reichweite? Auf dieser Basis entwickeln wir eine klare Kampagnenstruktur und definieren saubere KPIs.",
+        "show_intro": true,
         "columns": "3",
         "stagger": 52,
         "show_numbers": true,
         "color_scheme": "scheme-sand",
         "accent_color": "#4a7cff",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
+    "ni_text_qA8pJU": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Warum SEA mit uns?",
+        "heading_align": "center",
+        "body": "<p>SEA funktioniert nur dann gut, wenn Strategie, Tracking und<br/>Optimierung zusammenspielen. Genau darauf liegt unser Fokus. Dabei setzen wir<br/>auf Transparenz und Performance, statt auf Agentur-Gelaber. Ihr bekommt von uns<br/>keine unübersichtlichen Dashboards die überfordern, sondern konkrete<br/>Erkenntnisse und nachvollziehbare Aussagen.<br/><br/>Das wichtigste für uns ist euer Erfolg, und dass ihr unser Vorgehen<br/>nachvollziehen könnt.</p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "scheme-sand",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },
@@ -203,6 +231,7 @@
     "main",
     "hero_ticker_tPizBw",
     "image_with_text_xBBwxJ",
-    "service_aspects_dQbJRi"
+    "service_aspects_dQbJRi",
+    "ni_text_qA8pJU"
   ]
 }

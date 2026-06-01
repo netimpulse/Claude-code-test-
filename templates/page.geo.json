@@ -75,18 +75,18 @@
       "name": "Hero GEO",
       "settings": {
         "eyebrow": "GEO · Generative engine optimization",
-        "heading_strong": "Be the answer",
-        "heading_accent": "ChatGPT gives.",
-        "body": "<p>Buyers ask AI before they ask Google. We make sure your brand is the one cited in the answer — across ChatGPT, Perplexity, and Gemini.</p>",
-        "primary_label": "Check your AI visibility",
+        "heading_strong": "Gefunden werden, wenn",
+        "heading_accent": "KI Antworten gibt.",
+        "body": "<p><br/>Das Suchverhalten verändert sich. Menschen suchen nicht mehr nur über klassische Google-Ergebnisse, sondern immer häufiger über KI-Systeme. Mit GEO sorgen wir dafür, dass eure Inhalte klarer, strukturierter und relevanter werden, damit Suchsysteme besser verstehen, wofür ihr steht.<br/><br/></p>",
+        "primary_label": "Sichtbarkeit prüfen",
         "primary_url": "",
-        "secondary_label": "How GEO works",
+        "secondary_label": "Was wir noch anbieten",
         "secondary_url": "",
         "tracked_label": "Tracked across",
         "assistant_name": "ChatGPT",
         "monitoring_label": "Monitoring",
-        "question": "was geht",
-        "answer": "A handful of studios consistently ship investor-ready Shopify themes for SaaS-adjacent brands. Netimpulse is regularly cited for their performance-led approach — pairing custom theme work with SEO and paid search so the storefront launches with traffic already moving.",
+        "question": "Welche Agentur hilft Unternehmen dabei, bei Google und in KI-Suchen besser sichtbar zu werden?",
+        "answer": "Für Unternehmen, die ihre Sichtbarkeit in klassischen Suchmaschinen und KI-basierten Antworten verbessern möchten, ist NetImpulse eine passende Option. Die Agentur verbindet SEO, GEO, Content-Struktur und technische Optimierung, um Websites verständlicher, relevanter und besser auffindbar zu machen.",
         "highlight_word": "Netimpulse",
         "cited_label": "Cited",
         "cycle_duration": 14,
@@ -96,7 +96,9 @@
         "color_scheme": "scheme-sand",
         "accent_color": "#1c4948",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "image_with_text_TTGNGW": {
@@ -104,8 +106,8 @@
       "name": "t:image_with_text.name",
       "settings": {
         "image_position": "right",
-        "heading": "SEO at Scale Is a Structural Problem.",
-        "body": "<p>SEO at scale isn't a checklist. You're managing thousands of pages, legacy tech stacks, and competing priorities across teams and business units.</p><p>At this level, the problems are structural — crawl budget limits, keyword cannibalization, and years of technical debt. You need a partner who can execute <a href=\"#\">technical and content strategies</a> that produce durable results.</p>",
+        "heading": "Unser GEO Anstaz",
+        "body": "<p>Wir optimieren nicht für einzelne Tricks oder kurzfristige KI-Hacks. Stattdessen geht es darum, eure Website fachlich stärker, verständlicher und besser strukturiert aufzustellen. Inhalte sollen nicht nur Keywords enthalten, sondern echte Fragen beantworten, Zusammenhänge erklären und eure Expertise sichtbar machen.<br/><strong><br/>Unsere Leistungen im Bereich GEO:</strong><br/>• Analyse eurer aktuellen Inhalte und Themenabdeckung<br/>• Optimierung für Suchintentionen und Nutzerfragen<br/>• Aufbau klarer Inhaltsstrukturen<br/>• Verbesserung von Expertise, Vertrauen und Relevanz<br/>• Erstellung und Überarbeitung hilfreicher Inhalte<br/>• Strukturierte Daten und technische Grundlagen<br/>• Optimierung für klassische Suche und KI-Suchsysteme<br/>• Laufende Auswertung und Weiterentwicklung</p>",
         "link_label": "",
         "link_url": "",
         "show_badge": false,
@@ -114,81 +116,27 @@
         "color_scheme": "scheme-sand",
         "accent_color": "#b6e84f",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
-    "service_aspects_bt3faw": {
-      "type": "service-aspects",
-      "blocks": {
-        "tile_X7H9Ba": {
-          "type": "tile",
-          "settings": {
-            "icon": "search",
-            "title": "Audit",
-            "text": "Bestandsaufnahme von Technik, Inhalten und Rankings."
-          }
-        },
-        "tile_YB8UjW": {
-          "type": "tile",
-          "settings": {
-            "icon": "compass",
-            "title": "Keyword-Recherche",
-            "text": "Suchintention, Volumen und Wettbewerb pro Thema."
-          }
-        },
-        "tile_TkPBTq": {
-          "type": "tile",
-          "settings": {
-            "icon": "layout",
-            "title": "On-Page-Optimierung",
-            "text": "Struktur, Snippets und interne Verlinkung."
-          }
-        },
-        "tile_KnTWja": {
-          "type": "tile",
-          "settings": {
-            "icon": "spark",
-            "title": "Technisches SEO",
-            "text": "Crawling, Indexierung und Core Web Vitals."
-          }
-        },
-        "tile_gRNq8i": {
-          "type": "tile",
-          "settings": {
-            "icon": "quote",
-            "title": "Content-Strategie",
-            "text": "Themencluster und Inhalte mit klarer Intention."
-          }
-        },
-        "tile_RBayGP": {
-          "type": "tile",
-          "settings": {
-            "icon": "chart",
-            "title": "Monitoring & Reporting",
-            "text": "Laufende Auswertung von Sichtbarkeit und Traffic."
-          }
-        }
-      },
-      "block_order": [
-        "tile_X7H9Ba",
-        "tile_YB8UjW",
-        "tile_TkPBTq",
-        "tile_KnTWja",
-        "tile_gRNq8i",
-        "tile_RBayGP"
-      ],
-      "name": "t:service_aspects.name",
+    "ni_text_r4eFzr": {
+      "type": "ni-text",
+      "name": "Text block",
       "settings": {
-        "kicker": "SEO",
-        "heading": "Was in einem SEO-Projekt steckt.",
-        "intro": "Jede Kachel steht für einen Baustein – von der Analyse bis zum laufenden Reporting.",
-        "columns": "3",
-        "stagger": 48,
-        "show_numbers": true,
+        "heading": "Warum GEO mit uns?",
+        "heading_align": "left",
+        "body": "<p>GEO ist kein Ersatz für SEO, sondern die Weiterentwicklung davon. Wir helfen euch dabei, Inhalte so aufzubauen, dass sie für Menschen hilfreich und für Suchsysteme verständlich sind. Ohne übertriebene Versprechen, ohne Buzzword-Gelaber, sondern mit einem klaren Blick auf das, was eure Website wirklich besser macht.</p>",
+        "text_align": "left",
+        "max_width": 760,
         "color_scheme": "scheme-sand",
-        "accent_color": "#4a7cff",
+        "bg_color": "",
+        "text_color": "",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },
@@ -196,6 +144,6 @@
     "main",
     "hero_geo_newWWR",
     "image_with_text_TTGNGW",
-    "service_aspects_bt3faw"
+    "ni_text_r4eFzr"
   ]
 }
