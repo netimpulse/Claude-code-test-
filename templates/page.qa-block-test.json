@@ -274,7 +274,20 @@
       },
       "block_order": ["v1", "v2", "v3", "v4"],
       "settings": { "kicker": "Variation 2", "heading": "Werte im Fluss.", "intro": "Horizontale Werte mit kontinuierlich fließender Sinus-Welle.", "flow_duration": 18, "color_scheme": "scheme-1", "accent_color": "#1f2328", "padding_top": 80, "padding_bottom": 80 }
+    },
+    "service_aspects_qa": {
+      "type": "service-aspects",
+      "blocks": {
+        "t1": { "type": "tile", "settings": { "icon": "search", "title": "Audit", "text": "Bestandsaufnahme von Technik, Inhalten und Rankings." } },
+        "t2": { "type": "tile", "settings": { "icon": "compass", "title": "Keyword-Recherche", "text": "Suchintention, Volumen und Wettbewerb pro Thema." } },
+        "t3": { "type": "tile", "settings": { "icon": "layout", "title": "On-Page-Optimierung", "text": "Struktur, Snippets und interne Verlinkung." } },
+        "t4": { "type": "tile", "settings": { "icon": "spark", "title": "Technisches SEO", "text": "Crawling, Indexierung und Core Web Vitals." } },
+        "t5": { "type": "tile", "settings": { "icon": "quote", "title": "Content-Strategie", "text": "Themencluster und Inhalte mit klarer Intention." } },
+        "t6": { "type": "tile", "settings": { "icon": "chart", "title": "Monitoring & Reporting", "text": "Laufende Auswertung von Sichtbarkeit und Traffic." } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4", "t5", "t6"],
+      "settings": { "kicker": "SEO", "heading": "Was in einem SEO-Projekt steckt.", "intro": "Jede Kachel ein Baustein — von der Analyse bis zum laufenden Reporting.", "show_intro": true, "columns": "3", "stagger": 60, "show_numbers": true, "color_scheme": "scheme-1", "accent_color": "#4a7cff", "padding_top": 80, "padding_bottom": 80 }
     }
   },
-  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa", "avt_qa", "avw_qa"]
+  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa", "avt_qa", "avw_qa", "service_aspects_qa"]
 }
