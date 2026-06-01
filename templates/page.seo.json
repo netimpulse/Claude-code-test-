@@ -82,14 +82,14 @@
       ],
       "name": "Hero SERP",
       "settings": {
-        "eyebrow": "SEO · Organic search",
-        "heading_before": "Show up first when buyers",
-        "heading_highlight": "search",
+        "eyebrow": "SEO · Organische Reichweite",
+        "heading_before": "Sichtbarkeit beginnt dort, wo deine Zielgruppe",
+        "heading_highlight": "sucht",
         "heading_after": ".",
-        "body": "<p>We tune your pages, fix what Google trips over, and earn the links that move you up the list. First results in 60–90 days.</p>",
-        "primary_label": "See your audit",
+        "body": "<p>Wir optimieren deine Website technisch, inhaltlich und strategisch, damit du bei Google besser gefunden wirst und mehr qualifizierte Anfragen erhältst.</p>",
+        "primary_label": "Fordere einen Audit an",
         "primary_url": "",
-        "secondary_label": "How we work",
+        "secondary_label": "weitere Leistungen",
         "secondary_url": "",
         "search_query": "best shopify theme studio",
         "search_engine_label": "Google",
@@ -101,7 +101,27 @@
         "accent_color": "#1c4948",
         "accent_soft": "#9ccfd0",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
+    "ni_text_ePYJef": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Unser SEO: Kein Schnick Schnack! Mehr Sichtbarkeit, relevante Besucher und Umsatz",
+        "heading_align": "left",
+        "body": "<p>SEO ist der langfristige Ansatz zur Transformation eurer<br/>Website: Von nur vorhanden, zu einer Umsatzquelle und einer sichtbaren<br/>Visitenmarke für euer Unternehmen.</p><p>Wir sorgen dafür, dass eure Website bei den richtigen<br/>Suchanfragen sichtbar wird.</p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "scheme-sand",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     },
     "image_with_text_eNBga8": {
@@ -109,8 +129,8 @@
       "name": "t:image_with_text.name",
       "settings": {
         "image_position": "right",
-        "heading": "SEO at Scale Is a Structural Problem.",
-        "body": "<p>SEO at scale isn't a checklist. You're managing thousands of pages, legacy tech stacks, and competing priorities across teams and business units.</p><p>At this level, the problems are structural — crawl budget limits, keyword cannibalization, and years of technical debt. You need a partner who can execute <a href=\"#\">technical and content strategies</a> that produce durable results.</p>",
+        "heading": "Was ist das NetImpulse SEO?",
+        "body": "<p>Wir entwickeln keine Standardlösungen, sondern nehmen uns<br/>die Zeit euer Geschäftsmodell und eure Zielgruppe zu verstehen, sodass wir eine<br/>perfekt auf euch zu geschneiderte SEO-Strategie erstellen können.</p><p><strong>Unsere Leistungen im Bereich SEO:</strong><br/>•\tKeyword-Recherche<br/>•\tTechnisches SEO<br/>•\tEntwicklung von Content Strategien<br/>•\tLinkbuilding<br/>•\tDatenanalyse & kontinuierliche Optimierung<br/></p>",
         "link_label": "",
         "link_url": "",
         "show_badge": false,
@@ -119,13 +139,56 @@
         "color_scheme": "scheme-sand",
         "accent_color": "#b6e84f",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
+    "ni_text_YxVrM6": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Aber für wen ist das überhaupt sinnvoll?",
+        "heading_align": "left",
+        "body": "<p>SEO lohnt sich vor allem für die Unternehmen, die nachhaltig<br/>wachsen wollen und nicht immer von bezahlter Werbung abhängig sein wollen.<br/>Besonders relevant ist SEO für E-Commerce-Brands, lokale Unternehmen, Start-ups<br/>und Dienstleister mit klaren Zielgruppen.<br/></p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "scheme-sand",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
+    "image_with_text_qYDgeP": {
+      "type": "image-with-text",
+      "name": "t:image_with_text.name",
+      "settings": {
+        "image_position": "left",
+        "heading": "Wie starten wir bei einem Auftrag zur SEO-Betreuung?",
+        "body": "<p>Als aller erstes analysieren wir den aktuellen Stand ihrer Website: Welche Potentiale gibt es? Welche Maßnahmen wären sinnvoll? Macht SEO für sie überhaupt Sinn?<br/>Darauf aufbauend entwickeln wir eine klare Priorisierung der zu erledigenden Maßnahmen und setzen die Optimierungen um.</p><p><br/><strong>Dabei achten wir vor allem auf:</strong><br/>•\tSaubere technische Grundlagen<br/>•\tInhalte mit echtem Mehrwert <br/>•\tSuchintention statt Keyword Dichte</p>",
+        "link_label": "",
+        "link_url": "",
+        "show_badge": false,
+        "badge_value": "50+",
+        "badge_label": "Industries Served",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#b6e84f",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
       }
     }
   },
   "order": [
     "main",
     "hero_serp_NnRBck",
-    "image_with_text_eNBga8"
+    "ni_text_ePYJef",
+    "image_with_text_eNBga8",
+    "ni_text_YxVrM6",
+    "image_with_text_qYDgeP"
   ]
 }
