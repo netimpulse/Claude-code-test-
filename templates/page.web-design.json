@@ -11,8 +11,51 @@
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
+    },
+    "image_with_text_nAB3VU": {
+      "type": "image-with-text",
+      "name": "t:image_with_text.name",
+      "settings": {
+        "image_position": "left",
+        "heading": "Unser Verständnis von Web Design",
+        "body": "<p>Eine gute Website ist kein hübsches Schaufenster ohne Funktion. Sie braucht eine klare Struktur, starke Inhalte, gute Nutzerführung und ein Design, das zur Marke passt. Deshalb denken wir Web Design nicht nur visuell, sondern immer auch strategisch und conversionorientiert.<br/><br/><strong>Unsere Leistungen im Bereich Web Design:</strong><br/>• Konzeption von Seitenstruktur und Nutzerführung<br/>• Modernes UI- und UX-Design<br/>• Landingpages und Unternehmensseiten<br/>• Shopify-Webdesign und Theme-Anpassungen<br/>• Mobile Optimierung<br/>• Conversion-optimierte Sektionen<br/>• Gestaltung von klaren Call-to-Actions<br/>• Weiterentwicklung bestehender Websites</p>",
+        "link_label": "",
+        "link_url": "",
+        "show_badge": false,
+        "badge_value": "50+",
+        "badge_label": "Industries Served",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#b6e84f",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
+    "ni_text_bQqcNQ": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Warum Web Design mit uns?",
+        "heading_align": "left",
+        "body": "<p>Wir bauen keine Website, die nur auf den ersten Blick schön aussieht. Uns ist wichtig, dass sie verständlich, hochwertig und sinnvoll aufgebaut ist. Ihr bekommt einen digitalen Auftritt, der zu eurem Unternehmen passt, eure Leistungen klar erklärt und Besucher gezielt zur nächsten Handlung führt.</p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "scheme-sand",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "image_with_text_nAB3VU",
+    "ni_text_bQqcNQ"
+  ]
 }

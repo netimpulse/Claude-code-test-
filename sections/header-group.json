@@ -14,7 +14,6 @@
     "header": {
       "type": "sqe-header",
       "settings": {
-        "logo_image": "shopify://shop_images/ChatGPT_Image_19._Mai_2026_20_59_28.png",
         "menu": "hauptmenu",
         "nav_alignment": "center",
         "sticky_header_type": "on-scroll-up",
