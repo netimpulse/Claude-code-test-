@@ -17,61 +17,15 @@
     "hero_geo_newWWR": {
       "type": "hero-geo",
       "blocks": {
-        "platform_YVqJyU": {
-          "type": "platform",
-          "settings": {
-            "name": "ChatGPT"
-          }
-        },
-        "platform_FtyNtD": {
-          "type": "platform",
-          "settings": {
-            "name": "Perplexity"
-          }
-        },
-        "platform_JPEGRw": {
-          "type": "platform",
-          "settings": {
-            "name": "Gemini"
-          }
-        },
-        "platform_mymYgU": {
-          "type": "platform",
-          "settings": {
-            "name": "Claude"
-          }
-        },
-        "citation_aVEzk6": {
-          "type": "citation",
-          "settings": {
-            "domain": "netimpulse.com",
-            "is_brand": true
-          }
-        },
-        "citation_rxhCqY": {
-          "type": "citation",
-          "settings": {
-            "domain": "g2.com",
-            "is_brand": false
-          }
-        },
-        "citation_dNWbeG": {
-          "type": "citation",
-          "settings": {
-            "domain": "awwwards.com",
-            "is_brand": false
-          }
-        }
+        "platform_YVqJyU": {"type": "platform", "settings": {"name": "ChatGPT"}},
+        "platform_FtyNtD": {"type": "platform", "settings": {"name": "Perplexity"}},
+        "platform_JPEGRw": {"type": "platform", "settings": {"name": "Gemini"}},
+        "platform_mymYgU": {"type": "platform", "settings": {"name": "Claude"}},
+        "citation_aVEzk6": {"type": "citation", "settings": {"domain": "netimpulse.com", "is_brand": true}},
+        "citation_rxhCqY": {"type": "citation", "settings": {"domain": "g2.com", "is_brand": false}},
+        "citation_dNWbeG": {"type": "citation", "settings": {"domain": "awwwards.com", "is_brand": false}}
       },
-      "block_order": [
-        "platform_YVqJyU",
-        "platform_FtyNtD",
-        "platform_JPEGRw",
-        "platform_mymYgU",
-        "citation_aVEzk6",
-        "citation_rxhCqY",
-        "citation_dNWbeG"
-      ],
+      "block_order": ["platform_YVqJyU","platform_FtyNtD","platform_JPEGRw","platform_mymYgU","citation_aVEzk6","citation_rxhCqY","citation_dNWbeG"],
       "name": "Hero GEO",
       "settings": {
         "eyebrow": "GEO · Generative engine optimization",
@@ -140,10 +94,5 @@
       }
     }
   },
-  "order": [
-    "main",
-    "hero_geo_newWWR",
-    "image_with_text_TTGNGW",
-    "ni_text_r4eFzr"
-  ]
+  "order": ["main","hero_geo_newWWR","image_with_text_TTGNGW","ni_text_r4eFzr"]
 }
