@@ -34,6 +34,26 @@
         "text_scale": 100
       }
     },
+    "image_with_text_HDFnx7": {
+      "type": "image-with-text",
+      "name": "t:image_with_text.name",
+      "settings": {
+        "image_position": "right",
+        "heading": "Lohnt sich das, auch wenn ich schon eine Website habe?",
+        "body": "<p>Web Design wird dann wichtig, wenn eure aktuelle Website nicht mehr zu eurem Anspruch passt, zu unübersichtlich wirkt oder nicht genügend Anfragen erzeugt. Besonders relevant ist es für Dienstleister, lokale Unternehmen, Online-Shops, Start-ups und Marken, die ihren digitalen Auftritt hochwertiger und klarer präsentieren wollen.</p>",
+        "link_label": "",
+        "link_url": "",
+        "show_badge": false,
+        "badge_value": "50+",
+        "badge_label": "Industries Served",
+        "color_scheme": "scheme-sand",
+        "accent_color": "#b6e84f",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
     "ni_text_bQqcNQ": {
       "type": "ni-text",
       "name": "Text block",
@@ -56,6 +76,7 @@
   "order": [
     "main",
     "image_with_text_nAB3VU",
+    "image_with_text_HDFnx7",
     "ni_text_bQqcNQ"
   ]
 }
