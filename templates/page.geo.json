@@ -17,15 +17,61 @@
     "hero_geo_newWWR": {
       "type": "hero-geo",
       "blocks": {
-        "platform_YVqJyU": {"type": "platform", "settings": {"name": "ChatGPT"}},
-        "platform_FtyNtD": {"type": "platform", "settings": {"name": "Perplexity"}},
-        "platform_JPEGRw": {"type": "platform", "settings": {"name": "Gemini"}},
-        "platform_mymYgU": {"type": "platform", "settings": {"name": "Claude"}},
-        "citation_aVEzk6": {"type": "citation", "settings": {"domain": "netimpulse.com", "is_brand": true}},
-        "citation_rxhCqY": {"type": "citation", "settings": {"domain": "g2.com", "is_brand": false}},
-        "citation_dNWbeG": {"type": "citation", "settings": {"domain": "awwwards.com", "is_brand": false}}
+        "platform_YVqJyU": {
+          "type": "platform",
+          "settings": {
+            "name": "ChatGPT"
+          }
+        },
+        "platform_FtyNtD": {
+          "type": "platform",
+          "settings": {
+            "name": "Perplexity"
+          }
+        },
+        "platform_JPEGRw": {
+          "type": "platform",
+          "settings": {
+            "name": "Gemini"
+          }
+        },
+        "platform_mymYgU": {
+          "type": "platform",
+          "settings": {
+            "name": "Claude"
+          }
+        },
+        "citation_aVEzk6": {
+          "type": "citation",
+          "settings": {
+            "domain": "netimpulse.com",
+            "is_brand": true
+          }
+        },
+        "citation_rxhCqY": {
+          "type": "citation",
+          "settings": {
+            "domain": "g2.com",
+            "is_brand": false
+          }
+        },
+        "citation_dNWbeG": {
+          "type": "citation",
+          "settings": {
+            "domain": "awwwards.com",
+            "is_brand": false
+          }
+        }
       },
-      "block_order": ["platform_YVqJyU","platform_FtyNtD","platform_JPEGRw","platform_mymYgU","citation_aVEzk6","citation_rxhCqY","citation_dNWbeG"],
+      "block_order": [
+        "platform_YVqJyU",
+        "platform_FtyNtD",
+        "platform_JPEGRw",
+        "platform_mymYgU",
+        "citation_aVEzk6",
+        "citation_rxhCqY",
+        "citation_dNWbeG"
+      ],
       "name": "Hero GEO",
       "settings": {
         "eyebrow": "GEO · Generative engine optimization",
@@ -33,9 +79,9 @@
         "heading_accent": "KI Antworten gibt.",
         "body": "<p><br/>Das Suchverhalten verändert sich. Menschen suchen nicht mehr nur über klassische Google-Ergebnisse, sondern immer häufiger über KI-Systeme. Mit GEO sorgen wir dafür, dass eure Inhalte klarer, strukturierter und relevanter werden, damit Suchsysteme besser verstehen, wofür ihr steht.<br/><br/></p>",
         "primary_label": "Sichtbarkeit prüfen",
-        "primary_url": "",
+        "primary_url": "shopify://pages/kontakt",
         "secondary_label": "Was wir noch anbieten",
-        "secondary_url": "",
+        "secondary_url": "shopify://pages/leistungen",
         "tracked_label": "Tracked across",
         "assistant_name": "ChatGPT",
         "monitoring_label": "Monitoring",
@@ -94,5 +140,10 @@
       }
     }
   },
-  "order": ["main","hero_geo_newWWR","image_with_text_TTGNGW","ni_text_r4eFzr"]
+  "order": [
+    "main",
+    "hero_geo_newWWR",
+    "image_with_text_TTGNGW",
+    "ni_text_r4eFzr"
+  ]
 }
