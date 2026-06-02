@@ -137,7 +137,7 @@
       "type": "image-with-text",
       "name": "t:image_with_text.name",
       "settings": {
-        "image_position": "right",
+        "image_position": "left",
         "heading": "Was machen wir im Bereich SMM",
         "body": "<p>Wir betrachten Social Media nicht als Pflichtprogramm, bei dem einfach drei Posts pro Woche online gehen. Entscheidend ist, dass eure Inhalte eine klare Richtung haben: Sie sollen erklären, inspirieren, Vertrauen schaffen oder gezielt Nachfrage auslösen.<br/><br/><strong>Unsere Leistungen im Bereich SMM:</strong><br/>• Entwicklung einer Social-Media-Strategie<br/>• Zielgruppen- und Wettbewerbsanalyse<br/>• Content-Ideen und Redaktionsplanung<br/>• Erstellung von Beiträgen, Reels und Creatives<br/>• Caption- und Konzeptentwicklung<br/>• Planung von Kampagnen und Aktionen<br/>• Aufbau eines einheitlichen Markenauftritts<br/>• Auswertung, Optimierung und Reporting</p>",
         "link_label": "",
@@ -202,12 +202,31 @@
         "heading_scale": 100,
         "text_scale": 100
       }
+    },
+    "ni_text_A49qCU": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Warum SMM mit uns?",
+        "heading_align": "center",
+        "body": "<p>Gutes Social Media Marketing entsteht nicht dadurch, dass man Trends kopiert. Es entsteht durch ein klares Verständnis für Marke, Zielgruppe und Plattform. Wir sorgen dafür, dass euer Auftritt professionell wirkt, wiedererkennbar bleibt und nicht nach zufälligem Content aussieht.</p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "scheme-sand",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
   "order": [
     "main",
     "hero_ad_cycler_tPQApY",
     "image_with_text_eiKVxi",
-    "service_aspects_FwrPeb"
+    "service_aspects_FwrPeb",
+    "ni_text_A49qCU"
   ]
 }
