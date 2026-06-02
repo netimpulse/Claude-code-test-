@@ -312,7 +312,7 @@
         "intro": "Lass uns in einem kostenlosen Audit deinen größten Hebel finden — Strategie, Design und Performance aus einer Hand.",
         "show_intro": true,
         "button_label": "Jetzt anfragen",
-        "button_url": "shopify://pages/contact",
+        "button_url": "shopify://pages/kontakt",
         "color_scheme": "scheme-sand",
         "accent_color": "#89b1b9",
         "padding_top": 64,
