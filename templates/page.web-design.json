@@ -18,6 +18,7 @@
       "type": "image-with-text",
       "name": "t:image_with_text.name",
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_3._Juni_2026_14_37_10.png",
         "image_position": "left",
         "heading": "Unser Verständnis von Web Design",
         "body": "<p>Eine gute Website ist kein hübsches Schaufenster ohne Funktion. Sie braucht eine klare Struktur, starke Inhalte, gute Nutzerführung und ein Design, das zur Marke passt. Deshalb denken wir Web Design nicht nur visuell, sondern immer auch strategisch und conversionorientiert.<br/><br/><strong>Unsere Leistungen im Bereich Web Design:</strong><br/>• Konzeption von Seitenstruktur und Nutzerführung<br/>• Modernes UI- und UX-Design<br/>• Landingpages und Unternehmensseiten<br/>• Shopify-Webdesign und Theme-Anpassungen<br/>• Mobile Optimierung<br/>• Conversion-optimierte Sektionen<br/>• Gestaltung von klaren Call-to-Actions<br/>• Weiterentwicklung bestehender Websites</p>",

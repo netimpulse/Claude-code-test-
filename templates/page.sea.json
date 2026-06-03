@@ -112,6 +112,7 @@
       "type": "image-with-text",
       "name": "t:image_with_text.name",
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_3._Juni_2026_14_35_30.png",
         "image_position": "left",
         "heading": "Was ist das NetImpulse SEA?",
         "body": "<p>Wir betreuen Google Ads nicht nach Bauchgefühl, sondern datenbasiert: Jede unserer Kampagnen wird auf Ziel, Zielgruppe und Wirtschaftlichkeit ausgerichtet.</p><p><br/><strong>Unsere Leistungen im Bereich SEA:</strong><br/>•\tKonto und Kampagnen audits<br/>•\tStrategie und Kampagnenstruktur<br/>•\tKeyword-Recherche und Suchintentionanalyse<br/>•\tSearch, Shopping, Remarketing und Pmax Kampagnen<br/>•\tAnzeigentexte und Creatives<br/>•\tConversion-Tracking und Setup<br/>•\tBudgetsteuerung und Gebotsstrategien<br/>•\tLaufende Optimierung und Reportings<br/></p>",
