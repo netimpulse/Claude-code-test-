@@ -19,8 +19,8 @@
           "settings": {
             "heading": "LEGAL",
             "show_privacy": true,
-            "privacy_label": "",
-            "privacy_url": "",
+            "privacy_label": "Datenschutz",
+            "privacy_url": "shopify://policies/privacy-policy",
             "show_terms": true,
             "terms_label": "",
             "terms_url": "",
