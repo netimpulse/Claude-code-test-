@@ -38,7 +38,10 @@
       this.variantSelect = this.querySelector("[data-pd-variant-select]");
       this.variantId = this.querySelector("[data-pd-variant-id]");
       this.priceEl = this.closest("section")?.querySelector(".product-detail__price");
-      this.compareEl = this.closest("section")?.querySelector(".product-detail__price-compare s");
+      this.compareWrapEl = this.closest("section")?.querySelector("[data-pd-price-compare]");
+      this.compareValueEl = this.compareWrapEl
+        ? this.compareWrapEl.querySelector("[data-pd-price-compare-value]")
+        : null;
 
       this._onDec = () => this._stepQty(-1);
       this._onInc = () => this._stepQty(1);
@@ -113,11 +116,20 @@
       if (this.variantId) this.variantId.value = id;
 
       const price = opt.getAttribute("data-price");
-      const compare = opt.getAttribute("data-compare");
+      const compare = opt.getAttribute("data-compare") || "";
+      const onSale = opt.getAttribute("data-on-sale") === "true" && compare !== "";
       const available = opt.getAttribute("data-available") === "true";
 
       if (this.priceEl && price) this.priceEl.textContent = price;
-      if (this.compareEl && compare) this.compareEl.textContent = compare;
+      if (this.compareWrapEl) {
+        if (onSale) {
+          if (this.compareValueEl) this.compareValueEl.textContent = compare;
+          this.compareWrapEl.hidden = false;
+        } else {
+          if (this.compareValueEl) this.compareValueEl.textContent = "";
+          this.compareWrapEl.hidden = true;
+        }
+      }
 
       [this.addBtn, this.buyNow].forEach((btn) => {
         if (!btn) return;
@@ -177,11 +189,12 @@
       if (!addRes.ok) throw new Error("cart add failed");
 
       if (Object.keys(attributes).length > 0) {
-        await fetch(cartUpdateUrl(), {
+        const updateRes = await fetch(cartUpdateUrl(), {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify({ attributes }),
         });
+        if (!updateRes.ok) throw new Error("cart attribute update failed");
       }
     }
   }

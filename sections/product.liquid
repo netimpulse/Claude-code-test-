@@ -134,11 +134,9 @@
                 {{ 0 | money }}
               {%- endif -%}
             </span>
-            {%- if on_sale -%}
-              <span class="product-detail__price-compare">
-                <s>{{ compare_at | money }}</s>
-              </span>
-            {%- endif -%}
+            <span class="product-detail__price-compare" data-pd-price-compare{% unless on_sale %} hidden{% endunless %}>
+              <s data-pd-price-compare-value>{% if on_sale %}{{ compare_at | money }}{% endif %}</s>
+            </span>
             {%- if show_discount_badge and section.settings.discount_code != blank -%}
               {%- assign badge_url = section.settings.discount_url -%}
               {%- if badge_url == blank -%}
@@ -172,10 +170,15 @@
                     data-pd-variant-select
                   >
                     {%- for variant in product.variants -%}
+                      {%- assign v_on_sale = false -%}
+                      {%- if variant.compare_at_price != blank and variant.compare_at_price > variant.price -%}
+                        {%- assign v_on_sale = true -%}
+                      {%- endif -%}
                       <option
                         value="{{ variant.id }}"
                         data-price="{{ variant.price | money }}"
-                        data-compare="{{ variant.compare_at_price | money }}"
+                        data-compare="{% if v_on_sale %}{{ variant.compare_at_price | money }}{% endif %}"
+                        data-on-sale="{{ v_on_sale }}"
                         data-available="{{ variant.available }}"
                         {% if variant == current_variant %}selected{% endif %}
                       >
