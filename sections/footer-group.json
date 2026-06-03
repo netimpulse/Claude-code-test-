@@ -36,24 +36,16 @@
             "extra_menu": ""
           }
         },
-        "menu_column_Tyz3eg": {
-          "type": "menu_column",
-          "settings": {
-            "heading": "PRODUCT",
-            "menu": ""
-          }
-        },
         "menu_column_YVVQFc": {
           "type": "menu_column",
           "settings": {
-            "heading": "PRODUCT",
-            "menu": ""
+            "heading": "Menü",
+            "menu": "hauptmenu"
           }
         }
       },
       "block_order": [
         "legal_column_xLYhmd",
-        "menu_column_Tyz3eg",
         "menu_column_YVVQFc"
       ],
       "settings": {
