@@ -274,7 +274,31 @@
       },
       "block_order": ["v1", "v2", "v3", "v4"],
       "settings": { "kicker": "Variation 2", "heading": "Werte im Fluss.", "intro": "Horizontale Werte mit kontinuierlich fließender Sinus-Welle.", "flow_duration": 18, "color_scheme": "scheme-1", "accent_color": "#1f2328", "padding_top": 80, "padding_bottom": 80 }
+    },
+    "hero_web_build_qa": {
+      "type": "hero-web-build",
+      "settings": {
+        "eyebrow": "Webdesign & Shopify · Custom builds",
+        "heading_before": "Seiten, die sich",
+        "heading_highlight": "verkaufen",
+        "heading_after": "— Stück für Stück gebaut.",
+        "body": "<p>Maßgeschneiderte Shopify-Themes und Webseiten, die laden, ranken und konvertieren.</p>",
+        "primary_label": "Projekt starten",
+        "show_secondary_button": true,
+        "secondary_label": "Arbeiten ansehen",
+        "fake_url": "yourstore.com",
+        "status_label": "Build",
+        "badge_label": "LIVE · CR +62%",
+        "enable_animation": true,
+        "color_scheme": "scheme-1",
+        "animation_accent": "#1C4948",
+        "animation_accent_soft": "#9CCFD0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
-  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa", "avt_qa", "avw_qa"]
+  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa", "avt_qa", "avw_qa", "hero_web_build_qa"]
 }
