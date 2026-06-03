@@ -231,7 +231,7 @@
             "label": "Theme Store",
             "heading": "Alle Themes und Packs ansehen.",
             "button_label": "Zum Store",
-            "button_url": ""
+            "button_url": "shopify://pages/theme-store"
           }
         }
       },
