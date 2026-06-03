@@ -13,6 +13,7 @@
   assign scheme = section.settings.color_scheme
   assign accent = section.settings.accent_color
   assign accent_soft = section.settings.accent_soft
+  assign highlight_color = section.settings.heading_highlight_color
 
   assign brand_index = -1
   for block in section.blocks
@@ -37,6 +38,9 @@
     --hs-accent-soft: {{ accent_soft }};
     --hs-accent-tint: {{ accent_soft | color_modify: 'alpha', 0.18 }};
     --hs-accent-border: {{ accent | color_modify: 'alpha', 0.18 }};
+    {%- if highlight_color != blank -%}
+      --hs-highlight: {{ highlight_color }};
+    {%- endif -%}
     {%- if scheme.settings.background != blank -%}
       --hs-bg: {{ scheme.settings.background }};
       --hs-bg-soft: #f6f8f8;
@@ -70,9 +74,16 @@
           <span>{{ section.settings.heading_before | escape }}</span>
         {%- endif -%}
         {%- if section.settings.heading_highlight != blank -%}
+          {%- if section.settings.heading_before != blank -%}{{ ' ' }}{%- endif -%}
           <span class="hero-serp__heading-accent">{{ section.settings.heading_highlight | escape }}</span>
         {%- endif -%}
         {%- if section.settings.heading_after != blank -%}
+          {%- assign trail_first = section.settings.heading_after | slice: 0, 1 -%}
+          {%- assign needs_space = true -%}
+          {%- if trail_first == '.' or trail_first == ',' or trail_first == '!' or trail_first == '?' or trail_first == ':' or trail_first == ';' -%}
+            {%- assign needs_space = false -%}
+          {%- endif -%}
+          {%- if needs_space and section.settings.heading_highlight != blank -%}{{ ' ' }}{%- endif -%}
           <span>{{ section.settings.heading_after | escape }}</span>
         {%- endif -%}
       </h1>
@@ -90,7 +101,7 @@
             </svg>
           </a>
         {%- endif -%}
-        {%- if section.settings.secondary_label != blank -%}
+        {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
           <a class="hero-serp__btn hero-serp__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
             <span>{{ section.settings.secondary_label | escape }}</span>
           </a>
@@ -167,11 +178,13 @@
     {"type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "SEO · Organic search"},
     {"type": "textarea", "id": "heading_before", "label": "Heading text (before highlight)", "default": "Show up first when buyers "},
     {"type": "text", "id": "heading_highlight", "label": "Heading highlight word", "default": "search"},
+    {"type": "color", "id": "heading_highlight_color", "label": "Highlight color", "info": "Optional. Overrides the default highlight color."},
     {"type": "text", "id": "heading_after", "label": "Heading text (after highlight)", "default": "."},
     {"type": "richtext", "id": "body", "label": "Body", "default": "<p>We tune your pages, fix what Google trips over, and earn the links that move you up the list. First results in 60–90 days.</p>"},
     {"type": "header", "content": "Buttons"},
     {"type": "text", "id": "primary_label", "label": "Primary button", "default": "See your audit"},
     {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "checkbox", "id": "show_secondary_button", "label": "Show secondary button", "default": true},
     {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "How we work"},
     {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
     {"type": "header", "content": "Search mock"},

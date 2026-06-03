@@ -19,12 +19,18 @@
   assign scheme = section.settings.color_scheme
   assign heading = section.settings.heading
   assign highlight = section.settings.heading_highlight
+  assign highlight_color = section.settings.heading_highlight_color
   assign subheading = section.settings.subheading
+
+  assign accent_style = ''
+  if highlight_color != blank
+    assign accent_style = ' style="color: ' | append: highlight_color | append: ';"'
+  endif
 
   assign heading_html = heading | escape
   if highlight != blank and heading contains highlight
     assign hl_esc = highlight | escape
-    assign accent_span = '<span class="tsd__heading-accent">' | append: hl_esc | append: '</span>'
+    assign accent_span = '<span class="tsd__heading-accent"' | append: accent_style | append: '>' | append: hl_esc | append: '</span>'
     assign heading_html = heading_html | replace: hl_esc, accent_span
   endif
 -%}
@@ -179,6 +185,7 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Unsere Themes & Packs." },
     { "type": "text", "id": "heading_highlight", "label": "Highlighted word", "info": "Word inside the heading that gets the accent style. Must match exactly.", "default": "Packs" },
+    { "type": "color", "id": "heading_highlight_color", "label": "Highlight color", "info": "Optional. Overrides the default accent color for the highlighted word." },
     { "type": "text", "id": "subheading", "label": "Subheading", "default": "Performance-Themes und Section-Packs — sofort einsatzbereit." },
     { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     { "type": "header", "content": "Appearance" },
