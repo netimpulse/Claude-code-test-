@@ -93,7 +93,7 @@
           "type": "info",
           "settings": {
             "label": "Adresse",
-            "content": "<p>NetImpulse<br>Musterstraße 1<br>12345 Musterstadt</p>"
+            "content": "<p>NetImpulse GbR<br/>Liebigstraße 96 <br/>35392 Gießen</p>"
           }
         },
         "info_LA93aE": {
@@ -107,7 +107,7 @@
           "type": "info",
           "settings": {
             "label": "E-Mail",
-            "content": "<p>hallo@netimpulse.de</p>"
+            "content": "<p>netimpulsemarketing@gmail.com</p>"
           }
         }
       },
