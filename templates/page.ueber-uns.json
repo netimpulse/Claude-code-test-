@@ -74,7 +74,7 @@
       ],
       "name": "About: Thread",
       "settings": {
-        "kicker": "Was uns wichtig ist",
+        "kicker": "",
         "heading": "Werte, die sich durchziehen.",
         "intro": "Vier Prinzipien, die in jedem Projekt einen roten Faden bilden.",
         "color_scheme": "scheme-sand",
@@ -197,7 +197,7 @@
       "settings": {
         "heading": "Drei Perspektiven, ein gemeinsamer Anspruch.",
         "intro": "NetImpulse ist bewusst klein aufgestellt. Dadurch bleiben Abstimmungen direkt, Entscheidungen klar und Strategie, Design und Umsetzung nah beieinander.",
-        "show_intro": true,
+        "show_intro": false,
         "card_kicker": "Wer dahintersteht",
         "card_heading": "Keine anonyme Agenturstruktur",
         "card_text": "Jeder Bereich hat eine klare Verantwortung. So entsteht ein digitaler Auftritt, bei dem Marketing, Gestaltung und Technik nicht getrennt voneinander gedacht werden.",
