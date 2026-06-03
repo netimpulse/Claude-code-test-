@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-policy",
+      "settings": {
+        "show_title": false,
+        "show_breadcrumb": true,
+        "breadcrumb_home": "Start",
+        "show_updated": false,
+        "updated_label": "Stand",
+        "updated_format": "%d.%m.%Y",
+        "max_width": 820,
+        "color_scheme": "scheme-1",
+        "padding_top": 80,
+        "padding_bottom": 96,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    }
+  },
+  "order": ["main"]
+}

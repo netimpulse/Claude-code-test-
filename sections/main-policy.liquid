@@ -1,0 +1,102 @@
+{% comment %}
+  Main Policy — renders Shopify store policies (Privacy, Terms, Refund,
+  Shipping, Legal Notice) with the same editorial styling as the rest of
+  the theme.
+
+  Title handling:
+    Shopify exposes `policy.title` as the policy's name from the Admin —
+    in English-default stores this prints "Terms of service" or "Privacy
+    policy" even when the policy body is German. To respect the language
+    of the body content, the visible title is hidden by default and we
+    render a `visually-hidden` h1 for SEO / screen readers. The first
+    heading inside the policy body then naturally becomes the visible
+    page title. Merchants can opt back in via a section setting.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign max_width = section.settings.max_width | default: 820
+-%}
+
+{{ 'section-main-policy.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {%- if scheme.settings.background != blank -%}--policy-bg-fallback: {{ scheme.settings.background }};{%- endif -%}
+    {%- if scheme.settings.text != blank -%}--policy-text-fallback: {{ scheme.settings.text }};{%- endif -%}
+    --policy-pad-top: {{ section.settings.padding_top }}px;
+    --policy-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --policy-maxw: {{ max_width }}px;
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+
+<section
+  class="policy full-width color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="main-policy"
+>
+  <div class="policy__inner">
+    {%- if section.settings.show_breadcrumb -%}
+      <nav class="policy__breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">{{ section.settings.breadcrumb_home | default: 'Start' | escape }}</a>
+        <span aria-hidden="true">/</span>
+        <span class="policy__breadcrumb-current">{{ policy.title | escape }}</span>
+      </nav>
+    {%- endif -%}
+
+    {%- if section.settings.show_title -%}
+      <h1 class="policy__title">{{ policy.title | escape }}</h1>
+    {%- else -%}
+      {%- comment -%} Keep the policy title in the DOM for SEO and screen readers
+                     even when it is visually hidden, so the body's own German
+                     heading can sit on top without losing the H1. {%- endcomment -%}
+      <h1 class="policy__title visually-hidden">{{ policy.title | escape }}</h1>
+    {%- endif -%}
+
+    <div class="policy__body rte">
+      {{ policy.body }}
+    </div>
+
+    {%- if section.settings.show_updated and policy.updated_at != blank -%}
+      <p class="policy__updated">
+        {{ section.settings.updated_label | default: 'Stand' | escape }}: {{ policy.updated_at | date: section.settings.updated_format | default: '%d.%m.%Y' }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Policy page",
+  "tag": "section",
+  "class": "shopify-section--main-policy",
+  "settings": [
+    { "type": "header", "content": "Title" },
+    { "type": "checkbox", "id": "show_title", "label": "Show policy title heading", "info": "Off (default) lets the policy body's own first heading act as the visible title — useful when the policy is written in a language other than the Shopify admin language. The Shopify title still renders as a visually-hidden H1 for SEO and screen readers.", "default": false },
+
+    { "type": "header", "content": "Breadcrumb" },
+    { "type": "checkbox", "id": "show_breadcrumb", "label": "Show breadcrumb", "default": true },
+    { "type": "text", "id": "breadcrumb_home", "label": "Home label", "default": "Start" },
+
+    { "type": "header", "content": "Last updated" },
+    { "type": "checkbox", "id": "show_updated", "label": "Show 'last updated' line", "default": false },
+    { "type": "text", "id": "updated_label", "label": "Label", "default": "Stand" },
+    { "type": "text", "id": "updated_format", "label": "Date format", "info": "strftime tokens, e.g. %d.%m.%Y.", "default": "%d.%m.%Y" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max. content width", "min": 560, "max": 1200, "step": 20, "unit": "px", "default": 820 },
+
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 96 },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
+  ],
+  "enabled_on": { "templates": ["policy"] }
+}
+{% endschema %}
