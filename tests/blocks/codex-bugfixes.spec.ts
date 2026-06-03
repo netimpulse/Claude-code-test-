@@ -1,25 +1,61 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 import { QA, withTheme } from "../fixtures";
 
 const PRODUCT_PATH = QA.paths.product;
 const CART_PATH = QA.paths.cart;
+const QA_VARIANT_ID = 44957941268595;
+
+async function passChallenge(page: Page) {
+  // Cloudflare's Managed Challenge sometimes serves an interstitial that the
+  // browser resolves on its own; sometimes it stalls. Reload once after a
+  // long wait gives the second pass a chance to slip through.
+  try {
+    await page.waitForSelector('link[rel="canonical"]', { state: "attached", timeout: 30_000 });
+  } catch {
+    await page.reload({ waitUntil: "load" });
+    await page.waitForSelector('link[rel="canonical"]', { state: "attached", timeout: 45_000 });
+  }
+}
+
+async function seedCart(page: Page, qty = 2) {
+  // Cloudflare needs a real navigation under the user-agent's cookie jar
+  // before XHRs against /cart/* are honoured; the same pattern is used in
+  // tests/blocks/cart.spec.ts.
+  await page.goto(withTheme(QA.paths.home), { waitUntil: "load" });
+  await passChallenge(page);
+  await page.goto(withTheme(CART_PATH), { waitUntil: "load" });
+  await passChallenge(page);
+  const result = await page.evaluate(
+    async ([variantId, quantity]) => {
+      await fetch("/cart/clear.js", { method: "POST" });
+      const add = await fetch("/cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ items: [{ id: variantId, quantity }] }),
+      });
+      return { status: add.status, body: (await add.text()).slice(0, 200) };
+    },
+    [QA_VARIANT_ID, qty] as const,
+  );
+  if (result.status !== 200) {
+    throw new Error(`cart/add.js status=${result.status} body=${result.body}`);
+  }
+  await page.goto(withTheme(CART_PATH), { waitUntil: "domcontentloaded" });
+  await passChallenge(page);
+}
 
 test.describe("Codex bug 3 — variant compare-at price renders / hides correctly", () => {
   test("Compare-at container is always in the DOM, hidden when not on sale", async ({ page }) => {
-    await page.goto(withTheme(PRODUCT_PATH), { waitUntil: "networkidle" });
+    await page.goto(withTheme(PRODUCT_PATH), { waitUntil: "domcontentloaded" });
     const wrap = page.locator("[data-pd-price-compare]").first();
-    // Element must exist regardless of whether the initial variant is on sale.
     await expect(wrap).toHaveCount(1);
   });
 
   test("Variant switch updates compare-at via JS, including the off→on case", async ({ page }) => {
-    await page.goto(withTheme(PRODUCT_PATH), { waitUntil: "networkidle" });
+    await page.goto(withTheme(PRODUCT_PATH), { waitUntil: "domcontentloaded" });
     const wrap = page.locator("[data-pd-price-compare]").first();
     const valueEl = wrap.locator("[data-pd-price-compare-value]");
 
-    // Force a synthetic sale state on the active option and dispatch change.
-    // This proves the JS path that the original bug missed — adding the
-    // compare value to a previously non-sale page without reloading.
     await page.evaluate(() => {
       const sel = document.querySelector(
         "[data-pd-variant-select]",
@@ -33,7 +69,6 @@ test.describe("Codex bug 3 — variant compare-at price renders / hides correctl
     await expect(valueEl).toHaveText("€999,00");
     expect(await wrap.evaluate((el) => (el as HTMLElement).hidden)).toBe(false);
 
-    // Now flip to a non-sale variant and verify the container hides cleanly.
     await page.evaluate(() => {
       const sel = document.querySelector(
         "[data-pd-variant-select]",
@@ -50,61 +85,50 @@ test.describe("Codex bug 3 — variant compare-at price renders / hides correctl
 });
 
 test.describe("Codex bug 4 + 5 — cart updates without full reload, allows 0 as remove", () => {
-  test.beforeEach(async ({ context }) => {
-    // Empty + seed: one of the QA product's known variants.
-    await context.request.post(withTheme("/cart/clear.js"), {
-      headers: { "Content-Type": "application/json" },
-      data: {},
-    });
-    await context.request.post(withTheme("/cart/add.js"), {
-      headers: { "Content-Type": "application/json" },
-      data: { items: [{ id: 44957941268595, quantity: 2 }] },
-    });
+  // Cloudflare's Managed Challenge throttles after many requests today;
+  // give the cart-dependent tests a retry so a single Challenge stall
+  // doesn't fail the suite.
+  test.describe.configure({ retries: 2 });
+
+  test.beforeEach(async ({ page }) => {
+    await seedCart(page, 2);
   });
 
-  test("Quantity decrement does NOT reload the document", async ({ page }) => {
-    await page.goto(withTheme(CART_PATH), { waitUntil: "networkidle" });
-    const navCounter = await page.evaluate(() => {
-      (window as any).__navs = 0;
-      window.addEventListener("beforeunload", () => ((window as any).__navs++));
-      return 0;
-    });
-    expect(navCounter).toBe(0);
+  test("Quantity decrement does NOT trigger a navigation away from /cart", async ({ page }) => {
+    // We mark the document so a real reload would discard the marker.
+    await page.evaluate(() => ((document as any).__alive = "yes"));
     const dec = page.locator("[data-cart-qty-decrement]").first();
     await dec.click();
-    // Allow XHR + section swap to settle.
+    // Wait long enough for the partial update XHR + section swap.
     await page.waitForTimeout(2500);
-    const navs = await page.evaluate(() => (window as any).__navs || 0);
-    expect(navs).toBe(0);
-    // Subtotal still renders something money-shaped, no error page.
-    await expect(page.locator("[data-cart-subtotal]")).toBeVisible();
+    const alive = await page.evaluate(() => (document as any).__alive);
+    expect(alive).toBe("yes");
+    // Cart section is still present.
+    await expect(page.locator("[data-section-type='cart']")).toHaveCount(1);
   });
 
-  test("Quantity input accepts 0 and treats it as remove", async ({ page }) => {
-    await page.goto(withTheme(CART_PATH), { waitUntil: "networkidle" });
+  test("Quantity input accepts 0 and is wired to Shopify's remove semantics", async ({ page }) => {
     const input = page.locator("[data-cart-qty-input]").first();
-    // min=0 is the Liquid contract for the new behaviour.
     await expect(input).toHaveAttribute("min", "0");
     await input.fill("0");
     await input.dispatchEvent("change");
-    // Empty-cart path is allowed to reload; the cart should no longer hold this line.
-    await page.waitForLoadState("networkidle");
-    const hasEmptyState = await page.locator("[data-cart-empty]").count();
+    // After /cart/change.js with quantity 0 the cart should be empty —
+    // either the empty-state branch renders, or the line was removed.
+    await page.waitForTimeout(3000);
+    const hasEmpty = await page.locator("[data-cart-empty]").count();
     const remainingLines = await page.locator("[data-cart-item]").count();
-    expect(hasEmptyState + (remainingLines === 0 ? 1 : 0)).toBeGreaterThan(0);
+    expect(hasEmpty > 0 || remainingLines === 0).toBe(true);
   });
 });
 
 test.describe("Codex bug 6 — cart attribute write is checked for ok", () => {
-  test("Source contains explicit ok check on the cart/update.js response", async () => {
+  test("Source contains explicit ok check on the cart/update.js fetch result", async () => {
     const fs = await import("node:fs/promises");
     const src = await fs.readFile("assets/product-detail.js", "utf8");
-    expect(src).toMatch(/cartUpdateUrl\(\)/);
-    expect(src).toMatch(/updateRes\.ok/);
-    // Specifically, the throw must come after the update fetch, before any
-    // downstream redirect. A simple proximity check is enough here.
-    const updateBlock = src.split("cartUpdateUrl()")[1] || "";
-    expect(updateBlock).toMatch(/!updateRes\.ok/);
-    expect(updateBlock).toMatch(/throw/);
+    // The fix assigns the response to `updateRes` and throws when not ok.
+    // Match the literal pattern instead of relying on string-splitting,
+    // which would also match the `function cartUpdateUrl()` definition.
+    expect(src).toMatch(/updateRes\s*=\s*await\s+fetch\(\s*cartUpdateUrl\(\)/);
+    expect(src).toMatch(/if\s*\(\s*!updateRes\.ok\s*\)\s*throw/);
   });
 });
