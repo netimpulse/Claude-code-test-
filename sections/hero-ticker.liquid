@@ -70,9 +70,9 @@
             </svg>
           </a>
         {%- endif -%}
-        {%- if section.settings.show_secondary_button and section.settings.secondary_label != blank -%}
+        {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
           <a class="hero-ticker__btn hero-ticker__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
-            {%- if section.settings.show_secondary_icon -%}
+            {%- if section.settings.show_secondary_icon != false -%}
               <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 1.5 10 6 2 10.5z" fill="currentColor"/></svg>
             {%- endif -%}
             <span>{{ section.settings.secondary_label | escape }}</span>

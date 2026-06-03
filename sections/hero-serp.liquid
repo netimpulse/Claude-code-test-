@@ -74,7 +74,7 @@
           <span>{{ section.settings.heading_before | escape }}</span>
         {%- endif -%}
         {%- if section.settings.heading_highlight != blank -%}
-          {%- if section.settings.heading_before != blank %} {% endif -%}
+          {%- if section.settings.heading_before != blank -%}{{ ' ' }}{%- endif -%}
           <span class="hero-serp__heading-accent">{{ section.settings.heading_highlight | escape }}</span>
         {%- endif -%}
         {%- if section.settings.heading_after != blank -%}
@@ -83,7 +83,7 @@
           {%- if trail_first == '.' or trail_first == ',' or trail_first == '!' or trail_first == '?' or trail_first == ':' or trail_first == ';' -%}
             {%- assign needs_space = false -%}
           {%- endif -%}
-          {%- if needs_space and section.settings.heading_highlight != blank %} {% endif -%}
+          {%- if needs_space and section.settings.heading_highlight != blank -%}{{ ' ' }}{%- endif -%}
           <span>{{ section.settings.heading_after | escape }}</span>
         {%- endif -%}
       </h1>
@@ -101,7 +101,7 @@
             </svg>
           </a>
         {%- endif -%}
-        {%- if section.settings.show_secondary_button and section.settings.secondary_label != blank -%}
+        {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
           <a class="hero-serp__btn hero-serp__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
             <span>{{ section.settings.secondary_label | escape }}</span>
           </a>
