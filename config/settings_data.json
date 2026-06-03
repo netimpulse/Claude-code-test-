@@ -69,14 +69,14 @@
           "text": "#050505",
           "muted": "#6b665e",
           "accent": "#050505",
-          "primary_button": "#ebe3d4",
-          "on_primary_button": "#FFFFFF",
-          "primary_button_border": "#050505",
-          "secondary_button": "#fffdf8",
+          "primary_button": "#9ecbd0",
+          "on_primary_button": "#ffffff",
+          "primary_button_border": "#9ecbd0",
+          "secondary_button": "#FFFFFF",
           "on_secondary_button": "#050505",
           "secondary_button_border": "#050505",
           "links": "#050505",
-          "icons": "#050505"
+          "icons": "#9ecbd0"
         }
       }
     }
