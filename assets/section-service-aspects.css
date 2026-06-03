@@ -1,9 +1,9 @@
 /* section-service-aspects.css
  * Scoped styles for sections/service-aspects.liquid.
- * Equal-size aspect tiles laid out on a staggered "gallery wall":
- * each desktop column carries a different vertical offset so the
- * tiles do not line up in a straight row. Colour values flow in via
- * CSS custom properties from the section's {% style %} block.
+ * "Pinwand"-Layout: kleinere Tiles, pro Position eigene X/Y/Rotation-
+ * Offsets in einer 12er-Periode, sodass keine Spalten-Symmetrie mehr
+ * erkennbar ist. Stagger-Setting wirkt als Multiplikator. Hover hebt
+ * die Karte leicht über den individuellen Base-Transform.
  */
 
 .service-aspects {
@@ -12,6 +12,7 @@
   padding-bottom: var(--sa-padding-bottom, 62px);
   background: var(--sa-bg, #ffffff);
   color: var(--sa-text, #1f2328);
+  overflow: hidden;
 }
 
 .service-aspects__inner {
@@ -56,43 +57,48 @@
   line-height: 1.6;
 }
 
-/* ---- Grid (mobile-first: single column, no stagger) ---- */
+/* ---- Grid (mobile-first: single column, no offsets) ---- */
 .service-aspects__grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(16px, 2vw, 24px);
 }
 
-/* ---- Tile (equal size, portrait: taller than wide) ---- */
+/* ---- Tile (smaller, with per-position transform via custom property) ---- */
 .service-aspects__tile {
+  --base-transform: translate(0, 0) rotate(0deg);
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 300px;
+  max-width: 240px;
   justify-self: center;
-  min-height: clamp(265px, 28vw, 312px);
-  padding: clamp(20px, 2vw, 28px);
+  min-height: clamp(190px, 21vw, 230px);
+  padding: clamp(16px, 1.6vw, 22px);
   border: 1.5px solid var(--sa-line-strong, rgba(31, 35, 40, 0.85));
   border-radius: 0;
   background: var(--sa-card, #ffffff);
-  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  transform: var(--base-transform);
+  transition: transform 220ms cubic-bezier(0.2, 0, 0.2, 1),
+              border-color 200ms ease,
+              box-shadow 200ms ease;
 }
 
 .service-aspects__tile:hover {
   border-color: var(--sa-accent, #4a7cff);
   box-shadow: 0 18px 44px rgba(31, 35, 40, 0.12);
+  transform: var(--base-transform) translateY(-6px);
 }
 
 .service-aspects__tile-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .service-aspects__number {
-  font-size: calc(0.95rem * var(--fs-text, 1));
+  font-size: calc(0.85rem * var(--fs-text, 1));
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--sa-accent, #4a7cff);
@@ -101,35 +107,35 @@
 .service-aspects__icon {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   border-radius: 0;
   background: var(--sa-accent-soft, rgba(74, 124, 255, 0.12));
   color: var(--sa-accent, #4a7cff);
 }
 
 .service-aspects__icon svg {
-  width: 22px;
-  height: 22px;
+  width: 19px;
+  height: 19px;
 }
 
 .service-aspects__tile-body {
   margin-top: auto;
-  padding-top: 18px;
+  padding-top: 14px;
 }
 
 .service-aspects__tile-title {
   margin: 0;
-  font-size: calc(clamp(0.9rem, 1.17vw, 1.13rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(0.88rem, 1.1vw, 1.05rem) * var(--fs-heading, 1));
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-weight: 700;
 }
 
 .service-aspects__tile-text {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   color: var(--sa-muted, #6b7280);
-  font-size: calc(0.96rem * var(--fs-text, 1));
+  font-size: calc(0.88rem * var(--fs-text, 1));
   line-height: 1.5;
 }
 
@@ -141,44 +147,73 @@
   color: var(--sa-muted, #6b7280);
 }
 
-/* ---- Tablet: two columns with a gentle stagger ---- */
+/* ---- Tablet: 2 columns, asymmetric offsets per position ---- */
 @media (min-width: 680px) {
   .service-aspects__grid {
     grid-template-columns: repeat(2, 1fr);
     column-gap: clamp(20px, 2.4vw, 28px);
-    padding-bottom: calc(var(--sa-stagger, 48px) * 0.7);
+    padding-bottom: calc(var(--sa-stagger, 60px) * 1.6);
   }
 
-  .service-aspects__tile:nth-child(2n + 1) { transform: translateY(0); }
-  .service-aspects__tile:nth-child(2n + 2) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.7)); }
+  /* 8-tile period so adjacent rows never look like mirrored columns */
+  .service-aspects__tile:nth-child(8n + 1) { --base-transform: translate(-4px, calc(var(--sa-stagger, 60px) * 0.30)) rotate(-0.6deg); }
+  .service-aspects__tile:nth-child(8n + 2) { --base-transform: translate(6px,  calc(var(--sa-stagger, 60px) * 1.20)) rotate(0.5deg); }
+  .service-aspects__tile:nth-child(8n + 3) { --base-transform: translate(10px, calc(var(--sa-stagger, 60px) * 0.80)) rotate(0.4deg); }
+  .service-aspects__tile:nth-child(8n + 4) { --base-transform: translate(-8px, calc(var(--sa-stagger, 60px) * 0.10)) rotate(-0.4deg); }
+  .service-aspects__tile:nth-child(8n + 5) { --base-transform: translate(4px,  calc(var(--sa-stagger, 60px) * 1.05)) rotate(0.7deg); }
+  .service-aspects__tile:nth-child(8n + 6) { --base-transform: translate(-10px, calc(var(--sa-stagger, 60px) * 0.50)) rotate(-0.5deg); }
+  .service-aspects__tile:nth-child(8n + 7) { --base-transform: translate(8px,  calc(var(--sa-stagger, 60px) * 1.35)) rotate(-0.3deg); }
+  .service-aspects__tile:nth-child(8n + 8) { --base-transform: translate(-6px, calc(var(--sa-stagger, 60px) * 0.20)) rotate(0.6deg); }
 }
 
 /* ---- Desktop: 3 columns ---- */
 @media (min-width: 1000px) {
   .service-aspects__grid--cols-3 {
     grid-template-columns: repeat(3, 1fr);
-    padding-bottom: calc(var(--sa-stagger, 48px) * 1.4);
+    padding-bottom: calc(var(--sa-stagger, 60px) * 1.6);
   }
 
-  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(3n + 1) { transform: translateY(var(--sa-stagger, 48px)); }
-  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(3n + 2) { transform: translateY(0); }
-  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(3n + 3) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.55)); }
+  /* 12-tile period (avoids any 3-column rhythm; offsets feel hand-placed) */
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 1) { --base-transform: translate(-8px,  calc(var(--sa-stagger, 60px) * 0.30)) rotate(-0.6deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 2) { --base-transform: translate(6px,   calc(var(--sa-stagger, 60px) * 1.20)) rotate(0.4deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 3) { --base-transform: translate(12px,  calc(var(--sa-stagger, 60px) * 0.60)) rotate(-0.4deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 4) { --base-transform: translate(-12px, calc(var(--sa-stagger, 60px) * 1.45)) rotate(0.7deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 5) { --base-transform: translate(4px,   calc(var(--sa-stagger, 60px) * 0.05)) rotate(-0.3deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 6) { --base-transform: translate(-4px,  calc(var(--sa-stagger, 60px) * 0.90)) rotate(0.5deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 7) { --base-transform: translate(10px,  calc(var(--sa-stagger, 60px) * 1.30)) rotate(-0.5deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 8) { --base-transform: translate(-10px, calc(var(--sa-stagger, 60px) * 0.40)) rotate(0.3deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 9) { --base-transform: translate(2px,   calc(var(--sa-stagger, 60px) * 1.10)) rotate(-0.6deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 10) { --base-transform: translate(-6px,  calc(var(--sa-stagger, 60px) * 0.70)) rotate(0.4deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 11) { --base-transform: translate(8px,   calc(var(--sa-stagger, 60px) * 0.15)) rotate(-0.4deg); }
+  .service-aspects__grid--cols-3 .service-aspects__tile:nth-child(12n + 12) { --base-transform: translate(-2px,  calc(var(--sa-stagger, 60px) * 1.55)) rotate(0.6deg); }
 
   /* ---- Desktop: 4 columns ---- */
   .service-aspects__grid--cols-4 {
     grid-template-columns: repeat(4, 1fr);
-    padding-bottom: calc(var(--sa-stagger, 48px) * 1.3);
+    padding-bottom: calc(var(--sa-stagger, 60px) * 1.6);
   }
 
-  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 1) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.6)); }
-  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 2) { transform: translateY(calc(var(--sa-stagger, 48px) * 1.2)); }
-  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 3) { transform: translateY(0); }
-  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(4n + 4) { transform: translateY(calc(var(--sa-stagger, 48px) * 0.85)); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 1) { --base-transform: translate(-6px,  calc(var(--sa-stagger, 60px) * 0.55)) rotate(-0.5deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 2) { --base-transform: translate(8px,   calc(var(--sa-stagger, 60px) * 1.30)) rotate(0.4deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 3) { --base-transform: translate(-10px, calc(var(--sa-stagger, 60px) * 0.15)) rotate(0.6deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 4) { --base-transform: translate(4px,   calc(var(--sa-stagger, 60px) * 0.85)) rotate(-0.4deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 5) { --base-transform: translate(10px,  calc(var(--sa-stagger, 60px) * 1.40)) rotate(-0.3deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 6) { --base-transform: translate(-4px,  calc(var(--sa-stagger, 60px) * 0.40)) rotate(0.5deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 7) { --base-transform: translate(2px,   calc(var(--sa-stagger, 60px) * 1.10)) rotate(-0.6deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 8) { --base-transform: translate(-12px, calc(var(--sa-stagger, 60px) * 0.25)) rotate(0.3deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 9) { --base-transform: translate(6px,   calc(var(--sa-stagger, 60px) * 0.95)) rotate(0.7deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 10) { --base-transform: translate(-8px,  calc(var(--sa-stagger, 60px) * 1.55)) rotate(-0.5deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 11) { --base-transform: translate(12px,  calc(var(--sa-stagger, 60px) * 0.65)) rotate(0.4deg); }
+  .service-aspects__grid--cols-4 .service-aspects__tile:nth-child(12n + 12) { --base-transform: translate(-2px,  calc(var(--sa-stagger, 60px) * 0.05)) rotate(-0.4deg); }
 }
 
-/* ---- Reduced motion ---- */
+/* ---- Reduced motion: no rotation, only minimal vertical drift ---- */
 @media (prefers-reduced-motion: reduce) {
   .service-aspects__tile {
     transition: none;
+    --base-transform: translate(0, 0) rotate(0deg) !important;
+  }
+  .service-aspects__tile:hover {
+    transform: var(--base-transform);
   }
 }
