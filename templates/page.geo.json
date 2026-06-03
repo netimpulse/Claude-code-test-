@@ -105,6 +105,7 @@
       "type": "image-with-text",
       "name": "t:image_with_text.name",
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_3._Juni_2026_14_40_49.png",
         "image_position": "right",
         "heading": "Unser GEO Anstaz",
         "body": "<p>Wir optimieren nicht für einzelne Tricks oder kurzfristige KI-Hacks. Stattdessen geht es darum, eure Website fachlich stärker, verständlicher und besser strukturiert aufzustellen. Inhalte sollen nicht nur Keywords enthalten, sondern echte Fragen beantworten, Zusammenhänge erklären und eure Expertise sichtbar machen.<br/><strong><br/>Unsere Leistungen im Bereich GEO:</strong><br/>• Analyse eurer aktuellen Inhalte und Themenabdeckung<br/>• Optimierung für Suchintentionen und Nutzerfragen<br/>• Aufbau klarer Inhaltsstrukturen<br/>• Verbesserung von Expertise, Vertrauen und Relevanz<br/>• Erstellung und Überarbeitung hilfreicher Inhalte<br/>• Strukturierte Daten und technische Grundlagen<br/>• Optimierung für klassische Suche und KI-Suchsysteme<br/>• Laufende Auswertung und Weiterentwicklung</p>",
