@@ -14,6 +14,34 @@
       "disabled": true,
       "settings": {}
     },
+    "hero_web_build_BKgry4": {
+      "type": "hero-web-build",
+      "name": "Hero Web Build",
+      "settings": {
+        "eyebrow": "Webdesign & Shopify · Custom builds",
+        "heading_before": "Seiten, die sich",
+        "heading_highlight": "verkaufen",
+        "heading_highlight_color": "",
+        "heading_after": "— Stück für Stück gebaut.",
+        "body": "<p>Maßgeschneiderte Shopify-Themes und Webseiten, die laden, ranken und konvertieren. Vom ersten Wireframe bis zur Launch-fertigen Story — auf Tempo getunt, an Umsatz gemessen.</p>",
+        "primary_label": "Projekt starten",
+        "primary_url": "",
+        "show_secondary_button": true,
+        "secondary_label": "Arbeiten ansehen",
+        "secondary_url": "",
+        "fake_url": "yourstore.com",
+        "status_label": "Build",
+        "badge_label": "LIVE · CR +62%",
+        "enable_animation": true,
+        "color_scheme": "scheme-sand",
+        "animation_accent": "#9ccfd0",
+        "animation_accent_soft": "#9CCFD0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
+    },
     "image_with_text_nAB3VU": {
       "type": "image-with-text",
       "name": "t:image_with_text.name",
@@ -76,6 +104,7 @@
   },
   "order": [
     "main",
+    "hero_web_build_BKgry4",
     "image_with_text_nAB3VU",
     "image_with_text_HDFnx7",
     "ni_text_bQqcNQ"
