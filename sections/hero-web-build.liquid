@@ -1,0 +1,251 @@
+{% comment %}
+  Hero Web Build — a website assembling itself, piece by piece
+  ----------------------------------------------------------------
+  Left column: eyebrow, two-tone headline with a highlightable word,
+  body copy, primary + optional secondary CTA.
+  Right column: animated browser-frame mock that builds itself from a
+  wireframe grid through header, hero block, headline lines, CTAs,
+  three feature cards, an imagery suggestion, a color wash and a final
+  polish badge. 12-second cycle. All editor-driven.
+{% endcomment %}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  assign highlight_color = section.settings.heading_highlight_color
+  assign accent = section.settings.animation_accent | default: '#1C4948'
+  assign accent_soft = section.settings.animation_accent_soft | default: '#9CCFD0'
+-%}
+
+{{ 'section-hero-web-build.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
+    --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+  }
+  #shopify-section-{{ section.id }} .hwb {
+    --hwb-pad-top: {{ section.settings.padding_top }}px;
+    --hwb-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hwb-accent: {{ accent }};
+    --hwb-accent-soft: {{ accent_soft }};
+    {%- if highlight_color != blank -%}
+      --hwb-highlight: {{ highlight_color }};
+    {%- endif -%}
+    {%- if scheme.settings.background != blank -%}
+      --hwb-bg: {{ scheme.settings.background }};
+      --hwb-text: {{ scheme.settings.text }};
+      --hwb-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
+      --hwb-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
+      --hwb-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<hero-web-build
+  class="hwb full-width color-scheme color-{{ scheme.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-web-build"
+  data-animate="{% if section.settings.enable_animation %}true{% else %}false{% endif %}"
+>
+  <div class="hwb__inner">
+    <div class="hwb__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hwb__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      <h1 class="hwb__heading">
+        {%- if section.settings.heading_before != blank -%}
+          <span>{{ section.settings.heading_before | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_highlight != blank -%}
+          {%- if section.settings.heading_before != blank -%}{{ ' ' }}{%- endif -%}
+          <span class="hwb__heading-accent">{{ section.settings.heading_highlight | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_after != blank -%}
+          {%- assign trail_first = section.settings.heading_after | slice: 0, 1 -%}
+          {%- assign needs_space = true -%}
+          {%- if trail_first == '.' or trail_first == ',' or trail_first == '!' or trail_first == '?' or trail_first == ':' or trail_first == ';' -%}
+            {%- assign needs_space = false -%}
+          {%- endif -%}
+          {%- if needs_space and section.settings.heading_highlight != blank -%}{{ ' ' }}{%- endif -%}
+          <span>{{ section.settings.heading_after | escape }}</span>
+        {%- endif -%}
+      </h1>
+
+      {%- if section.settings.body != blank -%}
+        <div class="hwb__body">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      <div class="hwb__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="hwb__btn hwb__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+            <span>{{ section.settings.primary_label | escape }}</span>
+            <svg class="hwb__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
+          <a class="hwb__btn hwb__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+            <span>{{ section.settings.secondary_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="hwb__stage" aria-hidden="true">
+      <div class="hwb__statusbar">
+        <span class="hwb__statusbar-left">
+          <span class="hwb__pulse"></span>
+          <span class="hwb__status-text">{{ section.settings.status_label | default: 'Build' | escape }} · Step <span data-hwb-step-num>01</span> / <span data-hwb-step-total>09</span></span>
+        </span>
+        <span class="hwb__statusbar-right" data-hwb-step-label>01 · Grid</span>
+      </div>
+
+      <div class="hwb__browser">
+        <div class="hwb__chrome">
+          <span class="hwb__dots">
+            <span class="hwb__dot hwb__dot--r"></span>
+            <span class="hwb__dot hwb__dot--y"></span>
+            <span class="hwb__dot hwb__dot--g"></span>
+          </span>
+          <span class="hwb__urlbar">
+            <svg class="hwb__lock" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="M3.5 5.5V4a2.5 2.5 0 015 0v1.5M2.5 5.5h7v5h-7z" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="hwb__url" data-hwb-url data-url-full="{{ section.settings.fake_url | default: 'yourstore.com' | escape }}"></span>
+            <span class="hwb__caret" data-hwb-caret></span>
+          </span>
+        </div>
+
+        <div class="hwb__viewport">
+          <div class="hwb__grid" data-hwb-layer="grid">
+            {%- for i in (1..12) -%}<span></span>{%- endfor -%}
+          </div>
+
+          <div class="hwb__site-header" data-hwb-layer="header">
+            <div class="hwb__brand">
+              <span class="hwb__brand-mark"></span>
+              <span class="hwb__brand-bar"></span>
+            </div>
+            <div class="hwb__nav">
+              <span class="hwb__nav-item" style="--i:0"></span>
+              <span class="hwb__nav-item" style="--i:1"></span>
+              <span class="hwb__nav-item" style="--i:2"></span>
+              <span class="hwb__nav-item" style="--i:3"></span>
+              <span class="hwb__nav-cta" style="--i:4"></span>
+            </div>
+          </div>
+
+          <div class="hwb__hero" data-hwb-layer="hero">
+            <div class="hwb__hero-shimmer"></div>
+            <div class="hwb__hero-imagery" data-hwb-layer="image">
+              <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                <path d="M14 16h20l-2 22a4 4 0 01-4 4h-8a4 4 0 01-4-4l-2-22zM18 16v-4a6 6 0 0112 0v4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="hwb__hero-lines" data-hwb-layer="headln">
+              <span class="hwb__hero-line hwb__hero-line--1"></span>
+              <span class="hwb__hero-line hwb__hero-line--2"></span>
+            </div>
+            <div class="hwb__hero-cta" data-hwb-layer="btns">
+              <span class="hwb__hero-btn hwb__hero-btn--primary"></span>
+              <span class="hwb__hero-btn hwb__hero-btn--secondary"></span>
+            </div>
+          </div>
+
+          <div class="hwb__cards" data-hwb-layer="cards">
+            <div class="hwb__card" style="--i:0">
+              <span class="hwb__card-icon">
+                <svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M7 1l-4 7h3l-1 5 5-7H7l1-5z" fill="currentColor"/></svg>
+              </span>
+              <span class="hwb__card-line hwb__card-line--head"></span>
+              <span class="hwb__card-line"></span>
+              <span class="hwb__card-line hwb__card-line--short"></span>
+            </div>
+            <div class="hwb__card" style="--i:1">
+              <span class="hwb__card-icon">
+                <svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M2 10l4-4 3 3 3-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 4h3v3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="hwb__card-line hwb__card-line--head"></span>
+              <span class="hwb__card-line"></span>
+              <span class="hwb__card-line hwb__card-line--short"></span>
+            </div>
+            <div class="hwb__card" style="--i:2">
+              <span class="hwb__card-icon">
+                <svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M3 7.5l3 3 5-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="hwb__card-line hwb__card-line--head"></span>
+              <span class="hwb__card-line"></span>
+              <span class="hwb__card-line hwb__card-line--short"></span>
+            </div>
+          </div>
+
+          <div class="hwb__badge" data-hwb-layer="polish">
+            <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3 6.5l2 2 4-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>{{ section.settings.badge_label | default: 'LIVE · CR +62%' | escape }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hwb__steps">
+        <span class="hwb__step" data-step="0"></span>
+        <span class="hwb__step" data-step="1"></span>
+        <span class="hwb__step" data-step="2"></span>
+        <span class="hwb__step" data-step="3"></span>
+        <span class="hwb__step" data-step="4"></span>
+        <span class="hwb__step" data-step="5"></span>
+        <span class="hwb__step" data-step="6"></span>
+        <span class="hwb__step" data-step="7"></span>
+        <span class="hwb__step" data-step="8"></span>
+        <span class="hwb__progress" data-hwb-progress>0%</span>
+      </div>
+    </div>
+  </div>
+</hero-web-build>
+
+<script src="{{ 'hero-web-build.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero Web Build",
+  "tag": "section",
+  "class": "shopify-section--hero-web-build",
+  "settings": [
+    {"type": "header", "content": "Content"},
+    {"type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Webdesign & Shopify · Custom builds"},
+    {"type": "textarea", "id": "heading_before", "label": "Heading (before highlight)", "default": "Seiten, die sich"},
+    {"type": "text", "id": "heading_highlight", "label": "Heading highlight word", "default": "verkaufen"},
+    {"type": "color", "id": "heading_highlight_color", "label": "Highlight color", "info": "Optional. Overrides the default highlight color."},
+    {"type": "textarea", "id": "heading_after", "label": "Heading (after highlight)", "default": "— Stück für Stück gebaut."},
+    {"type": "richtext", "id": "body", "label": "Body", "default": "<p>Maßgeschneiderte Shopify-Themes und Webseiten, die laden, ranken und konvertieren. Vom ersten Wireframe bis zur Launch-fertigen Story — auf Tempo getunt, an Umsatz gemessen.</p>"},
+    {"type": "header", "content": "Buttons"},
+    {"type": "text", "id": "primary_label", "label": "Primary button", "default": "Projekt starten"},
+    {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "checkbox", "id": "show_secondary_button", "label": "Show secondary button", "default": true},
+    {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "Arbeiten ansehen"},
+    {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
+    {"type": "header", "content": "Browser mock"},
+    {"type": "text", "id": "fake_url", "label": "Fake URL", "default": "yourstore.com"},
+    {"type": "text", "id": "status_label", "label": "Status bar label", "default": "Build"},
+    {"type": "text", "id": "badge_label", "label": "Conversion badge", "default": "LIVE · CR +62%"},
+    {"type": "checkbox", "id": "enable_animation", "label": "Animate the build cycle", "default": true},
+    {"type": "header", "content": "Appearance"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
+    {"type": "color", "id": "animation_accent", "label": "Animation accent (deep)", "default": "#1C4948"},
+    {"type": "color", "id": "animation_accent_soft", "label": "Animation accent (soft)", "default": "#9CCFD0"},
+    {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
+    {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
+    {"type": "header", "content": "Typography"},
+    {"type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100},
+    {"type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100}
+  ],
+  "presets": [
+    {
+      "name": "Hero Web Build",
+      "category": "Hero"
+    }
+  ],
+  "disabled_on": {"groups": ["header", "footer"]}
+}
+{% endschema %}
