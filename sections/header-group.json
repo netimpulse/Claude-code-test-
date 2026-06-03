@@ -14,6 +14,7 @@
     "header": {
       "type": "sqe-header",
       "settings": {
+        "logo_image": "shopify://shop_images/gempages_541696398437909552-713e006d-a0cc-433d-ac17-c5c7874e9cba.png",
         "menu": "hauptmenu",
         "nav_alignment": "center",
         "sticky_header_type": "on-scroll-up",
