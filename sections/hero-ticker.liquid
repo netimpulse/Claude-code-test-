@@ -70,9 +70,11 @@
             </svg>
           </a>
         {%- endif -%}
-        {%- if section.settings.secondary_label != blank -%}
+        {%- if section.settings.show_secondary_button and section.settings.secondary_label != blank -%}
           <a class="hero-ticker__btn hero-ticker__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
-            <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 1.5 10 6 2 10.5z" fill="currentColor"/></svg>
+            {%- if section.settings.show_secondary_icon -%}
+              <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 1.5 10 6 2 10.5z" fill="currentColor"/></svg>
+            {%- endif -%}
             <span>{{ section.settings.secondary_label | escape }}</span>
           </a>
         {%- endif -%}
@@ -164,8 +166,10 @@
     {"type": "header", "content": "Buttons"},
     {"type": "text", "id": "primary_label", "label": "Primary button", "default": "See your audit"},
     {"type": "url", "id": "primary_url", "label": "Primary button link"},
+    {"type": "checkbox", "id": "show_secondary_button", "label": "Show secondary button", "default": true},
     {"type": "text", "id": "secondary_label", "label": "Secondary button", "default": "Watch a demo"},
     {"type": "url", "id": "secondary_url", "label": "Secondary button link"},
+    {"type": "checkbox", "id": "show_secondary_icon", "label": "Show play icon on secondary button", "default": true},
     {"type": "header", "content": "Dashboard"},
     {"type": "text", "id": "window_label", "label": "Window chrome label", "default": "impulse · client · acme co."},
     {"type": "text", "id": "live_label", "label": "Live indicator label", "default": "Live"},

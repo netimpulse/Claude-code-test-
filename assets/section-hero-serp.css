@@ -55,7 +55,7 @@
 }
 
 .hero-serp__heading-accent {
-  color: var(--hs-signal);
+  color: var(--hs-highlight, var(--hs-signal));
 }
 
 .hero-serp__body {
