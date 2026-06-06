@@ -275,11 +275,14 @@
       if revocation_url == blank and shop.cancellation_policy != blank
         assign revocation_url = shop.cancellation_policy.url
       endif
+      if revocation_url == blank and shop.refund_policy != blank
+        assign revocation_url = shop.refund_policy.url
+      endif
+      if revocation_url == blank
+        assign revocation_url = '/policies/legal-notice'
+      endif
       assign revocation_label = section.settings.revocation_label | default: 'Widerruf'
       assign show_revocation = section.settings.show_revocation_button
-      if show_revocation and revocation_url == blank
-        assign show_revocation = false
-      endif
     -%}
 
     {%- if section.settings.show_copyright or show_revocation -%}
@@ -338,7 +341,7 @@
     { "type": "header", "content": "Widerruf", "info": "Eigenständiger Button unten rechts im Footer — Pflicht für deutsche Online-Shops mit Verbrauchergeschäft." },
     { "type": "checkbox", "id": "show_revocation_button", "label": "Widerruf-Button anzeigen", "default": true },
     { "type": "text", "id": "revocation_label", "label": "Button-Text", "default": "Widerruf" },
-    { "type": "url", "id": "revocation_url", "label": "Widerrufsbelehrung-URL", "info": "Leer = Shopify-Policy „Cancellation policy“ (Admin → Einstellungen → Richtlinien). Ist beides leer, wird der Button nicht angezeigt." },
+    { "type": "url", "id": "revocation_url", "label": "Widerrufsbelehrung-URL", "info": "Leer = Shopify-Policy „Cancellation policy“ (Admin → Einstellungen → Richtlinien). Fällt ansonsten auf Refund-Policy bzw. /policies/legal-notice zurück, damit der Pflicht-Link nie fehlt." },
 
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
