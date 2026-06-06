@@ -270,12 +270,32 @@
 
     </div>
 
-    {%- if section.settings.show_copyright -%}
+    {%- liquid
+      assign revocation_url = section.settings.revocation_url
+      if revocation_url == blank and shop.cancellation_policy != blank
+        assign revocation_url = shop.cancellation_policy.url
+      endif
+      assign revocation_label = section.settings.revocation_label | default: 'Widerruf'
+      assign show_revocation = section.settings.show_revocation_button
+      if show_revocation and revocation_url == blank
+        assign show_revocation = false
+      endif
+    -%}
+
+    {%- if section.settings.show_copyright or show_revocation -%}
       <div class="ni-footer__base">
-        <small class="ni-footer__copyright">
-          &copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}.
-          {%- if section.settings.copyright_suffix != blank %} {{ section.settings.copyright_suffix | escape }}{% endif -%}
-        </small>
+        {%- if section.settings.show_copyright -%}
+          <small class="ni-footer__copyright">
+            &copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}.
+            {%- if section.settings.copyright_suffix != blank %} {{ section.settings.copyright_suffix | escape }}{% endif -%}
+          </small>
+        {%- endif -%}
+
+        {%- if show_revocation -%}
+          <a class="ni-footer__revocation" href="{{ revocation_url }}">
+            {{ revocation_label | escape }}
+          </a>
+        {%- endif -%}
       </div>
     {%- endif -%}
   </div>
@@ -314,6 +334,11 @@
     { "type": "header", "content": "Copyright" },
     { "type": "checkbox", "id": "show_copyright", "label": "Copyright-Zeile anzeigen", "default": true },
     { "type": "text", "id": "copyright_suffix", "label": "Suffix-Text", "info": "z.B. „Alle Rechte vorbehalten.“" },
+
+    { "type": "header", "content": "Widerruf", "info": "Eigenständiger Button unten rechts im Footer — Pflicht für deutsche Online-Shops mit Verbrauchergeschäft." },
+    { "type": "checkbox", "id": "show_revocation_button", "label": "Widerruf-Button anzeigen", "default": true },
+    { "type": "text", "id": "revocation_label", "label": "Button-Text", "default": "Widerruf" },
+    { "type": "url", "id": "revocation_url", "label": "Widerrufsbelehrung-URL", "info": "Leer = Shopify-Policy „Cancellation policy“ (Admin → Einstellungen → Richtlinien). Ist beides leer, wird der Button nicht angezeigt." },
 
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
