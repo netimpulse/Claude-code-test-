@@ -43,4 +43,31 @@ test.describe("Footer revocation button", () => {
     expect((href || "").trim().length).toBeGreaterThan(1);
     expect(href).not.toBe("#");
   });
+
+  test("Color setting drives the resting color via --revocation-color", async ({ page }) => {
+    const btn = page.locator(".ni-footer__revocation");
+    const baseline = await btn.evaluate((el) => getComputedStyle(el).color);
+
+    // Apply the setting the merchant would set in the editor.
+    await btn.evaluate((el) => {
+      (el as HTMLElement).style.transition = "none";
+      (el as HTMLElement).style.setProperty("--revocation-color", "rgb(255, 0, 0)");
+    });
+    // The computed color must change away from the inherited baseline and the
+    // red channel must dominate. Render pipelines can nudge channels by a few
+    // values (color-mix / filter on ancestors), so we don't pin exact RGB.
+    const next = await btn.evaluate((el) => getComputedStyle(el).color);
+    expect(next).not.toBe(baseline);
+    const m = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/.exec(next || "");
+    if (!m) throw new Error(`unexpected color format: ${next}`);
+    const r = parseInt(m[1], 10);
+    const g = parseInt(m[2], 10);
+    const b = parseInt(m[3], 10);
+    expect(r).toBeGreaterThanOrEqual(240);
+    expect(g).toBeLessThanOrEqual(20);
+    expect(b).toBeLessThanOrEqual(20);
+    // currentColor flows to the border in the resting state.
+    const border = await btn.evaluate((el) => getComputedStyle(el).borderTopColor);
+    expect(border).toBe(next);
+  });
 });

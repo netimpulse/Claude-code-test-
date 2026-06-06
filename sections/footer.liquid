@@ -295,7 +295,12 @@
         {%- endif -%}
 
         {%- if show_revocation -%}
-          <a class="ni-footer__revocation" href="{{ revocation_url }}">
+          {%- assign revocation_color = section.settings.revocation_color -%}
+          <a
+            class="ni-footer__revocation"
+            href="{{ revocation_url }}"
+            {%- if revocation_color != blank %} style="--revocation-color: {{ revocation_color }}; --revocation-on-color: {{ section.settings.revocation_on_color | default: '#ffffff' }};"{% endif -%}
+          >
             {{ revocation_label | escape }}
           </a>
         {%- endif -%}
@@ -342,6 +347,8 @@
     { "type": "checkbox", "id": "show_revocation_button", "label": "Widerruf-Button anzeigen", "default": true },
     { "type": "text", "id": "revocation_label", "label": "Button-Text", "default": "Widerruf" },
     { "type": "url", "id": "revocation_url", "label": "Widerrufsbelehrung-URL", "info": "Leer = Shopify-Policy „Cancellation policy“ (Admin → Einstellungen → Richtlinien). Fällt ansonsten auf Refund-Policy bzw. /policies/legal-notice zurück, damit der Pflicht-Link nie fehlt." },
+    { "type": "color", "id": "revocation_color", "label": "Button-Farbe", "info": "Leer = Footer-Textfarbe. Bestimmt Rahmen und Text im Ruhezustand, Hintergrund beim Hover." },
+    { "type": "color", "id": "revocation_on_color", "label": "Schrift im Hover-Zustand", "info": "Nur wirksam, wenn eine Button-Farbe gesetzt ist. Default Weiß." },
 
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
