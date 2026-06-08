@@ -154,7 +154,7 @@
             "tag_2": "Designsystem",
             "tag_3": "Conversion",
             "device_label": "Interface",
-            "link_url": ""
+            "link_url": "shopify://pages/web-design"
           }
         },
         "card_4abCHC": {
@@ -169,7 +169,7 @@
             "tag_2": "OS 2.0",
             "tag_3": "Themes",
             "device_label": "Theme System",
-            "link_url": ""
+            "link_url": "shopify://pages/geo"
           }
         }
       },
@@ -292,7 +292,7 @@
       "name": "t:team_compact.name",
       "settings": {
         "kicker": "Team",
-        "heading": "Direkt. Klar. Ohne Agentur-Umwege.",
+        "heading": "Direkt. Klar. Ohne Umwege.",
         "intro": "Bei NetImpulse arbeiten Strategie, Design, Marketing und Shopify-Umsetzung nah zusammen. So entstehen Websites, Kampagnen und Themes, die sich wie ein gemeinsames System anfühlen.",
         "show_intro": true,
         "cta_label": "Team kennenlernen",
