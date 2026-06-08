@@ -57,11 +57,13 @@ test.describe("article page", () => {
     await primePreview(page);
     await page.goto(BLOG_PATH, { waitUntil: "domcontentloaded" });
 
-    const cardCount = await page.locator(".blog-card").count();
+    const cardCount = await page
+      .locator(".blog-card, .blog-featured__card")
+      .count();
     test.skip(cardCount === 0, "No articles in the News blog of the dev store");
 
     const href = await page
-      .locator(".blog-card__title a")
+      .locator(".blog-card__title a, .blog-featured__title a")
       .first()
       .getAttribute("href");
     expect(href, "first article should have a url").toBeTruthy();

@@ -1,18 +1,21 @@
 {% comment %}
   Blog — article index
   ----------------------------------------------------------------
-  Optional editorial header (kicker + heading + intro) followed by a
-  responsive card grid of articles (featured image, category, title,
-  excerpt and meta) with pagination. Mobile-first.
+  Compact editorial header, a typo-tolerant predictive article
+  search, tag/topic filters, a highlighted "featured" row and a
+  responsive card grid with estimated reading time. Mobile-first.
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/blog
 {% endcomment %}
 
 {{ 'section-blog.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'sqe-predictive-search.js' | asset_url }}" defer></script>
 
 {%- liquid
   assign s = section.settings
   assign scheme = s.color_scheme
+  assign feat_tag = s.featured_tag | downcase | strip
+  assign featured_ids = ','
 -%}
 
 {% style %}
@@ -30,6 +33,9 @@
       --blog-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
       --blog-accent: {{ scheme.settings.accent | default: scheme.settings.text }};
       --blog-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
+      --blog-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
+      --blog-chip: {{ scheme.settings.text | color_modify: 'alpha', 0.06 }};
+      --blog-ring: {{ scheme.settings.accent | default: scheme.settings.text | color_modify: 'alpha', 0.18 }};
       --blog-link: {{ scheme.settings.links | default: scheme.settings.accent }};
     {%- endif -%}
   }
@@ -50,15 +56,157 @@
       </header>
     {%- endif -%}
 
+    {%- comment -%} ---------- Predictive article search ---------- {%- endcomment -%}
+    {%- if s.show_search -%}
+      <div class="blog__search" data-sqe-search-root data-sqe-types="article">
+        <form class="blog__search-form" action="{{ routes.search_url }}" method="get" role="search">
+          <input type="hidden" name="type" value="article">
+          <input type="hidden" name="options[prefix]" value="last">
+          <div class="blog__search-wrap">
+            <svg class="blog__search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <input
+              type="search"
+              name="q"
+              class="blog__search-input"
+              placeholder="{{ 'blog.search_placeholder' | t }}"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-label="{{ 'blog.search_placeholder' | t }}"
+              aria-controls="blog-search-results-{{ section.id }}"
+              aria-expanded="false"
+              data-sqe-search-input
+            >
+          </div>
+          <div
+            id="blog-search-results-{{ section.id }}"
+            class="blog__search-results"
+            role="listbox"
+            data-sqe-search-results
+            hidden
+          ></div>
+        </form>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ---------- Topic filters (article tags) ---------- {%- endcomment -%}
+    {%- if s.show_filters and blog.all_tags.size > 0 -%}
+      <nav class="blog__filters" aria-label="{{ 'blog.filter_label' | t }}">
+        <a
+          class="blog__chip{% if current_tags == blank %} is-active{% endif %}"
+          href="{{ blog.url }}"
+          {%- if current_tags == blank %} aria-current="page"{% endif -%}
+        >{{ 'blog.filter_all' | t }}</a>
+        {%- for tag in blog.all_tags -%}
+          {%- assign tag_handle = tag | handle -%}
+          {%- if current_tags contains tag -%}
+            <a class="blog__chip is-active" href="{{ blog.url }}" aria-current="page">{{ tag | escape }}</a>
+          {%- else -%}
+            <a class="blog__chip" href="{{ blog.url }}/tagged/{{ tag_handle }}">{{ tag | escape }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    {%- comment -%} ---------- Build featured cards (top of page 1) ---------- {%- endcomment -%}
+    {%- if s.show_featured -%}
+      {%- capture featured_html -%}
+        {%- assign has_feat = false -%}
+        {%- if feat_tag != blank -%}
+          {%- for a in blog.articles -%}
+            {%- for t in a.tags -%}
+              {%- assign td = t | downcase | strip -%}
+              {%- if td == feat_tag -%}{%- assign has_feat = true -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if has_feat -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- assign fcount = 0 -%}
+        {%- for a in blog.articles -%}
+          {%- if has_feat -%}
+            {%- assign a_is_feat = false -%}
+            {%- for t in a.tags -%}
+              {%- assign td = t | downcase | strip -%}
+              {%- if td == feat_tag -%}{%- assign a_is_feat = true -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+            {%- unless a_is_feat -%}{%- continue -%}{%- endunless -%}
+          {%- endif -%}
+          {%- assign words = a.content | strip_html | split: ' ' | size -%}
+          {%- assign read_min = words | divided_by: 200 | at_least: 1 -%}
+          {%- assign fcat = '' -%}
+          {%- if a.tags.size > 0 -%}{%- assign fcat = a.tags.first -%}{%- endif -%}
+          <article class="blog-featured__card{% if fcount == 0 %} blog-featured__card--lead{% endif %}">
+            <a class="blog-featured__media" href="{{ a.url }}" tabindex="-1" aria-hidden="true">
+              {%- if a.image != blank -%}
+                {%- assign falt = a.image.alt | default: a.title -%}
+                {{
+                  a.image
+                  | image_url: width: 1400
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '400, 600, 800, 1000, 1400',
+                    sizes: '(min-width: 750px) 55vw, 100vw',
+                    class: 'blog-featured__img',
+                    alt: falt
+                }}
+              {%- else -%}
+                <div class="blog-card__placeholder"></div>
+              {%- endif -%}
+            </a>
+            <div class="blog-featured__body">
+              {%- if s.show_category and fcat != blank -%}
+                <span class="blog-card__category">{{ fcat | escape }}</span>
+              {%- endif -%}
+              <h2 class="blog-featured__title"><a href="{{ a.url }}">{{ a.title | escape }}</a></h2>
+              {%- if fcount == 0 and s.show_excerpt and a.excerpt_or_content != blank -%}
+                <p class="blog-card__excerpt">{{ a.excerpt_or_content | strip_html | truncatewords: 28 }}</p>
+              {%- endif -%}
+              <div class="blog-card__meta">
+                <time datetime="{{ a.published_at | date: '%Y-%m-%d' }}">{{ a.published_at | date: s.date_format }}</time>
+                {%- if s.show_reading_time -%}
+                  <span class="blog-card__sep" aria-hidden="true">&middot;</span>
+                  <span>{{ 'blog.read_time_html' | t: minutes: read_min }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+          {%- assign featured_ids = featured_ids | append: a.id | append: ',' -%}
+          {%- assign fcount = fcount | plus: 1 -%}
+          {%- if fcount >= 3 -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+    {%- endif -%}
+
     {%- if blog.articles_count > 0 -%}
       {%- paginate blog.articles by s.posts_per_page -%}
+        {%- assign show_feat = false -%}
+        {%- if s.show_featured and fcount > 0 and current_tags == blank and paginate.current_page == 1 -%}
+          {%- assign show_feat = true -%}
+        {%- endif -%}
+
+        {%- if show_feat -%}
+          <section class="blog-featured" aria-label="{{ 'blog.featured_label' | t }}">
+            <h2 class="blog-featured__heading">{{ 'blog.featured_label' | t }}</h2>
+            <div class="blog-featured__grid">{{ featured_html }}</div>
+          </section>
+        {%- endif -%}
+
         <div class="blog__grid">
           {%- for article in blog.articles -%}
+            {%- capture aidkey -%},{{ article.id }},{%- endcapture -%}
+            {%- if show_feat and featured_ids contains aidkey -%}
+              {%- continue -%}
+            {%- endif -%}
             {%- liquid
               assign cat = ''
               if article.tags.size > 0
                 assign cat = article.tags.first
               endif
+              assign words = article.content | strip_html | split: ' ' | size
+              assign read_min = words | divided_by: 200 | at_least: 1
             -%}
             <article class="blog-card">
               <a class="blog-card__media" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
@@ -86,7 +234,7 @@
                   <a href="{{ article.url }}">{{ article.title | escape }}</a>
                 </h2>
                 {%- if s.show_excerpt and article.excerpt_or_content != blank -%}
-                  <p class="blog-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+                  <p class="blog-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 20 }}</p>
                 {%- endif -%}
                 <div class="blog-card__meta">
                   {%- if s.show_author -%}
@@ -96,6 +244,10 @@
                   <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
                     {{- article.published_at | date: s.date_format -}}
                   </time>
+                  {%- if s.show_reading_time -%}
+                    <span class="blog-card__sep" aria-hidden="true">&middot;</span>
+                    <span>{{ 'blog.read_time_html' | t: minutes: read_min }}</span>
+                  {%- endif -%}
                   {%- if blog.comments_enabled? and article.comments_count > 0 -%}
                     <span class="blog-card__sep" aria-hidden="true">&middot;</span>
                     <span>{{ 'blog.comments_with_count' | t: count: article.comments_count }}</span>
@@ -153,6 +305,36 @@
     },
     {
       "type": "header",
+      "content": "t:blog.discovery_header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "t:blog.show_search_label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "t:blog.show_filters_label",
+      "info": "t:blog.show_filters_info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured",
+      "label": "t:blog.show_featured_label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "featured_tag",
+      "label": "t:blog.featured_tag_label",
+      "info": "t:blog.featured_tag_info",
+      "default": "featured"
+    },
+    {
+      "type": "header",
       "content": "t:blog.layout_header"
     },
     {
@@ -172,7 +354,7 @@
       "max": 48,
       "step": 2,
       "unit": "px",
-      "default": 28
+      "default": 24
     },
     {
       "type": "range",
@@ -194,7 +376,7 @@
         { "value": "4 / 3", "label": "t:blog.ratio_4_3" },
         { "value": "1 / 1", "label": "t:blog.ratio_1_1" }
       ],
-      "default": "4 / 3"
+      "default": "3 / 2"
     },
     {
       "type": "header",
@@ -216,6 +398,12 @@
       "type": "checkbox",
       "id": "show_author",
       "label": "t:blog.show_author_label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reading_time",
+      "label": "t:blog.show_reading_time_label",
       "default": true
     },
     {
@@ -252,7 +440,7 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 64
+      "default": 48
     },
     {
       "type": "range",
@@ -262,7 +450,7 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 80
+      "default": 64
     }
   ]
 }

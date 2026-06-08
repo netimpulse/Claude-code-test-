@@ -67,10 +67,10 @@
   }
 
   // -------- Shopify suggest fetch --------
-  async function suggest(q, limit) {
+  async function suggest(q, limit, types) {
     const url =
       `/search/suggest.json?q=${encodeURIComponent(q)}` +
-      `&resources[type]=${RESOURCE_TYPES}` +
+      `&resources[type]=${types || RESOURCE_TYPES}` +
       `&resources[limit]=${limit}` +
       `&resources[options][fields]=title,product_type,vendor,tag,body`;
     try {
@@ -192,6 +192,9 @@
     const results = section.querySelector("[data-sqe-search-results]");
     if (!input || !results) return;
 
+    // Optional per-section resource scope, e.g. data-sqe-types="article".
+    const types = section.getAttribute("data-sqe-types") || RESOURCE_TYPES;
+
     let lastReq = 0;
     let timer;
 
@@ -205,8 +208,8 @@
       const seq = ++lastReq;
 
       const [primary, ...relatedSets] = await Promise.all([
-        suggest(q, LIMIT_PRIMARY),
-        ...relatedQueries(q).map((t) => suggest(t, LIMIT_RELATED)),
+        suggest(q, LIMIT_PRIMARY, types),
+        ...relatedQueries(q).map((t) => suggest(t, LIMIT_RELATED, types)),
       ]);
       if (seq !== lastReq) return;
 
@@ -219,7 +222,7 @@
       let didYouMean = null;
       if (!items.length) {
         for (const v of editVariants(q)) {
-          const r = await suggest(v, LIMIT_PRIMARY);
+          const r = await suggest(v, LIMIT_PRIMARY, types);
           if (seq !== lastReq) return;
           const flat = flatten(r);
           if (flat.length) {
@@ -270,10 +273,10 @@
     });
   }
 
+  const ROOT_SELECTOR = "[data-section-type='sqe-header'], [data-sqe-search-root]";
+
   function bindAll() {
-    document
-      .querySelectorAll("[data-section-type='sqe-header']")
-      .forEach(bindSection);
+    document.querySelectorAll(ROOT_SELECTOR).forEach(bindSection);
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", bindAll);
@@ -281,7 +284,8 @@
     bindAll();
   }
   document.addEventListener("shopify:section:load", (e) => {
-    const n = e.target.querySelector("[data-section-type='sqe-header']");
+    if (e.target.matches && e.target.matches(ROOT_SELECTOR)) bindSection(e.target);
+    const n = e.target.querySelector && e.target.querySelector(ROOT_SELECTOR);
     if (n) bindSection(n);
   });
 })();
