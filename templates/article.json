@@ -27,6 +27,7 @@
         "show_share": true,
         "quote_background": "#ece4cf",
         "quote_text": "#1f2328",
+        "comments_layout": "chat",
         "color_scheme": "scheme-1",
         "content_width": 860,
         "padding_top": 64,

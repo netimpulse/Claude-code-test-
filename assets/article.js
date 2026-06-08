@@ -24,8 +24,32 @@
     }
   }
 
+  function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 180) + 'px';
+  }
+
+  function initComposer(scope) {
+    var areas = scope.querySelectorAll('.article__composer-bar textarea');
+
+    for (var i = 0; i < areas.length; i++) {
+      var area = areas[i];
+
+      if (area.dataset.autogrow) {
+        continue;
+      }
+
+      area.dataset.autogrow = '1';
+      autoGrow(area);
+      area.addEventListener('input', function () {
+        autoGrow(this);
+      });
+    }
+  }
+
   function init(root) {
     wrapEmbeds(root);
+    initComposer(root && root.querySelectorAll ? root : document);
   }
 
   if (document.readyState === 'loading') {

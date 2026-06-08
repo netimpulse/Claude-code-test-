@@ -70,6 +70,8 @@
       --art-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
       --art-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.28 }};
       --art-link: {{ scheme.settings.links | default: scheme.settings.accent }};
+      --art-chat-bubble: {{ scheme.settings.text | color_modify: 'alpha', 0.06 }};
+      --art-ring: {{ scheme.settings.accent | default: scheme.settings.text | color_modify: 'alpha', 0.2 }};
     {%- endif -%}
     {%- if s.quote_background != blank -%}
       --art-quote-bg: {{ s.quote_background }};
@@ -259,9 +261,9 @@
     </div>
   {%- endif -%}
 
-  {%- comment -%} ---------- Comments ---------- {%- endcomment -%}
+  {%- comment -%} ---------- Comments (chat-style) ---------- {%- endcomment -%}
   {%- if blog.comments_enabled? -%}
-    <section class="article__comments" id="comments">
+    <section class="article__comments article__comments--{{ s.comments_layout }}" id="comments">
       <div class="article__comments-inner">
         <h2 class="article__comments-title">
           {%- if article.comments_count > 0 -%}
@@ -283,14 +285,18 @@
           {%- paginate article.comments by 20 -%}
             <ol class="article__comment-list" role="list">
               {%- for comment in article.comments -%}
+                {%- assign c_initial = comment.author | strip | slice: 0, 1 | upcase -%}
                 <li class="article__comment" id="comment-{{ comment.id }}">
-                  <div class="article__comment-head">
-                    <span class="article__comment-author">{{ comment.author | escape }}</span>
-                    <time class="article__comment-date" datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">
-                      {{- comment.created_at | date: s.date_format -}}
-                    </time>
+                  <div class="article__comment-avatar" aria-hidden="true">{{ c_initial | default: '?' }}</div>
+                  <div class="article__comment-bubble">
+                    <div class="article__comment-head">
+                      <span class="article__comment-author">{{ comment.author | escape }}</span>
+                      <time class="article__comment-date" datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">
+                        {{- comment.created_at | date: s.date_format -}}
+                      </time>
+                    </div>
+                    <div class="article__comment-body rte">{{ comment.content }}</div>
                   </div>
-                  <div class="article__comment-body rte">{{ comment.content }}</div>
                 </li>
               {%- endfor -%}
             </ol>
@@ -304,46 +310,61 @@
 
         <div class="article__form-wrap">
           <h3 class="article__form-title">{{ 'blog.comment_form_title' | t }}</h3>
-          {%- form 'new_comment', article -%}
+          {%- form 'new_comment', article, class: 'article__composer' -%}
             {%- if form.errors -%}
               <div class="article__notice article__notice--error" role="alert">
                 {{ form.errors | default_errors }}
               </div>
             {%- endif -%}
-            <div class="article__field-row">
-              <div class="article__field">
+            <div class="article__composer-meta">
+              <div class="article__field article__field--inline">
                 <label for="CommentAuthor-{{ section.id }}">{{ 'blog.comment_form_name' | t }}</label>
                 <input
                   type="text"
                   name="comment[author]"
                   id="CommentAuthor-{{ section.id }}"
                   value="{{ form.author }}"
+                  placeholder="{{ 'blog.comment_form_name' | t }}"
                   autocomplete="name"
                   required
                 >
               </div>
-              <div class="article__field">
-                <label for="CommentEmail-{{ section.id }}">{{ 'blog.comment_form_email' | t }}</label>
+              <div class="article__field article__field--inline">
+                <label for="CommentEmail-{{ section.id }}">
+                  {{- 'blog.comment_form_email' | t }}
+                  <span class="article__field-hint">&middot; {{ 'blog.comment_form_email_info' | t }}</span>
+                </label>
                 <input
                   type="email"
                   name="comment[email]"
                   id="CommentEmail-{{ section.id }}"
                   value="{{ form.email }}"
+                  placeholder="name@example.com"
                   autocomplete="email"
                   spellcheck="false"
                   required
                 >
-                <small class="article__field-hint">{{ 'blog.comment_form_email_info' | t }}</small>
               </div>
             </div>
-            <div class="article__field">
-              <label for="CommentBody-{{ section.id }}">{{ 'blog.comment_form_body' | t }}</label>
-              <textarea name="comment[body]" id="CommentBody-{{ section.id }}" rows="5" required>{{ form.body }}</textarea>
+            <div class="article__composer-bar">
+              <label class="visually-hidden" for="CommentBody-{{ section.id }}">{{ 'blog.comment_form_body' | t }}</label>
+              <textarea
+                name="comment[body]"
+                id="CommentBody-{{ section.id }}"
+                rows="1"
+                placeholder="{{ 'blog.comment_placeholder' | t }}"
+                required
+              >{{ form.body }}</textarea>
+              <button type="submit" class="article__send" aria-label="{{ 'blog.comment_form_submit' | t }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M22 2 11 13"></path>
+                  <path d="M22 2 15 22l-4-9-9-4 20-7Z"></path>
+                </svg>
+              </button>
             </div>
             {%- if blog.moderated? -%}
               <p class="article__form-note">{{ 'blog.comment_moderated' | t }}</p>
             {%- endif -%}
-            <button type="submit" class="article__btn">{{ 'blog.comment_form_submit' | t }}</button>
           {%- endform -%}
         </div>
       </div>
@@ -484,6 +505,20 @@
       "id": "quote_text",
       "label": "t:article.quote_text_label",
       "default": "#1f2328"
+    },
+    {
+      "type": "header",
+      "content": "t:article.comments_header"
+    },
+    {
+      "type": "select",
+      "id": "comments_layout",
+      "label": "t:article.comments_layout_label",
+      "options": [
+        { "value": "chat", "label": "t:article.comments_layout_chat" },
+        { "value": "cards", "label": "t:article.comments_layout_cards" }
+      ],
+      "default": "chat"
     },
     {
       "type": "header",

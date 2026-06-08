@@ -27,6 +27,7 @@
     "comment_form_name": "Name",
     "comment_form_submit": "Post comment",
     "comment_form_title": "Leave a comment",
+    "comment_placeholder": "Write a comment …",
     "comment_moderated": "Comments are reviewed and approved before they appear.",
     "comment_success": "Your comment was posted successfully. Thank you!",
     "comment_success_moderated": "Thanks! Your comment will appear once it has been approved.",
