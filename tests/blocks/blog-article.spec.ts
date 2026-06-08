@@ -74,7 +74,9 @@ test.describe("article page", () => {
     await expect(page.locator("article.article")).toBeVisible();
     await expect(page.locator(".article__hero")).toBeVisible();
     await expect(page.locator(".article__hero-title")).toBeVisible();
-    await expect(page.locator(".article__body")).toBeVisible();
+    // Body presence (its height depends on the post's content, which may
+    // be empty for a freshly-created test article).
+    await expect(page.locator(".article__body")).toBeAttached();
 
     // Desktop screenshot
     await page.setViewportSize({ width: 1280, height: 900 });

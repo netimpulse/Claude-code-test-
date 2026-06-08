@@ -31,7 +31,30 @@
         "content_width": 860,
         "padding_top": 64,
         "padding_bottom": 80
-      }
+      },
+      "blocks": {
+        "cta": {
+          "type": "cta",
+          "settings": {
+            "mode": "newsletter",
+            "heading": "Bleib auf dem Laufenden",
+            "text": "<p>Erhalte neue Beiträge direkt in dein Postfach – kein Spam, jederzeit abbestellbar.</p>",
+            "button_label": "Abonnieren"
+          }
+        },
+        "related": {
+          "type": "related",
+          "settings": {
+            "heading": "Mehr aus dem Blog",
+            "count": 3,
+            "show_image": true
+          }
+        }
+      },
+      "block_order": [
+        "cta",
+        "related"
+      ]
     }
   },
   "order": [

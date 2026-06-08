@@ -430,7 +430,21 @@
     "color_scheme_label": "Color scheme",
     "content_width_label": "Content width",
     "padding_top_label": "Top padding",
-    "padding_bottom_label": "Bottom padding"
+    "padding_bottom_label": "Bottom padding",
+    "block_cta": "Newsletter / CTA",
+    "cta_mode_label": "Type",
+    "cta_mode_button": "Button link",
+    "cta_mode_newsletter": "Email signup",
+    "cta_heading_label": "Heading",
+    "cta_text_label": "Text",
+    "cta_button_label_label": "Button label",
+    "cta_button_url_label": "Button link",
+    "cta_button_url_info": "Used in button mode.",
+    "cta_background_label": "Background (optional)",
+    "block_related": "Related posts",
+    "related_heading_label": "Heading",
+    "related_count_label": "Number of posts",
+    "related_show_image_label": "Show images"
   },
   "blog": {
     "name": "Blog posts",

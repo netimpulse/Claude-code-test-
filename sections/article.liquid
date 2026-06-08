@@ -169,6 +169,96 @@
     {%- endif -%}
   </div>
 
+  {%- comment -%} ---------- Editor blocks (Newsletter/CTA, Related) ---------- {%- endcomment -%}
+  {%- if section.blocks.size > 0 -%}
+    <div class="article__blocks">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'cta' -%}
+            <div
+              class="article-cta"
+              {{ block.shopify_attributes }}
+              {%- if block.settings.background != blank %} style="--art-cta-bg: {{ block.settings.background }};"{% endif -%}
+            >
+              {%- if block.settings.heading != blank -%}
+                <h2 class="article-cta__heading">{{ block.settings.heading | escape }}</h2>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="article-cta__text rte">{{ block.settings.text }}</div>
+              {%- endif -%}
+              {%- if block.settings.mode == 'newsletter' -%}
+                {%- form 'customer', class: 'article-cta__form' -%}
+                  <input type="hidden" name="contact[tags]" value="newsletter">
+                  {%- if form.posted_successfully? -%}
+                    <p class="article-cta__success" role="status">{{ 'blog.newsletter_success' | t }}</p>
+                  {%- else -%}
+                    <label class="visually-hidden" for="NewsletterEmail-{{ block.id }}">{{ 'blog.comment_form_email' | t }}</label>
+                    <input
+                      type="email"
+                      id="NewsletterEmail-{{ block.id }}"
+                      name="contact[email]"
+                      value="{{ form.email }}"
+                      placeholder="{{ 'blog.newsletter_placeholder' | t }}"
+                      autocomplete="email"
+                      required
+                    >
+                    {%- assign nl_label = block.settings.button_label | default: 'Subscribe' -%}
+                    <button type="submit" class="article__btn">{{ nl_label | escape }}</button>
+                  {%- endif -%}
+                {%- endform -%}
+              {%- elsif block.settings.button_label != blank -%}
+                <a class="article__btn article-cta__btn" href="{{ block.settings.button_url | default: '#' }}">
+                  {{- block.settings.button_label | escape -}}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- when 'related' -%}
+            {%- if blog.articles.size > 1 -%}
+              {%- assign related_count = block.settings.count | default: 3 -%}
+              {%- assign shown = 0 -%}
+              <div class="article-related" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="article-related__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                <div class="article-related__grid">
+                  {%- for art in blog.articles -%}
+                    {%- if art.id == article.id -%}{%- continue -%}{%- endif -%}
+                    {%- if shown >= related_count -%}{%- break -%}{%- endif -%}
+                    {%- assign shown = shown | plus: 1 -%}
+                    <a class="article-related__card" href="{{ art.url }}">
+                      {%- if block.settings.show_image -%}
+                        <div class="article-related__media">
+                          {%- if art.image != blank -%}
+                            {%- assign rel_alt = art.image.alt | default: art.title -%}
+                            {{
+                              art.image
+                              | image_url: width: 600
+                              | image_tag:
+                                loading: 'lazy',
+                                widths: '300, 400, 600',
+                                sizes: '(min-width: 750px) 30vw, 90vw',
+                                class: 'article-related__img',
+                                alt: rel_alt
+                            }}
+                          {%- else -%}
+                            <div class="article-related__placeholder"></div>
+                          {%- endif -%}
+                        </div>
+                      {%- endif -%}
+                      <span class="article-related__title">{{ art.title | escape }}</span>
+                      <time class="article-related__date" datetime="{{ art.published_at | date: '%Y-%m-%d' }}">
+                        {{- art.published_at | date: s.date_format -}}
+                      </time>
+                    </a>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
   {%- comment -%} ---------- Comments ---------- {%- endcomment -%}
   {%- if blog.comments_enabled? -%}
     <section class="article__comments" id="comments">
@@ -434,6 +524,82 @@
       "step": 4,
       "unit": "px",
       "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "cta",
+      "name": "t:article.block_cta",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "select",
+          "id": "mode",
+          "label": "t:article.cta_mode_label",
+          "options": [
+            { "value": "button", "label": "t:article.cta_mode_button" },
+            { "value": "newsletter", "label": "t:article.cta_mode_newsletter" }
+          ],
+          "default": "newsletter"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:article.cta_heading_label",
+          "default": "Bleib auf dem Laufenden"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:article.cta_text_label",
+          "default": "<p>Erhalte neue Beiträge direkt in dein Postfach – kein Spam, jederzeit abbestellbar.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:article.cta_button_label_label",
+          "default": "Abonnieren"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "t:article.cta_button_url_label",
+          "info": "t:article.cta_button_url_info"
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "t:article.cta_background_label"
+        }
+      ]
+    },
+    {
+      "type": "related",
+      "name": "t:article.block_related",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:article.related_heading_label",
+          "default": "Mehr aus dem Blog"
+        },
+        {
+          "type": "range",
+          "id": "count",
+          "label": "t:article.related_count_label",
+          "min": 2,
+          "max": 4,
+          "step": 1,
+          "default": 3
+        },
+        {
+          "type": "checkbox",
+          "id": "show_image",
+          "label": "t:article.related_show_image_label",
+          "default": true
+        }
+      ]
     }
   ]
 }

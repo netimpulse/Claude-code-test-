@@ -38,6 +38,8 @@
     "share_linkedin": "Share on LinkedIn",
     "read_more": "Read article",
     "pagination": "Pagination",
+    "newsletter_placeholder": "Your email address",
+    "newsletter_success": "Thanks for subscribing!",
     "empty": "There are no articles in this blog yet."
   },
   "cart": {
