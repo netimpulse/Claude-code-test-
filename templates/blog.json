@@ -13,7 +13,7 @@
       "type": "blog",
       "settings": {
         "show_header": true,
-        "kicker": "Blog",
+        "kicker": "",
         "heading": "",
         "show_search": true,
         "show_filters": true,
