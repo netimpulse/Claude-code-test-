@@ -11,7 +11,23 @@
   "sections": {
     "main": {
       "type": "blog",
-      "settings": {}
+      "settings": {
+        "show_header": true,
+        "kicker": "Blog",
+        "heading": "",
+        "columns": 3,
+        "grid_gap": 28,
+        "card_radius": 0,
+        "image_ratio": "4 / 3",
+        "show_category": true,
+        "show_excerpt": true,
+        "show_author": true,
+        "posts_per_page": 9,
+        "date_format": "%b %d, %Y",
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 80
+      }
     }
   },
   "order": [

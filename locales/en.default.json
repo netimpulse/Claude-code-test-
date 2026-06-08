@@ -16,11 +16,32 @@
   "blog": {
     "article_comments": "Comments",
     "article_metadata_html": "{{ date }} by {{ author }}",
+    "comments": "Comments",
+    "comments_with_count": {
+      "one": "{{ count }} comment",
+      "other": "{{ count }} comments"
+    },
     "comment_form_body": "Comment",
     "comment_form_email": "Email",
+    "comment_form_email_info": "Your email address will not be published.",
     "comment_form_name": "Name",
-    "comment_form_submit": "Post",
-    "comment_form_title": "Add a comment"
+    "comment_form_submit": "Post comment",
+    "comment_form_title": "Leave a comment",
+    "comment_placeholder": "Write a comment …",
+    "comment_moderated": "Comments are reviewed and approved before they appear.",
+    "comment_success": "Your comment was posted successfully. Thank you!",
+    "comment_success_moderated": "Thanks! Your comment will appear once it has been approved.",
+    "read_time_html": "{{ minutes }} min read",
+    "tagged": "Tagged",
+    "share": "Share",
+    "share_twitter": "Share on X",
+    "share_facebook": "Share on Facebook",
+    "share_linkedin": "Share on LinkedIn",
+    "read_more": "Read article",
+    "pagination": "Pagination",
+    "newsletter_placeholder": "Your email address",
+    "newsletter_success": "Thanks for subscribing!",
+    "empty": "There are no articles in this blog yet."
   },
   "cart": {
     "checkout": "Checkout",
