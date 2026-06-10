@@ -16,6 +16,8 @@ test.describe("QA Block-Page – Generische Visual-Checks", () => {
   test("rendert ohne Konsolen- oder Page-Errors", async ({ page }, testInfo) => {
     const errors: string[] = [];
     page.on("console", (m) => {
+      // Der Dev-Store hat kein Favicon — dieser 404 ist Grundrauschen.
+      if (m.location().url.endsWith("/favicon.ico")) return;
       if (m.type() === "error") errors.push(`console: ${m.text()}`);
     });
     page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
@@ -48,4 +50,12 @@ test.describe("QA Block-Page – Generische Visual-Checks", () => {
     const broken = await page.evaluate(() => {
       const imgs = Array.from(document.querySelectorAll("img"));
       return imgs
-        .filter((img
+        .filter(
+          (img) =>
+            img.complete && img.naturalWidth === 0 && !!img.getAttribute("src")
+        )
+        .map((img) => img.getAttribute("src") || "");
+    });
+    expect(broken, `Kaputte Bilder: ${broken.join(", ")}`).toEqual([]);
+  });
+});

@@ -35,7 +35,8 @@
   }
 {% endstyle %}
 
-<section class="blog full-width color-{{ scheme.id }}" data-section-id="{{ section.id }}">
+{%- assign mobile_layout = s.mobile_layout | default: 'feed' -%}
+<section class="blog blog--m-{{ mobile_layout }} full-width color-{{ scheme.id }}" data-section-id="{{ section.id }}">
   <div class="blog__inner">
     {%- if s.show_header -%}
       <header class="blog__header">
@@ -195,6 +196,17 @@
         { "value": "1 / 1", "label": "t:blog.ratio_1_1" }
       ],
       "default": "4 / 3"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "t:blog.mobile_layout_label",
+      "info": "t:blog.mobile_layout_info",
+      "options": [
+        { "value": "feed", "label": "t:blog.mobile_layout_feed" },
+        { "value": "cards", "label": "t:blog.mobile_layout_cards" }
+      ],
+      "default": "feed"
     },
     {
       "type": "header",

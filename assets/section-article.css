@@ -366,9 +366,11 @@
   transition: background-color 160ms ease, color 160ms ease;
 }
 
-.article__tag:hover {
-  background: var(--art-text, #1f2328);
-  color: var(--art-bg, #ffffff);
+@media (hover: hover) {
+  .article__tag:hover {
+    background: var(--art-text, #1f2328);
+    color: var(--art-bg, #ffffff);
+  }
 }
 
 .article__share {
@@ -392,10 +394,12 @@
   transition: background-color 160ms ease, color 160ms ease;
 }
 
-.article__share-link:hover {
-  background: var(--art-accent, #4a7cff);
-  border-color: var(--art-accent, #4a7cff);
-  color: #ffffff;
+@media (hover: hover) {
+  .article__share-link:hover {
+    background: var(--art-accent, #4a7cff);
+    border-color: var(--art-accent, #4a7cff);
+    color: #ffffff;
+  }
 }
 
 /* ---------------------------------------------------------------- */
@@ -636,8 +640,10 @@
   transition: transform 160ms ease, opacity 160ms ease;
 }
 
-.article__send:hover {
-  transform: scale(1.06);
+@media (hover: hover) {
+  .article__send:hover {
+    transform: scale(1.06);
+  }
 }
 
 .article__send svg {
@@ -667,39 +673,13 @@
   transition: transform 160ms ease, opacity 160ms ease;
 }
 
-.article__btn:hover {
-  transform: translateY(-2px);
-  opacity: 0.94;
-}
-
-/* ---------------------------------------------------------------- */
-/* Responsive                                                       */
-/* ---------------------------------------------------------------- */
-@media (max-width: 749px) {
-  .article__field-row {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .article__footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .article__body blockquote {
-    padding: clamp(24px, 6vw, 32px);
-    padding-top: clamp(56px, 16vw, 72px);
-    padding-left: clamp(24px, 6vw, 32px);
-  }
-
-  .article__body blockquote::before {
-    top: clamp(10px, 3vw, 16px);
-    left: clamp(18px, 5vw, 28px);
+@media (hover: hover) {
+  .article__btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.94;
   }
 }
 
-/* ---------------------------------------------------------------- */
-/* Reduced motion                                                   */
 /* ---------------------------------------------------------------- */
 /* ---------------------------------------------------------------- */
 /* Editor blocks: Newsletter/CTA + Related posts                    */
@@ -806,8 +786,10 @@
   transition: transform 300ms ease;
 }
 
-.article-related__card:hover .article-related__img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .article-related__card:hover .article-related__img {
+    transform: scale(1.04);
+  }
 }
 
 .article-related__placeholder {
@@ -828,9 +810,11 @@
   line-height: 1.25;
 }
 
-.article-related__card:hover .article-related__title {
-  text-decoration: underline;
-  text-underline-offset: 0.16em;
+@media (hover: hover) {
+  .article-related__card:hover .article-related__title {
+    text-decoration: underline;
+    text-underline-offset: 0.16em;
+  }
 }
 
 .article-related__date {
@@ -850,6 +834,177 @@
   border: 0;
 }
 
+/* ---------------------------------------------------------------- */
+/* Responsive (phones)                                              */
+/* ---------------------------------------------------------------- */
+@media (max-width: 749px) {
+  /* -- Hero: cap the height (the desktop setting can be 600px+) and
+     anchor the title block to the bottom, where the overlay gradient
+     is darkest — the classic editorial mobile pattern. */
+  .article__hero--image {
+    min-height: min(var(--art-hero-h, 600px), 70vh);
+    min-height: min(var(--art-hero-h, 600px), 62svh);
+    place-items: end center;
+  }
+
+  .article__hero--image .article__hero-inner {
+    padding-block: 32px 28px;
+    gap: 10px;
+  }
+
+  .article__hero--text {
+    padding: 48px 20px 40px;
+  }
+
+  .article__hero-title {
+    font-size: clamp(1.8rem, 7.5vw, 2.5rem);
+    line-height: 1.06;
+  }
+
+  .article__hero-subtitle {
+    font-size: 0.98rem;
+  }
+
+  /* -- Body */
+  .article__container {
+    padding-top: min(var(--art-pt, 64px), 44px);
+  }
+
+  .article__body blockquote {
+    padding: clamp(24px, 6vw, 32px);
+    padding-top: clamp(56px, 16vw, 72px);
+    padding-left: clamp(24px, 6vw, 32px);
+  }
+
+  .article__body blockquote::before {
+    top: clamp(10px, 3vw, 16px);
+    left: clamp(18px, 5vw, 28px);
+  }
+
+  /* -- Tags + share: stacked, with finger-sized targets */
+  .article__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    margin-top: 2rem;
+  }
+
+  .article__tag {
+    min-height: 40px;
+    padding: 0 16px;
+  }
+
+  .article__share-link {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* -- Editor blocks */
+  .article__blocks {
+    margin-top: 2.25rem;
+    gap: 2rem;
+  }
+
+  .article-cta {
+    padding: 26px 18px 28px;
+  }
+
+  .article-cta__form {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 18px;
+  }
+
+  .article-cta__form input[type="email"] {
+    flex: none;
+    max-width: none;
+  }
+
+  .article-cta__form .article__btn,
+  .article-cta__btn {
+    width: 100%;
+  }
+
+  /* -- Related posts: swipeable, edge-to-edge snap carousel instead
+     of a tall stack of full-width cards. The next card peeks in to
+     signal that the row scrolls. */
+  .article-related__grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-inline: calc((100% - 100vw) / 2);
+    padding-inline: calc((100vw - 100%) / 2);
+    scroll-padding-inline: calc((100vw - 100%) / 2);
+  }
+
+  .article-related__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .article-related__card {
+    flex: 0 0 74%;
+    scroll-snap-align: start;
+  }
+
+  /* -- Comments */
+  .article__comments {
+    padding-bottom: min(var(--art-pb, 80px), 56px);
+    scroll-margin-top: 72px;
+  }
+
+  .article__comments-inner {
+    margin-top: 2rem;
+    padding-top: 1.75rem;
+  }
+
+  .article__comment {
+    gap: 10px;
+  }
+
+  .article__comment-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.88rem;
+  }
+
+  .article__comments--chat .article__comment-bubble {
+    padding: 10px 14px;
+  }
+
+  .article__composer-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* In the stacked column the inline flex-basis (200px) would become
+     a 200px *height* — neutralise it. */
+  .article__field--inline {
+    flex: none;
+  }
+
+  .article__pagination a,
+  .article__pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 10px;
+  }
+
+  /* 16px inputs stop iOS Safari from zooming in on focus */
+  .article__field input,
+  .article__composer-bar textarea,
+  .article-cta__form input[type="email"] {
+    font-size: max(16px, 1rem);
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Reduced motion                                                   */
 /* ---------------------------------------------------------------- */
 /* Reduced motion                                                   */
 /* ---------------------------------------------------------------- */

@@ -70,9 +70,11 @@
   transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
-.blog-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px rgba(20, 16, 10, 0.12);
+@media (hover: hover) {
+  .blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(20, 16, 10, 0.12);
+  }
 }
 
 .blog-card__media {
@@ -89,8 +91,10 @@
   transition: transform 400ms ease;
 }
 
-.blog-card:hover .blog-card__img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .blog-card:hover .blog-card__img {
+    transform: scale(1.04);
+  }
 }
 
 .blog-card__placeholder {
@@ -201,8 +205,99 @@
 }
 
 @media (max-width: 649px) {
+  .blog {
+    padding-top: min(var(--blog-pt, 64px), 48px);
+    padding-bottom: min(var(--blog-pb, 80px), 64px);
+  }
+
+  .blog__header {
+    margin-bottom: 1.75rem;
+  }
+
   .blog__grid {
     grid-template-columns: 1fr;
+  }
+
+  /* Feed layout (default on phones): the first post keeps its full
+     card, every following post collapses into a compact row with a
+     square thumbnail — a column of full image cards scrolls poorly. */
+  .blog--m-feed .blog__grid {
+    gap: 0;
+  }
+
+  .blog--m-feed .blog-card {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--blog-line, rgba(31, 35, 40, 0.12));
+    overflow: visible;
+  }
+
+  .blog--m-feed .blog-card:last-child {
+    border-bottom: 0;
+  }
+
+  .blog--m-feed .blog-card:first-child {
+    padding-bottom: 20px;
+  }
+
+  .blog--m-feed .blog-card:first-child .blog-card__media {
+    border-radius: var(--blog-radius, 0px);
+    overflow: hidden;
+  }
+
+  .blog--m-feed .blog-card:first-child .blog-card__body {
+    padding: 16px 0 0;
+  }
+
+  .blog--m-feed .blog-card:first-child .blog-card__title {
+    font-size: 1.35rem;
+  }
+
+  .blog--m-feed .blog-card:not(:first-child) {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 14px;
+    padding: 16px 0;
+  }
+
+  .blog--m-feed .blog-card:not(:first-child) .blog-card__media {
+    aspect-ratio: 1 / 1;
+    align-self: start;
+    border-radius: var(--blog-radius, 0px);
+    overflow: hidden;
+  }
+
+  .blog--m-feed .blog-card:not(:first-child) .blog-card__body {
+    padding: 0;
+    gap: 5px;
+    align-self: center;
+  }
+
+  .blog--m-feed .blog-card:not(:first-child) .blog-card__title {
+    font-size: 1.02rem;
+    line-height: 1.3;
+  }
+
+  .blog--m-feed .blog-card:not(:first-child) .blog-card__excerpt {
+    display: none;
+  }
+
+  .blog--m-feed .blog-card:not(:first-child) .blog-card__meta {
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 0.8rem;
+  }
+
+  /* Comfortable tap targets for pagination */
+  .blog__pagination a,
+  .blog__pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
   }
 }
 

@@ -19,6 +19,7 @@
         "grid_gap": 28,
         "card_radius": 0,
         "image_ratio": "4 / 3",
+        "mobile_layout": "feed",
         "show_category": true,
         "show_excerpt": true,
         "show_author": true,
