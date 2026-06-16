@@ -19,7 +19,7 @@
       "settings": {
         "kicker": "Über uns",
         "heading": "Wir bauen digitale Strukturen, die im Alltag halten.",
-        "body": "<p>NetImpulse verbindet Strategie, Design, SEO/SEA und Shopify-Entwicklung in einem Team. Wir arbeiten direkt mit den Menschen, die unsere Arbeit verantworten – und liefern Ergebnisse, die nicht nur gut aussehen, sondern messbar wirken.</p>",
+        "body": "<p>Bei NetImpulse geht es nicht darum, irgendwas Hübsches ins Internet zu stellen und dann zu hoffen, dass es schon irgendwie läuft. Wir schauen uns an, was ein Unternehmen wirklich braucht: eine klare Struktur, ein gutes Design, saubere Technik und Maßnahmen, die am Ende auch Besucher, Anfragen oder Verkäufe bringen.</p><p>Dafür bringen wir Strategie, Design, SEO/SEA und Shopify-Entwicklung zusammen. Nicht als einzelne Baustellen, sondern als Team, das gemeinsam an einer Lösung arbeitet. Wir sprechen direkt mit den Menschen, die später damit arbeiten oder dafür Verantwortung tragen – damit am Ende nichts entsteht, das nur gut aussieht, sondern etwas, das im Alltag hilft, verstanden wird und messbar etwas bringt.</p>",
         "cta_label": "Projekt anfragen",
         "cta_url": "shopify://pages/kontakt",
         "chip_1_value": "",
@@ -41,28 +41,28 @@
           "type": "value",
           "settings": {
             "title": "Klarheit",
-            "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen."
+            "text": "Bei uns soll niemand nicken müssen, obwohl er eigentlich nicht weiß, worum es gerade geht. Wir sprechen klar, erklären sauber und sorgen dafür, dass alle mitkommen."
           }
         },
         "value_ejmjpr": {
           "type": "value",
           "settings": {
             "title": "Substanz",
-            "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt."
+            "text": "Wir schauen nicht nur darauf, ob etwas gut aussieht. Viel wichtiger ist, ob es am Ende auch etwas bringt. Deshalb überlegen wir bei jeder Entscheidung: Hilft das wirklich weiter? Macht es die Seite besser? Und kann man später auch sehen oder messen, dass es funktioniert hat?"
           }
         },
         "value_prKt6i": {
           "type": "value",
           "settings": {
             "title": "Direktheit",
-            "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager."
+            "text": "Bei uns wird nicht alles erst weitergereicht, bis es irgendwann bei der richtigen Person landet. Du hast direkten Kontakt zu dem Team, das dein Projekt kennt und daran arbeitet. So bekommst du schneller Antworten, weißt direkt, wer wofür zuständig ist, und die Zusammenarbeit bleibt unkompliziert."
           }
         },
         "value_87TiYW": {
           "type": "value",
           "settings": {
             "title": "Tempo",
-            "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen."
+            "text": "Niemand möchte wochenlang warten und am Ende erst sehen, ob es in die richtige Richtung geht. Deshalb zeigen wir früh, was entsteht, sprechen darüber und passen Dinge an, solange es noch einfach ist.\n\nSo bleibt das Projekt lebendig. Man sieht Fortschritt, kann rechtzeitig mitdenken und hat nicht das Gefühl, dass alles irgendwo im Hintergrund verschwindet."
           }
         }
       },
@@ -151,7 +151,7 @@
             "photo": "shopify://shop_images/ChatGPT_Image_1._Mai_2026_00_40_56.png",
             "name": "Niklas",
             "role": "Online Marketing & Shopify Entwicklung",
-            "text": "Verbindet Performance-Marketing, SEO-Struktur und Shopify-Umsetzung. Der Fokus liegt darauf, digitale Auftritte nicht nur schön, sondern messbar und pflegbar zu machen.",
+            "text": "Sorgt dafür, dass eine Website nicht nur gut aussieht, sondern auch gefunden wird und etwas bringt. Dabei geht es um SEO, Performance-Marketing und Shopify – also darum, dass alles sauber aufgebaut ist, funktioniert und später gut weitergeführt werden kann.",
             "tag_1": "",
             "tag_2": "",
             "tag_3": "",
@@ -164,9 +164,9 @@
           "settings": {
             "category": "Founder&CEO",
             "photo": "shopify://shop_images/file_00000000ae4071f4b78aa23592f43e08.png",
-            "name": "Tom",
+            "name": "Luca",
             "role": "Design, Konzept & digitale Auftritte",
-            "text": "Arbeitet an Struktur, visueller Richtung und Nutzerführung. Ziel ist ein Auftritt, der hochwertig wirkt, klar erklärt und nicht nach Standard-Template aussieht.",
+            "text": "Kümmert sich um Aufbau, visuelle Richtung und Nutzerführung. Struktur und Gestaltung werden so verbunden, dass der Auftritt verständlich bleibt und gut funktioniert.\nWichtig ist, dass die Website eigenständig wirkt, und nicht aussieht wie etwas, das man schon überall gesehen hat.",
             "tag_1": "",
             "tag_2": "",
             "tag_3": "",
@@ -180,7 +180,7 @@
             "category": "CEO",
             "name": "Tom",
             "role": "Content, Organisation & Projektunterstützung",
-            "text": "Unterstützt dabei, Inhalte, Abläufe und Projektbausteine sauber zusammenzuführen, damit aus Strategie, Design und Technik ein klarer Gesamtauftritt entsteht.",
+            "text": "Hilft dabei, Inhalte, Aufgaben und offene Punkte zusammenzubringen, damit im Projekt nichts liegen bleibt. Es geht darum, den Überblick zu behalten, Dinge sauber vorzubereiten und dafür zu sorgen, dass alle Bereiche gut ineinandergreifen.",
             "tag_1": "",
             "tag_2": "",
             "tag_3": "",
@@ -200,7 +200,7 @@
         "show_intro": false,
         "card_kicker": "Wer dahintersteht",
         "card_heading": "Keine anonyme Agenturstruktur",
-        "card_text": "Jeder Bereich hat eine klare Verantwortung. So entsteht ein digitaler Auftritt, bei dem Marketing, Gestaltung und Technik nicht getrennt voneinander gedacht werden.",
+        "card_text": "Wir möchten, dass du weißt, mit wem du arbeitest. Bei uns verschwindet dein Projekt nicht irgendwo im Hintergrund. Wir sind nah dran, sprechen miteinander und übernehmen Verantwortung für das, was wir tun.\n\nMarketing, Design und Technik denken wir nicht getrennt. Wir stimmen uns ab, bringen unsere Ideen zusammen und sorgen dafür, dass am Ende alles zusammenpasst.",
         "feature_bg": "#0c1c24",
         "feature_text": "#ffffff",
         "focus_label": "Fokusbereiche",
