@@ -72,6 +72,7 @@
         "feature_ppMLRj",
         "feature_3PFBMP"
       ],
+      "disabled": true,
       "name": "t:theme_store.name",
       "settings": {
         "heading": "Theme Store",
@@ -87,10 +88,29 @@
         "heading_scale": 100,
         "text_scale": 100
       }
+    },
+    "ni_text_hCDtRP": {
+      "type": "ni-text",
+      "name": "Text block",
+      "settings": {
+        "heading": "Bald verfügbar",
+        "heading_align": "left",
+        "body": "<p>Bald wird Ihnen unser Theme Store zu verfügung stehen. Dort können Sie fertige Shopify Themes direkt von uns kaufen </p>",
+        "text_align": "left",
+        "max_width": 760,
+        "color_scheme": "",
+        "bg_color": "",
+        "text_color": "",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "heading_scale": 100,
+        "text_scale": 100
+      }
     }
   },
   "order": [
     "main",
-    "theme_store_z7RH4r"
+    "theme_store_z7RH4r",
+    "ni_text_hCDtRP"
   ]
 }

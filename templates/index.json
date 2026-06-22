@@ -241,6 +241,7 @@
         "theme_3",
         "store_cta"
       ],
+      "disabled": true,
       "name": "Theme store preview",
       "settings": {
         "heading": "Hier geht es zum Theme-Store.",
