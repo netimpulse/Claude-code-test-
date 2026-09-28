@@ -109,7 +109,7 @@ test.describe("Product Detail – Section", () => {
     const trust = root.locator(".product-detail__trust");
     await expect(trust).toBeVisible();
     await expect(trust).toContainText("SSL-gesichert");
-    await expect(trust).toContainText("30-Tage Geld-zurück");
+    await expect(trust).toContainText("30-Tage-Geld-zurück");
     await expect(trust).toContainText("Rechnung");
   });
 

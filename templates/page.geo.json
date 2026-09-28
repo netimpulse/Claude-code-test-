@@ -77,7 +77,7 @@
         "eyebrow": "GEO · Generative engine optimization",
         "heading_strong": "Gefunden werden, wenn",
         "heading_accent": "KI Antworten gibt.",
-        "body": "<p><br/>Das Suchverhalten verändert sich. Menschen suchen nicht mehr nur über klassische Google-Ergebnisse, sondern immer häufiger über KI-Systeme. Mit GEO sorgen wir dafür, dass eure Inhalte klarer, strukturierter und relevanter werden, damit Suchsysteme besser verstehen, wofür ihr steht.<br/><br/></p>",
+        "body": "<p><br/>Das Suchverhalten verändert sich. Menschen suchen nicht mehr nur über klassische Google-Ergebnisse, sondern immer häufiger über KI-Systeme. Mit GEO sorgen wir dafür, dass deine Inhalte klarer, strukturierter und relevanter werden, damit Suchsysteme besser verstehen, wofür du stehst.<br/><br/></p>",
         "primary_label": "Sichtbarkeit prüfen",
         "primary_url": "shopify://pages/kontakt",
         "secondary_label": "Was wir noch anbieten",
@@ -107,8 +107,8 @@
       "settings": {
         "image": "shopify://shop_images/ChatGPT_Image_3._Juni_2026_14_40_49.png",
         "image_position": "right",
-        "heading": "Unser GEO Anstaz",
-        "body": "<p>Wir optimieren nicht für einzelne Tricks oder kurzfristige KI-Hacks. Stattdessen geht es darum, eure Website fachlich stärker, verständlicher und besser strukturiert aufzustellen. Inhalte sollen nicht nur Keywords enthalten, sondern echte Fragen beantworten, Zusammenhänge erklären und eure Expertise sichtbar machen.<br/><strong><br/>Unsere Leistungen im Bereich GEO:</strong><br/>• Analyse eurer aktuellen Inhalte und Themenabdeckung<br/>• Optimierung für Suchintentionen und Nutzerfragen<br/>• Aufbau klarer Inhaltsstrukturen<br/>• Verbesserung von Expertise, Vertrauen und Relevanz<br/>• Erstellung und Überarbeitung hilfreicher Inhalte<br/>• Strukturierte Daten und technische Grundlagen<br/>• Optimierung für klassische Suche und KI-Suchsysteme<br/>• Laufende Auswertung und Weiterentwicklung</p>",
+        "heading": "Unser GEO-Ansatz",
+        "body": "<p>Wir optimieren nicht für einzelne Tricks oder kurzfristige KI-Hacks. Stattdessen geht es darum, deine Website fachlich stärker, verständlicher und besser strukturiert aufzustellen. Inhalte sollen nicht nur Keywords enthalten, sondern echte Fragen beantworten, Zusammenhänge erklären und deine Expertise sichtbar machen.<br/><strong><br/>Unsere Leistungen im Bereich GEO:</strong><br/>• Analyse deiner aktuellen Inhalte und Themenabdeckung<br/>• Optimierung für Suchintentionen und Nutzerfragen<br/>• Aufbau klarer Inhaltsstrukturen<br/>• Verbesserung von Expertise, Vertrauen und Relevanz<br/>• Erstellung und Überarbeitung hilfreicher Inhalte<br/>• Strukturierte Daten und technische Grundlagen<br/>• Optimierung für klassische Suche und KI-Suchsysteme<br/>• Laufende Auswertung und Weiterentwicklung</p>",
         "link_label": "",
         "link_url": "",
         "show_badge": false,
@@ -128,7 +128,7 @@
       "settings": {
         "heading": "Warum GEO mit uns?",
         "heading_align": "left",
-        "body": "<p>GEO ist kein Ersatz für SEO, sondern die Weiterentwicklung davon. Wir helfen euch dabei, Inhalte so aufzubauen, dass sie für Menschen hilfreich und für Suchsysteme verständlich sind. Ohne übertriebene Versprechen, ohne Buzzword-Gelaber, sondern mit einem klaren Blick auf das, was eure Website wirklich besser macht.</p>",
+        "body": "<p>GEO ist kein Ersatz für SEO, sondern die Weiterentwicklung davon. Wir helfen dir dabei, Inhalte so aufzubauen, dass sie für Menschen hilfreich und für Suchsysteme verständlich sind. Ohne übertriebene Versprechen, ohne Buzzword-Gelaber, sondern mit einem klaren Blick auf das, was deine Website wirklich besser macht.</p>",
         "text_align": "left",
         "max_width": 760,
         "color_scheme": "scheme-sand",

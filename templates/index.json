@@ -14,14 +14,14 @@
       "name": "NI Hero",
       "settings": {
         "label": "",
-        "heading": "Online Präsenz für Ihr Unternehmen",
-        "body": "NetImpulse entwickelt custom Shopify Websites, SEA Kampagnen und Strategien damit sie online klarer auftreten, besser gefunden werden und professioneller verkaufen können.",
+        "heading": "Online-Präsenz für dein Unternehmen",
+        "body": "NetImpulse entwickelt Custom-Shopify-Websites, SEA-Kampagnen und Strategien, damit du online klarer auftrittst, besser gefunden wirst und professioneller verkaufen kannst.",
         "primary_label": "Kostenloses Erstgespräch",
         "primary_url": "shopify://pages/kontakt",
         "secondary_label": "Theme Store ansehen",
         "secondary_url": "shopify://pages/theme-store",
         "image": "shopify://shop_images/ChatGPT_Image_28._Mai_2026_00_05_36.png",
-        "caption_title": "NetImpulse Prinzip",
+        "caption_title": "NetImpulse-Prinzip",
         "caption_text": "Strategie, Gestaltung und Umsetzung arbeiten als ein System.",
         "book_label": "",
         "book_url": "",
@@ -50,7 +50,7 @@
             "width": "full",
             "icon": "net",
             "title": "Strategie statt Einzelmaßnahmen",
-            "text": "Wir starten nicht mit einem beliebigen Kanal, sondern mit der Frage, wo Sichtbarkeit, Vertrauen und Conversion aktuell die größte Wirkung erzeugen. Denn Ihre Präsenz ist dann am stärksten, wenn alle Kanäle sinnvoll zusammenarbeiten."
+            "text": "Wir starten nicht mit einem beliebigen Kanal, sondern mit der Frage, wo Sichtbarkeit, Vertrauen und Conversion aktuell die größte Wirkung erzeugen. Denn deine Präsenz ist dann am stärksten, wenn alle Kanäle sinnvoll zusammenarbeiten."
           }
         },
         "card_FiXcq3": {
@@ -59,7 +59,7 @@
             "width": "inset-1",
             "icon": "chart",
             "title": "Individuelles Design für jeden",
-            "text": "Jede Seite soll Inhalte schneller erklären, hochwertiger wirken, Besucher gezielter führen und vor allem auf Ihre Vorstellungen und Bedürfnisse abgestimmt sein."
+            "text": "Jede Seite soll Inhalte schneller erklären, hochwertiger wirken, Besucher gezielter führen und vor allem auf deine Vorstellungen und Bedürfnisse abgestimmt sein."
           }
         },
         "card_g3fG4Y": {
@@ -67,8 +67,8 @@
           "settings": {
             "width": "inset-2",
             "icon": "window",
-            "title": "Am Zahn der Zeit",
-            "text": "Durch die immer rasantere Entwicklung künstlicher Intelligenz verändert sich auch die Art und Weise, Marketing zu betreiben. Bei NetImpulse ist es uns wichtig, stets auf dem neuesten Stand der Entwicklungen zu sein und diese gezielt zu unserem Vorteil zu nutzen"
+            "title": "Am Puls der Zeit",
+            "text": "Durch die immer rasantere Entwicklung künstlicher Intelligenz verändert sich auch die Art und Weise, Marketing zu betreiben. Bei NetImpulse ist es uns wichtig, stets auf dem neuesten Stand der Entwicklungen zu sein und diese gezielt zu unserem Vorteil zu nutzen."
           }
         }
       },
@@ -85,7 +85,7 @@
         "show_intro": true,
         "panel_image": "shopify://shop_images/ChatGPT_Image_28._Mai_2026_00_13_54.png",
         "panel_heading": "Von der ersten Idee bis zur laufenden Optimierung.",
-        "panel_text": "Ob Relaunch, SEO-Aufbau und Pflege, Google Ads, GEO oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten.",
+        "panel_text": "Ob Relaunch, SEO-Aufbau und -Pflege, Google Ads, GEO oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten.",
         "color_scheme": "",
         "accent_color": "#050505",
         "padding_top": 88,
@@ -104,8 +104,8 @@
             "number": "01",
             "label": "SEO",
             "title": "Gefunden werden",
-            "text": "Eine gute Website bringt wenig, wenn sie niemand findet. Deshalb achten wir darauf, dass Technik, Inhalte und Suchanfragen sauber zusammenspielen.\n\nSo wird eure Website nicht nur für Google verständlicher, sondern auch für die Menschen, die nach genau dem suchen, was ihr anbietet. Ziel ist Sichtbarkeit, die langfristig wächst und Vertrauen aufbaut.",
-            "tag_1": "Keyword Mapping",
+            "text": "Eine gute Website bringt wenig, wenn sie niemand findet. Deshalb achten wir darauf, dass Technik, Inhalte und Suchanfragen sauber zusammenspielen.\n\nSo wird deine Website nicht nur für Google verständlicher, sondern auch für die Menschen, die nach genau dem suchen, was du anbietest. Ziel ist Sichtbarkeit, die langfristig wächst und Vertrauen aufbaut.",
+            "tag_1": "Keyword-Mapping",
             "tag_2": "Content",
             "tag_3": "Technik",
             "device_label": "Search Visibility",
@@ -119,7 +119,7 @@
             "number": "02",
             "label": "SEA",
             "title": "Nachfrage aktivieren",
-            "text": "Google Ads bringen nur dann etwas, wenn sie sauber aufgebaut sind und man versteht, was am Ende dabei herauskommt. Deshalb achten wir darauf, dass Kampagnen klar strukturiert, messbar und auf echte Anfragen ausgerichtet sind.\n\nEs geht nicht darum, möglichst viele Klicks zu kaufen, sondern die richtigen Menschen im richtigen Moment zu erreichen",
+            "text": "Google Ads bringen nur dann etwas, wenn sie sauber aufgebaut sind und man versteht, was am Ende dabei herauskommt. Deshalb achten wir darauf, dass Kampagnen klar strukturiert, messbar und auf echte Anfragen ausgerichtet sind.\n\nEs geht nicht darum, möglichst viele Klicks zu kaufen, sondern die richtigen Menschen im richtigen Moment zu erreichen.",
             "tag_1": "Search",
             "tag_2": "Shopping",
             "tag_3": "Tracking",
@@ -183,7 +183,7 @@
       "name": "NI Deck",
       "settings": {
         "kicker": "",
-        "heading": "Unsere Leistungen Im Überblick",
+        "heading": "Unsere Leistungen im Überblick",
         "text": "",
         "show_intro": true,
         "note": "",
@@ -312,7 +312,7 @@
       "settings": {
         "kicker": "Kontakt",
         "heading": "Bereit für planbares Wachstum?",
-        "intro": "Lass uns gemeinsam anschauen, wo dein digitaler Auftritt gerade steht und was ihn wirklich nach vorne bringen kann. In einem kostenlosen Audit schauen wir auf Strategie, Design und Performance – also darauf, was schon gut funktioniert, wo noch Potenzial liegt und welche nächsten Schritte sinnvoll wären",
+        "intro": "Lass uns gemeinsam anschauen, wo dein digitaler Auftritt gerade steht und was ihn wirklich nach vorne bringen kann. In einem kostenlosen Audit schauen wir auf Strategie, Design und Performance – also darauf, was schon gut funktioniert, wo noch Potenzial liegt und welche nächsten Schritte sinnvoll wären.",
         "show_intro": true,
         "button_label": "Jetzt anfragen",
         "button_url": "shopify://pages/kontakt",

@@ -147,10 +147,10 @@
         "pp_strategie": {
           "type": "perspective",
           "settings": {
-            "category": "Founder&CEO",
+            "category": "Founder & CEO",
             "photo": "shopify://shop_images/ChatGPT_Image_1._Mai_2026_00_40_56.png",
             "name": "Niklas",
-            "role": "Online Marketing & Shopify Entwicklung",
+            "role": "Online-Marketing & Shopify-Entwicklung",
             "text": "Sorgt dafür, dass eine Website nicht nur gut aussieht, sondern auch gefunden wird und etwas bringt. Dabei geht es um SEO, Performance-Marketing und Shopify – also darum, dass alles sauber aufgebaut ist, funktioniert und später gut weitergeführt werden kann.",
             "tag_1": "",
             "tag_2": "",
@@ -162,11 +162,11 @@
         "pp_design": {
           "type": "perspective",
           "settings": {
-            "category": "Founder&CEO",
+            "category": "Founder & CEO",
             "photo": "shopify://shop_images/file_00000000ae4071f4b78aa23592f43e08.png",
             "name": "Luca",
             "role": "Design, Konzept & digitale Auftritte",
-            "text": "Kümmert sich um Aufbau, visuelle Richtung und Nutzerführung. Struktur und Gestaltung werden so verbunden, dass der Auftritt verständlich bleibt und gut funktioniert.\nWichtig ist, dass die Website eigenständig wirkt, und nicht aussieht wie etwas, das man schon überall gesehen hat.",
+            "text": "Kümmert sich um Aufbau, visuelle Richtung und Nutzerführung. Struktur und Gestaltung werden so verbunden, dass der Auftritt verständlich bleibt und gut funktioniert.\nWichtig ist, dass die Website eigenständig wirkt und nicht aussieht wie etwas, das man schon überall gesehen hat.",
             "tag_1": "",
             "tag_2": "",
             "tag_3": "",

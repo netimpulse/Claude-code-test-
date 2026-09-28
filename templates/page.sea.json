@@ -91,9 +91,9 @@
       "name": "Hero Ticker",
       "settings": {
         "eyebrow": "Performance · Always on",
-        "heading_strong": "Ihr wollt schnell sichtbar werden?",
-        "heading_muted": "Dann ist SEA das richtige für euch!",
-        "body": "<p>Mit Google Ads erreicht ihr gezielt Menschen, die bereits nach euren Produkten oder Leistungen suchen. Wir entwickeln und optimieren Kampagnen mit Fokus auf Effizienz und Conversions.</p>",
+        "heading_strong": "Du willst schnell sichtbar werden?",
+        "heading_muted": "Dann ist SEA das Richtige für dich!",
+        "body": "<p>Mit Google Ads erreichst du gezielt Menschen, die bereits nach deinen Produkten oder Leistungen suchen. Wir entwickeln und optimieren Kampagnen mit Fokus auf Effizienz und Conversions.</p>",
         "primary_label": "Audit anfragen",
         "primary_url": "shopify://pages/kontakt",
         "secondary_label": "Weitere Leistungen",
@@ -115,7 +115,7 @@
         "image": "shopify://shop_images/ChatGPT_Image_3._Juni_2026_14_35_30.png",
         "image_position": "left",
         "heading": "Was ist das NetImpulse SEA?",
-        "body": "<p>Wir betreuen Google Ads nicht nach Bauchgefühl, sondern datenbasiert: Jede unserer Kampagnen wird auf Ziel, Zielgruppe und Wirtschaftlichkeit ausgerichtet.</p><p><br/><strong>Unsere Leistungen im Bereich SEA:</strong><br/>•\tKonto und Kampagnen audits<br/>•\tStrategie und Kampagnenstruktur<br/>•\tKeyword-Recherche und Suchintentionanalyse<br/>•\tSearch, Shopping, Remarketing und Pmax Kampagnen<br/>•\tAnzeigentexte und Creatives<br/>•\tConversion-Tracking und Setup<br/>•\tBudgetsteuerung und Gebotsstrategien<br/>•\tLaufende Optimierung und Reportings<br/></p>",
+        "body": "<p>Wir betreuen Google Ads nicht nach Bauchgefühl, sondern datenbasiert: Jede unserer Kampagnen wird auf Ziel, Zielgruppe und Wirtschaftlichkeit ausgerichtet.</p><p><br/><strong>Unsere Leistungen im Bereich SEA:</strong><br/>•\tKonto- und Kampagnen-Audits<br/>•\tStrategie und Kampagnenstruktur<br/>•\tKeyword-Recherche und Suchintentionsanalyse<br/>•\tSearch-, Shopping-, Remarketing- und PMax-Kampagnen<br/>•\tAnzeigentexte und Creatives<br/>•\tConversion-Tracking und Setup<br/>•\tBudgetsteuerung und Gebotsstrategien<br/>•\tLaufende Optimierung und Reportings<br/></p>",
         "link_label": "",
         "link_url": "",
         "show_badge": false,
@@ -137,7 +137,7 @@
           "settings": {
             "icon": "search",
             "title": "Suchbegriffe und Keywords",
-            "text": "Wir analysieren, wonach eure Zielgruppe aktiv sucht, welche Begriffe kaufnah sind und welche Suchanfragen ausgeschlossen werden sollten."
+            "text": "Wir analysieren, wonach deine Zielgruppe aktiv sucht, welche Begriffe kaufnah sind und welche Suchanfragen ausgeschlossen werden sollten."
           }
         },
         "tile_fdMzgJ": {
@@ -196,7 +196,7 @@
       "settings": {
         "kicker": "SEA",
         "heading": "Die wichtigsten Bausteine eines SEA-Projekts.",
-        "intro": "Am Anfang steht natürlich die Frage: Was soll Google Ads für euch leisten? – Mehr Leads, mehr Umsatz, mehr Anfragen, oder mehr Reichweite? Auf dieser Basis entwickeln wir eine klare Kampagnenstruktur und definieren saubere KPIs.",
+        "intro": "Am Anfang steht natürlich die Frage: Was soll Google Ads für dich leisten? – Mehr Leads, mehr Umsatz, mehr Anfragen oder mehr Reichweite? Auf dieser Basis entwickeln wir eine klare Kampagnenstruktur und definieren saubere KPIs.",
         "show_intro": true,
         "columns": "3",
         "stagger": 52,
@@ -215,7 +215,7 @@
       "settings": {
         "heading": "Warum SEA mit uns?",
         "heading_align": "center",
-        "body": "<p>SEA funktioniert nur dann gut, wenn Strategie, Tracking und<br/>Optimierung zusammenspielen. Genau darauf liegt unser Fokus. Dabei setzen wir<br/>auf Transparenz und Performance, statt auf Agentur-Gelaber. Ihr bekommt von uns<br/>keine unübersichtlichen Dashboards die überfordern, sondern konkrete<br/>Erkenntnisse und nachvollziehbare Aussagen.<br/><br/>Das wichtigste für uns ist euer Erfolg, und dass ihr unser Vorgehen<br/>nachvollziehen könnt.</p>",
+        "body": "<p>SEA funktioniert nur dann gut, wenn Strategie, Tracking und<br/>Optimierung zusammenspielen. Genau darauf liegt unser Fokus. Dabei setzen wir<br/>auf Transparenz und Performance, statt auf Agentur-Gelaber. Du bekommst von uns<br/>keine unübersichtlichen Dashboards, die überfordern, sondern konkrete<br/>Erkenntnisse und nachvollziehbare Aussagen.<br/><br/>Das Wichtigste für uns ist dein Erfolg und dass du unser Vorgehen<br/>nachvollziehen kannst.</p>",
         "text_align": "left",
         "max_width": 760,
         "color_scheme": "scheme-sand",

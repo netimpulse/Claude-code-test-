@@ -19,12 +19,12 @@ test.describe("NetImpulse landing blocks", () => {
 
   test("Hero renders label, headline, two CTAs and floating tag", async ({ page }) => {
     const hero = page.locator("ni-hero").first();
-    await expect(hero.locator(".ni-hero__label")).toContainText("Online Marketing Studio");
+    await expect(hero.locator(".ni-hero__label")).toContainText("Online-Marketing-Studio");
     await expect(hero.locator(".ni-hero__title")).toContainText("sichtbar verkauft");
     await expect(hero.locator(".ni-btn--primary")).toContainText("Kostenloses Erstgespräch");
     await expect(hero.locator(".ni-btn--ghost")).toBeVisible();
     await expect(hero.locator(".ni-hero__book")).toContainText("Termin buchen");
-    await expect(hero.locator(".ni-hero__caption")).toContainText("NetImpulse Prinzip");
+    await expect(hero.locator(".ni-hero__caption")).toContainText("NetImpulse-Prinzip");
   });
 
   test("Intro renders header, three cards and the image panel", async ({ page }) => {
