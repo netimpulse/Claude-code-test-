@@ -23,12 +23,15 @@ const LOCALES = { de: "locales/de.json", en: "locales/en.default.json" };
 const LIQUID_DIRS = ["sections", "snippets", "blocks", "layout", "templates"];
 
 /** Dateien, die bereits vollstaendig auf `| t` umgestellt sind (waechst je Schritt). */
-const STRICT_FILES = [];
+const STRICT_FILES = [
+  "sections/footer.liquid", // S4c
+  "sections/sqe-header.liquid", // S4a1/S4a2
+  "snippets/language-switcher.liquid", // S4b
+];
 
 /** Bekannte Verstoesse gegen Regel 7; die Liste darf nur schrumpfen. */
 const PREFIX_EXCEPTIONS = [
   "assets/sticky-buy-bar.js", // Section ungenutzt, nur im Bericht erwaehnt
-  "assets/sqe-predictive-search.js", // wird in S4a2 behoben
   "assets/cart.js", // wird in S7d behoben
   "assets/theme-store.js", // wird in S7e behoben
 ];

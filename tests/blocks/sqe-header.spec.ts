@@ -68,6 +68,115 @@ test.describe("SQE Header", () => {
     expect(html.toLowerCase()).toContain("qa");
   });
 
+  test("Account icon is gone; search and cart stay visible (desktop + mobile)", async ({ page }) => {
+    const header = page.locator("[data-section-type='sqe-header']").first();
+    await expect(header.locator(".sqe-header__icon--account")).toHaveCount(0);
+    for (const width of [1280, 390]) {
+      await page.setViewportSize({ width, height: 800 });
+      await expect(header.locator("[data-sqe-search-toggle]")).toBeVisible();
+      const cart = header.locator(".sqe-header__icon--cart");
+      await expect(cart).toBeVisible();
+      await expect(cart).toHaveAttribute("aria-label", /\S/);
+      for (const el of [header.locator("[data-sqe-search-toggle]"), cart]) {
+        const box = await el.boundingBox();
+        expect(box!.width).toBeGreaterThanOrEqual(44);
+        expect(box!.height).toBeGreaterThanOrEqual(44);
+      }
+    }
+  });
+
+  test("Wordmark 'NetImpulse' in Work Sans 600 with matching aria-label", async ({ page }) => {
+    const link = page.locator(".sqe-header__logo-link").first();
+    await expect(link).toHaveAttribute("aria-label", "NetImpulse");
+    const text = link.locator(".sqe-header__logo-text");
+    await expect(text).toHaveText("NetImpulse");
+    const style = await text.evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return { family: cs.fontFamily, weight: cs.fontWeight };
+    });
+    expect(style.family.replace(/["']/g, "")).toMatch(/^Work Sans/i);
+    expect(style.weight).toBe("600");
+    await expect(link.locator(".sqe-header__wordmark-dot")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  test("Home has exactly one h1 and the header has none", async ({ page }) => {
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.locator("[data-section-type='sqe-header'] h1")).toHaveCount(0);
+  });
+
+  test("Header height follows the header_height setting (80px desktop, 68px ≤1024px)", async ({ page }) => {
+    const inner = page.locator(".sqe-header__inner").first();
+    await page.setViewportSize({ width: 1280, height: 800 });
+    expect(Math.round((await inner.boundingBox())!.height)).toBe(80);
+    const desktopVar = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--header-h").trim());
+    expect(desktopVar).toBe("80px");
+    await page.setViewportSize({ width: 390, height: 800 });
+    expect(Math.round((await inner.boundingBox())!.height)).toBe(68);
+  });
+
+  test("Desktop: labelled nav visible, CTA is a small primary button, no menu button", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    const header = page.locator("[data-section-type='sqe-header']").first();
+    await expect(header.locator(".sqe-header__nav")).toBeVisible();
+    await expect(header.locator(".sqe-header__nav")).toHaveAttribute("aria-label", /\S/);
+    await expect(header.locator("[data-sqe-drawer-toggle]")).toBeHidden();
+    const cta = header.locator(".sqe-header__cta");
+    await expect(cta).toBeVisible();
+    await expect(cta).toHaveClass(/btn--primary/);
+    await expect(cta).toHaveClass(/btn--sm/);
+    expect((await cta.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  });
+
+  test("Mobile: menu button opens the panel below the header, Escape closes it", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const header = page.locator("[data-section-type='sqe-header']").first();
+    await expect(header.locator(".sqe-header__nav")).toBeHidden();
+    await expect(header.locator(".sqe-header__cta")).toBeHidden();
+    const toggle = header.locator("[data-sqe-drawer-toggle]");
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveAccessibleName(/\S/);
+    const tBox = (await toggle.boundingBox())!;
+    expect(tBox.width).toBeGreaterThanOrEqual(44);
+    expect(tBox.height).toBeGreaterThanOrEqual(44);
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    const panel = header.locator("[data-sqe-drawer]");
+    await expect(panel).toBeVisible();
+    const pBox = (await panel.boundingBox())!;
+    const headerH = (await header.locator(".sqe-header__inner").boundingBox())!;
+    expect(Math.abs(pBox.y - (headerH.y + headerH.height))).toBeLessThanOrEqual(2);
+    expect(pBox.y + pBox.height).toBeGreaterThanOrEqual(844 - 2);
+    await expect(panel.locator(".sqe-header__drawer-cta")).toBeVisible();
+    await expect(panel.locator(".sqe-header__drawer-cta")).toHaveClass(/btn--block/);
+
+    await page.keyboard.press("Escape");
+    await expect(panel).toBeHidden();
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(toggle).toBeFocused();
+  });
+
+  test("Predictive search shows localised group labels (no hard-coded strings)", async ({ page }) => {
+    const header = page.locator("[data-section-type='sqe-header']").first();
+    const panel = header.locator("[data-sqe-search]");
+    for (const attr of ["data-i18n-products", "data-i18n-pages", "data-i18n-articles", "data-i18n-did-you-mean", "data-i18n-no-results"]) {
+      await expect(panel).toHaveAttribute(attr, /\S/);
+    }
+    await header.locator("[data-sqe-search-toggle]").click();
+    const input = header.locator("[data-sqe-search-input]");
+    await expect(input).toHaveAttribute("placeholder", /\S/);
+    const suggest = page.waitForRequest((r) => /\/search\/suggest\.json\?/.test(r.url()));
+    await input.fill("zzqxj");
+    await suggest;
+    await expect(header.locator("[data-sqe-search-results]")).toBeVisible({ timeout: 8000 });
+    const noResults = (await panel.getAttribute("data-i18n-no-results"))!;
+    const results = header.locator("[data-sqe-search-results]");
+    const hasTypo = await results.locator(".sqe-search-typo").count();
+    if (!hasTypo) {
+      await expect(results.locator(".sqe-search-empty")).toHaveText(noResults.replace("{q}", "zzqxj"));
+    }
+  });
+
   test("Captures desktop + mobile screenshot", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.waitForTimeout(200);

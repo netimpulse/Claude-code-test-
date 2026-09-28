@@ -67,9 +67,17 @@
   }
 
   // -------- Shopify suggest fetch --------
+  // Locale-aware root (e.g. "/en/") so suggestions come from the active language.
+  const ROOT_URL =
+    (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || "/";
+
+  function suggestUrl() {
+    return ROOT_URL.replace(/\/?$/, "/") + "search/suggest.json";
+  }
+
   async function suggest(q, limit) {
     const url =
-      `/search/suggest.json?q=${encodeURIComponent(q)}` +
+      `${suggestUrl()}?q=${encodeURIComponent(q)}` +
       `&resources[type]=${RESOURCE_TYPES}` +
       `&resources[limit]=${limit}` +
       `&resources[options][fields]=title,product_type,vendor,tag,body`;
@@ -117,70 +125,105 @@
       .sort((a, b) => a._dist - b._dist);
   }
 
-  function highlight(title, q) {
-    if (!title || !q) return title || "";
-    const idx = title.toLowerCase().indexOf(q.toLowerCase());
-    if (idx < 0) return escapeHTML(title);
-    return (
-      escapeHTML(title.slice(0, idx)) +
-      "<mark>" + escapeHTML(title.slice(idx, idx + q.length)) + "</mark>" +
-      escapeHTML(title.slice(idx + q.length))
-    );
+  // -------- Rendering (DOM only, all texts via textContent) --------
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
   }
 
-  function escapeHTML(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
+  function highlight(title, q) {
+    const frag = document.createDocumentFragment();
+    const t = title || "";
+    const idx = q ? t.toLowerCase().indexOf(q.toLowerCase()) : -1;
+    if (idx < 0) {
+      frag.append(document.createTextNode(t));
+      return frag;
+    }
+    frag.append(
+      document.createTextNode(t.slice(0, idx)),
+      el("mark", "", t.slice(idx, idx + q.length)),
+      document.createTextNode(t.slice(idx + q.length))
+    );
+    return frag;
+  }
+
+  function safeUrl(u) {
+    // Only same-origin/relative links from suggest.json; anything else falls back to "#".
+    try {
+      const url = new URL(u || "#", window.location.href);
+      return url.origin === window.location.origin ? url.pathname + url.search + url.hash : "#";
+    } catch {
+      return "#";
+    }
   }
 
   function renderItem(it, q) {
-    const img = it.image
-      ? `<div class="sqe-search-result__media"><img src="${escapeHTML(it.image)}" alt=""></div>`
-      : `<div class="sqe-search-result__media"></div>`;
-    const price = it.price ? `<div class="sqe-search-result__price">${escapeHTML(it.price)}</div>` : "";
+    const a = el("a", "sqe-search-result");
+    a.setAttribute("role", "option");
+    a.href = safeUrl(it.url);
+
+    const media = el("div", "sqe-search-result__media");
+    if (it.image) {
+      const img = document.createElement("img");
+      img.src = String(it.image);
+      img.alt = "";
+      img.loading = "lazy";
+      media.append(img);
+    }
+    a.append(media);
+
+    const body = el("div");
+    const title = el("div", "sqe-search-result__title");
+    title.append(highlight(it.title, q));
+    body.append(title);
     const meta = it.vendor || it.product_type || "";
-    const metaHTML = meta ? `<div class="sqe-search-result__meta">${escapeHTML(meta)}</div>` : "";
-    return `
-      <a class="sqe-search-result" role="option" href="${escapeHTML(it.url || "#")}">
-        ${img}
-        <div>
-          <div class="sqe-search-result__title">${highlight(it.title, q)}</div>
-          ${metaHTML}
-        </div>
-        ${price}
-      </a>`;
+    if (meta) body.append(el("div", "sqe-search-result__meta", meta));
+    a.append(body);
+
+    if (it.price) a.append(el("div", "sqe-search-result__price", String(it.price)));
+    return a;
   }
 
   function renderGroup(label, items, q) {
-    if (!items.length) return "";
-    return `
-      <div class="sqe-search-group" data-sqe-group="${escapeHTML(label)}">
-        <h3 class="sqe-search-group__heading">${escapeHTML(label)}</h3>
-        ${items.map((it) => renderItem(it, q)).join("")}
-      </div>`;
+    if (!items.length) return null;
+    const group = el("div", "sqe-search-group");
+    group.setAttribute("role", "group");
+    group.setAttribute("aria-label", label);
+    // Visual label only; the group is named via aria-label (no heading inside the listbox).
+    const heading = el("div", "sqe-search-group__heading", label);
+    heading.setAttribute("aria-hidden", "true");
+    group.append(heading);
+    items.forEach((it) => group.append(renderItem(it, q)));
+    return group;
   }
 
-  function render(container, q, items, opts = {}) {
+  function render(container, q, items, texts, opts = {}) {
     const products = items.filter((i) => i._type === "product");
     const pages = items.filter((i) => i._type === "page");
     const articles = items.filter((i) => i._type === "article");
+    const nodes = [];
 
-    let html = "";
     if (opts.didYouMean) {
-      html += `<div class="sqe-search-typo">Meintest du <button type="button" data-sqe-suggest="${escapeHTML(opts.didYouMean)}">${escapeHTML(opts.didYouMean)}</button>?</div>`;
+      const typo = el("div", "sqe-search-typo");
+      const btn = el("button", "", opts.didYouMean);
+      btn.type = "button";
+      btn.setAttribute("data-sqe-suggest", opts.didYouMean);
+      typo.append(document.createTextNode(`${texts.didYouMean} `), btn, document.createTextNode("?"));
+      nodes.push(typo);
     }
-    html += renderGroup("Produkte", products, q);
-    html += renderGroup("Seiten", pages, q);
-    html += renderGroup("Artikel", articles, q);
+    nodes.push(
+      renderGroup(texts.products, products, q),
+      renderGroup(texts.pages, pages, q),
+      renderGroup(texts.articles, articles, q)
+    );
 
     if (!items.length && !opts.didYouMean) {
-      html = `<div class="sqe-search-empty">Keine Treffer fuer "${escapeHTML(q)}".</div>`;
+      nodes.length = 0;
+      nodes.push(el("div", "sqe-search-empty", texts.noResults.replace("{q}", q)));
     }
-    container.innerHTML = html;
+    container.replaceChildren(...nodes.filter(Boolean));
     container.hidden = false;
   }
 
@@ -188,9 +231,19 @@
   function bindSection(section) {
     if (section.__sqeSearchInit) return;
     section.__sqeSearchInit = true;
+    const panel = section.querySelector("[data-sqe-search]");
     const input = section.querySelector("[data-sqe-search-input]");
     const results = section.querySelector("[data-sqe-search-results]");
-    if (!input || !results) return;
+    if (!panel || !input || !results) return;
+
+    // Localised labels come from Liquid (| t | escape) as data attributes.
+    const texts = {
+      products: panel.getAttribute("data-i18n-products") || "",
+      pages: panel.getAttribute("data-i18n-pages") || "",
+      articles: panel.getAttribute("data-i18n-articles") || "",
+      didYouMean: panel.getAttribute("data-i18n-did-you-mean") || "",
+      noResults: panel.getAttribute("data-i18n-no-results") || "{q}",
+    };
 
     let lastReq = 0;
     let timer;
@@ -198,7 +251,7 @@
     async function run(q) {
       if (q.length < MIN_QUERY) {
         results.hidden = true;
-        results.innerHTML = "";
+        results.replaceChildren();
         input.setAttribute("aria-expanded", "false");
         return;
       }
@@ -231,7 +284,7 @@
       }
 
       items = rank(items, didYouMean || q).slice(0, 12);
-      render(results, q, items, { didYouMean });
+      render(results, q, items, texts, { didYouMean });
       input.setAttribute("aria-expanded", String(items.length > 0 || !!didYouMean));
     }
 
@@ -241,7 +294,7 @@
       timer = setTimeout(() => run(q), DEBOUNCE_MS);
     });
 
-    // Click on "Meintest du" suggestion → rerun
+    // Click on the "did you mean" suggestion → rerun
     results.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-sqe-suggest]");
       if (!btn) return;

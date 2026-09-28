@@ -1,0 +1,93 @@
+{% comment %}
+  Sprachumschalter (z. B. DE / EN) ueber das native Localization-Formular.
+  Rendert nichts, wenn nur eine Sprache veroeffentlicht ist.
+
+  Parameter:
+    - section_id  {String}  section.id der einbindenden Section (fuer eindeutige Form-IDs)
+    - suffix      {String}  Unterscheidet mehrere Instanzen je Section, z. B. 'desktop' / 'panel'
+    - modifier    {String}  Optional: BEM-Modifier, ergibt die Klasse lang-switch--<modifier>
+    - labelled_by {String}  Optional: ID eines sichtbaren Labels; sonst aria-label aus localization.language_label
+
+  Beispiel:
+    {% render 'language-switcher', section_id: section.id, suffix: 'desktop' %}
+{% endcomment %}
+{%- if localization.available_languages.size > 1 -%}
+  {%- liquid
+    assign form_id = 'LanguageSwitcher-' | append: section_id | append: '-' | append: suffix
+    assign form_class = 'lang-switch'
+    if modifier != blank
+      assign form_class = form_class | append: ' lang-switch--' | append: modifier
+    endif
+  -%}
+  {%- form 'localization', id: form_id, class: form_class -%}
+    <div
+      class="lang-switch__group"
+      role="group"
+      {% if labelled_by != blank %}
+        aria-labelledby="{{ labelled_by | escape }}"
+      {% else %}
+        aria-label="{{ 'localization.language_label' | t | escape }}"
+      {% endif %}
+    >
+      {%- for language in localization.available_languages -%}
+        {%- unless forloop.first -%}
+          <span class="lang-switch__slash" aria-hidden="true">/</span>
+        {%- endunless -%}
+        {%- if language.iso_code == localization.language.iso_code -%}
+          <span class="lang-switch__option" aria-current="true" lang="{{ language.iso_code | escape }}">
+            {{- language.iso_code | upcase | escape -}}
+            <span class="visually-hidden"> – {{ language.endonym_name | escape }}</span>
+          </span>
+        {%- else -%}
+          <button
+            type="submit"
+            class="lang-switch__option"
+            name="language_code"
+            value="{{ language.iso_code | escape }}"
+            lang="{{ language.iso_code | escape }}"
+          >
+            {{- language.iso_code | upcase | escape -}}
+            <span class="visually-hidden"> – {{ language.endonym_name | escape }}</span>
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endform -%}
+{%- endif -%}
+
+{% stylesheet %}
+  .lang-switch { display: flex; align-items: center; margin: 0; }
+  .lang-switch__group {
+    display: flex;
+    align-items: center;
+    font-size: calc(0.875rem * var(--fs-text, 1));
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .lang-switch__option {
+    display: inline-grid;
+    place-items: center;
+    min-width: 32px;
+    min-height: 44px;
+    padding: 0 var(--s-1);
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    color: var(--color-muted);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .lang-switch__option:hover { color: var(--color-text); }
+  .lang-switch__option[aria-current="true"] {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+    cursor: default;
+  }
+  .lang-switch__slash { color: var(--color-line-strong); }
+  .lang-switch--panel .lang-switch__group { font-size: calc(1rem * var(--fs-text, 1)); }
+  .lang-switch--panel .lang-switch__option { min-width: 44px; }
+{% endstylesheet %}

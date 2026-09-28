@@ -155,6 +155,21 @@
     "prev": "Zurück",
     "next": "Weiter"
   },
+  "footer": {
+    "nav_label": "Fußzeilen-Navigation",
+    "qr_code": "QR-Code",
+    "revocation": "Widerruf",
+    "back_to_top": "Nach oben",
+    "social": {
+      "linkedin": "LinkedIn",
+      "twitter": "X (Twitter)",
+      "instagram": "Instagram",
+      "medium": "Medium",
+      "facebook": "Facebook",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    }
+  },
   "general": {
     "errors_title": "Bitte überprüfe folgende Felder:",
     "skip_to_content": "Zum Inhalt springen"
@@ -162,6 +177,27 @@
   "meta": {
     "tagged": "verschlagwortet mit „{{ tags }}“",
     "page": "Seite {{ page }}"
+  },
+  "header": {
+    "main_navigation": "Hauptnavigation",
+    "mobile_navigation": "Mobile Navigation",
+    "menu": "Menü",
+    "search": "Suche",
+    "search_label": "Suchbegriff",
+    "search_placeholder": "Suchen …",
+    "search_close": "Suche schließen",
+    "search_products": "Produkte",
+    "search_pages": "Seiten",
+    "search_articles": "Artikel",
+    "search_did_you_mean": "Meintest du",
+    "search_no_results": "Keine Treffer für „{{ terms }}“.",
+    "cart": {
+      "one": "Warenkorb, {{ count }} Artikel",
+      "other": "Warenkorb, {{ count }} Artikel"
+    },
+    "account": "Konto",
+    "log_in": "Anmelden",
+    "cta_fallback": "Kontakt aufnehmen"
   },
   "localization": {
     "language_label": "Sprache",

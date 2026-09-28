@@ -155,6 +155,21 @@
     "prev": "Previous",
     "next": "Next"
   },
+  "footer": {
+    "nav_label": "Footer navigation",
+    "qr_code": "QR code",
+    "revocation": "Right of withdrawal",
+    "back_to_top": "Back to top",
+    "social": {
+      "linkedin": "LinkedIn",
+      "twitter": "X (Twitter)",
+      "instagram": "Instagram",
+      "medium": "Medium",
+      "facebook": "Facebook",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    }
+  },
   "general": {
     "errors_title": "Please check the following fields:",
     "skip_to_content": "Skip to content"
@@ -162,6 +177,27 @@
   "meta": {
     "tagged": "tagged \"{{ tags }}\"",
     "page": "Page {{ page }}"
+  },
+  "header": {
+    "main_navigation": "Main navigation",
+    "mobile_navigation": "Mobile navigation",
+    "menu": "Menu",
+    "search": "Search",
+    "search_label": "Search term",
+    "search_placeholder": "Search …",
+    "search_close": "Close search",
+    "search_products": "Products",
+    "search_pages": "Pages",
+    "search_articles": "Articles",
+    "search_did_you_mean": "Did you mean",
+    "search_no_results": "No results for “{{ terms }}”.",
+    "cart": {
+      "one": "Cart, {{ count }} item",
+      "other": "Cart, {{ count }} items"
+    },
+    "account": "Account",
+    "log_in": "Log in",
+    "cta_fallback": "Get in touch"
   },
   "localization": {
     "language_label": "Language",
