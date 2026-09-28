@@ -208,14 +208,19 @@ test.describe("SQE Header", () => {
     const data = await res.json().catch(() => ({}));
     const products = data?.resources?.results?.products ?? [];
     test.skip(products.length === 0, "Store liefert fuer 'theme' keine Produkte");
-    const price = header.locator(".sqe-search-result__price").first();
-    await expect(price).toBeVisible({ timeout: 8000 });
-    const text = ((await price.textContent()) ?? "").trim();
-    // Expected: exactly what Intl produces for the first product in the shop currency.
+    // The JS dedupes and re-ranks results, so match the first rendered result
+    // to its product by title instead of relying on the response order.
+    const first = header.locator(".sqe-search-result").filter({ has: page.locator(".sqe-search-result__price") }).first();
+    await expect(first).toBeVisible({ timeout: 8000 });
+    const title = ((await first.locator(".sqe-search-result__title").textContent()) ?? "").trim();
+    const text = ((await first.locator(".sqe-search-result__price").textContent()) ?? "").trim();
+    const product = products.find((p: { title?: string }) => (p.title ?? "").trim() === title);
+    expect(product, `rendered title "${title}" is one of the suggested products`).toBeTruthy();
+    // Expected: exactly what Intl produces for that product in the shop currency.
     const expected = await page.evaluate((raw) => {
       const currency = (window as any).Shopify?.currency?.active || "EUR";
       return new Intl.NumberFormat(document.documentElement.lang || undefined, { style: "currency", currency }).format(Number(raw));
-    }, String(products[0].price));
+    }, String(product.price));
     expect(text).toBe(expected);
     expect(text, "no bare decimal").not.toMatch(/^\d+\.\d{2}$/);
   });

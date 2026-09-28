@@ -108,19 +108,20 @@ test.describe("Hero natural colours", () => {
     expect(await dot.evaluate(bg)).toBe("rgb(22, 163, 74)");
   });
 
-  test("Mock panels have a hardcoded white background", async ({ page }) => {
-    const white = "rgb(255, 255, 255)";
-    await go(page, QA.paths.geo);
-    expect(await page.locator("[data-section-type='hero-geo'] .hero-geo__chat").first().evaluate(bg)).toBe(white);
-    await go(page, QA.paths.seo);
-    expect(await page.locator("[data-section-type='hero-serp'] .hero-serp__mock").first().evaluate(bg)).toBe(white);
-    await go(page, QA.paths.sea);
-    expect(await page.locator("[data-section-type='hero-ticker'] .hero-ticker__dashboard").first().evaluate(bg)).toBe(white);
-    await go(page, QA.paths.smm);
-    expect(await page.locator("[data-section-type='hero-ad-cycler'] .hero-ac__card").first().evaluate(bg)).toBe(white);
-    await go(page, QA.paths.webDesign);
-    expect(await page.locator("[data-section-type='hero-web-build'] .hwb__viewport").first().evaluate(bg)).toBe(white);
-  });
+  for (const [name, path, selector] of [
+    ["GEO chat", QA.paths.geo, "[data-section-type='hero-geo'] .hero-geo__chat"],
+    ["SERP mock", QA.paths.seo, "[data-section-type='hero-serp'] .hero-serp__mock"],
+    ["Ticker dashboard", QA.paths.sea, "[data-section-type='hero-ticker'] .hero-ticker__dashboard"],
+    ["Ad cycler card", QA.paths.smm, "[data-section-type='hero-ad-cycler'] .hero-ac__card"],
+    ["Web-build viewport", QA.paths.webDesign, "[data-section-type='hero-web-build'] .hwb__viewport"],
+  ] as const) {
+    test(`Mock panel has a hardcoded white background: ${name}`, async ({ page }) => {
+      await go(page, path);
+      const panel = page.locator(selector).first();
+      await expect(panel).toBeVisible({ timeout: 15_000 });
+      await expect.poll(() => panel.evaluate(bg)).toBe("rgb(255, 255, 255)");
+    });
+  }
 
   test("Web-build browser dots are red / amber / green", async ({ page }) => {
     await go(page, QA.paths.webDesign);
