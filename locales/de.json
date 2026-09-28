@@ -10,8 +10,11 @@
 {
   "404": {
     "title": "404",
+    "eyebrow": "Fehler 404",
     "not_found": "Diese Seite gibt es leider nicht.",
-    "back_to_shopping": "Zur Startseite"
+    "text": "Vielleicht hat sich die Adresse geändert. Starte auf der Startseite oder nutze die Suche.",
+    "back_to_shopping": "Zur Startseite",
+    "search": "Zur Suche"
   },
   "blog": {
     "article_comments": "Kommentare",
@@ -41,13 +44,36 @@
     "pagination": "Seitennavigation",
     "newsletter_placeholder": "Deine E-Mail-Adresse",
     "newsletter_success": "Danke für deine Anmeldung!",
+    "newsletter_submit": "Abonnieren",
+    "email_placeholder": "name@beispiel.de",
+    "pagination_previous": "Zurück",
+    "pagination_next": "Weiter",
+    "comments_pagination": "Seiten der Kommentare",
     "empty": "In diesem Blog gibt es noch keine Artikel."
   },
   "cart": {
     "checkout": "Zur Kasse",
     "title": "Warenkorb",
     "update": "Aktualisieren",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "heading": "Dein Warenkorb",
+    "items_count": {
+      "one": "{{ count }} Position",
+      "other": "{{ count }} Positionen"
+    },
+    "empty": "Dein Warenkorb ist leer.",
+    "continue": "Weiter stöbern",
+    "quantity": "Menge",
+    "qty_decrease": "Menge verringern",
+    "qty_increase": "Menge erhöhen",
+    "subtotal": "Zwischensumme",
+    "discount": "Rabatt",
+    "total": "Gesamt",
+    "tax_included": "inkl. MwSt.",
+    "discount_code": "Rabattcode",
+    "discount_placeholder": "Code eingeben",
+    "discount_apply": "Anwenden",
+    "trust_badge": "Vertrauenssiegel"
   },
   "customers": {
     "login": {
@@ -77,13 +103,18 @@
     "placeholder": "Artikel, Seiten oder Produkte suchen",
     "submit": "Suchen",
     "no_results_html": "Keine Ergebnisse für {{ terms }}",
-    "results_for_html": "{{ count }} Ergebnisse für {{ terms }}"
+    "results_for_html": "{{ count }} Ergebnisse für {{ terms }}",
+    "previous": "Zurück",
+    "next": "Weiter"
   },
   "theme_store": {
     "search_label": "Themes durchsuchen",
     "clear_search": "Suche löschen",
     "filter_label": "Filter",
-    "empty": "Zu diesem Filter gibt es noch keine Themes."
+    "empty": "Zu diesem Filter gibt es noch keine Themes.",
+    "all_label": "Alle Themes",
+    "no_matches": "Keine Treffer gefunden.",
+    "did_you_mean": "Meintest du"
   },
   "theme_store_preview": {
     "prev": "Vorheriges Theme",
@@ -117,7 +148,16 @@
     "qty_increase": "Menge erhöhen",
     "add_to_cart": "In den Warenkorb",
     "sold_out": "Ausverkauft",
-    "rating_count_prefix": "aus"
+    "rating_count_prefix": "aus",
+    "buy_now": "Sofortkauf"
+  },
+  "product_addons": {
+    "title": "Zusatzleistungen",
+    "price_from_html": "ab {{ price }}",
+    "price_on_request": "Preis auf Anfrage",
+    "choose_variant": "Variante wählen",
+    "sold_out": "ausverkauft",
+    "interest_hint": "Bei „Preis auf Anfrage\"-Leistungen vermerken wir dein Interesse mit der Bestellung. Du erhältst danach ein individuelles Angebot per Mail."
   },
   "hero_serp": {
     "tabs_default": "Alle|Bilder|Shopping|News|Videos"
@@ -173,8 +213,15 @@
   "about_timeline": {
     "add_milestones": "Füge Meilenstein-Blöcke hinzu, um zu starten."
   },
+  "about_intro": {
+    "editor_photo_hint": "Noch kein Bild gewählt: Die Section erscheint ohne Bildspalte. Wähle in den Section-Einstellungen ein Foto, um es hier anzuzeigen."
+  },
+  "about_values_thread": {
+    "add_values": "Füge Werte-Blöcke hinzu, um die Linie zu zeigen."
+  },
   "about_perspectives": {
-    "add_perspectives": "Füge Perspektiven-Blöcke hinzu, um zu starten."
+    "add_perspectives": "Füge Perspektiven-Blöcke hinzu, um zu starten.",
+    "photo_pending": "Foto folgt"
   },
   "ni_intro": {
     "add_cards": "Füge im Theme-Editor Prinzipien als Blöcke hinzu."
@@ -235,6 +282,17 @@
       "youtube": "YouTube",
       "tiktok": "TikTok"
     }
+  },
+  "contact": {
+    "info_label": "Kontaktinformationen",
+    "success": "Danke! Deine Nachricht ist angekommen.",
+    "submit": "Nachricht senden",
+    "error_prefix": "Fehler"
+  },
+  "policy": {
+    "breadcrumb": "Brotkrumen-Navigation",
+    "breadcrumb_home": "Start",
+    "updated": "Stand"
   },
   "general": {
     "errors_title": "Bitte überprüfe folgende Felder:",

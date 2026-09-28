@@ -1,9 +1,15 @@
 {% comment %}
-  Blog — article index
+  Blog — article index (SYS: light scheme, cards on the design system)
   ----------------------------------------------------------------
-  Optional editorial header (kicker + heading + intro) followed by a
-  responsive card grid of articles (featured image, category, title,
-  excerpt and meta) with pagination. Mobile-first.
+  Editorial header (eyebrow + h1 with optional *accent* + lead) and a
+  responsive grid of article cards: photo (--r-lg), category label,
+  title, excerpt and meta. Cards are surfaces with a 1px --color-line,
+  no shadow, no gradient. Pagination as pill links.
+
+  Colours come from the colour scheme tokens (--color-*); without a
+  scheme the :root tokens (= scheme-sand) apply.
+  Date: an empty date_format uses the locale-aware `format: 'date'`.
+  Exactly one h1: without the header the blog title is a hidden h1.
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/blog
 {% endcomment %}
@@ -13,102 +19,110 @@
 {%- liquid
   assign s = section.settings
   assign scheme = s.color_scheme
+  assign cols_tablet = s.columns | at_most: 2
+  assign blog_heading = s.heading | default: blog.title
+  assign label_prev = 'blog.pagination_previous' | t
+  assign label_next = 'blog.pagination_next' | t
 -%}
 
 {% style %}
-  #shopify-section-{{ section.id }} {
+  #shopify-section-{{ section.id }} .blog {
     --blog-pt: {{ s.padding_top }}px;
     --blog-pb: {{ s.padding_bottom }}px;
     --blog-cols: {{ s.columns }};
+    --blog-cols-tablet: {{ cols_tablet }};
     --blog-gap: {{ s.grid_gap }}px;
     --blog-radius: {{ s.card_radius }}px;
     --blog-ratio: {{ s.image_ratio }};
-    {%- if scheme.settings.background != blank -%}
-      --blog-bg: {{ scheme.settings.background }};
-      --blog-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
-      --blog-text: {{ scheme.settings.text }};
-      --blog-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
-      --blog-accent: {{ scheme.settings.accent | default: scheme.settings.text }};
-      --blog-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
-      --blog-link: {{ scheme.settings.links | default: scheme.settings.accent }};
-    {%- endif -%}
   }
 {% endstyle %}
 
-<section class="blog full-width color-{{ scheme.id }}" data-section-id="{{ section.id }}">
+<section
+  class="blog full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
+  data-section-id="{{ section.id }}"
+  aria-labelledby="BlogTitle-{{ section.id }}"
+>
   <div class="blog__inner">
     {%- if s.show_header -%}
       <header class="blog__header">
         {%- if s.kicker != blank -%}
-          <span class="blog__kicker">{{ s.kicker | escape }}</span>
+          <p class="blog__kicker eyebrow">{{ s.kicker | escape }}</p>
         {%- endif -%}
-        {%- assign blog_heading = s.heading | default: blog.title -%}
-        <h1 class="blog__title">{{ blog_heading | escape }}</h1>
+        <h1 id="BlogTitle-{{ section.id }}" class="blog__title">
+          {%- render 'accent-heading', text: blog_heading -%}
+        </h1>
         {%- if s.intro != blank -%}
           <div class="blog__intro rte">{{ s.intro }}</div>
         {%- endif -%}
       </header>
+    {%- else -%}
+      <h1 id="BlogTitle-{{ section.id }}" class="visually-hidden">{{ blog_heading | remove: '*' | escape }}</h1>
     {%- endif -%}
 
     {%- if blog.articles_count > 0 -%}
       {%- paginate blog.articles by s.posts_per_page -%}
-        <div class="blog__grid">
+        <ul class="blog__grid" role="list">
           {%- for article in blog.articles -%}
             {%- liquid
               assign cat = ''
               if article.tags.size > 0
                 assign cat = article.tags.first
               endif
+              if s.date_format != blank
+                assign card_date = article.published_at | date: s.date_format
+              else
+                assign card_date = article.published_at | date: format: 'date'
+              endif
             -%}
-            <article class="blog-card">
-              <a class="blog-card__media" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
-                {%- if article.image != blank -%}
-                  {%- assign card_alt = article.image.alt | default: article.title -%}
-                  {{
-                    article.image
-                    | image_url: width: 1200
-                    | image_tag:
-                      loading: 'lazy',
-                      widths: '300, 400, 600, 800, 1000, 1200',
-                      sizes: '(min-width: 990px) 30vw, (min-width: 750px) 45vw, 100vw',
-                      class: 'blog-card__img',
-                      alt: card_alt
-                  }}
-                {%- else -%}
-                  <div class="blog-card__placeholder"></div>
-                {%- endif -%}
-              </a>
-              <div class="blog-card__body">
-                {%- if s.show_category and cat != blank -%}
-                  <span class="blog-card__category">{{ cat | escape }}</span>
-                {%- endif -%}
-                <h2 class="blog-card__title">
-                  <a href="{{ article.url }}">{{ article.title | escape }}</a>
-                </h2>
-                {%- if s.show_excerpt and article.excerpt_or_content != blank -%}
-                  <p class="blog-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
-                {%- endif -%}
-                <div class="blog-card__meta">
-                  {%- if s.show_author -%}
-                    <span>{{ article.author }}</span>
-                    <span class="blog-card__sep" aria-hidden="true">&middot;</span>
+            <li class="blog__item">
+              <article class="blog-card">
+                <a class="blog-card__media" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
+                  {%- if article.image != blank -%}
+                    {%- assign card_alt = article.image.alt | default: article.title -%}
+                    {{
+                      article.image
+                      | image_url: width: 1200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '300, 400, 600, 800, 1000, 1200',
+                        sizes: '(min-width: 1101px) 30vw, (min-width: 861px) 45vw, 100vw',
+                        class: 'blog-card__img',
+                        alt: card_alt
+                    }}
+                  {%- else -%}
+                    <span class="blog-card__placeholder"></span>
                   {%- endif -%}
-                  <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
-                    {{- article.published_at | date: s.date_format -}}
-                  </time>
-                  {%- if blog.comments_enabled? and article.comments_count > 0 -%}
-                    <span class="blog-card__sep" aria-hidden="true">&middot;</span>
-                    <span>{{ 'blog.comments_with_count' | t: count: article.comments_count }}</span>
+                </a>
+                <div class="blog-card__body">
+                  {%- if s.show_category and cat != blank -%}
+                    <p class="blog-card__category label-caps">{{ cat | escape }}</p>
                   {%- endif -%}
+                  <h2 class="blog-card__title">
+                    <a href="{{ article.url }}">{{ article.title | escape }}</a>
+                  </h2>
+                  {%- if s.show_excerpt and article.excerpt_or_content != blank -%}
+                    <p class="blog-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+                  {%- endif -%}
+                  <p class="blog-card__meta">
+                    {%- if s.show_author and article.author != blank -%}
+                      <span class="blog-card__author">{{ article.author | escape }}</span>
+                      <span class="blog-card__sep" aria-hidden="true">&middot;</span>
+                    {%- endif -%}
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ card_date }}</time>
+                    {%- if blog.comments_enabled? and article.comments_count > 0 -%}
+                      <span class="blog-card__sep" aria-hidden="true">&middot;</span>
+                      <span>{{ 'blog.comments_with_count' | t: count: article.comments_count }}</span>
+                    {%- endif -%}
+                  </p>
                 </div>
-              </div>
-            </article>
+              </article>
+            </li>
           {%- endfor -%}
-        </div>
+        </ul>
 
         {%- if paginate.pages > 1 -%}
           <nav class="blog__pagination" aria-label="{{ 'blog.pagination' | t }}">
-            {{ paginate | default_pagination }}
+            {{ paginate | default_pagination: previous: label_prev, next: label_next }}
           </nav>
         {%- endif -%}
       {%- endpaginate -%}
@@ -182,7 +196,7 @@
       "max": 32,
       "step": 2,
       "unit": "px",
-      "default": 0
+      "default": 16
     },
     {
       "type": "select",
@@ -231,8 +245,7 @@
       "type": "text",
       "id": "date_format",
       "label": "t:blog.date_format_label",
-      "info": "t:blog.date_format_info",
-      "default": "%b %d, %Y"
+      "info": "t:blog.date_format_info"
     },
     {
       "type": "header",
