@@ -173,7 +173,7 @@ test.describe("SQE Header", () => {
     const results = header.locator("[data-sqe-search-results]");
     const hasTypo = await results.locator(".sqe-search-typo").count();
     if (!hasTypo) {
-      await expect(results.locator(".sqe-search-empty")).toHaveText(noResults.replace("{q}", "zzqxj"));
+      await expect(results.locator(".sqe-search-empty")).toHaveText(noResults.replace("__Q__", "zzqxj"));
     }
   });
 

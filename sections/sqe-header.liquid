@@ -188,7 +188,7 @@
         data-i18n-pages="{{ 'header.search_pages' | t | escape }}"
         data-i18n-articles="{{ 'header.search_articles' | t | escape }}"
         data-i18n-did-you-mean="{{ 'header.search_did_you_mean' | t | escape }}"
-        data-i18n-no-results="{{ 'header.search_no_results' | t: terms: '{q}' | escape }}"
+        data-i18n-no-results="{{ 'header.search_no_results' | t: terms: '__Q__' | escape }}"
         hidden
       >
         <form action="{{ routes.search_url }}" method="get" role="search" data-sqe-search-form>

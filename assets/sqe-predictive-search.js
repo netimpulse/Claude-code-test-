@@ -221,7 +221,7 @@
 
     if (!items.length && !opts.didYouMean) {
       nodes.length = 0;
-      nodes.push(el("div", "sqe-search-empty", texts.noResults.replace("{q}", q)));
+      nodes.push(el("div", "sqe-search-empty", texts.noResults.replace("__Q__", q)));
     }
     container.replaceChildren(...nodes.filter(Boolean));
     container.hidden = false;
@@ -242,7 +242,7 @@
       pages: panel.getAttribute("data-i18n-pages") || "",
       articles: panel.getAttribute("data-i18n-articles") || "",
       didYouMean: panel.getAttribute("data-i18n-did-you-mean") || "",
-      noResults: panel.getAttribute("data-i18n-no-results") || "{q}",
+      noResults: panel.getAttribute("data-i18n-no-results") || "__Q__",
     };
 
     let lastReq = 0;
