@@ -221,7 +221,7 @@
 
     if (!items.length && !opts.didYouMean) {
       nodes.length = 0;
-      nodes.push(el("div", "sqe-search-empty", texts.noResults.replace("__Q__", q)));
+      nodes.push(el("div", "sqe-search-empty", texts.noResults.replace("__Q__", () => q)));
     }
     container.replaceChildren(...nodes.filter(Boolean));
     container.hidden = false;
