@@ -1,112 +1,98 @@
 {% comment %}
-  NI Intro — company introduction (sand design). Section header plus a
-  two-column body: staggered editorial cards (section blocks) on the
-  left and an image panel with copy on the right.
+  NI Intro — studio introduction on the black surface (SYS §6 "Intro").
+  Eyebrow, h2 with serif accent and lead; three principles with large
+  index numbers (section blocks); photo 4:3 with an h3 panel. The block
+  settings "width" and "icon" stay in the schema but no longer render.
 {% endcomment %}
 
 {%- liquid
   assign scheme = section.settings.color_scheme
-  assign accent = section.settings.accent_color
-  if accent == blank
-    assign accent = scheme.settings.accent
+  assign scheme_class = ''
+  if scheme != blank
+    assign scheme_class = 'color-' | append: scheme.id
   endif
+  assign accent = section.settings.accent_color
 -%}
 
 {% style %}
   #shopify-section-{{ section.id }} {
-    --lp-bg: {{ scheme.settings.background | default: '#f8f6f1' }};
-    --lp-surface: {{ scheme.settings.background_card | default: '#fffdf8' }};
-    --lp-text: {{ scheme.settings.text | default: '#050505' }};
-    --lp-muted: {{ scheme.settings.muted | default: '#6b665e' }};
-    --lp-line: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.12 }};
-    --lp-line-strong: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.22 }};
-    --lp-maxw: 1440px;
     --lp-pad-top: {{ section.settings.padding_top }}px;
     --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --lp-accent: {{ accent }};
+    {%- if accent != blank %}--lp-accent: {{ accent }};{% endif %}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
 {% endstyle %}
 
-<ni-intro class="ni-intro full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+<ni-intro class="ni-intro full-width {{ scheme_class }}" {{ section.shopify_attributes }}>
   <div class="ni-intro__shell">
-    <header class="ni-intro__head ni-reveal">
-      <div>
-        {%- if section.settings.kicker != blank -%}
-          <span class="ni-intro__kicker">{{ section.settings.kicker | escape }}</span>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 class="ni-intro__title">{{ section.settings.heading | escape }}</h2>
-        {%- endif -%}
-      </div>
+    <header class="ni-intro__head">
+      {%- if section.settings.kicker != blank -%}
+        <p class="ni-intro__kicker eyebrow">{{ section.settings.kicker | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="ni-intro__title">{% render 'accent-heading', text: section.settings.heading %}</h2>
+      {%- endif -%}
       {%- if section.settings.text != blank and section.settings.show_intro -%}
         <p class="ni-intro__text">{{ section.settings.text | escape }}</p>
       {%- endif -%}
     </header>
 
-    <div class="ni-intro__grid">
-      <div class="ni-intro__cards">
+    {%- if section.blocks.size > 0 -%}
+      <ol class="ni-intro__principles">
         {%- for block in section.blocks -%}
-          {%- assign width = block.settings.width | default: 'full' -%}
-          <article class="ni-intro-card ni-intro-card--{{ width }} ni-reveal" {{ block.shopify_attributes }}>
-            <div class="ni-intro-card__icon" aria-hidden="true">
-              <span class="ni-orbit ni-orbit--a"></span>
-              <span class="ni-orbit ni-orbit--b"></span>
-              {%- case block.settings.icon -%}
-                {%- when 'chart' -%}
-                  <svg viewBox="0 0 48 48"><path d="M8 34h32M12 28l8-8 7 6 10-13M8 40h32"/></svg>
-                {%- when 'window' -%}
-                  <svg viewBox="0 0 48 48"><path d="M10 13h28v22H10zM16 20h16M16 27h10M34 35l5 6"/></svg>
-                {%- else -%}
-                  <svg viewBox="0 0 48 48"><path d="M24 6v36M6 24h36M12 12l24 24M36 12 12 36"/></svg>
-              {%- endcase -%}
-            </div>
+          <li class="ni-intro-card" {{ block.shopify_attributes }}>
+            <span class="ni-intro-card__num" aria-hidden="true">
+              {%- if forloop.index < 10 -%}0{%- endif -%}
+              {{- forloop.index -}}
+            </span>
             {%- if block.settings.title != blank -%}
               <h3 class="ni-intro-card__title">{{ block.settings.title | escape }}</h3>
             {%- endif -%}
             {%- if block.settings.text != blank -%}
               <p class="ni-intro-card__text">{{ block.settings.text | escape }}</p>
             {%- endif -%}
-          </article>
-        {%- else -%}
-          <p class="ni-intro__empty">{{ 'landingpage.add_cards' | t | default: 'Add intro cards in the theme editor.' }}</p>
+          </li>
         {%- endfor -%}
-      </div>
+      </ol>
+    {%- else -%}
+      <p class="ni-intro__empty">{{ 'ni_intro.add_cards' | t }}</p>
+    {%- endif -%}
 
-      <article class="ni-intro__panel ni-reveal">
-        <div class="ni-intro__panel-media">
-          {%- if section.settings.panel_image != blank -%}
-            {%- assign p_alt = section.settings.panel_image.alt | default: section.settings.panel_heading | escape -%}
-            {{
-              section.settings.panel_image
-              | image_url: width: 1300
-              | image_tag:
-                loading: 'lazy',
-                sizes: '(min-width: 1120px) 52vw, 100vw',
-                widths: '500, 800, 1100, 1300',
-                alt: p_alt,
-                class: 'ni-intro__panel-img'
-            }}
-          {%- else -%}
-            <div class="ni-intro__panel-img ni-intro__panel-img--ph" aria-hidden="true"></div>
-          {%- endif -%}
-        </div>
-        <div class="ni-intro__panel-copy">
-          {%- if section.settings.panel_heading != blank -%}
-            <h3>{{ section.settings.panel_heading | escape }}</h3>
-          {%- endif -%}
-          {%- if section.settings.panel_text != blank -%}
-            <p>{{ section.settings.panel_text | escape }}</p>
-          {%- endif -%}
-        </div>
-      </article>
+    <div class="ni-intro__panel">
+      <div class="ni-intro__panel-media">
+        {%- if section.settings.panel_image != blank -%}
+          {%- liquid
+            assign panel_heading_plain = section.settings.panel_heading | remove: '*'
+            assign p_alt = section.settings.panel_image.alt | default: panel_heading_plain | escape
+          -%}
+          {{
+            section.settings.panel_image
+            | image_url: width: 1300
+            | image_tag:
+              loading: 'lazy',
+              sizes: '(min-width: 861px) 50vw, 100vw',
+              widths: '500, 800, 1100, 1300',
+              alt: p_alt,
+              class: 'ni-intro__panel-img'
+          }}
+        {%- else -%}
+          <div class="ni-intro__panel-img ni-intro__panel-img--ph" aria-hidden="true"></div>
+        {%- endif -%}
+      </div>
+      <div class="ni-intro__panel-copy">
+        {%- if section.settings.panel_heading != blank -%}
+          <h3>{{ section.settings.panel_heading | escape }}</h3>
+        {%- endif -%}
+        {%- if section.settings.panel_text != blank -%}
+          <p>{{ section.settings.panel_text | escape }}</p>
+        {%- endif -%}
+      </div>
     </div>
   </div>
 </ni-intro>
 
 {{ 'section-ni-intro.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'ni-reveal.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
@@ -114,7 +100,7 @@
   "tag": "section",
   "settings": [
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "Unternehmensvorstellung" },
-    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Ein Studio für digitale Auftritte mit System." },
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "Setze ein Wort in *Sternchen*, um es als Serif-Akzent hervorzuheben.", "default": "Ein Studio für digitale Auftritte *mit System.*" },
     { "type": "textarea", "id": "text", "label": "Intro text", "default": "Wir verbinden Online-Marketing, Webdesign und Shopify-Entwicklung, damit aus einzelnen Maßnahmen ein klarer digitaler Auftritt entsteht." },
     { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     { "type": "header", "content": "Image panel" },
@@ -122,10 +108,10 @@
     { "type": "textarea", "id": "panel_heading", "label": "Panel heading", "default": "Von der ersten Idee bis zur laufenden Optimierung." },
     { "type": "textarea", "id": "panel_text", "label": "Panel text", "default": "Ob Relaunch, SEO-Aufbau, Google Ads oder Shopify-Theme: Wir bauen digitale Grundlagen, die nicht nur beim Launch gut aussehen, sondern im Alltag messbar weiterarbeiten." },
     { "type": "header", "content": "Appearance" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
-    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#050505" },
-    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 112 },
-    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 112 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "info": "Farbe der Kennziffern. Leer lassen, um den Akzent des Color Schemes zu verwenden." },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 160 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 160 },
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
@@ -140,6 +126,7 @@
           "type": "select",
           "id": "width",
           "label": "Width & tone",
+          "info": "Wirkt im aktuellen Layout nicht mehr.",
           "options": [
             { "value": "full", "label": "Full (paper)" },
             { "value": "inset-1", "label": "Inset right (sand)" },
@@ -151,6 +138,7 @@
           "type": "select",
           "id": "icon",
           "label": "Icon",
+          "info": "Wird im aktuellen Layout nicht angezeigt.",
           "options": [
             { "value": "net", "label": "Net" },
             { "value": "chart", "label": "Chart" },

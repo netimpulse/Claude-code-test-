@@ -9,7 +9,9 @@ import { scrollThrough, runAxe, fontFaceLoaded } from "./helpers";
  * aufgenommen, wenn sie komplett auf das neue Designsystem umgestellt ist.
  * Eintraege werden nie wieder entfernt.
  */
-const ACCEPTED_PAGES: { name: string; path: string; home?: boolean }[] = [];
+const ACCEPTED_PAGES: { name: string; path: string; home?: boolean }[] = [
+  { name: "Startseite", path: QA.paths.home, home: true },
+];
 
 /** Elemente, die bewusst Verlaeufe bzw. Endlos-Animationen haben duerfen. */
 const GRADIENT_ALLOWLIST = [
