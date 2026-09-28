@@ -11,11 +11,19 @@
     render a `visually-hidden` h1 for SEO / screen readers. The first
     heading inside the policy body then naturally becomes the visible
     page title. Merchants can opt back in via a section setting.
+
+  Status (S7b): Shopify renders /policies/* itself (.shopify-policy__*,
+  styled in assets/critical.css); there is no "policy" template type, so
+  this section is not used by the storefront. It carries no enabled_on
+  restriction, because enabled_on.templates ["policy"] is rejected on upload.
+  Without presets it cannot be added in the editor; kept for reference.
 {% endcomment %}
 
 {%- liquid
   assign scheme = section.settings.color_scheme
   assign max_width = section.settings.max_width | default: 820
+  assign fallback_home = 'policy.breadcrumb_home' | t
+  assign fallback_updated = 'policy.updated' | t
 -%}
 
 {{ 'section-main-policy.css' | asset_url | stylesheet_tag }}
@@ -39,8 +47,8 @@
 >
   <div class="policy__inner">
     {%- if section.settings.show_breadcrumb -%}
-      <nav class="policy__breadcrumb" aria-label="Breadcrumb">
-        <a href="{{ routes.root_url }}">{{ section.settings.breadcrumb_home | default: 'Start' | escape }}</a>
+      <nav class="policy__breadcrumb" aria-label="{{ 'policy.breadcrumb' | t | escape }}">
+        <a href="{{ routes.root_url }}">{{ section.settings.breadcrumb_home | default: fallback_home | escape }}</a>
         <span aria-hidden="true">/</span>
         <span class="policy__breadcrumb-current">{{ policy.title | escape }}</span>
       </nav>
@@ -61,7 +69,7 @@
 
     {%- if section.settings.show_updated and policy.updated_at != blank -%}
       <p class="policy__updated">
-        {{ section.settings.updated_label | default: 'Stand' | escape }}: {{ policy.updated_at | date: section.settings.updated_format | default: '%d.%m.%Y' }}
+        {{ section.settings.updated_label | default: fallback_updated | escape }}: {{ policy.updated_at | date: section.settings.updated_format | default: '%d.%m.%Y' }}
       </p>
     {%- endif -%}
   </div>
@@ -96,7 +104,6 @@
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
-  ],
-  "enabled_on": { "templates": ["policy"] }
+  ]
 }
 {% endschema %}

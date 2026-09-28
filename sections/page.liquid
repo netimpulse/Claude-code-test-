@@ -1,13 +1,21 @@
 {% comment %}
-  This section is used in the page template to render store pages like About us
-  or Contact us.
+  This section is used in the page template to render store pages like the
+  withdrawal page (/pages/widerruf). Same reading layout as the Shopify
+  policy pages (.shopify-policy__*): max. 72ch, --section-y, one h1 in
+  --text-h2, body in --text-body. Styles live in assets/critical.css.
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/page
 {% endcomment %}
 
-<h1>{{ page.title }}</h1>
+<div class="page-prose full-width">
+  <h1 class="page-prose__title">{{ page.title | escape }}</h1>
 
-{{ page.content }}
+  {%- if page.content != blank -%}
+    <div class="page-prose__body rte">
+      {{ page.content }}
+    </div>
+  {%- endif -%}
+</div>
 
 {% schema %}
 {

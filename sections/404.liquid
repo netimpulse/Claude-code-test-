@@ -1,19 +1,55 @@
 {% comment %}
   This section is used in the 404 template to render page shown when customers
-  enter an invalid store URL.
+  enter an invalid store URL. Design-system base classes (.eyebrow, .btn),
+  exactly one h1, all texts from the locale files.
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/404
 {% endcomment %}
 
-<h1>{{ '404.title' | t }}</h1>
+<div class="not-found full-width">
+  <p class="not-found__eyebrow eyebrow">{{ '404.eyebrow' | t }}</p>
+  <h1 class="not-found__title">{{ '404.not_found' | t }}</h1>
+  <p class="not-found__text">{{ '404.text' | t }}</p>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+  <div class="not-found__actions">
+    <a class="btn btn--primary" href="{{ routes.root_url }}">
+      <span>{{ '404.back_to_shopping' | t }}</span>
+      <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a class="btn btn--secondary" href="{{ routes.search_url }}">{{ '404.search' | t }}</a>
+  </div>
+</div>
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+{% stylesheet %}
+  .not-found {
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: var(--section-y) var(--page-x);
+  }
+  .not-found__eyebrow {
+    margin: 0 0 var(--s-5);
+    color: var(--color-muted);
+  }
+  .not-found__title {
+    margin: 0;
+    max-width: 18ch;
+    font-size: calc(var(--text-h2) * var(--fs-heading, 1));
+  }
+  .not-found__text {
+    margin: var(--s-6) 0 0;
+    max-width: 52ch;
+    color: var(--color-muted);
+    font-size: var(--text-lead);
+    line-height: 1.55;
+  }
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-top: var(--s-7);
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

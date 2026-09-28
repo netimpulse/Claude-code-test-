@@ -17,6 +17,10 @@ const ACCEPTED_PAGES: { name: string; path: string; home?: boolean }[] = [
   { name: "SMM", path: QA.paths.smm },
   { name: "GEO", path: QA.paths.geo },
   { name: "Webdesign", path: QA.paths.webDesign },
+  { name: "Kontakt", path: QA.paths.kontakt },
+  { name: "Datenschutz", path: QA.paths.policy },
+  { name: "404", path: QA.paths.notFound },
+  { name: "Blog", path: QA.paths.blog },
 ];
 
 /** Elemente, die bewusst Verlaeufe bzw. Endlos-Animationen haben duerfen. */
