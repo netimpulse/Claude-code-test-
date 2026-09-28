@@ -10,8 +10,13 @@
  */
 
 export const QA = {
-  /** ID des QA Preview Themes, in das CLI-Push die Aenderungen schiebt. */
-  themeId: "145381884019",
+  /**
+   * ID des Themes, gegen das die Tests laufen. Default ist das unveroeffentlichte
+   * Redesign-Theme "NetImpulse Redesign". Achtung: 145381884019 ("QA Preview")
+   * ist im Dev-Store aktuell LIVE geschaltet und daher kein Test-Default mehr.
+   * Ueberschreibbar per ENV QA_THEME_ID.
+   */
+  themeId: process.env.QA_THEME_ID ?? "164085104755",
 
   /** Bekannte Fixtures im Dev-Store. */
   product: {
@@ -33,6 +38,18 @@ export const QA = {
     cart: "/cart",
     search: "/search?q=qa",
     notFound: "/this-page-does-not-exist",
+    leistungen: "/pages/leistungen",
+    seo: "/pages/seo",
+    sea: "/pages/sea",
+    smm: "/pages/smm",
+    geo: "/pages/geo",
+    webDesign: "/pages/web-design",
+    ueberUns: "/pages/ueber-uns",
+    kontakt: "/pages/kontakt",
+    themeStore: "/pages/theme-store",
+    widerruf: "/pages/widerruf",
+    blog: "/blogs/news",
+    policy: "/policies/privacy-policy",
   },
 } as const;
 

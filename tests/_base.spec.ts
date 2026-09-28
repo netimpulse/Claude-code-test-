@@ -48,4 +48,9 @@ test.describe("QA Block-Page – Generische Visual-Checks", () => {
     const broken = await page.evaluate(() => {
       const imgs = Array.from(document.querySelectorAll("img"));
       return imgs
-        .filter((img
+        .filter((img) => img.complete && img.naturalWidth === 0 && !!img.currentSrc)
+        .map((img) => img.currentSrc);
+    });
+    expect(broken, broken.join("\n")).toEqual([]);
+  });
+});

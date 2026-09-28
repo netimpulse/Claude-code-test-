@@ -31,8 +31,14 @@ export default async function globalSetup(_config: FullConfig) {
   const statePath = path.join(authDir, "storefront.json");
 
   const browser = await chromium.launch({
-    channel: "chromium",
-    args: ["--disable-blink-features=AutomationControlled"],
+    ...(process.env.PW_CHROMIUM_PATH
+      ? { executablePath: process.env.PW_CHROMIUM_PATH }
+      : { channel: "chromium" }),
+    ...(process.env.PW_PROXY ? { proxy: { server: process.env.PW_PROXY } } : {}),
+    args: [
+      "--disable-blink-features=AutomationControlled",
+      ...(process.env.PW_EXTRA_ARGS ? process.env.PW_EXTRA_ARGS.split(" ") : []),
+    ],
   });
   const context = await browser.newContext({
     ignoreHTTPSErrors: true,
@@ -52,7 +58,7 @@ export default async function globalSetup(_config: FullConfig) {
   // Robuste Selektoren: sowohl Skeleton als auch Dawn nutzen input[type=password]
   // im einzigen Formular der Password-Page.
   await page.locator('input[type="password"]').first().fill(password);
-  await page.locator('form button[type="submit"]').first().click();
+  await page.locator('input[type="password"]').first().press("Enter");
 
   // Warte bis Shopify uns von /password wegredirected hat
   await page.waitForURL((url) => !url.pathname.startsWith("/password"), {
