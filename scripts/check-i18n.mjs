@@ -44,13 +44,25 @@ const STRICT_FILES = [
   "sections/hero-geo.liquid", // S6d
   "sections/hero-ad-cycler.liquid", // S6e
   "sections/hero-web-build.liquid", // S6e
+  "sections/about-intro.liquid", // S7a
+  "sections/about-values-thread.liquid", // S7a
+  "sections/about-perspectives.liquid", // S7a
+  "sections/blog.liquid", // S7c
+  "sections/article.liquid", // S7c
+  "sections/contact-form.liquid", // S7b
+  "sections/page.liquid", // S7b
+  "sections/404.liquid", // S7b
+  "sections/search.liquid", // S7b
+  "sections/main-policy.liquid", // S7b (ungenutzt, Upload-Fix)
+  "sections/product.liquid", // S7d
+  "sections/cart.liquid", // S7d
+  "snippets/product-addons.liquid", // S7d
+  "sections/theme-store.liquid", // S7e
 ];
 
 /** Bekannte Verstoesse gegen Regel 7; die Liste darf nur schrumpfen. */
 const PREFIX_EXCEPTIONS = [
   "assets/sticky-buy-bar.js", // Section ungenutzt, nur im Bericht erwaehnt
-  "assets/cart.js", // wird in S7d behoben
-  "assets/theme-store.js", // wird in S7e behoben
 ];
 
 /** Erlaubte ihr/euch-Vorkommen in de.json (Key-Pfad). */

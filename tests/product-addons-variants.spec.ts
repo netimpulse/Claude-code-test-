@@ -45,7 +45,7 @@ test.describe("Product add-on variants", () => {
   });
 
   test("Picking a variant + submitting adds the chosen variant id as a cart line item", async ({ page }) => {
-    await page.evaluate(() => fetch("/cart/clear.js", { method: "POST" }));
+    await page.evaluate(() => fetch(`${((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/")}cart/clear.js`, { method: "POST" }));
     const item = page.locator(".pd-addons__item--has-variants").first();
     await item.locator(".pd-addons__label").click();
     // pick the middle tier (51-200 Produkte, $249)

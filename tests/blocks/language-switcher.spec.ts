@@ -136,8 +136,8 @@ test.describe("Language switcher", () => {
       await req;
     });
 
-    // Aktiv ab S7d: assets/cart.js ruft /cart/change.js noch ohne Locale-Praefix auf.
-    test.fixme("Routes under /en: cart quantity change requests /en/cart/change.js", async ({ page }) => {
+    // Seit S7d: assets/cart.js ruft cart/change.js mit window.Shopify.routes.root auf.
+    test("Routes under /en: cart quantity change requests /en/cart/change.js", async ({ page }) => {
       await open(page, "/en/");
       const added = await page.evaluate(async (handle) => {
         const root = ((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/");

@@ -1,5 +1,11 @@
 import { test, expect } from "@playwright/test";
+import fs from "node:fs";
 import { QA, withTheme } from "../fixtures";
+
+function localeValue(file: string, key: string): string {
+  const raw = fs.readFileSync(`locales/${file}`, "utf8").replace(/^\s*\/\*[\s\S]*?\*\/\s*/, "");
+  return key.split(".").reduce((o: any, k) => o?.[k], JSON.parse(raw));
+}
 
 /**
  * Cart-Section Tests.
@@ -26,10 +32,12 @@ async function seedCart(page: import("@playwright/test").Page, qty = 1) {
   await page.goto(withTheme(QA.paths.cart), { waitUntil: "load" });
   await passChallenge(page);
   // 3. AJAX-Cart-API aus dem Page-Context — laeuft mit den jetzt vollstaendigen Cookies.
+  // Pfade mit Locale-Root (window.Shopify.routes.root), wie assets/cart.js.
   const result = await page.evaluate(
     async ([variantId, quantity]) => {
-      const clr = await fetch("/cart/clear.js", { method: "POST" });
-      const add = await fetch("/cart/add.js", {
+      const root = ((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/");
+      const clr = await fetch(`${root}cart/clear.js`, { method: "POST" });
+      const add = await fetch(`${root}cart/add.js`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ items: [{ id: variantId, quantity }] }),
@@ -118,7 +126,8 @@ test.describe("Cart – Section", () => {
 
   test("Empty cart shows fallback message + continue link", async ({ page }) => {
     await page.evaluate(async () => {
-      await fetch("/cart/clear.js", { method: "POST" });
+      const root = ((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/");
+      await fetch(`${root}cart/clear.js`, { method: "POST" });
     });
     await page.goto(withTheme(QA.paths.cart), { waitUntil: "domcontentloaded" });
 
@@ -126,6 +135,44 @@ test.describe("Cart – Section", () => {
     await expect(root.locator("[data-cart-empty]")).toBeVisible();
     await expect(root.locator("[data-cart-empty]")).toContainText(/leer/i);
     await expect(root.locator("[data-cart-empty] .cart-page__continue")).toBeVisible();
+  });
+
+  test("UI texts come from the de locale (S7d i18n)", async ({ page }) => {
+    const root = page.locator("[data-section-type='cart']").first();
+    const item = root.locator("[data-cart-item]").first();
+    await expect(root.locator(".cart-page__subtitle")).toContainText(
+      localeValue("de.json", "cart.items_count.one").replace("{{ count }}", "1")
+    );
+    await expect(item.locator("[data-cart-qty-decrement]")).toHaveAttribute("aria-label", localeValue("de.json", "cart.qty_decrease"));
+    await expect(item.locator("[data-cart-qty-increment]")).toHaveAttribute("aria-label", localeValue("de.json", "cart.qty_increase"));
+    await expect(item.locator("[data-cart-qty-input]")).toHaveAttribute("aria-label", localeValue("de.json", "cart.quantity"));
+    await expect(item.locator("[data-cart-item-remove]")).toHaveText(localeValue("de.json", "cart.remove"));
+    const summary = root.locator("[data-cart-summary]");
+    await expect(summary).toContainText(localeValue("de.json", "cart.subtotal"));
+    await expect(summary).toContainText(localeValue("de.json", "cart.total"));
+    await expect(summary).toContainText(localeValue("de.json", "cart.tax_included"));
+  });
+
+  test("Checkout button uses the scheme-sand primary button colors (contrast >= 4.5)", async ({ page }) => {
+    const root = page.locator("[data-section-type='cart']").first();
+    await expect(root).toHaveClass(/color-scheme-sand/);
+    const colors = await root.locator("[data-cart-checkout]").evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return { bg: cs.backgroundColor, fg: cs.color };
+    });
+    expect(colors.bg).toBe("rgb(28, 73, 72)"); // #1c4948
+    expect(colors.fg).toBe("rgb(255, 253, 248)"); // #fffdf8
+  });
+
+  test("Quantity change posts to cart/change.js under the locale root", async ({ page }) => {
+    const root = page.locator("[data-section-type='cart']").first();
+    const expected = await page.evaluate(
+      () => ((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/") + "cart/change.js"
+    );
+    const req = page.waitForRequest((r) => r.method() === "POST" && new URL(r.url()).pathname === expected);
+    await page.route("**/cart/change.js", (route) => route.fulfill({ status: 200, body: "{}" }));
+    await root.locator("[data-cart-qty-increment]").first().click();
+    await req;
   });
 
   test("No horizontal scroll at 320px viewport", async ({ page }) => {

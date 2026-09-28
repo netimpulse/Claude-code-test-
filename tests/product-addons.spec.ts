@@ -41,6 +41,15 @@ test.describe("Product add-ons", () => {
     await expect(page.locator(".pd-addons__hint")).toBeVisible();
   });
 
+  test("Add-on texts come from the de locale (S7d i18n)", async ({ page }) => {
+    const fs = await import("node:fs");
+    const raw = fs.readFileSync("locales/de.json", "utf8").replace(/^\s*\/\*[\s\S]*?\*\/\s*/, "");
+    const de = JSON.parse(raw).product_addons;
+    await expect(page.locator(".pd-addons__title")).toHaveText(de.title);
+    await expect(page.locator(".pd-addons__price--quote").first()).toHaveText(de.price_on_request);
+    await expect(page.locator(".pd-addons__hint")).toHaveText(de.interest_hint);
+  });
+
   test("Addon checkbox carries the correct data-attributes for the JS hook", async ({ page }) => {
     const cb = page.locator(".pd-addons__check").first();
     const mode = await cb.getAttribute("data-addon-mode");
@@ -63,7 +72,9 @@ test.describe("Product add-ons", () => {
     // Reset the cart so this run is reproducible. /cart/clear.js works
     // via fetch from the page context (cookies + password auth flow
     // already in place).
-    await page.evaluate(() => fetch("/cart/clear.js", { method: "POST" }).then((r) => r.text()));
+    await page.evaluate(() =>
+      fetch(`${((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/")}cart/clear.js`, { method: "POST" }).then((r) => r.text())
+    );
 
     await page.locator(".pd-addons__label").first().click();
 
@@ -79,7 +90,7 @@ test.describe("Product add-ons", () => {
     await page.waitForTimeout(2000);
 
     const cart = await page.evaluate(() =>
-      fetch("/cart.js", { headers: { Accept: "application/json" } }).then((r) => r.json())
+      fetch(`${((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/")}cart.js`, { headers: { Accept: "application/json" } }).then((r) => r.json())
     );
     expect(cart.attributes, "cart attributes").toBeTruthy();
     const hasInterest = Object.keys(cart.attributes || {}).some((k) =>

@@ -19,10 +19,18 @@
   assign item_count = cart.item_count
   assign scheme = section.settings.color_scheme
   assign accent = scheme.settings.accent | default: '#1F2328'
+  assign fallback_heading = 'cart.heading' | t
+  assign fallback_empty = 'cart.empty' | t
+  assign fallback_continue = 'cart.continue' | t
+  assign fallback_discount_label = 'cart.discount_code' | t
+  assign fallback_discount_placeholder = 'cart.discount_placeholder' | t
+  assign fallback_discount_apply = 'cart.discount_apply' | t
+  assign fallback_checkout = 'cart.checkout' | t
+  assign fallback_trust_badge = 'cart.trust_badge' | t
 -%}
 
 <section
-  class="cart-page"
+  class="cart-page{% if scheme != blank %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   data-section-type="cart"
   style="
@@ -36,23 +44,22 @@
 >
   <div class="cart-page__inner">
     <header class="cart-page__header">
-      <h1 class="cart-page__title">{{ section.settings.heading | default: 'Dein Warenkorb' }}</h1>
+      <h1 class="cart-page__title">{{ section.settings.heading | default: fallback_heading | escape }}</h1>
       {%- if item_count > 0 -%}
         <p class="cart-page__subtitle">
-          {{ item_count }}
-          {%- if item_count == 1 %} Position{% else %} Positionen{% endif -%}
-          {%- if section.settings.subtitle_suffix != blank %} · {{ section.settings.subtitle_suffix }}{%- endif -%}
+          {{- 'cart.items_count' | t: count: item_count -}}
+          {%- if section.settings.subtitle_suffix != blank %} · {{ section.settings.subtitle_suffix | escape }}{%- endif -%}
         </p>
       {%- endif -%}
     </header>
 
     {%- if item_count == 0 -%}
       <div class="cart-page__empty" data-cart-empty>
-        <p class="cart-page__empty-text">{{ section.settings.empty_text | default: 'Dein Warenkorb ist leer.' }}</p>
+        <p class="cart-page__empty-text">{{ section.settings.empty_text | default: fallback_empty | escape }}</p>
         {%- for block in section.blocks -%}
           {%- if block.type == 'continue_link' and block.settings.visible -%}
-            <a class="cart-page__continue" href="{{ block.settings.url | default: '/collections/all' }}" {{ block.shopify_attributes }}>
-              ← {{ block.settings.label | default: 'Weiter stöbern' }}
+            <a class="cart-page__continue" href="{{ block.settings.url | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
+              ← {{ block.settings.label | default: fallback_continue | escape }}
             </a>
           {%- endif -%}
         {%- endfor -%}
@@ -78,17 +85,17 @@
 
                 <div class="cart-item__body">
                   <a class="cart-item__title-link" href="{{ item.url }}">
-                    <h2 class="cart-item__title">{{ item.product.title }}</h2>
+                    <h2 class="cart-item__title">{{ item.product.title | escape }}</h2>
                   </a>
                   {%- if item.variant.title != 'Default Title' and item.product.has_only_default_variant == false -%}
-                    <p class="cart-item__variant">{{ item.variant.title }}</p>
+                    <p class="cart-item__variant">{{ item.variant.title | escape }}</p>
                   {%- elsif item.product.description != blank -%}
                     <p class="cart-item__variant">{{ item.product.description | strip_html | truncate: 60 }}</p>
                   {%- endif -%}
 
                   <div class="cart-item__controls">
                     <div class="cart-qty" data-cart-qty>
-                      <button type="button" class="cart-qty__btn" data-cart-qty-decrement aria-label="Menge verringern">−</button>
+                      <button type="button" class="cart-qty__btn" data-cart-qty-decrement aria-label="{{ 'cart.qty_decrease' | t }}">−</button>
                       <input
                         type="number"
                         name="updates[]"
@@ -96,11 +103,11 @@
                         min="0"
                         value="{{ item.quantity }}"
                         data-cart-qty-input
-                        aria-label="Menge"
+                        aria-label="{{ 'cart.quantity' | t }}"
                       >
-                      <button type="button" class="cart-qty__btn" data-cart-qty-increment aria-label="Menge erhöhen">+</button>
+                      <button type="button" class="cart-qty__btn" data-cart-qty-increment aria-label="{{ 'cart.qty_increase' | t }}">+</button>
                     </div>
-                    <a class="cart-item__remove" href="{{ item.url_to_remove }}" data-cart-item-remove>Entfernen</a>
+                    <a class="cart-item__remove" href="{{ item.url_to_remove }}" data-cart-item-remove>{{ 'cart.remove' | t }}</a>
                   </div>
                 </div>
 
@@ -113,7 +120,7 @@
 
           <div class="cart-summary" data-cart-summary>
             <div class="cart-summary__row">
-              <span>Zwischensumme</span>
+              <span>{{ 'cart.subtotal' | t }}</span>
               <span data-cart-subtotal>{{ cart.items_subtotal_price | money }}</span>
             </div>
 
@@ -121,8 +128,8 @@
               {%- for discount in cart.cart_level_discount_applications -%}
                 <div class="cart-summary__row cart-summary__row--discount">
                   <span>
-                    Rabatt
-                    <code class="cart-summary__code">{{ discount.title }}</code>
+                    {{ 'cart.discount' | t }}
+                    <code class="cart-summary__code">{{ discount.title | escape }}</code>
                   </span>
                   <span>− {{ discount.total_allocated_amount | money }}</span>
                 </div>
@@ -130,7 +137,7 @@
             {%- endif -%}
 
             <div class="cart-summary__row cart-summary__row--total">
-              <span>Gesamt <small class="cart-summary__tax">inkl. MwSt.</small></span>
+              <span>{{ 'cart.total' | t }} <small class="cart-summary__tax">{{ 'cart.tax_included' | t }}</small></span>
               <span data-cart-total>{{ cart.total_price | money }}</span>
             </div>
           </div>
@@ -141,7 +148,7 @@
           {%- if block.type == 'discount_code' and block.settings.visible -%}
             <div class="cart-discount" data-cart-discount {{ block.shopify_attributes }}>
               <label class="cart-discount__label" for="cart-discount-{{ section.id }}">
-                {{ block.settings.label | default: 'Rabattcode' }}
+                {{ block.settings.label | default: fallback_discount_label | escape }}
               </label>
               <div class="cart-discount__row">
                 <input
@@ -149,13 +156,13 @@
                   name="discount"
                   type="text"
                   class="cart-discount__input"
-                  placeholder="{{ block.settings.placeholder | default: 'Code eingeben' | escape }}"
+                  placeholder="{{ block.settings.placeholder | default: fallback_discount_placeholder | escape }}"
                   autocomplete="off"
                   spellcheck="false"
                   data-cart-discount-input
                 >
                 <button type="submit" name="checkout" class="cart-discount__apply" data-cart-discount-apply>
-                  {{ block.settings.button_label | default: 'Anwenden' }}
+                  {{ block.settings.button_label | default: fallback_discount_apply | escape }}
                 </button>
               </div>
             </div>
@@ -163,15 +170,15 @@
         {%- endfor -%}
 
         <button type="submit" name="checkout" class="cart-page__checkout" data-cart-checkout>
-          {{ section.settings.checkout_label | default: 'Zur Kasse' }} →
+          {{ section.settings.checkout_label | default: fallback_checkout | escape }} →
         </button>
 
         <div class="cart-page__meta">
           {%- comment -%} Continue browsing block {%- endcomment -%}
           {%- for block in section.blocks -%}
             {%- if block.type == 'continue_link' and block.settings.visible -%}
-              <a class="cart-page__continue" href="{{ block.settings.url | default: '/collections/all' }}" {{ block.shopify_attributes }}>
-                ← {{ block.settings.label | default: 'Weiter stöbern' }}
+              <a class="cart-page__continue" href="{{ block.settings.url | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
+                ← {{ block.settings.label | default: fallback_continue | escape }}
               </a>
             {%- endif -%}
           {%- endfor -%}
@@ -201,7 +208,7 @@
                       {%- when 'truck' -%}
                         <svg class="cart-badge__icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M1 4h8v7H1zm8 2h4l2 2v3h-6zM3.5 13a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm9 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
                     {%- endcase -%}
-                    <span class="cart-badge__text">{{ block.settings.text | default: 'Trust badge' }}</span>
+                    <span class="cart-badge__text">{{ block.settings.text | default: fallback_trust_badge | escape }}</span>
                   </li>
                 {%- endif -%}
               {%- endfor -%}
@@ -453,18 +460,21 @@
     display: block;
     width: 100%;
     padding: 1rem;
-    background: var(--cart-text, #1F2328);
-    color: var(--cart-bg-card, #FFFFFF);
-    border: 0;
+    background: var(--color-btn-bg, var(--cart-text, #1F2328));
+    color: var(--color-btn-fg, var(--cart-bg-card, #FFFFFF));
+    border: 1px solid var(--color-btn-border, transparent);
     border-radius: 0;
     font: inherit;
     font-size: 1.05rem;
     font-weight: 700;
     cursor: pointer;
-    transition: transform .12s ease, box-shadow .12s ease;
+    transition: transform .12s ease, box-shadow .12s ease, background-color .15s ease, color .15s ease;
   }
   .cart-page__checkout:hover {
     transform: translateY(-1px);
+    background: var(--color-btn-bg-hover, var(--color-btn-bg, var(--cart-text, #1F2328)));
+    border-color: var(--color-btn-bg-hover, var(--color-btn-border, transparent));
+    color: var(--color-btn-fg-hover, var(--color-btn-fg, var(--cart-bg-card, #FFFFFF)));
     box-shadow: 0 8px 20px rgba(0,0,0,.15);
   }
 

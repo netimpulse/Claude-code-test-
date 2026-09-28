@@ -25,10 +25,12 @@ async function seedCart(page: Page, qty = 2) {
   await passChallenge(page);
   await page.goto(withTheme(CART_PATH), { waitUntil: "load" });
   await passChallenge(page);
+  // Pfade mit Locale-Root (window.Shopify.routes.root), wie assets/cart.js.
   const result = await page.evaluate(
     async ([variantId, quantity]) => {
-      await fetch("/cart/clear.js", { method: "POST" });
-      const add = await fetch("/cart/add.js", {
+      const root = ((window as any).Shopify?.routes?.root || "/").replace(/\/?$/, "/");
+      await fetch(`${root}cart/clear.js`, { method: "POST" });
+      const add = await fetch(`${root}cart/add.js`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ items: [{ id: variantId, quantity }] }),
@@ -118,6 +120,18 @@ test.describe("Codex bug 4 + 5 — cart updates without full reload, allows 0 as
     const hasEmpty = await page.locator("[data-cart-empty]").count();
     const remainingLines = await page.locator("[data-cart-item]").count();
     expect(hasEmpty > 0 || remainingLines === 0).toBe(true);
+  });
+});
+
+test.describe("S7d — cart.js uses the locale root for cart/change.js", () => {
+  test("Source builds the change URL from window.Shopify.routes.root", async () => {
+    const fs = await import("node:fs/promises");
+    const src = (await fs.readFile("assets/cart.js", "utf8"))
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/(^|[^:])\/\/.*$/gm, "$1");
+    expect(src).not.toMatch(/(["'`])\/cart\//);
+    expect(src).toMatch(/window\.Shopify\.routes\.root/);
+    expect(src).toMatch(/fetch\(\s*cartChangeUrl\(\)/);
   });
 });
 

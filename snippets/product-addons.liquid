@@ -31,7 +31,7 @@
 
 {%- if has_addons -%}
   <div class="pd-addons" data-pd-addons>
-    <h3 class="pd-addons__title">Zusatzleistungen</h3>
+    <h3 class="pd-addons__title">{{ 'product_addons.title' | t }}</h3>
     <ul class="pd-addons__list" role="list">
       {%- for addon in addons -%}
         {%- liquid
@@ -66,12 +66,13 @@
               <span class="pd-addons__name">{{ addon.title | escape }}</span>
               {%- if mode == 'fixed_price' -%}
                 {%- if multi_variant -%}
-                  <span class="pd-addons__price">ab {{ addon.price_min | money }}</span>
+                  {%- assign addon_price_min = addon.price_min | money -%}
+                  <span class="pd-addons__price">{{ 'product_addons.price_from_html' | t: price: addon_price_min }}</span>
                 {%- elsif first_variant != blank -%}
                   <span class="pd-addons__price">{{ first_variant.price | money }}</span>
                 {%- endif -%}
               {%- else -%}
-                <span class="pd-addons__price pd-addons__price--quote">Preis auf Anfrage</span>
+                <span class="pd-addons__price pd-addons__price--quote">{{ 'product_addons.price_on_request' | t }}</span>
               {%- endif -%}
               {%- if info != blank -%}
                 <span class="pd-addons__info">{{ info | escape }}</span>
@@ -80,7 +81,7 @@
           </label>
           {%- if multi_variant -%}
             <fieldset class="pd-addons__variants" data-pd-addon-variants>
-              <legend class="visually-hidden">{{ addon.title | escape }} — Variante wählen</legend>
+              <legend class="visually-hidden">{{ addon.title | escape }} — {{ 'product_addons.choose_variant' | t }}</legend>
               {%- for variant in addon.variants -%}
                 <label class="pd-addons__variant{% unless variant.available %} is-unavailable{% endunless %}">
                   <input
@@ -95,7 +96,7 @@
                   <span class="pd-addons__variant-dot" aria-hidden="true"></span>
                   <span class="pd-addons__variant-text">
                     <span class="pd-addons__variant-name">{{ variant.title | escape }}</span>
-                    <span class="pd-addons__variant-price">{{ variant.price | money }}{% unless variant.available %} · ausverkauft{% endunless %}</span>
+                    <span class="pd-addons__variant-price">{{ variant.price | money }}{% unless variant.available %} · {{ 'product_addons.sold_out' | t }}{% endunless %}</span>
                   </span>
                 </label>
               {%- endfor -%}
@@ -110,7 +111,7 @@
     {%- endcomment -%}
     {%- for addon in addons -%}
       {%- if addon.metafields.custom.addon_mode == 'interest_only' -%}
-        <p class="pd-addons__hint">Bei „Preis auf Anfrage"-Leistungen vermerken wir dein Interesse mit der Bestellung. Du erhältst danach ein individuelles Angebot per Mail.</p>
+        <p class="pd-addons__hint">{{ 'product_addons.interest_hint' | t }}</p>
         {%- break -%}
       {%- endif -%}
     {%- endfor -%}
