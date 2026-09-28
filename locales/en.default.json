@@ -90,7 +90,8 @@
     "next": "Next theme",
     "add_collection": "Pick a collection in the theme editor to preview themes here.",
     "pick_product": "Select a theme product",
-    "add_themes": "Add theme cards in the editor and pick a product for each."
+    "add_themes": "Add theme cards in the editor and pick a product for each.",
+    "editor_only": "Only visible in the editor – without a product the card stays hidden in the store."
   },
   "theme_store_deck": {
     "prev": "Previous",

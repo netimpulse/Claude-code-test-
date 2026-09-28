@@ -1,13 +1,17 @@
 /* section-team-compact.css
- * Scoped styles for sections/team-compact.liquid (SYS §6 "Team").
- * Surface, text, lines and buttons come from the colour scheme tokens
- * (.color-<scheme>, default scheme-1 = sand). --tc-accent only exists when
- * the accent_color setting is filled; otherwise the design token applies.
+ * Scoped styles for sections/team-compact.liquid (SYS §6 "Team", compact teaser).
+ * Surface, text and lines come from the colour scheme tokens (.color-<scheme>,
+ * default scheme-1 = sand). --tc-accent only exists when the accent_color
+ * setting is filled; otherwise the design token applies.
+ * One calm row: head (eyebrow, h2, link) · intro · avatars. No box, no shadow.
  */
 
 .team-compact {
-  padding-block: min(var(--tc-padding-top, 160px), var(--section-y))
-    min(var(--tc-padding-bottom, 160px), var(--section-y));
+  --tc-pad-max: clamp(var(--s-7), 6vw, var(--s-9));
+  --tc-avatar: 60px;
+  --tc-overlap: 12px;
+  padding-block: min(var(--tc-padding-top, 96px), var(--tc-pad-max))
+    min(var(--tc-padding-bottom, 96px), var(--tc-pad-max));
   background: var(--color-bg);
   color: var(--color-text);
 }
@@ -17,19 +21,24 @@
   max-width: var(--page-max);
   margin-inline: auto;
   padding-inline: var(--page-x);
-}
-
-/* ---- Head: eyebrow, h2 (1–7), intro (8–12) ---- */
-.team-compact__head {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
   row-gap: var(--s-5);
-  align-items: end;
+  align-items: center;
+}
+
+/* ---- Head: eyebrow, h2, text link (columns 1–4) ---- */
+.team-compact__head {
+  grid-column: 1 / span 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  min-width: 0;
 }
 
 .team-compact__kicker {
-  grid-column: 1 / -1;
   margin: 0;
   color: var(--color-text);
 }
@@ -39,41 +48,65 @@
 }
 
 .team-compact__heading {
-  grid-column: 1 / span 7;
   margin: 0;
-  font-size: calc(var(--text-display) * var(--fs-heading, 1));
-  line-height: 1;
-  letter-spacing: -0.035em;
+  font-size: calc(clamp(2rem, 1.4rem + 1.6vw, 2.75rem) * var(--fs-heading, 1));
+  line-height: 1.02;
+  letter-spacing: -0.03em;
 }
 
+.team-compact__cta {
+  font-size: var(--text-small);
+}
+
+.team-compact__cta-arrow {
+  display: inline-block;
+  transition: transform var(--dur) var(--ease);
+}
+
+.team-compact__cta:hover .team-compact__cta-arrow {
+  transform: translateX(4px);
+}
+
+/* ---- Intro (columns 5–8) ---- */
 .team-compact__intro {
-  grid-column: 8 / span 5;
+  grid-column: 5 / span 4;
   margin: 0;
+  max-width: 48ch;
   color: var(--color-muted);
   font-size: calc(var(--text-body) * var(--fs-text, 1));
-  line-height: 1.65;
-  max-width: 52ch;
+  line-height: 1.6;
 }
 
-/* ---- Portraits ---- */
+/* ---- Avatars + names (columns 9–12) ---- */
+.team-compact__crew {
+  grid-column: 9 / span 4;
+  justify-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
 .team-compact__people {
-  list-style: none;
-  margin: clamp(48px, 6vw, 96px) 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--gutter);
-}
-
-.team-compact__person {
-  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--s-2);
+  padding-left: var(--tc-overlap);
 }
 
 .team-compact__photo {
   position: relative;
-  aspect-ratio: 3 / 4;
+  display: grid;
+  place-items: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--tc-avatar);
+  height: var(--tc-avatar);
+  margin-left: calc(var(--tc-overlap) * -1);
   overflow: hidden;
-  border-radius: var(--r-lg);
+  border: 2px solid var(--color-bg);
+  border-radius: 50%;
   background: var(--c-sand-deep);
 }
 
@@ -85,9 +118,7 @@
   object-position: center 30%;
 }
 
-.team-compact__member--empty .team-compact__photo {
-  display: grid;
-  place-items: center;
+.team-compact__member--empty {
   background: var(--c-ink);
 }
 
@@ -95,88 +126,75 @@
   font-family: var(--font-accent);
   font-style: italic;
   font-weight: 500;
-  font-size: clamp(5.5rem, 3rem + 9vw, 13rem);
+  font-size: 1.625rem;
   line-height: 1;
   color: var(--tc-accent, var(--c-accent));
 }
 
-.team-compact__tag {
-  position: absolute;
-  left: var(--s-4);
-  bottom: var(--s-4);
-  font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--c-muted-on-dark);
+.team-compact__names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text);
 }
 
-.team-compact__name {
-  margin-top: var(--s-4);
-  font-family: var(--font-display);
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-size: calc(clamp(1.5rem, 1.2rem + 1vw, 2.25rem) * var(--fs-heading, 1));
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--color-heading, var(--color-text));
-}
-
-.team-compact__placeholder {
-  margin: clamp(48px, 6vw, 96px) 0 0;
-  padding: var(--s-6);
-  border: 1px dashed var(--color-line-strong);
-  border-radius: var(--r-lg);
-  text-align: center;
+.team-compact__name + .team-compact__name::before {
+  content: "·";
+  margin-right: var(--s-3);
   color: var(--color-muted);
 }
 
-/* ---- Foot: secondary button ---- */
-.team-compact__foot {
-  margin-top: var(--s-7);
+.team-compact__placeholder {
+  grid-column: 9 / span 4;
+  margin: 0;
+  padding: var(--s-4);
+  border: 1px dashed var(--color-line-strong);
+  border-radius: var(--r-sm);
+  color: var(--color-muted);
+  font-size: var(--text-small);
 }
 
-/* ---- Tablet ---- */
+/* ---- Tablet: head + intro side by side, avatars below ---- */
 @media (max-width: 1100px) {
-  .team-compact__heading {
-    grid-column: 1 / -1;
+  .team-compact__head {
+    grid-column: 1 / span 6;
   }
 
   .team-compact__intro {
-    grid-column: 1 / span 8;
+    grid-column: 7 / span 6;
+  }
+
+  .team-compact__crew,
+  .team-compact__placeholder {
+    grid-column: 1 / -1;
+    justify-self: start;
   }
 }
 
-/* ---- Mobile: one column head, portraits 2 + 1 ---- */
+/* ---- Mobile: stacked, avatars stay one row ---- */
 @media (max-width: 860px) {
-  .team-compact__head {
+  .team-compact__inner {
     grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--s-5);
   }
 
-  .team-compact__kicker,
-  .team-compact__heading,
-  .team-compact__intro {
+  .team-compact__head,
+  .team-compact__intro,
+  .team-compact__crew,
+  .team-compact__placeholder {
     grid-column: 1 / -1;
   }
 
-  .team-compact__people {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-4);
+  .team-compact {
+    --tc-avatar: 56px;
   }
+}
 
-  .team-compact__member:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-  }
-
-  .team-compact__member:last-child:nth-child(odd) .team-compact__photo {
-    aspect-ratio: 16 / 10;
-  }
-
-  .team-compact__initial {
-    font-size: clamp(4rem, 2rem + 12vw, 7rem);
-  }
-
-  .team-compact__cta {
-    width: 100%;
+@media (prefers-reduced-motion: reduce) {
+  .team-compact__cta-arrow {
+    transition: none;
   }
 }

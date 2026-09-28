@@ -2,12 +2,14 @@ import { test, expect } from "@playwright/test";
 import { QA, withTheme } from "./fixtures";
 
 /**
- * Verifies four fixes to the theme-store-preview section:
+ * Verifies the fixes to the theme-store-preview section on the real home page:
  * 1) clicking a card with a product navigates to the product page
  *    (the drag-handler no longer eats the click)
  * 2) the nav arrows are hidden when there is no horizontal overflow
  * 3) the tag chips have a comfortable bottom gap from the card edge
- * 4) the new card color settings exist as CSS-variable hooks
+ * 4) the card surface covers preview and info area as one block
+ * 5) theme blocks without a product never render in the storefront
+ *    (no "Select a theme product" card, no grey mock bars, no "#" links)
  */
 async function passChallenge(page: import("@playwright/test").Page) {
   await page.waitForSelector('link[rel="canonical"]', { state: "attached", timeout: 45_000 });
@@ -60,7 +62,15 @@ test.describe("theme-store-preview fixes", () => {
       const href = await cards.nth(i).getAttribute("href");
       expect(href, `card ${i} href`).not.toBeNull();
       expect(href!.length, `card ${i} href non-empty`).toBeGreaterThan(0);
+      expect(href, `card ${i} href is not a dead "#"`).not.toBe("#");
     }
+  });
+
+  test("Theme blocks without a product are hidden in the storefront", async ({ page }) => {
+    const root = page.locator(".tsp").first();
+    await expect(root.locator(".tsp__card--placeholder")).toHaveCount(0);
+    await expect(root.locator(".tsp__chrome, .tsp__screen, .tsp__line")).toHaveCount(0);
+    expect((await root.textContent()) ?? "").not.toMatch(/Select a theme product|Theme-Produkt auswählen/);
   });
 
   test("Clicking a card with a real product href triggers navigation", async ({ page }) => {

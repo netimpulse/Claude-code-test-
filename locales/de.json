@@ -90,7 +90,8 @@
     "next": "Nächstes Theme",
     "add_collection": "Wähle im Theme-Editor eine Kollektion, um hier Themes anzuzeigen.",
     "pick_product": "Theme-Produkt auswählen",
-    "add_themes": "Füge im Editor Theme-Karten hinzu und wähle für jede ein Produkt."
+    "add_themes": "Füge im Editor Theme-Karten hinzu und wähle für jede ein Produkt.",
+    "editor_only": "Nur im Editor sichtbar – ohne Produkt bleibt die Karte im Shop ausgeblendet."
   },
   "theme_store_deck": {
     "prev": "Zurück",
