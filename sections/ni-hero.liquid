@@ -93,7 +93,7 @@
           {%- if section.settings.caption_title != blank -%}
             <strong>{{ section.settings.caption_title | escape }}</strong>
           {%- endif -%}
-          {%- if section.settings.caption_title != blank and section.settings.caption_text != blank %} {% endif -%}
+          {%- if section.settings.caption_title != blank and section.settings.caption_text != blank -%}{{ ' ' }}{%- endif -%}
           {%- if section.settings.caption_text != blank -%}
             <span>{{ section.settings.caption_text | escape }}</span>
           {%- endif -%}
