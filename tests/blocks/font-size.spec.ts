@@ -161,3 +161,31 @@ test.describe("Section font-size multipliers – hero-serp (R4)", () => {
     await expectScaleBinding(page, ".hero-serp__btn--primary", "--fs-text");
   });
 });
+
+/**
+ * R4 (Plan S7a): the section multipliers --fs-heading / --fs-text reach the
+ * redesigned about-intro on /pages/ueber-uns (the section is not on the QA
+ * page). Stored scales are 100 % → both variables resolve to 1.
+ */
+test.describe("Section font-size multipliers – about-intro (R4)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(withTheme(QA.paths.ueberUns), { waitUntil: "load" });
+    await passChallenge(page);
+    await page.waitForSelector(".about-intro", { timeout: 15_000 });
+  });
+
+  test("Template scales reach the section root", async ({ page }) => {
+    expect(Number(await readVar(page, ".about-intro", "--fs-heading"))).toBe(1);
+    expect(Number(await readVar(page, ".about-intro", "--fs-text"))).toBe(1);
+  });
+
+  test("--fs-heading drives the h1", async ({ page }) => {
+    await expectScaleBinding(page, ".about-intro__heading", "--fs-heading");
+  });
+
+  test("--fs-text drives the body lead and the button", async ({ page }) => {
+    await expectScaleBinding(page, ".about-intro__body > :first-child", "--fs-text");
+    await expectScaleBinding(page, ".about-intro__btn", "--fs-text");
+  });
+});

@@ -1,70 +1,74 @@
 /* section-about-values-thread.css
- * 3-column layout: values left | line track (center) | values right.
- * Each value gets its own grid row. Bezier thread weaves through
- * the center, with nodes sitting at each row's middle. Line draws
- * progressively when the stage enters the viewport.
+ * Scoped styles for sections/about-values-thread.liquid (Plan S7a).
+ * 3-column layout: values left | thread (centre) | values right. Every
+ * value gets its own grid row; all rows share the height of the tallest
+ * one (1fr), so the stretched SVG thread (preserveAspectRatio="none")
+ * and the HTML nodes always meet the middle of each row.
+ * Line and nodes use --avt-accent (setting) or the scheme accent.
+ * The one-off draw only runs once the script has armed the stage.
+ * No shadows, gradients, blur or endless animations.
  */
 
 .avt {
+  --avt-a: var(--avt-accent, var(--color-accent, var(--c-teal)));
+
   position: relative;
-  padding-top: var(--avt-pad-top, 80px);
-  padding-bottom: var(--avt-pad-bottom, 80px);
-  background: var(--avt-bg, #f4eee2);
-  color: var(--avt-text, #1f2328);
+  padding-block: min(var(--avt-pad-top, 160px), var(--section-y))
+    min(var(--avt-pad-bottom, 160px), var(--section-y));
+  background: var(--color-bg);
+  color: var(--color-text);
   overflow: hidden;
 }
 
 .avt__inner {
-  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
-  margin: 0 auto;
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-x);
 }
 
 /* ---- Head ---- */
 .avt__head {
-  max-width: 60ch;
-  margin-bottom: clamp(40px, 6vw, 72px);
+  max-width: 62rem;
+  margin: 0 0 clamp(40px, 6vw, 88px);
 }
 
 .avt__kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--avt-muted, #6b665e);
-  font-size: calc(0.9rem * var(--fs-text, 1));
-  margin-bottom: 14px;
+  margin: 0 0 var(--s-5);
+  color: var(--color-muted);
 }
 
 .avt__kicker::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: currentColor;
+  background: var(--avt-a);
 }
 
 .avt__heading {
-  margin: 0 0 14px;
-  font-size: calc(clamp(1.9rem, 4.2vw, 3.2rem) * var(--fs-heading, 1));
+  margin: 0;
+  font-size: calc(var(--text-h2) * var(--fs-heading, 1));
   line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--color-heading, var(--color-text));
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .avt__intro {
-  margin: 0;
-  color: var(--avt-muted, #4a4a4a);
-  font-size: calc(clamp(0.95rem, 1.2vw, 1.05rem) * var(--fs-text, 1));
-  line-height: 1.55;
+  margin: var(--s-6) 0 0;
+  max-width: 60ch;
+  color: var(--color-muted);
+  font-size: calc(var(--text-lead) * var(--fs-text, 1));
+  line-height: 1.5;
 }
 
 /* ---- Stage ---- */
 .avt__stage {
   display: grid;
-  grid-template-columns: 1fr var(--avt-track, 120px) 1fr;
-  grid-template-rows: repeat(var(--avt-rows, 4), var(--avt-step, 220px));
+  grid-template-columns: minmax(0, 1fr) var(--avt-track, 120px) minmax(0, 1fr);
+  grid-template-rows: repeat(var(--avt-rows, 4), minmax(var(--avt-step, 220px), 1fr));
   position: relative;
 }
 
-/* ---- Track + SVG ---- */
+/* ---- Track + SVG thread ---- */
 .avt__track {
   grid-column: 2;
   grid-row: 1 / -1;
@@ -79,50 +83,66 @@
   width: 100%;
   height: 100%;
   display: block;
+  overflow: visible;
 }
 
 .avt__path {
   fill: none;
-  stroke: var(--avt-accent, #1f2328);
-  stroke-width: 1.6;
+  stroke: var(--avt-a);
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .avt__path--ghost {
-  stroke: var(--avt-line, rgba(31, 35, 40, 0.18));
-  stroke-width: 1.2;
-  stroke-dasharray: 2 6;
+  stroke: var(--color-line);
+  stroke-width: 1;
 }
 
+/* Default (no JS / reduced motion): the line is fully drawn. */
 .avt__path--draw {
   stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1800ms cubic-bezier(0.45, 0, 0.2, 1);
-}
-
-.avt__stage.is-drawn .avt__path--draw {
   stroke-dashoffset: 0;
 }
 
-.avt__node {
-  fill: var(--avt-bg, #f4eee2);
-  stroke: var(--avt-accent, #1f2328);
-  stroke-width: 1.8;
-  opacity: 0;
-  transition: opacity 320ms ease, r 220ms ease, fill 220ms ease;
+.avt__stage.is-armed .avt__path--draw {
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1800ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
-.avt__stage.is-drawn .avt__node {
+.avt__stage.is-armed.is-drawn .avt__path--draw {
+  stroke-dashoffset: 0;
+}
+
+/* ---- Nodes: HTML circles in the middle of each row ---- */
+.avt__node {
+  grid-column: 2;
+  align-self: center;
+  justify-self: start;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-left: calc(20% - 8px);
+  border: 2px solid var(--avt-a);
+  border-radius: 50%;
+  background: var(--color-bg);
+}
+
+.avt__node--right {
+  margin-left: calc(80% - 8px);
+}
+
+.avt__stage.is-armed .avt__node {
+  opacity: 0;
+  transition: opacity 320ms var(--ease, ease);
+  transition-delay: calc(700ms + var(--i, 0) * 350ms);
+}
+
+.avt__stage.is-armed.is-drawn .avt__node {
   opacity: 1;
 }
-
-.avt__node:nth-of-type(1) { transition-delay: 700ms, 0s, 0s; }
-.avt__node:nth-of-type(2) { transition-delay: 1050ms, 0s, 0s; }
-.avt__node:nth-of-type(3) { transition-delay: 1400ms, 0s, 0s; }
-.avt__node:nth-of-type(4) { transition-delay: 1750ms, 0s, 0s; }
-.avt__node:nth-of-type(5) { transition-delay: 2100ms, 0s, 0s; }
-.avt__node:nth-of-type(6) { transition-delay: 2450ms, 0s, 0s; }
 
 /* ---- Items ---- */
 .avt__list {
@@ -135,7 +155,8 @@
 .avt__item {
   display: flex;
   align-items: center;
-  padding: 0 clamp(20px, 3vw, 56px);
+  min-width: 0;
+  padding: var(--s-5) clamp(20px, 3vw, 56px);
 }
 
 .avt__item--left {
@@ -149,81 +170,134 @@
 }
 
 .avt__card {
-  max-width: 38ch;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 420ms ease-out, transform 420ms ease-out;
+  max-width: 40ch;
+  min-width: 0;
 }
 
 .avt__item--left .avt__card { text-align: right; }
 .avt__item--right .avt__card { text-align: left; }
 
-.avt__stage.is-drawn .avt__item:nth-of-type(1) .avt__card { transition-delay: 600ms; }
-.avt__stage.is-drawn .avt__item:nth-of-type(2) .avt__card { transition-delay: 950ms; }
-.avt__stage.is-drawn .avt__item:nth-of-type(3) .avt__card { transition-delay: 1300ms; }
-.avt__stage.is-drawn .avt__item:nth-of-type(4) .avt__card { transition-delay: 1650ms; }
-.avt__stage.is-drawn .avt__item:nth-of-type(5) .avt__card { transition-delay: 2000ms; }
-.avt__stage.is-drawn .avt__item:nth-of-type(6) .avt__card { transition-delay: 2350ms; }
+.avt__stage.is-armed .avt__card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 420ms var(--ease, ease-out), transform 420ms var(--ease, ease-out);
+  transition-delay: calc(600ms + var(--i, 0) * 350ms);
+}
 
-.avt__stage.is-drawn .avt__card {
+.avt__stage.is-armed.is-drawn .avt__card {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 .avt__num {
   display: block;
+  margin-bottom: var(--s-3);
+  font-family: var(--font-display);
+  font-size: calc(1rem * var(--fs-text, 1));
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
-  font-size: calc(0.78rem * var(--fs-text, 1));
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--avt-muted, #6b665e);
-  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+  color: var(--avt-a);
 }
 
 .avt__title {
-  margin: 0 0 12px;
-  font-size: calc(clamp(1.6rem, 3vw, 2.4rem) * var(--fs-heading, 1));
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-  font-weight: 800;
-  color: var(--avt-text, #1f2328);
+  margin: 0 0 var(--s-3);
+  font-size: calc(var(--text-h3) * var(--fs-heading, 1));
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  color: var(--color-heading, var(--color-text));
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .avt__text {
   margin: 0;
-  font-size: calc(clamp(0.95rem, 1.15vw, 1.05rem) * var(--fs-text, 1));
-  line-height: 1.55;
-  color: var(--avt-text, #1f2328);
+  font-size: calc(var(--text-body) * var(--fs-text, 1));
+  line-height: 1.65;
+  color: var(--color-muted);
 }
 
-/* ---- Mobile: line on the left, all items right ---- */
+.avt__placeholder {
+  margin: 0;
+  padding: var(--s-7);
+  border: 1px dashed var(--color-line-strong, var(--color-line));
+  border-radius: var(--r-lg);
+  text-align: center;
+  color: var(--color-muted);
+}
+
+/* ---- Mobile: straight line on the left, all values on the right ---- */
 @media (max-width: 760px) {
   .avt__stage {
-    grid-template-columns: 56px 1fr;
-    grid-template-rows: repeat(var(--avt-rows, 4), minmax(160px, auto));
+    grid-template-columns: 32px minmax(0, 1fr);
+    grid-template-rows: repeat(var(--avt-rows, 4), auto);
   }
+
   .avt__track {
     grid-column: 1;
   }
+
+  .avt__svg {
+    display: none;
+  }
+
+  /* Straight 1px line; draws top-down via scaleY once armed. */
+  .avt__track::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1.5px;
+    margin-left: -0.75px;
+    background: var(--avt-a);
+    transform-origin: top center;
+  }
+
+  .avt__stage.is-armed .avt__track::before {
+    transform: scaleY(0);
+    transition: transform 1800ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+
+  .avt__stage.is-armed.is-drawn .avt__track::before {
+    transform: none;
+  }
+
+  .avt__node,
+  .avt__node--right {
+    grid-column: 1;
+    justify-self: center;
+    align-self: start;
+    margin-left: 0;
+    margin-top: calc(var(--s-5) + 5px);
+  }
+
   .avt__item,
   .avt__item--left,
   .avt__item--right {
     grid-column: 2;
     justify-content: flex-start;
-    padding: clamp(16px, 5vw, 28px) 0 clamp(16px, 5vw, 28px) clamp(20px, 5vw, 36px);
+    padding: var(--s-5) 0 var(--s-5) var(--s-5);
   }
+
   .avt__item--left .avt__card,
-  .avt__item--right .avt__card { text-align: left; }
+  .avt__item--right .avt__card {
+    text-align: left;
+  }
 }
 
-/* ---- Reduced motion ---- */
+/* ---- Reduced motion: final state, no transitions ---- */
 @media (prefers-reduced-motion: reduce) {
-  .avt__path--draw,
-  .avt__node,
-  .avt__card {
+  .avt__stage.is-armed .avt__path--draw,
+  .avt__stage.is-armed .avt__node,
+  .avt__stage.is-armed .avt__card,
+  .avt__stage.is-armed .avt__track::before {
     transition: none;
   }
-  .avt__path--draw { stroke-dashoffset: 0; }
-  .avt__node { opacity: 1; }
-  .avt__card { opacity: 1; transform: none; }
+
+  .avt__stage.is-armed .avt__path--draw { stroke-dashoffset: 0; }
+  .avt__stage.is-armed .avt__node,
+  .avt__stage.is-armed .avt__card { opacity: 1; transform: none; }
+  .avt__stage.is-armed .avt__track::before { transform: none; }
 }

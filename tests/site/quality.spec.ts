@@ -17,6 +17,7 @@ const ACCEPTED_PAGES: { name: string; path: string; home?: boolean }[] = [
   { name: "SMM", path: QA.paths.smm },
   { name: "GEO", path: QA.paths.geo },
   { name: "Webdesign", path: QA.paths.webDesign },
+  { name: "Über uns", path: QA.paths.ueberUns },
   { name: "Kontakt", path: QA.paths.kontakt },
   { name: "Datenschutz", path: QA.paths.policy },
   { name: "404", path: QA.paths.notFound },

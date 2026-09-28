@@ -18,7 +18,7 @@
       "type": "about-intro",
       "settings": {
         "kicker": "Über uns",
-        "heading": "Wir bauen digitale Strukturen, die im Alltag halten.",
+        "heading": "Wir bauen digitale Strukturen, die *im Alltag* halten.",
         "body": "<p>Bei NetImpulse geht es nicht darum, irgendwas Hübsches ins Internet zu stellen und dann zu hoffen, dass es schon irgendwie läuft. Wir schauen uns an, was ein Unternehmen wirklich braucht: eine klare Struktur, ein gutes Design, saubere Technik und Maßnahmen, die am Ende auch Besucher, Anfragen oder Verkäufe bringen.</p><p>Dafür bringen wir Strategie, Design, SEO/SEA und Shopify-Entwicklung zusammen. Nicht als einzelne Baustellen, sondern als Team, das gemeinsam an einer Lösung arbeitet. Wir sprechen direkt mit den Menschen, die später damit arbeiten oder dafür Verantwortung tragen – damit am Ende nichts entsteht, das nur gut aussieht, sondern etwas, das im Alltag hilft, verstanden wird und messbar etwas bringt.</p>",
         "cta_label": "Projekt anfragen",
         "cta_url": "shopify://pages/kontakt",
@@ -27,9 +27,9 @@
         "chip_2_value": "",
         "chip_2_label": "",
         "color_scheme": "scheme-sand",
-        "accent_color": "#1f2328",
-        "padding_top": 76,
-        "padding_bottom": 76,
+        "accent_color": "",
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -78,9 +78,9 @@
         "heading": "Werte, die sich durchziehen.",
         "intro": "Vier Prinzipien, die in jedem Projekt einen roten Faden bilden.",
         "color_scheme": "scheme-sand",
-        "accent_color": "#1f2328",
-        "padding_top": 80,
-        "padding_bottom": 80,
+        "accent_color": "",
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -201,13 +201,13 @@
         "card_kicker": "Wer dahintersteht",
         "card_heading": "Keine anonyme Agenturstruktur",
         "card_text": "Wir möchten, dass du weißt, mit wem du arbeitest. Bei uns verschwindet dein Projekt nicht irgendwo im Hintergrund. Wir sind nah dran, sprechen miteinander und übernehmen Verantwortung für das, was wir tun.\n\nMarketing, Design und Technik denken wir nicht getrennt. Wir stimmen uns ab, bringen unsere Ideen zusammen und sorgen dafür, dass am Ende alles zusammenpasst.",
-        "feature_bg": "#0c1c24",
-        "feature_text": "#ffffff",
+        "feature_bg": "",
+        "feature_text": "",
         "focus_label": "Fokusbereiche",
         "color_scheme": "scheme-sand",
-        "accent_color": "#1f2328",
-        "padding_top": 76,
-        "padding_bottom": 76,
+        "accent_color": "",
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }
