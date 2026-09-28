@@ -220,15 +220,15 @@
       "name": "CTA compact",
       "settings": {
         "kicker": "Kontakt",
-        "heading": "Bereit für planbares Wachstum?",
+        "heading": "Bereit für planbares *Wachstum?*",
         "intro": "Lass uns gemeinsam anschauen, wo dein digitaler Auftritt gerade steht und was ihn wirklich nach vorne bringen kann. In einem kostenlosen Audit schauen wir auf Strategie, Design und Performance – also darauf, was schon gut funktioniert, wo noch Potenzial liegt und welche nächsten Schritte sinnvoll wären.",
         "show_intro": true,
         "button_label": "Jetzt anfragen",
-        "button_url": "",
-        "color_scheme": "scheme-sand",
-        "accent_color": "#89b1b9",
-        "padding_top": 64,
-        "padding_bottom": 64,
+        "button_url": "shopify://pages/kontakt",
+        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
+        "accent_color": "",
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }
