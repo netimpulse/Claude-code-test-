@@ -56,7 +56,11 @@ const PAGES: Target[] = [
     count: 2,
     heading: "Was ist das NetImpulse-SEO?",
     instances: [
-      { photo: true, side: "left" },
+      // templates/page.seo.json references shopify://shop_images/ChatGPT_Image_3._Juni_2026_12_43_48.png,
+      // but that file is not in the store's Files (CDN 404), so Shopify resolves the
+      // setting to blank and the section correctly renders its Tafel graphic.
+      // Set back to photo: true once the image is re-uploaded / re-selected.
+      { photo: false, side: "left" },
       { photo: false, side: "right" },
     ],
   },

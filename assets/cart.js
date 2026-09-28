@@ -172,6 +172,9 @@
         }
         const qtyInput = itemEl.querySelector('[data-cart-qty-input]');
         if (qtyInput) qtyInput.value = String(item.quantity);
+        // The line stays in the DOM on this path, so release the busy state
+        // (replaceSection gets fresh, enabled markup instead).
+        setLineBusy(itemEl, false);
       });
       updateCartCount(currentSection, cart.item_count);
     }

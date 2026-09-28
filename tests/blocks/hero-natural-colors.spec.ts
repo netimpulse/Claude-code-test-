@@ -9,6 +9,8 @@ import { QA, withTheme } from "../fixtures";
  *  - dashboard ticker: green positive / red negative deltas + sparklines, red LIVE
  *  - ad cycler: red LIVE test dot, green winner badge
  *  - GEO chat: green "monitoring" (online) dot
+ * Exception: the ni-deck web graphic on the home page uses neutral outlined
+ * browser dots (design system), checked at the end of this file.
  */
 
 const bg = (el: Element) => getComputedStyle(el).backgroundColor;
@@ -98,13 +100,37 @@ test.describe("Hero natural colours", () => {
     expect(await dots.nth(2).evaluate(bg)).toBe("rgb(91, 183, 121)");
   });
 
-  test("ni-deck window dots are red / amber / green", async ({ page }) => {
-    // Not part of S6d/S6e; kept as before on the QA page.
-    await go(page, QA.paths.qaBlock);
-    const dots = page.locator(".ni-device__dots span");
-    expect(await dots.count()).toBeGreaterThanOrEqual(3);
-    expect(await dots.nth(0).evaluate(bg)).toBe("rgb(255, 95, 87)");
-    expect(await dots.nth(1).evaluate(bg)).toBe("rgb(254, 188, 46)");
-    expect(await dots.nth(2).evaluate(bg)).toBe("rgb(40, 200, 64)");
+  test("ni-deck web graphic: three browser dots, outlined in the slab's muted colour", async ({ page }) => {
+    // Redesign: ni-deck (home page) no longer has the .ni-device mock with
+    // traffic-light dots. Its web graphic (snippets/ni-deck-graphic.liquid,
+    // visual "web") shows three browser dots that section-ni-deck.css draws as
+    // 9px rings in currentColor (= --slab-muted of the slab) without a fill.
+    await go(page, QA.paths.home);
+    const bar = page.locator(".ni-deck .ni-deck-g--web .ni-deck-g__webbar").first();
+    await expect(bar).toBeAttached();
+    const dots = bar.locator(":scope > i");
+    await expect(dots).toHaveCount(3);
+    const muted = await bar.evaluate(fg);
+    for (let i = 0; i < 3; i++) {
+      const s = await dots.nth(i).evaluate((el) => {
+        const cs = getComputedStyle(el);
+        return {
+          w: cs.width,
+          h: cs.height,
+          radius: cs.borderTopLeftRadius,
+          bw: cs.borderTopWidth,
+          bs: cs.borderTopStyle,
+          bc: cs.borderTopColor,
+          bg: cs.backgroundColor,
+        };
+      });
+      expect(s.w, `dot ${i} width`).toBe("9px");
+      expect(s.h, `dot ${i} height`).toBe("9px");
+      expect(s.radius, `dot ${i} round`).toBe("50%");
+      expect(s.bw).toBe("1px");
+      expect(s.bs).toBe("solid");
+      expect(s.bc, `dot ${i} ring in the slab muted colour`).toBe(muted);
+      expect(s.bg, `dot ${i} has no fill`).toBe("rgba(0, 0, 0, 0)");
+    }
   });
 });

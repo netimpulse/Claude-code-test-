@@ -1,3 +1,7 @@
+import fs from "node:fs";
+import path from "node:path";
+import type { Page } from "@playwright/test";
+
 /**
  * Stabile Test-Fixtures fuer den Visual-QA-Workflow.
  *
@@ -64,4 +68,30 @@ export const QA = {
 export function withTheme(path: string): string {
   const sep = path.includes("?") ? "&" : "?";
   return `${path}${sep}preview_theme_id=${QA.themeId}`;
+}
+
+/** Liest einen Wert aus locales/<file> (Shopify-Kopfkommentar wird entfernt). */
+export function localeValue(file: string, key: string): string {
+  const raw = fs.readFileSync(path.join(__dirname, "..", "locales", file), "utf8");
+  const json = JSON.parse(raw.replace(/^\s*\/\*[\s\S]*?\*\/\s*/, ""));
+  return key.split(".").reduce((o: any, k) => o?.[k], json);
+}
+
+/**
+ * Locale-Datei passend zur aktiven Shop-Sprache (html[lang]). Der Shop laeuft
+ * derzeit mit Englisch als Hauptsprache; nach der Umstellung auf Deutsch
+ * greifen dieselben Tests automatisch auf locales/de.json.
+ */
+export async function activeLocaleFile(page: Page): Promise<string> {
+  const lang = (await page.evaluate(() => document.documentElement.lang || "")).toLowerCase();
+  const primary = lang.split("-")[0];
+  if (primary && primary !== "en" && fs.existsSync(path.join(__dirname, "..", "locales", `${primary}.json`))) {
+    return `${primary}.json`;
+  }
+  return "en.default.json";
+}
+
+/** Kurzform: Locale-Text in der aktiven Shop-Sprache. */
+export async function activeLocaleValue(page: Page, key: string): Promise<string> {
+  return localeValue(await activeLocaleFile(page), key);
 }

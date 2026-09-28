@@ -430,6 +430,8 @@
   .cart-discount__row { display: flex; gap: .5rem; }
   .cart-discount__input {
     flex: 1;
+    /* let the field shrink below its intrinsic size (no overflow at 320px) */
+    min-width: 0;
     padding: .65rem .85rem;
     border: 1px solid color-mix(in srgb, var(--cart-text) 16%, transparent);
     border-radius: 0;
@@ -443,6 +445,7 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--cart-accent) 22%, transparent);
   }
   .cart-discount__apply {
+    flex: none;
     padding: 0 1rem;
     background: transparent;
     border: 1px solid color-mix(in srgb, var(--cart-text) 30%, transparent);

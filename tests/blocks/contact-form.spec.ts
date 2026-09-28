@@ -112,7 +112,9 @@ test.describe("contact-form section (Kontakt)", () => {
     const small = await tokenPx(page, "--text-small");
     const inputs = page.locator(".contact-form__input");
     const count = await inputs.count();
-    expect(count).toBe(7);
+    // page.kontakt.json has six field blocks: name, email, phone, company (inputs),
+    // topic (select) and message (textarea) – see "Form-Felder rendern korrekt".
+    expect(count).toBe(6);
     for (let i = 0; i < count; i++) {
       const s = await inputs.nth(i).evaluate((el) => {
         const cs = getComputedStyle(el);
@@ -331,6 +333,11 @@ test.describe("contact-form error state (deterministic)", () => {
       d.remove();
       return v;
     }, result.errorToken || "#a3261b");
-    expect(result.color).toBe(probe);
+    // .contact-form__input has `transition: border-color var(--dur)`, so the colour
+    // read in the same frame is still the start value; assert the settled colour.
+    const firstInput = page.locator(".contact-form__field.is-invalid").first().locator("input, textarea, select").first();
+    await expect
+      .poll(() => firstInput.evaluate((el) => getComputedStyle(el).borderTopColor), { timeout: 3_000 })
+      .toBe(probe);
   });
 });

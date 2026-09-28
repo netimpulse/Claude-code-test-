@@ -1,11 +1,5 @@
 import { test, expect } from "@playwright/test";
-import fs from "node:fs";
-import { QA, withTheme } from "../fixtures";
-
-function localeValue(file: string, key: string): string {
-  const raw = fs.readFileSync(`locales/${file}`, "utf8").replace(/^\s*\/\*[\s\S]*?\*\/\s*/, "");
-  return key.split(".").reduce((o: any, k) => o?.[k], JSON.parse(raw));
-}
+import { QA, withTheme, activeLocaleFile, localeValue } from "../fixtures";
 
 /**
  * Cart-Section Tests.
@@ -47,7 +41,32 @@ async function seedCart(page: import("@playwright/test").Page, qty = 1) {
     },
     [QA_VARIANT_ID, qty] as const
   );
-  if (result.add !== 200) {
+  if (result.add === 429) {
+    // The store throttles scripted /cart/add.js calls with a bot challenge (429)
+    // while a regular form POST to /cart/add still goes through. Fall back to
+    // the product page's add-to-cart form with the same variant and quantity.
+    await page.goto(withTheme(QA.paths.product), { waitUntil: "load" });
+    await passChallenge(page);
+    const nav = page.waitForURL(/\/cart(\?|$)/, { timeout: 30_000 });
+    await page.evaluate(
+      ([variantId, quantity]) => {
+        const form = document.querySelector<HTMLFormElement>('form[action*="/cart/add"]');
+        if (!form) throw new Error("product form not found");
+        (form.querySelector('[name="id"]') as HTMLInputElement).value = String(variantId);
+        let q = form.querySelector<HTMLInputElement>('[name="quantity"]');
+        if (!q) {
+          q = document.createElement("input");
+          q.type = "hidden";
+          q.name = "quantity";
+          form.appendChild(q);
+        }
+        q.value = String(quantity);
+        form.submit();
+      },
+      [QA_VARIANT_ID, qty] as const
+    );
+    await nav;
+  } else if (result.add !== 200) {
     throw new Error(
       `/cart/add.js returned ${result.add} (clear=${result.clr}) — body=${result.addBody}`
     );
@@ -67,7 +86,11 @@ test.describe("Cart – Section", () => {
     await expect(root).toBeVisible();
 
     await expect(root.locator(".cart-page__title")).toHaveText(/Dein Warenkorb/i);
-    await expect(root.locator(".cart-page__subtitle")).toContainText(/Position/);
+    // Item count comes from the active shop locale (html[lang]); the suffix is a template setting.
+    const loc = await activeLocaleFile(page);
+    await expect(root.locator(".cart-page__subtitle")).toContainText(
+      localeValue(loc, "cart.items_count.one").replace("{{ count }}", "1")
+    );
     await expect(root.locator(".cart-page__subtitle")).toContainText(/digital/);
 
     await expect(root.locator("[data-cart-item]")).toHaveCount(1);
@@ -92,17 +115,35 @@ test.describe("Cart – Section", () => {
 
     await expect(input).toHaveValue("1");
 
-    // Stub the change endpoint so the line stays in the DOM, and record requests.
+    // Stub the change endpoint and record requests. Each request is held until
+    // the client-side state has been asserted; a bare "{}" answer would make
+    // cart.js fall back to a reload (line count mismatch) and race the check.
+    const pending: import("@playwright/test").Route[] = [];
     const bodies: { quantity?: number }[] = [];
     await page.route("**/cart/change.js", (route) => {
       bodies.push(JSON.parse(route.request().postData() || "{}"));
-      return route.fulfill({ status: 200, body: "{}" });
+      pending.push(route);
     });
+    // Answer like /cart/change.js without `sections`: one line with that quantity.
+    const answer = (quantity: number) =>
+      pending.shift()!.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          item_count: quantity,
+          total_price: 1000 * quantity,
+          items_subtotal_price: 1000 * quantity,
+          items: [{ quantity, final_line_price: 1000 * quantity }],
+        }),
+      });
 
     // Increment flips the value client-side and requests quantity 2.
     await inc.click();
     await expect(input).toHaveValue("2");
     await expect.poll(() => bodies.at(-1)?.quantity).toBe(2);
+    await answer(2);
+    await expect(input).toHaveValue("2");
+    await expect(dec).toBeEnabled();
 
     // Decrement from 1 goes to 0, which Shopify treats as remove (Codex bug 5).
     await input.evaluate((el: HTMLInputElement) => (el.value = "1"));
@@ -146,20 +187,22 @@ test.describe("Cart – Section", () => {
     await expect(root.locator("[data-cart-empty] .cart-page__continue")).toBeVisible();
   });
 
-  test("UI texts come from the de locale (S7d i18n)", async ({ page }) => {
+  test("UI texts come from the active locale (S7d i18n)", async ({ page }) => {
     const root = page.locator("[data-section-type='cart']").first();
     const item = root.locator("[data-cart-item]").first();
+    // Expected texts follow the active shop language (html[lang]), not a fixed German.
+    const loc = await activeLocaleFile(page);
     await expect(root.locator(".cart-page__subtitle")).toContainText(
-      localeValue("de.json", "cart.items_count.one").replace("{{ count }}", "1")
+      localeValue(loc, "cart.items_count.one").replace("{{ count }}", "1")
     );
-    await expect(item.locator("[data-cart-qty-decrement]")).toHaveAttribute("aria-label", localeValue("de.json", "cart.qty_decrease"));
-    await expect(item.locator("[data-cart-qty-increment]")).toHaveAttribute("aria-label", localeValue("de.json", "cart.qty_increase"));
-    await expect(item.locator("[data-cart-qty-input]")).toHaveAttribute("aria-label", localeValue("de.json", "cart.quantity"));
-    await expect(item.locator("[data-cart-item-remove]")).toHaveText(localeValue("de.json", "cart.remove"));
+    await expect(item.locator("[data-cart-qty-decrement]")).toHaveAttribute("aria-label", localeValue(loc, "cart.qty_decrease"));
+    await expect(item.locator("[data-cart-qty-increment]")).toHaveAttribute("aria-label", localeValue(loc, "cart.qty_increase"));
+    await expect(item.locator("[data-cart-qty-input]")).toHaveAttribute("aria-label", localeValue(loc, "cart.quantity"));
+    await expect(item.locator("[data-cart-item-remove]")).toHaveText(localeValue(loc, "cart.remove"));
     const summary = root.locator("[data-cart-summary]");
-    await expect(summary).toContainText(localeValue("de.json", "cart.subtotal"));
-    await expect(summary).toContainText(localeValue("de.json", "cart.total"));
-    await expect(summary).toContainText(localeValue("de.json", "cart.tax_included"));
+    await expect(summary).toContainText(localeValue(loc, "cart.subtotal"));
+    await expect(summary).toContainText(localeValue(loc, "cart.total"));
+    await expect(summary).toContainText(localeValue(loc, "cart.tax_included"));
   });
 
   test("Checkout button uses the scheme-sand primary button colors (contrast >= 4.5)", async ({ page }) => {

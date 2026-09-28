@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { test, expect, type Page, type Locator } from "@playwright/test";
-import { QA, withTheme } from "../fixtures";
+import { QA, withTheme, activeLocaleFile } from "../fixtures";
 
 /**
  * Blog index (sections/blog.liquid) and article page (sections/article.liquid),
@@ -258,6 +258,10 @@ test.describe("article page", () => {
       expect(bg, "quote on --color-surface").toBe(SURFACE);
     }
 
+    // Fixed UI texts: expected values come from the locale file of the active
+    // shop language (html[lang]) – English while en is primary, de.json after the switch.
+    const loc = await activeLocaleFile(page);
+
     // Newsletter/CTA: scheme primary button, texts from the locale file
     const cta = page.locator(".article-cta");
     if ((await cta.count()) > 0) {
@@ -273,7 +277,7 @@ test.describe("article page", () => {
       expect(colors.h).toBeGreaterThanOrEqual(51);
       const email = cta.first().locator('input[type="email"]');
       if ((await email.count()) > 0) {
-        await expect(email).toHaveAttribute("placeholder", localeValue("de.json", "blog.newsletter_placeholder"));
+        await expect(email).toHaveAttribute("placeholder", localeValue(loc, "blog.newsletter_placeholder"));
       }
     }
 
@@ -284,12 +288,12 @@ test.describe("article page", () => {
     // Comments (only when enabled for the blog)
     const commentEmail = page.locator(".article__composer input[type='email']");
     if ((await commentEmail.count()) > 0) {
-      await expect(commentEmail).toHaveAttribute("placeholder", localeValue("de.json", "blog.email_placeholder"));
+      await expect(commentEmail).toHaveAttribute("placeholder", localeValue(loc, "blog.email_placeholder"));
       const textarea = page.locator(".article__composer textarea");
       const id = await textarea.getAttribute("id");
       await expect(page.locator(`label[for="${id}"]`)).toBeVisible();
       const submit = page.locator(".article__composer .btn.btn--primary");
-      await expect(submit).toContainText(localeValue("de.json", "blog.comment_form_submit"));
+      await expect(submit).toContainText(localeValue(loc, "blog.comment_form_submit"));
     }
 
     // Visible focus on the first tag/share link

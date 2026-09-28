@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { QA, withTheme } from "../fixtures";
+import { QA, withTheme, activeLocaleValue } from "../fixtures";
 
 /**
  * sections/about-perspectives.liquid – Über uns (Plan S7a).
@@ -8,7 +8,8 @@ import { QA, withTheme } from "../fixtures";
  * sits on the black surface (class color-scheme-2, #0d0d0d – feature_bg /
  * feature_text emptied in the template, no more #0c1c24); perspective
  * cards with --r-lg, 1px line, no shadow; portrait 4:5 with the category on
- * top; a card without photo shows the monogram tile with "Foto folgt".
+ * top; a card without photo shows the monogram tile with the locale text about_perspectives.photo_pending
+ * ("Foto folgt" in de, active language read from html[lang]).
  * Four columns from 1101px, two on tablet, one on mobile; no horizontal
  * scroll at 390/320; contrast ≥ 4.5:1.
  */
@@ -106,7 +107,10 @@ test.describe("About — Perspectives (S7a)", () => {
     const empty = section.locator(".about-perspectives__card--no-photo");
     await expect(empty).toHaveCount(1);
     await expect(empty.locator(".about-perspectives__initial")).toHaveText("T");
-    await expect(empty.locator(".about-perspectives__pending")).toHaveText(/Foto folgt/i);
+    // Label is a locale string: expected text follows the active shop language (html[lang]).
+    await expect(empty.locator(".about-perspectives__pending")).toHaveText(
+      await activeLocaleValue(page, "about_perspectives.photo_pending")
+    );
     expect(await empty.locator(".about-perspectives__monogram").evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(INK);
 
     const ratios = await section.locator(".about-perspectives__media").evaluateAll((els) =>
