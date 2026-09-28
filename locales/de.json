@@ -1,0 +1,170 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "404": {
+    "title": "404",
+    "not_found": "Diese Seite gibt es leider nicht.",
+    "back_to_shopping": "Zur Startseite"
+  },
+  "blog": {
+    "article_comments": "Kommentare",
+    "article_metadata_html": "{{ date }} von {{ author }}",
+    "comments": "Kommentare",
+    "comments_with_count": {
+      "one": "{{ count }} Kommentar",
+      "other": "{{ count }} Kommentare"
+    },
+    "comment_form_body": "Kommentar",
+    "comment_form_email": "E-Mail",
+    "comment_form_email_info": "Deine E-Mail-Adresse wird nicht veröffentlicht.",
+    "comment_form_name": "Name",
+    "comment_form_submit": "Kommentar senden",
+    "comment_form_title": "Schreib einen Kommentar",
+    "comment_placeholder": "Schreib einen Kommentar …",
+    "comment_moderated": "Kommentare werden geprüft, bevor sie erscheinen.",
+    "comment_success": "Dein Kommentar wurde veröffentlicht. Danke!",
+    "comment_success_moderated": "Danke! Dein Kommentar erscheint, sobald er freigegeben ist.",
+    "read_time_html": "{{ minutes }} Min. Lesezeit",
+    "tagged": "Verschlagwortet mit",
+    "share": "Teilen",
+    "share_twitter": "Auf X teilen",
+    "share_facebook": "Auf Facebook teilen",
+    "share_linkedin": "Auf LinkedIn teilen",
+    "read_more": "Artikel lesen",
+    "pagination": "Seitennavigation",
+    "newsletter_placeholder": "Deine E-Mail-Adresse",
+    "newsletter_success": "Danke für deine Anmeldung!",
+    "empty": "In diesem Blog gibt es noch keine Artikel."
+  },
+  "cart": {
+    "checkout": "Zur Kasse",
+    "title": "Warenkorb",
+    "update": "Aktualisieren",
+    "remove": "Entfernen"
+  },
+  "customers": {
+    "login": {
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "title": "Anmelden"
+    }
+  },
+  "collections": {
+    "title": "Kollektionen"
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Zu Apple Wallet hinzufügen",
+    "card": "Geschenkkarte",
+    "expired": "Diese Geschenkkarte ist abgelaufen",
+    "expires_on": "Gültig bis {{ expires_on }}",
+    "use_at_checkout": "Löse diese Geschenkkarte an der Kasse ein"
+  },
+  "password": {
+    "title": "Dieser Shop ist privat",
+    "password": "Passwort",
+    "enter": "Eintreten"
+  },
+  "search": {
+    "title": "Suche",
+    "placeholder": "Artikel, Seiten oder Produkte suchen",
+    "submit": "Suchen",
+    "no_results_html": "Keine Ergebnisse für {{ terms }}",
+    "results_for_html": "{{ count }} Ergebnisse für {{ terms }}"
+  },
+  "theme_store": {
+    "search_label": "Themes durchsuchen",
+    "clear_search": "Suche löschen",
+    "filter_label": "Filter",
+    "empty": "Zu diesem Filter gibt es noch keine Themes."
+  },
+  "theme_store_preview": {
+    "prev": "Vorheriges Theme",
+    "next": "Nächstes Theme",
+    "add_collection": "Wähle im Theme-Editor eine Kollektion, um hier Themes anzuzeigen.",
+    "pick_product": "Theme-Produkt auswählen",
+    "add_themes": "Füge im Editor Theme-Karten hinzu und wähle für jede ein Produkt."
+  },
+  "theme_store_deck": {
+    "prev": "Zurück",
+    "next": "Weiter",
+    "empty": "Füge im Theme-Editor Theme-Karten hinzu."
+  },
+  "services_overview": {
+    "tabs_label": "Leistung wählen",
+    "in_focus": "Im Fokus",
+    "previous": "Vorherige Leistung",
+    "next": "Nächste Leistung",
+    "add_services": "Füge Leistungs-Blöcke hinzu, um zu starten."
+  },
+  "team_overview": {
+    "more_about": "Mehr über",
+    "add_members": "Füge Teammitglied-Blöcke hinzu, um zu starten."
+  },
+  "product_detail": {
+    "placeholder_title": "Produkttitel",
+    "variant": "Variante",
+    "quantity": "Menge",
+    "qty_decrease": "Menge verringern",
+    "qty_increase": "Menge erhöhen",
+    "add_to_cart": "In den Warenkorb",
+    "sold_out": "Ausverkauft",
+    "rating_count_prefix": "aus"
+  },
+  "hero_float": {
+    "add_cards": "Füge im Theme-Editor Karten-Blöcke hinzu, um das Karussell zu füllen.",
+    "prev": "Vorherige Folie",
+    "next": "Nächste Folie"
+  },
+  "services_spotlight": {
+    "add_services": "Füge Leistungs-Blöcke hinzu, um zu starten."
+  },
+  "services_orbit": {
+    "add_services": "Füge Leistungs-Blöcke hinzu, um zu starten."
+  },
+  "service_aspects": {
+    "add_tiles": "Füge Kachel-Blöcke hinzu, um zu starten."
+  },
+  "team_compact": {
+    "add_members": "Füge Teammitglied-Blöcke hinzu, um zu starten."
+  },
+  "about_stats": {
+    "add_stats": "Füge Kennzahl-Blöcke hinzu, um zu starten."
+  },
+  "about_values": {
+    "add_values": "Füge Werte-Blöcke hinzu, um zu starten."
+  },
+  "about_timeline": {
+    "add_milestones": "Füge Meilenstein-Blöcke hinzu, um zu starten."
+  },
+  "about_perspectives": {
+    "add_perspectives": "Füge Perspektiven-Blöcke hinzu, um zu starten."
+  },
+  "landingpage": {
+    "empty": "Füge Landingpage-Blöcke hinzu (Hero, Bento, Kennzahlen, Case, Testimonial, Themes, CTA), um deine Seite aufzubauen.",
+    "add_cards": "Füge im Theme-Editor Bento-Karten hinzu.",
+    "add_collection": "Wähle im Editor eine Themes-Kollektion, um hier Produkte anzuzeigen.",
+    "compare": "Vorher und nachher zeigen",
+    "prev": "Zurück",
+    "next": "Weiter"
+  },
+  "general": {
+    "errors_title": "Bitte überprüfe folgende Felder:",
+    "skip_to_content": "Zum Inhalt springen"
+  },
+  "meta": {
+    "tagged": "verschlagwortet mit „{{ tags }}“",
+    "page": "Seite {{ page }}"
+  },
+  "localization": {
+    "language_label": "Sprache",
+    "submit": "Sprache ändern"
+  }
+}

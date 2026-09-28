@@ -87,8 +87,8 @@
 
 <title>
   {{ page_title }}
-  {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
-  {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+  {%- if current_tags -%}{%- assign joined_tags = current_tags | join: ', ' %} &ndash; {{ 'meta.tagged' | t: tags: joined_tags }}{% endif -%}
+  {%- if current_page != 1 %} &ndash; {{ 'meta.page' | t: page: current_page }}{% endif -%}
   {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
 </title>
 

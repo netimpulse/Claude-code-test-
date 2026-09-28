@@ -114,9 +114,9 @@
     "quantity": "Quantity",
     "qty_decrease": "Decrease quantity",
     "qty_increase": "Increase quantity",
-    "add_to_cart": "In den Warenkorb",
+    "add_to_cart": "Add to cart",
     "sold_out": "Sold out",
-    "rating_count_prefix": "aus"
+    "rating_count_prefix": "of"
   },
   "hero_float": {
     "add_cards": "Add card blocks in the theme editor to fill the carousel.",
@@ -154,5 +154,17 @@
     "compare": "Reveal before and after",
     "prev": "Previous",
     "next": "Next"
+  },
+  "general": {
+    "errors_title": "Please check the following fields:",
+    "skip_to_content": "Skip to content"
+  },
+  "meta": {
+    "tagged": "tagged \"{{ tags }}\"",
+    "page": "Page {{ page }}"
+  },
+  "localization": {
+    "language_label": "Language",
+    "submit": "Change language"
   }
 }
