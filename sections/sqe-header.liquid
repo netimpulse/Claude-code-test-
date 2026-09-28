@@ -28,6 +28,10 @@
   assign cta_text = section.settings.cta_text
   assign cta_link = section.settings.cta_link
   assign logo_image = section.settings.logo_image | default: settings.logo
+  assign wordmark = section.settings.wordmark_text
+  if wordmark == blank
+    assign wordmark = shop.name
+  endif
 
   assign menu_weight = '400'
   if section.settings.menu_bold
@@ -91,9 +95,9 @@
 
     <div class="sqe-header__logo">
       {%- if request.page_type == 'index' -%}<h1 class="sqe-header__h1">{%- endif -%}
-      <a href="{{ routes.root_url }}" class="sqe-header__logo-link" aria-label="{{ shop.name | escape }}">
+      <a href="{{ routes.root_url }}" class="sqe-header__logo-link" aria-label="{{ wordmark | escape }}">
         {%- if logo_image != blank -%}
-          {%- assign logo_alt = logo_image.alt | default: shop.name | escape -%}
+          {%- assign logo_alt = logo_image.alt | default: wordmark | escape -%}
           {{ logo_image | image_url: width: 600 | image_tag:
               widths: '160, 240, 320, 480, 600',
               sizes: '(max-width: 750px) 30vw, 240px',
@@ -102,7 +106,7 @@
               preload: true
           }}
         {%- else -%}
-          <span class="sqe-header__logo-text">{{ shop.name }}</span>
+          <span class="sqe-header__logo-text">{{ wordmark | escape }}</span>
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}</h1>{%- endif -%}
@@ -611,7 +615,13 @@
       "type": "image_picker",
       "id": "logo_image",
       "label": "Logo image",
-      "info": "Overrides the global theme logo. Falls back to the global logo, then to the shop name as text."
+      "info": "Overrides the global theme logo. Falls back to the global logo, then to the wordmark text."
+    },
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Wordmark text",
+      "info": "Shown when no logo image is set. Empty = shop name."
     },
 
     { "type": "header", "content": "Navigation" },

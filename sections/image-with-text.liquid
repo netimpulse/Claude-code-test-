@@ -29,9 +29,9 @@
       --iwt-badge-bg: {{ scheme.settings.text }};
       --iwt-badge-text: {{ scheme.settings.background }};
     {%- endif -%}
-    {%- if scheme.settings.on_primary_button != blank -%}
-      --iwt-on-accent: {{ scheme.settings.on_primary_button }};
-    {%- endif -%}
+    {%- comment -%} Button text contrasts with the actual accent (WCAG 1.4.3). {%- endcomment -%}
+    {%- assign accent_brightness = accent | color_brightness -%}
+    --iwt-on-accent: {% if accent_brightness > 150 %}#0d0d0d{% else %}#fffdf8{% endif %};
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }

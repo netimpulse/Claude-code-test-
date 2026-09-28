@@ -68,6 +68,10 @@
     --ni-footer-wordmark-size: {{ section.settings.wordmark_size }}px;
     --ni-footer-pad-top: {{ section.settings.padding_top }}px;
     --ni-footer-pad-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if section.settings.revocation_color != blank %}
+    --revocation-color: {{ section.settings.revocation_color }};
+    --revocation-on-color: {{ section.settings.revocation_on_color | default: '#ffffff' }};
+    {%- endif %}
     {{ section.settings.wordmark_font | font_face: font_display: 'swap' }}
   }
 {% endstyle %}
@@ -77,7 +81,7 @@
     <div class="ni-footer__grid">
 
       <div class="ni-footer__brand">
-        <a class="ni-footer__wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+        <a class="ni-footer__wordmark" href="{{ routes.root_url }}" aria-label="{{ wordmark | escape }}">
           {{- wordmark | escape -}}
         </a>
 
@@ -289,18 +293,13 @@
       <div class="ni-footer__base">
         {%- if section.settings.show_copyright -%}
           <small class="ni-footer__copyright">
-            &copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}.
+            &copy; {{ 'now' | date: '%Y' }} {{ wordmark | escape }}.
             {%- if section.settings.copyright_suffix != blank %} {{ section.settings.copyright_suffix | escape }}{% endif -%}
           </small>
         {%- endif -%}
 
         {%- if show_revocation -%}
-          {%- assign revocation_color = section.settings.revocation_color -%}
-          <a
-            class="ni-footer__revocation"
-            href="{{ revocation_url }}"
-            {%- if revocation_color != blank %} style="--revocation-color: {{ revocation_color }}; --revocation-on-color: {{ section.settings.revocation_on_color | default: '#ffffff' }};"{% endif -%}
-          >
+          <a class="ni-footer__revocation" href="{{ revocation_url }}">
             {{ revocation_label | escape }}
           </a>
         {%- endif -%}
@@ -314,7 +313,7 @@
   "name": "Footer",
   "settings": [
     { "type": "header", "content": "Wordmark" },
-    { "type": "text", "id": "wordmark_text", "label": "Wordmark text", "info": "Leer = Shop-Name", "default": "zelt" },
+    { "type": "text", "id": "wordmark_text", "label": "Wordmark text", "info": "Leer = Shop-Name", "default": "" },
     { "type": "font_picker", "id": "wordmark_font", "label": "Wordmark font", "default": "assistant_n4" },
     { "type": "range", "id": "wordmark_size", "label": "Wordmark size", "min": 28, "max": 96, "step": 2, "unit": "px", "default": 52 },
 

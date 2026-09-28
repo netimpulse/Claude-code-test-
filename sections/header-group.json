@@ -15,6 +15,7 @@
       "type": "sqe-header",
       "settings": {
         "logo_image": "shopify://shop_images/gempages_541696398437909552-713e006d-a0cc-433d-ac17-c5c7874e9cba.png",
+        "wordmark_text": "NetImpulse",
         "menu": "hauptmenu",
         "nav_alignment": "center",
         "sticky_header_type": "on-scroll-up",
@@ -28,7 +29,7 @@
         "cta_link": "shopify://pages/kontakt",
         "cta_font_size": 14,
         "show_search": true,
-        "show_account": true,
+        "show_account": false,
         "show_cart": true,
         "logo_pos_x": 2,
         "logo_pos_y": 0,

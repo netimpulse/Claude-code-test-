@@ -36,9 +36,9 @@
       --sorb-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
       --sorb-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
     {%- endif -%}
-    {%- if scheme.settings.on_primary_button != blank -%}
-      --sorb-on-accent: {{ scheme.settings.on_primary_button }};
-    {%- endif -%}
+    {%- comment -%} Button text contrasts with the actual accent (WCAG 1.4.3). {%- endcomment -%}
+    {%- assign accent_brightness = accent | color_brightness -%}
+    --sorb-on-accent: {% if accent_brightness > 150 %}#0d0d0d{% else %}#fffdf8{% endif %};
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
