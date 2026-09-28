@@ -118,6 +118,26 @@
     "sold_out": "Ausverkauft",
     "rating_count_prefix": "aus"
   },
+  "hero_serp": {
+    "tabs_default": "Alle|Bilder|Shopping|News|Videos"
+  },
+  "hero_web_build": {
+    "status_default": "Build",
+    "step": "Schritt",
+    "badge_default": "LIVE · CR +62%",
+    "steps": {
+      "grid": "Raster",
+      "header": "Header",
+      "hero": "Hero",
+      "copy": "Text",
+      "cta": "CTA",
+      "features": "Features",
+      "imagery": "Bilder",
+      "color": "Farbe",
+      "ship": "Launch",
+      "idle": "Bereit"
+    }
+  },
   "hero_float": {
     "add_cards": "Füge im Theme-Editor Karten-Blöcke hinzu, um das Karussell zu füllen.",
     "prev": "Vorherige Folie",
@@ -128,6 +148,10 @@
   },
   "services_orbit": {
     "add_services": "Füge Leistungs-Blöcke hinzu, um zu starten."
+  },
+  "addon_services": {
+    "add_cards": "Füge im Theme-Editor Karten hinzu.",
+    "request": "Jetzt anfragen"
   },
   "service_aspects": {
     "add_tiles": "Füge Kachel-Blöcke hinzu, um zu starten."

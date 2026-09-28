@@ -118,6 +118,26 @@
     "sold_out": "Sold out",
     "rating_count_prefix": "of"
   },
+  "hero_serp": {
+    "tabs_default": "All|Images|Shopping|News|Videos"
+  },
+  "hero_web_build": {
+    "status_default": "Build",
+    "step": "Step",
+    "badge_default": "LIVE · CR +62%",
+    "steps": {
+      "grid": "Grid",
+      "header": "Header",
+      "hero": "Hero",
+      "copy": "Copy",
+      "cta": "CTA",
+      "features": "Features",
+      "imagery": "Imagery",
+      "color": "Color",
+      "ship": "Ship",
+      "idle": "Idle"
+    }
+  },
   "hero_float": {
     "add_cards": "Add card blocks in the theme editor to fill the carousel.",
     "prev": "Previous slide",
@@ -128,6 +148,10 @@
   },
   "services_orbit": {
     "add_services": "Add service blocks to get started."
+  },
+  "addon_services": {
+    "add_cards": "Add cards in the theme editor.",
+    "request": "Enquire now"
   },
   "service_aspects": {
     "add_tiles": "Add tile blocks to get started."
