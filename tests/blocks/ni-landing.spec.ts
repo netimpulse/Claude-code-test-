@@ -144,7 +144,8 @@ test.describe("NetImpulse landing blocks", () => {
 
 /**
  * ni-deck (S5b1/S5b2) on the real homepage (R1: the QA block page has no
- * ni-deck). Sticky stacking only from 1101×760, static below.
+ * ni-deck). Scroll stacking as in the original deck: from 821px every slab
+ * sticks at the same top and the next slab slides over it; below it scrolls normally.
  */
 test.describe("NetImpulse deck (home)", () => {
   async function openHome(page: import("@playwright/test").Page, width: number, height: number) {
@@ -164,25 +165,44 @@ test.describe("NetImpulse deck (home)", () => {
     expect(await deck.locator(".ni-deck-card").first().evaluate(position)).toBe("sticky");
   });
 
-  test("Deck slabs stack: first slab sticks near the top when scrolled (1280×900)", async ({ page }) => {
-    const deck = await openHome(page, 1280, 900);
-    const first = deck.locator(".ni-deck-card").nth(0);
-    const second = deck.locator(".ni-deck-card").nth(1);
-    await second.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(300);
-    const firstTop = await first.evaluate((el) => el.getBoundingClientRect().top);
-    // sticky top = header height + 16px
-    expect(firstTop).toBeLessThan(120);
-  });
+  for (const [w, h] of [[1280, 900], [1280, 720], [900, 700]] as const) {
+    test(`Deck slabs stack and the next slab slides over the previous one (${w}×${h})`, async ({ page }) => {
+      const deck = await openHome(page, w, h);
+      const cards = deck.locator(".ni-deck-card");
+      expect(await cards.evaluateAll((els) => els.map((el) => getComputedStyle(el).position))).toEqual(
+        Array(5).fill("sticky")
+      );
+      // Scroll until the second slab has reached its sticky position.
+      await page.evaluate(() => {
+        const second = document.querySelectorAll("ni-deck .ni-deck-card")[1] as HTMLElement;
+        const secondTop = second.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo(0, secondTop - 24 + 40);
+      });
+      await page.waitForTimeout(300);
+      const [firstTop, secondTop] = await cards.evaluateAll((els) =>
+        els.slice(0, 2).map((el) => Math.round(el.getBoundingClientRect().top))
+      );
+      expect(firstTop).toBe(24);
+      expect(secondTop).toBe(24);
+      // The second slab paints above the first (later in DOM, same stacking context).
+      const onTop = await page.evaluate(() => {
+        const [a, b] = document.querySelectorAll("ni-deck .ni-deck-card");
+        const r = a.getBoundingClientRect();
+        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + 40);
+        return !!hit && b.contains(hit);
+      });
+      expect(onTop).toBe(true);
+    });
+  }
 
-  for (const [w, h] of [[1280, 720], [390, 844]] as const) {
-    test(`Deck slabs are static below the sticky breakpoint (${w}×${h})`, async ({ page }) => {
+  for (const [w, h] of [[820, 1000], [390, 844]] as const) {
+    test(`Deck slabs scroll normally below 821px (${w}×${h})`, async ({ page }) => {
       const deck = await openHome(page, w, h);
       const positions = await deck.locator(".ni-deck-card").evaluateAll((els) =>
         els.map((el) => getComputedStyle(el).position)
       );
       expect(positions.length).toBe(5);
-      for (const p of positions) expect(p).toBe("static");
+      for (const p of positions) expect(p).not.toBe("sticky");
     });
   }
 

@@ -66,8 +66,10 @@
 
 /* ---- Stack ---- */
 .ni-deck__stack {
+  position: relative;
   margin-top: clamp(48px, 6vw, 96px);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--s-5);
 }
 .ni-deck__empty {
@@ -219,11 +221,16 @@
   min-width: 0;
 }
 
-@media (min-width: 1101px) and (min-height: 760px) {
+/* Scroll stacking as in the original deck: from 821px each slab sticks
+   to the same top edge and the next one slides fully over it. */
+@media (min-width: 821px) {
+  .ni-deck__stack { gap: 0; padding-bottom: 11vh; }
   .ni-deck-card {
     position: sticky;
-    top: calc(var(--header-h) + 16px + var(--i, 0) * 12px);
+    top: 24px;
+    margin-bottom: 19vh;
   }
+  .ni-deck-card:last-child { margin-bottom: 0; }
 }
 
 /* ---- Graphics (snippets/ni-deck-graphic.liquid) ---- */
