@@ -1,18 +1,153 @@
+{%- liquid
+  assign body_font = settings.type_primary_font
+  assign body_font_500 = body_font | font_modify: 'weight', '500'
+  assign body_font_600 = body_font | font_modify: 'weight', '600'
+  assign body_font_italic = body_font | font_modify: 'style', 'italic'
+-%}
 {% style %}
-  {% # Loads all font variantions with display: swap %}
-  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {% # Body font (Work Sans via font_picker): regular, 500, 600, italic %}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {%- if body_font_500 -%}{{ body_font_500 | font_face: font_display: 'swap' }}{%- endif -%}
+  {%- if body_font_600 -%}{{ body_font_600 | font_face: font_display: 'swap' }}{%- endif -%}
+  {%- if body_font_italic -%}{{ body_font_italic | font_face: font_display: 'swap' }}{%- endif -%}
+
+  {% # Display + accent fonts, self-hosted (SIL OFL 1.1, see licenses/fonts) %}
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    font-style: normal;
+    font-weight: 200 800;
+    font-display: swap;
+    src: url({{ 'bricolage-grotesque-latin-opsz-normal.woff2' | asset_url }}) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Newsreader';
+    font-style: italic;
+    font-weight: 500;
+    font-display: swap;
+    src: url({{ 'newsreader-latin-500-italic.woff2' | asset_url }}) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
 
   :root {
-    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
-    --font-primary--style: {{ settings.type_primary_font.style }};
-    --font-primary--weight: {{ settings.type_primary_font.weight }};
+    --font-primary--family: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --font-primary--style: {{ body_font.style }};
+    --font-primary--weight: {{ body_font.weight }};
     --page-width: {{ settings.max_page_width }};
     --page-margin: {{ settings.min_page_margin }}px;
     --color-background: {{ settings.background_color }};
     --color-foreground: {{ settings.foreground_color }};
     --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+
+    /* Static palette (design system) */
+    --c-bg: #f8f6f1;
+    --c-surface: #fffdf8;
+    --c-sand: #efe6d8;
+    --c-sand-deep: #e6dccb;
+    --c-ink: #0d0d0d;
+    --c-ink-strong: #050505;
+    --c-ink-2: #1a1917;
+    --c-teal: #1c4948;
+    --c-teal-2: #173d3c;
+    --c-accent: #9ecbd0;
+    --c-muted: #57524a;
+    --c-muted-on-dark: #c2b9aa;
+    --c-muted-on-teal: #d3e2e0;
+    --c-line: #d6ccbb;
+    --c-line-dark: #34322e;
+    --c-line-teal: #3f6a68;
+    --c-line-strong: #7d766b;
+    --c-field-line-on-teal: #9fb9b7;
+    --c-error: #a3261b;
+    --c-error-on-dark: #ffb4a8;
+
+    /* Fonts */
+    --font-display: 'Bricolage Grotesque', {{ body_font.family }}, system-ui, sans-serif;
+    --font-accent: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --font-body-family: var(--font-body);
+
+    /* Type scale */
+    --text-mega: clamp(2.625rem, min(0.4rem + 6.4vw, 12vh), 6.5rem);
+    --text-display: clamp(2.375rem, 0.9rem + 5.6vw, 6.5rem);
+    --text-h2: clamp(2rem, 1.1rem + 3.6vw, 4.5rem);
+    --text-slab: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem);
+    --text-h3: clamp(1.5rem, 1.15rem + 1.3vw, 2.25rem);
+    --text-lead: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+    --text-body: 1.0625rem;
+    --text-small: 0.9375rem;
+    --text-label: 0.8125rem;
+
+    /* Spacing, layout */
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+    --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
+    --section-y: clamp(80px, 10vw, 160px);
+    --gutter: clamp(16px, 2vw, 32px);
+    --page-x: clamp(20px, 4vw, 56px);
+    --page-max: var(--page-width);
+    --header-h: 76px;
+
+    /* Radii, motion, controls */
+    --r-sm: 4px;
+    --r-lg: 16px;
+    --r-pill: 999px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 0.35s;
+    --btn-h: 52px;
+    --btn-h-sm: 44px;
+    --btn-pad-x: var(--s-6);
+    --btn-radius: var(--r-pill);
+    --focus-width: 2px;
+    --focus-offset: 3px;
   }
+
+  @media (max-width: 1024px) {
+    :root { --header-h: 68px; }
+  }
+
+  {% # Semantic tokens per color scheme; :root mirrors scheme-sand %}
+  {%- for scheme in settings.color_schemes -%}
+    {%- liquid
+      assign s = scheme.settings
+      assign brightness = s.background | color_brightness
+      assign is_light = false
+      if brightness > 128
+        assign is_light = true
+      endif
+    -%}
+    {%- if scheme.id == 'scheme-sand' %}:root,{% endif %}
+    .color-{{ scheme.id }} {
+      --color-bg: {{ s.background }};
+      --color-surface: {{ s.background_card }};
+      --color-text: {{ s.text }};
+      --color-muted: {{ s.muted }};
+      --color-accent: {{ s.accent }};
+      --color-btn-bg: {{ s.primary_button }};
+      --color-btn-fg: {{ s.on_primary_button }};
+      --color-btn-border: {{ s.primary_button_border }};
+      --color-btn2-bg: {{ s.secondary_button }};
+      --color-btn2-fg: {{ s.on_secondary_button }};
+      --color-btn2-border: {{ s.secondary_button_border }};
+      --color-link: {{ s.links }};
+      --color-icon: {{ s.icons }};
+      --color-btn2-bg-hover: {{ s.text }};
+      --color-btn2-fg-hover: {{ s.background }};
+      --focus-color: {{ s.accent }};
+      {%- if is_light %}
+      --color-heading: {{ s.text }};
+      --color-line: var(--c-line);
+      --color-line-strong: var(--c-line-strong);
+      --color-btn-bg-hover: var(--c-ink);
+      --color-btn-fg-hover: {{ s.on_primary_button }};
+      --color-error: var(--c-error);
+      {%- else %}
+      --color-heading: var(--c-surface);
+      --color-line: color-mix(in srgb, {{ s.text }} 18%, {{ s.background }});
+      --color-line-strong: var(--c-field-line-on-teal);
+      --color-btn-bg-hover: var(--c-surface);
+      --color-btn-fg-hover: var(--c-ink-strong);
+      --color-error: var(--c-error-on-dark);
+      {%- endif %}
+    }
+  {%- endfor %}
 {% endstyle %}

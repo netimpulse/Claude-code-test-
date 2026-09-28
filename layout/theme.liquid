@@ -16,6 +16,7 @@
       {% comment %} Preload the base font variant for initial page render {% endcomment %}
       {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
     {% endunless %}
+    {{ 'bricolage-grotesque-latin-opsz-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
 
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
@@ -27,6 +28,7 @@
   </head>
 
   <body>
+    <a class="skip-link" href="#MainContent">{{ 'general.skip_to_content' | t }}</a>
     {% sections 'header-group' %}
 
     <main id="MainContent" role="main">
