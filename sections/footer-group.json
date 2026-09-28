@@ -17,7 +17,7 @@
         "legal_column_xLYhmd": {
           "type": "legal_column",
           "settings": {
-            "heading": "LEGAL",
+            "heading": "Rechtliches",
             "show_privacy": true,
             "privacy_label": "Datenschutz",
             "privacy_url": "shopify://policies/privacy-policy",
@@ -50,6 +50,7 @@
       ],
       "settings": {
         "wordmark_text": "NetImpulse",
+        "claim": "Strategie, Gestaltung und Umsetzung als ein System. Aus Gießen.",
         "wordmark_font": "assistant_n4",
         "wordmark_size": 52,
         "show_linkedin": true,
@@ -71,7 +72,7 @@
         "show_copyright": true,
         "copyright_suffix": "",
         "show_revocation_button": true,
-        "revocation_label": "Widerruf",
+        "revocation_label": "",
         "revocation_url": "shopify://pages/widerruf",
         "revocation_color": "",
         "revocation_on_color": "",
@@ -79,8 +80,8 @@
         "bg_color": "",
         "text_color": "",
         "muted_color": "",
-        "padding_top": 56,
-        "padding_bottom": 40
+        "padding_top": 64,
+        "padding_bottom": 24
       }
     }
   },

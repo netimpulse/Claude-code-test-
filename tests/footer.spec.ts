@@ -58,17 +58,52 @@ test.describe("Footer", () => {
     await expect(qr.locator(".ni-footer__qr-img")).toBeVisible();
   });
 
-  test("Wordmark uses the merchant-picked font variable", async ({ page }) => {
-    const ff = await page.locator(".ni-footer__wordmark").first().evaluate((el) => {
-      return getComputedStyle(el).fontFamily;
+  test("Wordmark uses the brand font (Work Sans 600, 24px) with the teal dot", async ({ page }) => {
+    // S4c / SYS §6 Footer: wordmark like the header, not the display font and
+    // no giant wordmark. Setting wordmark_use_brand_font defaults to true.
+    const wordmark = page.locator(".ni-footer__wordmark").first();
+    const style = await wordmark.evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return { fontFamily: cs.fontFamily, fontWeight: cs.fontWeight, fontSize: cs.fontSize };
     });
-    expect(ff.length).toBeGreaterThan(0);
-    // System body font is the fallback chain on .ni-footer; the wordmark
-    // must pick up its own --ni-footer-wordmark-family.
-    const body = await page.locator(".ni-footer").first().evaluate((el) => {
-      return getComputedStyle(el).fontFamily;
+    const firstFamily = style.fontFamily.split(",")[0].trim().replace(/^["']|["']$/g, "");
+    expect(firstFamily, `font-family: ${style.fontFamily}`).toBe("Work Sans");
+    expect(style.fontWeight).toBe("600");
+    expect(style.fontSize).toBe("24px");
+    // Decorative dot before the name, hidden from assistive tech.
+    const dot = wordmark.locator(".ni-footer__dot");
+    await expect(dot).toHaveCount(1);
+    await expect(dot).toHaveAttribute("aria-hidden", "true");
+  });
+
+  test("Bottom row has copyright and a 'back to top' link to #MainContent", async ({ page }) => {
+    const base = page.locator(".ni-footer__base").first();
+    await expect(base).toBeVisible();
+    const borderTop = await base.evaluate((el) => getComputedStyle(el).borderTopWidth);
+    expect(borderTop).toBe("1px");
+    await expect(base.locator(".ni-footer__copyright")).toContainText(String(new Date().getFullYear()));
+    const top = base.locator("a.ni-footer__top");
+    await expect(top).toHaveAttribute("href", "#MainContent");
+    const box = await top.boundingBox();
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(24);
+  });
+
+  test("Column headings use the muted label style", async ({ page }) => {
+    const titles = page.locator(".ni-footer__col-title");
+    const count = await titles.count();
+    test.skip(count === 0, "No column headings configured");
+    const res = await titles.first().evaluate((el) => {
+      const cs = getComputedStyle(el);
+      const probe = document.createElement("span");
+      probe.style.color = "var(--color-muted)";
+      el.appendChild(probe);
+      const muted = getComputedStyle(probe).color;
+      probe.remove();
+      return { transform: cs.textTransform, color: cs.color, muted, hasLabel: el.classList.contains("label-caps") };
     });
-    expect(ff).not.toBe(body);
+    expect(res.hasLabel).toBe(true);
+    expect(res.transform).toBe("uppercase");
+    expect(res.color).toBe(res.muted);
   });
 
   test("No horizontal overflow at 320px viewport", async ({ page }) => {

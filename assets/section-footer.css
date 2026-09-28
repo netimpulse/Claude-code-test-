@@ -1,229 +1,237 @@
 /* section-footer.css
- * "Zelt"-inspired editorial dark footer.
- * Grid: brand (wordmark + socials) | nav (up to 4 link columns) | qr code.
- * Stacks gracefully on tablet and mobile. All colour tokens fall back
- * to the section's color scheme when the per-section overrides are
- * blank.
+ * NetImpulse footer (SYS §6 "Footer", black surface via scheme-2).
+ * Grid (12 columns from 861px): brand 1–4 | link columns 7–12 (2 each).
+ * Colours come from the colour-scheme tokens (--color-*); the optional
+ * section overrides (--ni-footer-bg/-text/-muted, --revocation-*) are only
+ * set by the section when the merchant fills the matching setting.
+ * No gradients, no shadows.
  */
 
 .ni-footer {
-  --ni-footer-bg: var(--ni-footer-bg-fallback, #1f1f1f);
-  --ni-footer-text: var(--ni-footer-text-fallback, #f4f1ea);
-  --ni-footer-muted: color-mix(in srgb, var(--ni-footer-text) 60%, transparent);
-  --ni-footer-line: color-mix(in srgb, var(--ni-footer-text) 14%, transparent);
-
   display: block;
-  background: var(--ni-footer-bg);
-  color: var(--ni-footer-text);
-  padding: var(--ni-footer-pad-top, 56px) clamp(1rem, 4vw, 3rem) var(--ni-footer-pad-bottom, 40px);
-  font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  background: var(--ni-footer-bg, var(--color-bg));
+  color: var(--ni-footer-text, var(--color-text));
+  padding: var(--ni-footer-pad-top, var(--s-8)) var(--page-x) var(--ni-footer-pad-bottom, var(--s-5));
+  font-family: var(--font-body);
+  font-size: var(--text-body, 1rem);
+  line-height: 1.5;
 }
 
 .ni-footer__inner {
-  max-width: 1440px;
+  max-width: var(--page-max, 1440px);
   margin: 0 auto;
 }
 
 .ni-footer__grid {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(0, 2fr) auto;
-  gap: clamp(28px, 4vw, 64px);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-7);
   align-items: start;
 }
 
-/* ---- Brand column (wordmark + socials) ---- */
+/* ---- Brand column: wordmark, claim, socials, QR ---- */
 .ni-footer__brand {
+  grid-column: 1 / span 4;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  align-items: flex-start;
+  gap: var(--s-5);
   min-width: 0;
 }
 
 .ni-footer__wordmark {
-  font-family: var(--ni-footer-wordmark-family);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-family: var(--ni-footer-wordmark-family, var(--font-body));
   font-style: var(--ni-footer-wordmark-style, normal);
-  font-weight: var(--ni-footer-wordmark-weight, 400);
-  font-size: var(--ni-footer-wordmark-size, 52px);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--ni-footer-text);
+  font-weight: var(--ni-footer-wordmark-weight, 600);
+  font-size: var(--ni-footer-wordmark-size, 1.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--ni-footer-text, var(--color-heading));
   text-decoration: none;
+  overflow-wrap: anywhere;
 }
-.ni-footer__wordmark:hover { opacity: 0.85; }
+
+.ni-footer__dot {
+  flex: none;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--c-teal);
+  background: var(--c-accent);
+}
+
+.ni-footer__claim {
+  margin: calc(var(--s-1) * -1) 0 0;
+  max-width: 30ch;
+  color: var(--ni-footer-muted, var(--color-muted));
+}
 
 .ni-footer__socials {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--s-2);
   padding: 0;
   margin: 0;
 }
 
 .ni-footer__social {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-line);
   border-radius: 50%;
-  background: var(--ni-footer-line);
-  color: var(--ni-footer-text);
-  transition: background 160ms ease, transform 160ms ease;
+  color: inherit;
+  transition: border-color var(--dur, 0.35s) var(--ease, ease), background-color var(--dur, 0.35s) var(--ease, ease);
 }
 .ni-footer__social:hover {
-  background: color-mix(in srgb, var(--ni-footer-text) 24%, transparent);
-  transform: translateY(-2px);
-}
-.ni-footer__social:focus-visible {
-  outline: 2px solid var(--ni-footer-text);
-  outline-offset: 2px;
+  border-color: currentColor;
 }
 
-/* ---- Nav columns ---- */
+/* ---- QR code ---- */
+.ni-footer__qr {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+}
+
+.ni-footer__qr-img {
+  display: block;
+  width: 90px;
+  height: 90px;
+  padding: 6px;
+  border-radius: var(--r-sm, 4px);
+  background: #ffffff;
+}
+
+.ni-footer__qr-caption {
+  font-size: var(--text-small, 0.875rem);
+  color: var(--ni-footer-muted, var(--color-muted));
+}
+
+/* ---- Link columns ---- */
 .ni-footer__nav {
+  grid-column: 7 / -1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: clamp(22px, 3vw, 48px);
+  /* 3 × (2 columns + 1 gutter) = exactly columns 7–12 of the outer grid */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-7);
   min-width: 0;
 }
 
 .ni-footer__col {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
   min-width: 0;
 }
 
 .ni-footer__col-title {
   margin: 0;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ni-footer-muted);
+  font-family: var(--font-body);
+  line-height: 1.4;
+  color: var(--ni-footer-muted, var(--color-muted));
 }
 
 .ni-footer__col-list {
   list-style: none;
+  margin: var(--s-4) 0 0;
   padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  gap: var(--s-2);
 }
 
 .ni-footer__link {
-  color: var(--ni-footer-text);
-  text-decoration: none;
-  font-size: 0.92rem;
-  line-height: 1.4;
-  transition: color 160ms ease;
-}
-.ni-footer__link:hover { color: color-mix(in srgb, var(--ni-footer-text) 70%, transparent); }
-.ni-footer__link:focus-visible {
-  outline: 2px solid var(--ni-footer-text);
-  outline-offset: 2px;
-}
-
-/* ---- QR column ---- */
-.ni-footer__qr {
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  min-height: 24px;
+  color: inherit;
+  text-decoration: none;
+  overflow-wrap: anywhere;
 }
-
-.ni-footer__qr-img {
-  width: 90px;
-  height: 90px;
-  display: block;
-  background: #ffffff;
-  padding: 6px;
-  border-radius: 6px;
-}
-
-.ni-footer__qr-caption {
-  font-size: 0.74rem;
-  color: var(--ni-footer-muted);
-  letter-spacing: 0.02em;
+.ni-footer__link:hover {
+  color: var(--ni-footer-text, var(--color-heading));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
 
 /* ---- Bottom row ---- */
 .ni-footer__base {
-  margin-top: clamp(28px, 4vw, 48px);
-  padding-top: 18px;
-  border-top: 1px solid var(--ni-footer-line);
+  margin-top: var(--s-8);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--color-line);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px 24px;
+  gap: var(--s-3) var(--s-5);
+  color: var(--ni-footer-muted, var(--color-muted));
 }
+
 .ni-footer__copyright {
-  font-size: 0.78rem;
-  color: var(--ni-footer-muted);
+  font-size: var(--text-label);
 }
+
+.ni-footer__base-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3) var(--s-5);
+  margin-left: auto;
+}
+
+/* Revocation: a real button (.btn--secondary.btn--sm). Own colours only
+   when the merchant sets revocation_color. */
 .ni-footer__revocation {
+  color: var(--revocation-color, var(--ni-footer-text, var(--color-btn2-fg)));
+  border-color: currentColor;
+}
+.ni-footer__revocation:hover {
+  background: var(--revocation-color, var(--ni-footer-text, var(--color-btn2-bg-hover)));
+  border-color: var(--revocation-color, var(--ni-footer-text, var(--color-btn2-bg-hover)));
+  color: var(--revocation-on-color, var(--ni-footer-bg, var(--color-btn2-fg-hover)));
+}
+
+.ni-footer__top {
   display: inline-flex;
   align-items: center;
-  margin-left: auto;
-  padding: 8px 16px;
-  border: 1px solid currentColor;
-  border-radius: 4px;
-  color: var(--revocation-color, inherit);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  gap: var(--s-2);
+  min-height: 44px;
+  color: inherit;
   text-decoration: none;
-  transition: background-color 0.18s ease, color 0.18s ease;
 }
-.ni-footer__revocation:hover,
-.ni-footer__revocation:focus-visible {
-  background: currentColor;
-  color: var(--revocation-on-color, var(--ni-footer-bg, #fff));
-}
-.ni-footer__revocation:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+.ni-footer__top:hover {
+  color: var(--ni-footer-text, var(--color-heading));
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* ---- Responsive ---- */
-@media (max-width: 1024px) {
-  .ni-footer__grid {
-    grid-template-columns: 1fr 1fr;
-  }
+@media (max-width: 1100px) {
+  .ni-footer__brand,
   .ni-footer__nav {
     grid-column: 1 / -1;
-    order: 3;
-  }
-  .ni-footer__qr {
-    align-items: flex-start;
   }
 }
 
-@media (max-width: 640px) {
-  .ni-footer__grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 860px) {
   .ni-footer__nav {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .ni-footer__qr {
-    align-items: flex-start;
-  }
-  .ni-footer__base {
-    justify-content: flex-start;
-  }
-  .ni-footer__revocation {
+  .ni-footer__base-end {
     margin-left: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ni-footer__social,
-  .ni-footer__link,
-  .ni-footer__revocation {
+  .ni-footer__social {
     transition: none;
   }
 }
