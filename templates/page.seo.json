@@ -121,8 +121,8 @@
         "color_scheme": "scheme-sand",
         "bg_color": "",
         "text_color": "",
-        "padding_top": 64,
-        "padding_bottom": 64,
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -160,8 +160,8 @@
         "color_scheme": "scheme-sand",
         "bg_color": "",
         "text_color": "",
-        "padding_top": 64,
-        "padding_bottom": 64,
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }

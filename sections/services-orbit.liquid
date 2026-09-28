@@ -1,12 +1,18 @@
 {% comment %}
-  Services Orbit
+  Services Orbit (Leistungsbühne, Plan S6a)
   ----------------------------------------------------------------
-  Section head (kicker + title + intro) above an interactive orbit
-  panel. Service blocks sit at fixed angles around a ring; selecting
-  one spins the ring so the chosen service lands at the top slot and
-  the detail column (label, headline, text, benefits, CTAs, counter)
+  Head: eyebrow, h2 with optional serif accent (accent-heading, *Wort*)
+  and intro. Below: a card (--r-lg, 1px line, no shadow) with the orbit
+  graphic on a 5 % tinted board on the left and the detail column on the
+  right. Service blocks sit at fixed angles around a ring; selecting one
+  spins the ring so the chosen service lands at the top slot and the
+  detail column (label, headline, text, benefits, buttons, counter)
   swaps to match. Works without JS (first service shown); JS adds the
   rotation, swapping and keyboard navigation.
+
+  Colours come from the colour scheme tokens (--color-*). accent_color is
+  optional and only tints dots, ring and progress when set; buttons use
+  the scheme button roles (.btn). Padding: min(setting, --section-y).
 {% endcomment %}
 
 {%- liquid
@@ -17,51 +23,54 @@
   if block_count > 0
     assign step = 360.0 | divided_by: block_count
   endif
+
+  assign secondary_url = section.settings.secondary_url
+  if secondary_url == blank
+    assign secondary_url = pages['kontakt'].url
+  endif
+  if secondary_url == blank
+    assign secondary_url = routes.root_url
+  endif
 -%}
 
 {{ 'section-services-orbit.css' | asset_url | stylesheet_tag }}
 
 {% style %}
   #shopify-section-{{ section.id }} .services-orbit {
-    --sorb-accent: {{ accent }};
-    --sorb-accent-haze: {{ accent | color_modify: 'alpha', 0.12 }};
+    {%- if accent != blank %}--sorb-accent: {{ accent }};{% endif %}
     --sorb-padding-top: {{ section.settings.padding_top }}px;
     --sorb-padding-bottom: {{ section.settings.padding_bottom }}px;
-    {%- if scheme.settings.background != blank -%}
-      --sorb-bg: {{ scheme.settings.background }};
-      --sorb-paper: {{ scheme.settings.background_card | default: scheme.settings.background }};
-      --sorb-paper-haze: {{ scheme.settings.background_card | default: scheme.settings.background | color_modify: 'alpha', 0.6 }};
-      --sorb-text: {{ scheme.settings.text }};
-      --sorb-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
-      --sorb-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
-      --sorb-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
-    {%- endif -%}
-    {%- comment -%} Button text contrasts with the actual accent (WCAG 1.4.3). {%- endcomment -%}
-    {%- assign accent_brightness = accent | color_brightness -%}
-    --sorb-on-accent: {% if accent_brightness > 150 %}#0d0d0d{% else %}#fffdf8{% endif %};
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
 {% endstyle %}
 
 <section
-  class="services-orbit full-width color-{{ scheme.id }}"
+  class="services-orbit full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   {% if section.settings.heading != blank %}aria-labelledby="sorb-heading-{{ section.id }}"{% endif %}
 >
   <div class="services-orbit__inner">
-    {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
+    {%- liquid
+      assign show_intro = false
+      if section.settings.intro != blank and section.settings.show_intro
+        assign show_intro = true
+      endif
+    -%}
+    {%- if section.settings.kicker != blank or section.settings.heading != blank or show_intro -%}
       <div class="services-orbit__head">
-        <div>
+        <div class="services-orbit__head-main">
           {%- if section.settings.kicker != blank -%}
-            <div class="services-orbit__kicker">{{ section.settings.kicker | escape }}</div>
+            <p class="services-orbit__kicker eyebrow">{{ section.settings.kicker | escape }}</p>
           {%- endif -%}
           {%- if section.settings.heading != blank -%}
-            <h2 id="sorb-heading-{{ section.id }}" class="services-orbit__title">{{ section.settings.heading }}</h2>
+            <h2 id="sorb-heading-{{ section.id }}" class="services-orbit__title">
+              {%- render 'accent-heading', text: section.settings.heading -%}
+            </h2>
           {%- endif -%}
         </div>
-        {%- if section.settings.intro != blank and section.settings.show_intro -%}
-          <p class="services-orbit__intro">{{ section.settings.intro }}</p>
+        {%- if show_intro -%}
+          <p class="services-orbit__intro">{{ section.settings.intro | escape }}</p>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -93,7 +102,7 @@
                 <span class="services-orbit__node-icon" aria-hidden="true">
                   {%- render 'services-orbit-icon', name: block.settings.icon -%}
                 </span>
-                <span class="services-orbit__node-label">{{ node_label | escape }}</span>
+                <span class="services-orbit__node-label" aria-hidden="true">{{ node_label | escape }}</span>
               </button>
             {%- endfor -%}
           </div>
@@ -117,37 +126,43 @@
               aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
               {{ block.shopify_attributes }}
             >
-              <div class="services-orbit__detail-label">
-                {{- forloop.index | prepend: '0' | slice: -2, 2 }} / {{ detail_label | escape -}}
-              </div>
+              <p class="services-orbit__detail-label">
+                <span class="services-orbit__detail-number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                <span>{{ detail_label | escape }}</span>
+              </p>
               <h3 class="services-orbit__detail-title">{{ block.settings.title | escape }}</h3>
               {%- if block.settings.description != blank -%}
                 <div class="services-orbit__detail-text">{{ block.settings.description }}</div>
               {%- endif -%}
 
               {%- if block.settings.benefit_1 != blank or block.settings.benefit_2 != blank or block.settings.benefit_3 != blank -%}
-                <ul class="services-orbit__benefits">
+                <ul class="services-orbit__benefits" role="list">
                   {%- if block.settings.benefit_1 != blank -%}<li>{{ block.settings.benefit_1 | escape }}</li>{%- endif -%}
                   {%- if block.settings.benefit_2 != blank -%}<li>{{ block.settings.benefit_2 | escape }}</li>{%- endif -%}
                   {%- if block.settings.benefit_3 != blank -%}<li>{{ block.settings.benefit_3 | escape }}</li>{%- endif -%}
                 </ul>
               {%- endif -%}
 
-              {%- assign primary_label = block.settings.primary_label | default: section.settings.primary_label -%}
-              {%- assign primary_url = block.settings.primary_url | default: section.settings.primary_url -%}
-              {%- assign secondary_label = section.settings.secondary_label -%}
-              {%- assign secondary_url = section.settings.secondary_url -%}
-              {%- if primary_label != blank or secondary_label != blank -%}
+              {%- liquid
+                assign primary_label = block.settings.primary_label | default: section.settings.primary_label
+                assign primary_url = block.settings.primary_url | default: section.settings.primary_url
+                assign secondary_label = section.settings.secondary_label
+                assign show_primary = false
+                if primary_label != blank and primary_url != blank
+                  assign show_primary = true
+                endif
+              -%}
+              {%- if show_primary or secondary_label != blank -%}
                 <div class="services-orbit__actions">
-                  {%- if primary_label != blank -%}
-                    <a class="services-orbit__btn services-orbit__btn--primary" href="{{ primary_url | default: '#' }}">
-                      {{ primary_label | escape }}
-                      <span aria-hidden="true">&rarr;</span>
+                  {%- if show_primary -%}
+                    <a class="btn btn--primary services-orbit__btn services-orbit__btn--primary" href="{{ primary_url }}">
+                      <span>{{ primary_label | escape }}</span>
+                      <span class="btn__arrow" aria-hidden="true">&rarr;</span>
                     </a>
                   {%- endif -%}
                   {%- if secondary_label != blank -%}
-                    <a class="services-orbit__btn services-orbit__btn--secondary" href="{{ secondary_url | default: '#' }}">
-                      {{ secondary_label | escape }}
+                    <a class="btn btn--secondary services-orbit__btn services-orbit__btn--secondary" href="{{ secondary_url }}">
+                      <span>{{ secondary_label | escape }}</span>
                     </a>
                   {%- endif -%}
                 </div>
@@ -155,21 +170,22 @@
             </article>
           {%- endfor -%}
 
+          {%- liquid
+            assign first_pct = 100.0 | divided_by: block_count
+            assign first_scale = 1.0 | divided_by: block_count
+          -%}
           <div class="services-orbit__counter">
             <span data-count>01 / {{ block_count | prepend: '0' | slice: -2, 2 }}</span>
             <div class="services-orbit__progress" aria-hidden="true">
-              {%- assign first_pct = 100.0 | divided_by: block_count -%}
-              <span data-progress style="--progress: {{ first_pct }}%"></span>
+              <span data-progress style="--progress: {{ first_pct }}%; --progress-scale: {{ first_scale }};"></span>
             </div>
           </div>
         </div>
 
-        <p class="services-orbit__sr-live" data-live aria-live="polite"></p>
+        <p class="services-orbit__sr-live visually-hidden" data-live aria-live="polite"></p>
       </services-orbit>
     {%- else -%}
-      <p class="services-orbit__placeholder">
-        {{ 'services_orbit.add_services' | t | default: 'Add service blocks to get started.' }}
-      </p>
+      <p class="services-orbit__placeholder">{{ 'services_orbit.add_services' | t }}</p>
     {%- endif -%}
   </div>
 </section>
@@ -220,7 +236,8 @@
     {
       "type": "url",
       "id": "primary_url",
-      "label": "t:services_orbit.primary_url_label"
+      "label": "t:services_orbit.primary_url_label",
+      "info": "Ohne Link (hier oder in der Leistung) wird der Primär-Button ausgeblendet."
     },
     {
       "type": "text",
@@ -231,7 +248,8 @@
     {
       "type": "url",
       "id": "secondary_url",
-      "label": "t:services_orbit.secondary_url_label"
+      "label": "t:services_orbit.secondary_url_label",
+      "info": "Leer: Kontaktseite (/pages/kontakt)."
     },
     {
       "type": "header",
@@ -241,13 +259,13 @@
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:services_orbit.color_scheme_label",
-      "default": "scheme-1"
+      "default": "scheme-sand"
     },
     {
       "type": "color",
       "id": "accent_color",
       "label": "t:services_orbit.accent_color_label",
-      "default": "#df6c3d"
+      "info": "Leer lassen für die Designsystem-Farbe. Wirkt auf Punkte, Ring und Fortschritt."
     },
     {
       "type": "range",
@@ -257,7 +275,7 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 96
+      "default": 160
     },
     {
       "type": "range",
@@ -267,7 +285,7 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 96
+      "default": 160
     },
     {
       "type": "header",

@@ -1,53 +1,53 @@
 {% comment %}
-  Addon Services
+  Addon Services (Plan S6b)
   ----------------------------------------------------------------
-  Pricing-card-Layout für Zusatzleistungen. Jede Karte ist ein Block,
-  Merchants können beliebig viele hinzufügen, entfernen, umsortieren.
-  Pro Karte: Titel, Beschreibung, Preis-Text (frei, z. B. "ab 200 €"
-  oder "Preis auf Anfrage"), Feature-Liste, optional ein hervorgehobenes
-  Badge ("BELIEBT") und ein optionaler "Jetzt anfragen"-Button.
+  Pricing cards for add-on services. Each card is a block (title,
+  description, free price text, feature list, optional badge when
+  highlighted, optional button). Head: h2 with optional serif accent
+  (accent-heading, *Wort*) and subheading.
+
+  Colours come from the colour scheme tokens (--color-*); cards use
+  --color-surface with a 1px line and no shadow. accent_color is optional
+  and only tints the highlight border and the check icons when set.
+  Buttons: .btn roles of the scheme (primary on the highlighted card).
+  Padding: min(setting, --section-y); card radius: min(setting, --r-lg).
 {% endcomment %}
 
 {%- liquid
   assign scheme = section.settings.color_scheme
+  assign accent = section.settings.accent_color
   assign heading = section.settings.heading
   assign subheading = section.settings.subheading
+
+  assign fallback_url = pages['kontakt'].url
+  if fallback_url == blank
+    assign fallback_url = routes.root_url
+  endif
+  assign fallback_label = 'addon_services.request' | t
 -%}
 
 {{ 'section-addon-services.css' | asset_url | stylesheet_tag }}
 
 {% style %}
-  #shopify-section-{{ section.id }} {
-    {%- if scheme.settings.background != blank -%}
-      --color-background: {{ scheme.settings.background }};
-    {%- endif -%}
-    {%- if scheme.settings.text != blank -%}
-      --color-foreground: {{ scheme.settings.text }};
-    {%- endif -%}
-  }
   #shopify-section-{{ section.id }} .addon-services {
+    {%- if accent != blank %}--as-accent: {{ accent }};{% endif %}
     --as-pad-top: {{ section.settings.padding_top }}px;
     --as-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --as-accent: {{ section.settings.accent_color | default: '#4361FF' }};
-    --as-bg: {{ scheme.settings.background | default: '#FFFFFF' }};
-    --as-card-bg: {{ scheme.settings.background_card | default: '#FFFFFF' }};
-    --as-text: {{ scheme.settings.text | default: '#0E1116' }};
-    --as-muted: {{ scheme.settings.muted | default: '#6B7280' }};
     --as-card-radius: {{ section.settings.card_radius }}px;
   }
 {% endstyle %}
 
 <section
-  class="addon-services full-width color-scheme color-{{ scheme.id }}"
+  class="addon-services full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
-  aria-labelledby="addon-services-heading-{{ section.id }}"
+  {% if heading != blank %}aria-labelledby="addon-services-heading-{{ section.id }}"{% endif %}
 >
   <div class="addon-services__inner">
     {%- if heading != blank or subheading != blank -%}
       <header class="addon-services__header">
         {%- if heading != blank -%}
           <h2 id="addon-services-heading-{{ section.id }}" class="addon-services__heading">
-            {{ heading | escape }}
+            {%- render 'accent-heading', text: heading -%}
           </h2>
         {%- endif -%}
         {%- if subheading != blank -%}
@@ -100,12 +100,12 @@
                             d="M4 10.5l4 4 8-8"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2.25"
+                            stroke-width="1.75"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                           />
                         </svg>
-                        <span>{{ feat }}</span>
+                        <span>{{ feat | escape }}</span>
                       </li>
                     {%- endif -%}
                   {%- endfor -%}
@@ -114,20 +114,20 @@
             </div>
 
             {%- if block.settings.show_button -%}
+              {%- assign button_url = block.settings.button_url | default: fallback_url -%}
               <a
-                class="addon-services__btn{% if is_highlighted %} addon-services__btn--primary{% endif %}"
-                href="{{ block.settings.button_url | default: '#' }}"
+                class="btn {% if is_highlighted %}btn--primary addon-services__btn--primary{% else %}btn--secondary{% endif %} addon-services__btn"
+                href="{{ button_url }}"
               >
-                {{ block.settings.button_label | default: 'Jetzt anfragen' | escape }}
+                <span>{{ block.settings.button_label | default: fallback_label | escape }}</span>
+                <span class="btn__arrow" aria-hidden="true">&rarr;</span>
               </a>
             {%- endif -%}
           </li>
         {%- endfor -%}
       </ul>
     {%- else -%}
-      <p class="addon-services__empty">
-        Füge im Theme-Editor Karten hinzu.
-      </p>
+      <p class="addon-services__empty">{{ 'addon_services.add_cards' | t }}</p>
     {%- endif -%}
   </div>
 </section>
@@ -155,19 +155,19 @@
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Farbschema",
-      "default": "scheme-1"
+      "default": "scheme-sand"
     },
     {
       "type": "color",
       "id": "accent_color",
       "label": "Akzentfarbe",
-      "info": "Wird für hervorgehobene Karten, Badge und Primary-Button genutzt.",
-      "default": "#4361FF"
+      "info": "Leer lassen für die Designsystem-Farbe. Wirkt auf den Rahmen hervorgehobener Karten und die Häkchen; Buttons und Badge folgen dem Farbschema."
     },
     {
       "type": "range",
       "id": "card_radius",
       "label": "Karten-Rundung",
+      "info": "Obergrenze; das Designsystem rundet Karten mit 16 px.",
       "min": 0,
       "max": 40,
       "step": 1,
@@ -183,7 +183,7 @@
       "max": 200,
       "step": 4,
       "unit": "px",
-      "default": 80
+      "default": 160
     },
     {
       "type": "range",
@@ -193,7 +193,7 @@
       "max": 200,
       "step": 4,
       "unit": "px",
-      "default": 80
+      "default": 160
     }
   ],
   "blocks": [
@@ -258,7 +258,8 @@
         {
           "type": "url",
           "id": "button_url",
-          "label": "Button-Link"
+          "label": "Button-Link",
+          "info": "Leer: Kontaktseite (/pages/kontakt)."
         }
       ]
     }
