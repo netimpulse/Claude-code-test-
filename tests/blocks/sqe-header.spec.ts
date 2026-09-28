@@ -198,6 +198,28 @@ test.describe("SQE Header", () => {
     }
   });
 
+  test("Predictive search formats product prices in the active currency and language", async ({ page }) => {
+    const header = page.locator("[data-section-type='sqe-header']").first();
+    await header.locator("[data-sqe-search-toggle]").click();
+    const input = header.locator("[data-sqe-search-input]");
+    const suggest = page.waitForResponse((r) => /\/search\/suggest\.json\?/.test(r.url()));
+    await input.fill("theme");
+    const res = await suggest;
+    const data = await res.json().catch(() => ({}));
+    const products = data?.resources?.results?.products ?? [];
+    test.skip(products.length === 0, "Store liefert fuer 'theme' keine Produkte");
+    const price = header.locator(".sqe-search-result__price").first();
+    await expect(price).toBeVisible({ timeout: 8000 });
+    const text = ((await price.textContent()) ?? "").trim();
+    // Expected: exactly what Intl produces for the first product in the shop currency.
+    const expected = await page.evaluate((raw) => {
+      const currency = (window as any).Shopify?.currency?.active || "EUR";
+      return new Intl.NumberFormat(document.documentElement.lang || undefined, { style: "currency", currency }).format(Number(raw));
+    }, String(products[0].price));
+    expect(text).toBe(expected);
+    expect(text, "no bare decimal").not.toMatch(/^\d+\.\d{2}$/);
+  });
+
   test("Captures desktop + mobile screenshot", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.waitForTimeout(200);

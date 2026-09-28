@@ -500,12 +500,16 @@
   .ni-deck__all,
   .ni-deck__text { grid-column: 1 / -1; }
   .ni-deck__all { justify-self: start; }
+  .ni-deck-g { min-height: 0; font-size: 0.875rem; }
+}
+/* Single-column slabs only below the stacking breakpoint, so 821–860px keeps
+   the same 7/5 split as the rest of the tablet range. */
+@media (max-width: 820px) {
   .ni-deck-card {
     grid-template-columns: minmax(0, 1fr);
     padding: var(--s-5);
   }
   .ni-deck-card__title { margin-top: var(--s-6); }
-  .ni-deck-g { min-height: 0; font-size: 0.875rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

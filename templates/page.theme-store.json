@@ -41,25 +41,25 @@
         "feature_neFzy6": {
           "type": "feature",
           "settings": {
-            "text": "Mobile optimized"
+            "text": "Für Mobilgeräte optimiert"
           }
         },
         "feature_6YQn7L": {
           "type": "feature",
           "settings": {
-            "text": "SEO friendly"
+            "text": "SEO-freundlich"
           }
         },
         "feature_ppMLRj": {
           "type": "feature",
           "settings": {
-            "text": "Theme editor compatible"
+            "text": "Kompatibel mit dem Theme-Editor"
           }
         },
         "feature_3PFBMP": {
           "type": "feature",
           "settings": {
-            "text": "Fast load times"
+            "text": "Schnelle Ladezeiten"
           }
         }
       },
@@ -76,8 +76,8 @@
       "name": "t:theme_store.name",
       "settings": {
         "heading": "Theme Store",
-        "subheading": "Engineered for high-growth e-commerce.",
-        "search_placeholder": "Search themes…",
+        "subheading": "Entwickelt für wachstumsstarken E-Commerce.",
+        "search_placeholder": "Themes durchsuchen …",
         "categories_heading": "Kategorien",
         "all_label": "",
         "features_heading": "Funktionen",

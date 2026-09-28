@@ -16,6 +16,28 @@ import { QA, withTheme } from "../fixtures";
 const bg = (el: Element) => getComputedStyle(el).backgroundColor;
 const fg = (el: Element) => getComputedStyle(el).color;
 
+/** WCAG contrast of an element's text color against its nearest opaque background. */
+const textContrast = (el: Element) => {
+  const parse = (c: string) => (c.match(/[\d.]+/g) || []).map(Number);
+  const lum = ([r, g, b]: number[]) => {
+    const f = (v: number) => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    };
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  };
+  const text = parse(getComputedStyle(el).color);
+  let node: Element | null = el;
+  let back = [255, 255, 255];
+  while (node) {
+    const c = parse(getComputedStyle(node).backgroundColor);
+    if (c.length >= 3 && (c.length < 4 || c[3] > 0.95)) { back = c.slice(0, 3); break; }
+    node = node.parentElement;
+  }
+  const [a, b] = [lum(text), lum(back)].sort((x, y) => y - x);
+  return (a + 0.05) / (b + 0.05);
+};
+
 /** R1: each hero is checked on its real service page (plan S6d/S6e). */
 const go = (page: import("@playwright/test").Page, path: string) =>
   page.goto(withTheme(path), { waitUntil: "networkidle" });
@@ -33,15 +55,21 @@ test.describe("Hero natural colours", () => {
   test("Ticker deltas/sparklines are green for up, red for down; LIVE is red", async ({ page }) => {
     await go(page, QA.paths.sea);
     const root = page.locator("[data-section-type='hero-ticker']").first();
-    // First metric (Organic clicks) is positive → green.
-    expect(await root.locator(".hero-ticker__metric-delta").first().evaluate(fg)).toBe("rgb(22, 163, 74)");
+    // First metric (Organic clicks) is positive → green. Text uses the darker
+    // AA variant (#15803d); the bright green stays for non-text signals.
+    const upDelta = root.locator(".hero-ticker__metric-delta").first();
+    expect(await upDelta.evaluate(fg)).toBe("rgb(21, 128, 61)");
+    expect(await upDelta.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
     // Third metric (Cost per acquisition) points down → red.
     const down = root.locator(".hero-ticker__metric--down");
     await expect(down).toHaveCount(1);
     expect(await down.locator(".hero-ticker__metric-delta").evaluate(fg)).toBe("rgb(220, 38, 38)");
     expect(await down.locator(".hero-ticker__spark").evaluate(fg)).toBe("rgb(220, 38, 38)");
-    // LIVE indicator is red.
+    // LIVE indicator dot is bright red; the LIVE label text uses the AA red.
     expect(await root.locator(".hero-ticker__chrome-pulse").evaluate(bg)).toBe("rgb(255, 59, 48)");
+    const live = root.locator(".hero-ticker__chrome-live");
+    expect(await live.evaluate(fg)).toBe("rgb(197, 34, 31)");
+    expect(await live.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
   });
 
   test("SERP wordmark is multi-colour, active tab is Google blue, favicons coloured", async ({ page }) => {
@@ -57,7 +85,9 @@ test.describe("Hero natural colours", () => {
     // A non-brand favicon is no longer grey (has a saturated background).
     const fav = root.locator(".hero-serp__favicon--c0").first();
     await expect(fav).toBeVisible();
-    expect(await fav.evaluate(bg)).toBe("rgb(66, 133, 244)");
+    // Darker blue so the white initials reach 4.5:1.
+    expect(await fav.evaluate(bg)).toBe("rgb(25, 103, 210)");
+    expect(await fav.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
   });
 
   test("Ad cycler: LIVE test dot is red, winner badge is green", async ({ page }) => {
@@ -66,7 +96,8 @@ test.describe("Hero natural colours", () => {
     expect(await root.locator(".hero-ac__test-dot").evaluate(bg)).toBe("rgb(255, 59, 48)");
     const win = root.locator(".hero-ac__tab-win").first();
     if (await win.count()) {
-      expect(await win.evaluate(bg)).toBe("rgb(22, 163, 74)");
+      expect(await win.evaluate(bg)).toBe("rgb(21, 128, 61)");
+      expect(await win.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
     }
   });
 

@@ -302,6 +302,7 @@ test.describe("contact-form error state (deterministic)", () => {
     expect(src).toMatch(/aria-invalid="true" aria-describedby="\{\{ error_id \}\}"/);
     expect(src).toMatch(/<p class="contact-form__error" id="\{\{ error_id \}\}">/);
     expect(src).toMatch(/'contact\.error_prefix' \| t/);
+    expect(src).toMatch(/\{% if invalid %\} is-invalid\{% endif %\}/);
   });
 
   test("An invalid field renders a 2px error border and a labelled error text", async ({ page }) => {
@@ -322,9 +323,30 @@ test.describe("contact-form error state (deterministic)", () => {
         color: cs.borderTopColor,
         errorToken: root.getPropertyValue("--color-error").trim(),
         errText: getComputedStyle(err).color,
+        errBg: (() => {
+          let n: Element | null = err;
+          while (n) {
+            const c = getComputedStyle(n).backgroundColor;
+            const v = (c.match(/[\d.]+/g) || []).map(Number);
+            if (v.length >= 3 && (v.length < 4 || v[3] > 0.95)) return c;
+            n = n.parentElement;
+          }
+          return "rgb(255, 255, 255)";
+        })(),
       };
     });
     expect(result.width).toBe(2);
+    // Error text reaches 4.5:1 on its background.
+    const rgb = (c: string) => (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+    const lum = (c: number[]) =>
+      c
+        .map((v) => {
+          v /= 255;
+          return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        })
+        .reduce((acc, v, i) => acc + v * [0.2126, 0.7152, 0.0722][i], 0);
+    const [hi, lo] = [lum(rgb(result.errText)), lum(rgb(result.errBg))].sort((x, y) => y - x);
+    expect((hi + 0.05) / (lo + 0.05)).toBeGreaterThanOrEqual(4.5);
     const probe = await page.evaluate((c) => {
       const d = document.createElement("div");
       d.style.color = c;

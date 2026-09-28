@@ -204,6 +204,17 @@ test.describe("NetImpulse deck (home)", () => {
     });
   }
 
+  test("Tablet slabs share the same 7/5 split (840×900)", async ({ page }) => {
+    const deck = await openHome(page, 840, 900);
+    const widths = await deck.locator(".ni-deck-card__visual").evaluateAll((els) =>
+      els.map((el) => Math.round(el.getBoundingClientRect().width))
+    );
+    expect(widths.length).toBeGreaterThanOrEqual(4);
+    expect(Math.max(...widths) - Math.min(...widths), `visual widths ${widths.join(", ")}`).toBeLessThanOrEqual(2);
+    const copy = await deck.locator(".ni-deck-card__copy").first().evaluate((el) => el.getBoundingClientRect().width);
+    expect(copy).toBeGreaterThan(widths[0]);
+  });
+
   for (const [w, h] of [[820, 1000], [390, 844]] as const) {
     test(`Deck slabs scroll normally below 821px (${w}×${h})`, async ({ page }) => {
       const deck = await openHome(page, w, h);
