@@ -24,7 +24,7 @@
         "show_author": true,
         "posts_per_page": 9,
         "date_format": "%b %d, %Y",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-sand",
         "padding_top": 64,
         "padding_bottom": 80
       }
