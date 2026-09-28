@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { QA, withTheme } from "../fixtures";
+import { QA, withTheme, activeLocaleValue } from "../fixtures";
 
 async function passChallenge(page: import("@playwright/test").Page) {
   await page.waitForSelector('link[rel="canonical"]', { state: "attached", timeout: 45_000 });
@@ -169,10 +169,31 @@ test.describe("SQE Header", () => {
     await input.fill("zzqxj");
     await suggest;
     await expect(header.locator("[data-sqe-search-results]")).toBeVisible({ timeout: 8000 });
+    // Labels must be the active shop locale's strings (html[lang]).
+    const labels = {
+      products: await activeLocaleValue(page, "header.search_products"),
+      pages: await activeLocaleValue(page, "header.search_pages"),
+      articles: await activeLocaleValue(page, "header.search_articles"),
+    };
+    await expect(panel).toHaveAttribute("data-i18n-products", labels.products);
+    await expect(panel).toHaveAttribute("data-i18n-pages", labels.pages);
+    await expect(panel).toHaveAttribute("data-i18n-articles", labels.articles);
     const noResults = (await panel.getAttribute("data-i18n-no-results"))!;
     const results = header.locator("[data-sqe-search-results]");
+    // Shopify's suggest endpoint is fuzzy: even a nonsense term can return
+    // products (observed: the dev store answers "zzqxj" with "Theme Customizing").
+    // Groups present -> their labels come from the locale; otherwise the
+    // empty state uses the localised no-results text.
+    const groups = results.locator(".sqe-search-group");
     const hasTypo = await results.locator(".sqe-search-typo").count();
-    if (!hasTypo) {
+    if ((await groups.count()) > 0) {
+      const allowed = Object.values(labels);
+      for (const g of await groups.all()) {
+        const heading = (await g.locator(".sqe-search-group__heading").textContent())?.trim() ?? "";
+        expect(allowed).toContain(heading);
+        await expect(g).toHaveAttribute("aria-label", heading);
+      }
+    } else if (!hasTypo) {
       await expect(results.locator(".sqe-search-empty")).toHaveText(noResults.replace("__Q__", "zzqxj"));
     }
   });

@@ -3,8 +3,11 @@ import { QA, withTheme } from "../fixtures";
 
 /**
  * sections/service-aspects.liquid – Leistungs-Unterseiten (Plan S6c).
- * R1: the section is not on the QA page; it lives on /pages/sea (6 tiles)
- * and /pages/smm (3 tiles), both scheme-sand, 3 columns.
+ * R1: the section is not on the QA page; it lives on /pages/sea and
+ * /pages/smm, both scheme-sand, 3 columns. Each page shows 3 tiles: the SEA
+ * template carries 6 tile blocks, but 3 of them are "disabled": true
+ * (merchant setting from the editor, templates/page.sea.json) and are
+ * therefore not rendered.
  * Target: eyebrow + h2 via accent-heading, scheme tokens (no blue #4a7cff),
  * equal-size cards without shadow (--r-lg, 1px --color-line), numbers and
  * icons in --color-accent (#1c4948), staggered columns on desktop, single
@@ -40,7 +43,7 @@ const TEAL = "rgb(28, 73, 72)";
 const BLUE = "74, 124, 255";
 
 const PAGES = [
-  { name: "SEA", path: QA.paths.sea, kicker: "SEA", heading: "Die wichtigsten Bausteine eines SEA-Projekts.", tiles: 6, firstTitle: "Suchbegriffe und Keywords" },
+  { name: "SEA", path: QA.paths.sea, kicker: "SEA", heading: "Die wichtigsten Bausteine eines SEA-Projekts.", tiles: 3, firstTitle: "Suchbegriffe und Keywords" },
   { name: "SMM", path: QA.paths.smm, kicker: "SMM", heading: "Was in einem SMM-Projekt steckt.", tiles: 3, firstTitle: "Strategie" },
 ];
 

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { QA, withTheme } from "../fixtures";
+import { QA, withTheme, activeLocaleValue } from "../fixtures";
 
 /**
  * Block-spezifische Tests fuer sections/product.liquid (Product Detail Page).
@@ -114,9 +114,8 @@ test.describe("Product Detail – Section", () => {
   });
 
   test("UI labels come from the de locale (S7d i18n)", async ({ page }) => {
-    const fs = await import("node:fs");
-    const raw = fs.readFileSync("locales/de.json", "utf8").replace(/^\s*\/\*[\s\S]*?\*\/\s*/, "");
-    const de = JSON.parse(raw).product_detail;
+    // Erwartung aus der aktiven Shop-Sprache (html[lang]); nach Umstellung auf DE -> de.json.
+    const de = (await activeLocaleValue(page, "product_detail")) as unknown as Record<string, string>;
     const root = page.locator("[data-section-type='product-detail']").first();
     await expect(root.locator(".product-detail__variant-label")).toHaveText(de.variant);
     await expect(root.locator("[data-pd-qty-dec]")).toHaveAttribute("aria-label", de.qty_decrease);

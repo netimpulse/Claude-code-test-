@@ -126,6 +126,20 @@
   }
 
   // -------- Rendering (DOM only, all texts via textContent) --------
+  // suggest.json returns prices as plain decimal strings ("149.00") in the
+  // active currency; format them for the page language.
+  function formatPrice(value) {
+    const amount = Number(value);
+    if (!Number.isFinite(amount)) return String(value);
+    const currency = (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) || "EUR";
+    const lang = document.documentElement.lang || undefined;
+    try {
+      return new Intl.NumberFormat(lang, { style: "currency", currency }).format(amount);
+    } catch (e) {
+      return String(value);
+    }
+  }
+
   function el(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -182,7 +196,7 @@
     if (meta) body.append(el("div", "sqe-search-result__meta", meta));
     a.append(body);
 
-    if (it.price) a.append(el("div", "sqe-search-result__price", String(it.price)));
+    if (it.price) a.append(el("div", "sqe-search-result__price", formatPrice(it.price)));
     return a;
   }
 
