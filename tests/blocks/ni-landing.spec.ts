@@ -195,6 +195,15 @@ test.describe("NetImpulse deck (home)", () => {
     });
   }
 
+  for (const [w, h] of [[1440, 900], [1280, 720], [1024, 768], [900, 700]] as const) {
+    test(`Every stacked slab fits the viewport so nothing hides under the next (${w}×${h})`, async ({ page }) => {
+      const deck = await openHome(page, w, h);
+      const heights = await deck.locator(".ni-deck-card").evaluateAll((els) => els.map((el) => (el as HTMLElement).offsetHeight));
+      expect(heights.length).toBe(5);
+      for (const hgt of heights) expect(hgt, `slab height ${hgt}px at ${w}×${h}`).toBeLessThanOrEqual(h - 24);
+    });
+  }
+
   for (const [w, h] of [[820, 1000], [390, 844]] as const) {
     test(`Deck slabs scroll normally below 821px (${w}×${h})`, async ({ page }) => {
       const deck = await openHome(page, w, h);

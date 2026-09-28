@@ -53,7 +53,7 @@
 {% endstyle %}
 
 <section
-  class="tsp full-width color-{{ scheme.id }}{% if has_cta %} tsp--has-cta{% endif %}{% if theme_count == 0 %} tsp--no-themes{% endif %}"
+  class="tsp full-width{% if scheme %} color-{{ scheme.id }}{% endif %}{% if has_cta %} tsp--has-cta{% endif %}{% if theme_count == 0 %} tsp--no-themes{% endif %}"
   data-section-id="{{ section.id }}"
   data-section-type="theme-store-preview"
   {% if heading != blank %}aria-labelledby="tsp-heading-{{ section.id }}"{% endif %}

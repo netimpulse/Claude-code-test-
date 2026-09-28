@@ -92,14 +92,23 @@ test.describe("Cart – Section", () => {
 
     await expect(input).toHaveValue("1");
 
-    // Decrement clamps at 1 (no change request fires while at min)
-    await dec.click();
-    await expect(input).toHaveValue("1");
+    // Stub the change endpoint so the line stays in the DOM, and record requests.
+    const bodies: { quantity?: number }[] = [];
+    await page.route("**/cart/change.js", (route) => {
+      bodies.push(JSON.parse(route.request().postData() || "{}"));
+      return route.fulfill({ status: 200, body: "{}" });
+    });
 
-    // Increment: triggers reload via /cart/change.js; just confirm the value flipped client-side first
-    await page.route("**/cart/change.js", (route) => route.fulfill({ status: 200, body: "{}" }));
+    // Increment flips the value client-side and requests quantity 2.
     await inc.click();
     await expect(input).toHaveValue("2");
+    await expect.poll(() => bodies.at(-1)?.quantity).toBe(2);
+
+    // Decrement from 1 goes to 0, which Shopify treats as remove (Codex bug 5).
+    await input.evaluate((el: HTMLInputElement) => (el.value = "1"));
+    await dec.click();
+    await expect(input).toHaveValue("0");
+    await expect.poll(() => bodies.at(-1)?.quantity).toBe(0);
   });
 
   test("All four block types render with default settings", async ({ page }) => {

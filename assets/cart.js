@@ -40,12 +40,11 @@
       const wrap = (dec || inc).closest('[data-cart-qty]');
       const input = wrap && wrap.querySelector('[data-cart-qty-input]');
       if (!input) return;
-      // The minus button clamps at 1 so a stray click never drops a line.
-      // Removing stays explicit: the remove link, or typing 0 into the input
-      // (Shopify treats `quantity: 0` as remove, see onChange).
+      // Floor at 0 — Shopify treats `quantity: 0` as remove. The remove link
+      // is still available as a one-click shortcut for the same operation.
       const current = parseInt(input.value, 10);
       const base = Number.isFinite(current) ? current : 1;
-      const next = inc ? base + 1 : Math.max(1, base - 1);
+      const next = inc ? base + 1 : Math.max(0, base - 1);
       if (next === base) return;
       input.value = String(next);
       input.dispatchEvent(new Event('change', { bubbles: true }));

@@ -183,7 +183,7 @@
                         data-available="{{ variant.available }}"
                         {% if variant == current_variant %}selected{% endif %}
                       >
-                        {{ variant.title }} — {{ variant.price | money }}{% unless variant.available %} ({{ 'product_detail.sold_out' | t }}){% endunless %}
+                        {{ variant.title | escape }} — {{ variant.price | money }}{% unless variant.available %} ({{ 'product_detail.sold_out' | t }}){% endunless %}
                       </option>
                     {%- endfor -%}
                   </select>

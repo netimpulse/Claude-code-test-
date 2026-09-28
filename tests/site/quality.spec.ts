@@ -9,7 +9,7 @@ import { scrollThrough, runAxe, fontFaceLoaded } from "./helpers";
  * aufgenommen, wenn sie komplett auf das neue Designsystem umgestellt ist.
  * Eintraege werden nie wieder entfernt.
  */
-const ACCEPTED_PAGES: { name: string; path: string; home?: boolean }[] = [
+const ACCEPTED_PAGES: { name: string; path: string; home?: boolean; optional?: boolean }[] = [
   { name: "Startseite", path: QA.paths.home, home: true },
   { name: "Leistungen", path: QA.paths.leistungen },
   { name: "SEO", path: QA.paths.seo },
@@ -22,6 +22,9 @@ const ACCEPTED_PAGES: { name: string; path: string; home?: boolean }[] = [
   { name: "Datenschutz", path: QA.paths.policy },
   { name: "404", path: QA.paths.notFound },
   { name: "Blog", path: QA.paths.blog },
+  { name: "Widerruf", path: QA.paths.widerruf, optional: true },
+  { name: "Theme Store", path: QA.paths.themeStore },
+  { name: "Suche", path: QA.paths.search },
 ];
 
 /** Elemente, die bewusst Verlaeufe bzw. Endlos-Animationen haben duerfen. */
@@ -45,6 +48,14 @@ for (const pageDef of ACCEPTED_PAGES) {
   for (const vp of VIEWPORTS) {
     test.describe(`${pageDef.name} @ ${vp.name}`, () => {
       test.use({ viewport: { width: vp.width, height: vp.height } });
+
+      if (pageDef.optional) {
+        // Pages that depend on content created in the admin (e.g. Widerruf).
+        test.beforeEach(async ({ request }) => {
+          const res = await request.get(withTheme(pageDef.path));
+          test.skip(res.status() === 404, `${pageDef.name}: Seite existiert im Store noch nicht (404)`);
+        });
+      }
 
       test("Struktur, Barrierefreiheit, keine Fehler", async ({ page }) => {
         const errors: string[] = [];

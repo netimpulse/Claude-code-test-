@@ -464,8 +464,29 @@
   font-weight: 500;
 }
 
-/* ---- Tablet ---- */
-@media (max-width: 1100px) {
+/* ---- Tablet (821–1100px): stays two columns like the original deck, so
+   every stacked slab fits the screen and nothing is hidden under the next. */
+@media (min-width: 821px) and (max-width: 1100px) {
+  .ni-deck-card {
+    min-height: 0;
+    column-gap: var(--s-5);
+    padding: var(--s-6);
+  }
+  .ni-deck-card__copy { grid-column: 1 / span 7; }
+  .ni-deck-card--no-visual .ni-deck-card__copy { grid-column: 1 / -1; }
+  .ni-deck-card__visual { grid-column: 8 / span 5; }
+  .ni-deck-card__title { font-size: clamp(2rem, 1rem + 2.6vw, 3rem); }
+  .ni-deck-card__text p { font-size: var(--text-small); }
+  .ni-deck-g { min-height: 0; font-size: 0.8125rem; }
+}
+/* Short screens with stacking: keep each slab within the viewport height. */
+@media (min-width: 821px) and (max-height: 820px) {
+  .ni-deck-card { min-height: 0; padding-block: var(--s-5); }
+  .ni-deck-card__title { margin-top: var(--s-4); }
+}
+
+/* ---- Below the stacking breakpoint ---- */
+@media (max-width: 820px) {
   .ni-deck-card { min-height: 0; }
   .ni-deck-card__copy,
   .ni-deck-card--no-visual .ni-deck-card__copy,

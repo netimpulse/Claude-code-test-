@@ -52,61 +52,13 @@
         "bento": {
           "type": "lp-bento",
           "blocks": {
-            "c1": {
-              "type": "lp-bento-card",
-              "settings": {
-                "span": "feature",
-                "icon": "compass",
-                "title": "Strategie & Beratung",
-                "text": "Klarheit in Angebot, Zielgruppe und Kommunikation.",
-                "heading_scale": 120,
-                "text_scale": 95
-              }
-            },
-            "c2": {
-              "type": "lp-bento-card",
-              "settings": {
-                "span": "normal",
-                "icon": "layout",
-                "title": "Webdesign & UX",
-                "text": "Individuelle Seitenarchitektur statt Standard-Layout."
-              }
-            },
-            "c3": {
-              "type": "lp-bento-card",
-              "settings": {
-                "span": "normal",
-                "icon": "search",
-                "title": "SEO & GEO",
-                "text": "Content für relevante Suchintentionen."
-              }
-            },
-            "c4": {
-              "type": "lp-bento-card",
-              "settings": {
-                "span": "wide",
-                "icon": "chart",
-                "title": "Google Ads & Performance",
-                "text": "Kampagnen, gesteuert nach Wirtschaftlichkeit."
-              }
-            },
-            "c5": {
-              "type": "lp-bento-card",
-              "settings": {
-                "span": "normal",
-                "icon": "bag",
-                "title": "Shopify & Entwicklung",
-                "text": "Performante Umsetzung, flexibel steuerbar."
-              }
-            }
+            "c1": { "type": "lp-bento-card", "settings": { "span": "feature", "icon": "compass", "title": "Strategie & Beratung", "text": "Klarheit in Angebot, Zielgruppe und Kommunikation.", "heading_scale": 120, "text_scale": 95 } },
+            "c2": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "layout", "title": "Webdesign & UX", "text": "Individuelle Seitenarchitektur statt Standard-Layout." } },
+            "c3": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "search", "title": "SEO & GEO", "text": "Content für relevante Suchintentionen." } },
+            "c4": { "type": "lp-bento-card", "settings": { "span": "wide", "icon": "chart", "title": "Google Ads & Performance", "text": "Kampagnen, gesteuert nach Wirtschaftlichkeit." } },
+            "c5": { "type": "lp-bento-card", "settings": { "span": "normal", "icon": "bag", "title": "Shopify & Entwicklung", "text": "Performante Umsetzung, flexibel steuerbar." } }
           },
-          "block_order": [
-            "c1",
-            "c2",
-            "c3",
-            "c4",
-            "c5"
-          ],
+          "block_order": ["c1", "c2", "c3", "c4", "c5"],
           "settings": {
             "eyebrow": "Was wir können",
             "heading": "Ein System für digitales Wachstum",
@@ -182,17 +134,7 @@
           }
         }
       },
-      "block_order": [
-        "hero",
-        "metrics",
-        "bento",
-        "themes",
-        "case",
-        "testimonial",
-        "cta",
-        "qa_text",
-        "qa_group"
-      ],
+      "block_order": ["hero", "metrics", "bento", "themes", "case", "testimonial", "cta", "qa_text", "qa_group"],
       "settings": {
         "color_scheme": "scheme-1",
         "accent_color": "#4a7cff",
@@ -256,11 +198,7 @@
           }
         }
       },
-      "block_order": [
-        "card1",
-        "card2",
-        "card3"
-      ],
+      "block_order": ["card1", "card2", "card3"],
       "settings": {
         "heading": "Welche Zusatzleistungen bieten wir an?",
         "subheading": "Von einem schnellen Setup bis zu komplett individuellen Themes.",
@@ -290,106 +228,17 @@
     "contact_form_qa": {
       "type": "contact-form",
       "blocks": {
-        "f_name": {
-          "type": "field",
-          "settings": {
-            "type": "text",
-            "label": "Name",
-            "name": "name",
-            "placeholder": "Dein Name",
-            "required": true,
-            "width": "half"
-          }
-        },
-        "f_email": {
-          "type": "field",
-          "settings": {
-            "type": "email",
-            "label": "E-Mail",
-            "name": "email",
-            "placeholder": "deine@email.de",
-            "required": true,
-            "width": "half"
-          }
-        },
-        "f_phone": {
-          "type": "field",
-          "settings": {
-            "type": "tel",
-            "label": "Telefon",
-            "name": "phone",
-            "placeholder": "+49 …",
-            "required": false,
-            "width": "half"
-          }
-        },
-        "f_company": {
-          "type": "field",
-          "settings": {
-            "type": "text",
-            "label": "Unternehmen",
-            "name": "company",
-            "placeholder": "Dein Unternehmen",
-            "required": false,
-            "width": "half"
-          }
-        },
-        "f_topic": {
-          "type": "field",
-          "settings": {
-            "type": "select",
-            "label": "Worum geht's?",
-            "name": "topic",
-            "placeholder": "Bitte wählen …",
-            "required": false,
-            "width": "full",
-            "options": "Strategie & Beratung\nWebdesign & UX\nSEO & Performance\nShopify-Theme\nSonstiges"
-          }
-        },
-        "f_message": {
-          "type": "field",
-          "settings": {
-            "type": "textarea",
-            "label": "Nachricht",
-            "name": "body",
-            "placeholder": "Erzähl uns von deinem Projekt …",
-            "required": true,
-            "width": "full"
-          }
-        },
-        "i_address": {
-          "type": "info",
-          "settings": {
-            "label": "Adresse",
-            "content": "<p>NetImpulse<br>Musterstraße 1<br>12345 Musterstadt</p>"
-          }
-        },
-        "i_phone": {
-          "type": "info",
-          "settings": {
-            "label": "Telefon",
-            "content": "<p>+49 (0) 1234 567890</p>"
-          }
-        },
-        "i_email": {
-          "type": "info",
-          "settings": {
-            "label": "E-Mail",
-            "content": "<p>hallo@netimpulse.de</p>"
-          }
-        }
+        "f_name": { "type": "field", "settings": { "type": "text", "label": "Name", "name": "name", "placeholder": "Dein Name", "required": true, "width": "half" } },
+        "f_email": { "type": "field", "settings": { "type": "email", "label": "E-Mail", "name": "email", "placeholder": "deine@email.de", "required": true, "width": "half" } },
+        "f_phone": { "type": "field", "settings": { "type": "tel", "label": "Telefon", "name": "phone", "placeholder": "+49 …", "required": false, "width": "half" } },
+        "f_company": { "type": "field", "settings": { "type": "text", "label": "Unternehmen", "name": "company", "placeholder": "Dein Unternehmen", "required": false, "width": "half" } },
+        "f_topic": { "type": "field", "settings": { "type": "select", "label": "Worum geht's?", "name": "topic", "placeholder": "Bitte wählen …", "required": false, "width": "full", "options": "Strategie & Beratung\nWebdesign & UX\nSEO & Performance\nShopify-Theme\nSonstiges" } },
+        "f_message": { "type": "field", "settings": { "type": "textarea", "label": "Nachricht", "name": "body", "placeholder": "Erzähl uns von deinem Projekt …", "required": true, "width": "full" } },
+        "i_address": { "type": "info", "settings": { "label": "Adresse", "content": "<p>NetImpulse<br>Musterstraße 1<br>12345 Musterstadt</p>" } },
+        "i_phone": { "type": "info", "settings": { "label": "Telefon", "content": "<p>+49 (0) 1234 567890</p>" } },
+        "i_email": { "type": "info", "settings": { "label": "E-Mail", "content": "<p>hallo@netimpulse.de</p>" } }
       },
-      "block_order": [
-        "f_name",
-        "f_email",
-        "f_phone",
-        "f_company",
-        "f_topic",
-        "f_message",
-        "i_address",
-        "i_phone",
-        "i_email"
-      ],
+      "block_order": ["f_name", "f_email", "f_phone", "f_company", "f_topic", "f_message", "i_address", "i_phone", "i_email"],
       "settings": {
         "heading": "Lass uns reden.",
         "subheading": "Erzähl uns von deinem Projekt — wir melden uns innerhalb von 48 Stunden mit klaren nächsten Schritten.",
@@ -398,109 +247,34 @@
         "info_heading": "Kontakt",
         "color_scheme": "scheme-sand",
         "accent_color": "",
+        "heading_tag": "h2",
         "padding_top": 80,
         "padding_bottom": 80,
         "heading_scale": 100,
-        "text_scale": 100,
-        "heading_tag": "h2"
+        "text_scale": 100
       }
     },
     "avt_qa": {
       "type": "about-values-thread",
       "blocks": {
-        "v1": {
-          "type": "value",
-          "settings": {
-            "title": "Klarheit",
-            "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen."
-          }
-        },
-        "v2": {
-          "type": "value",
-          "settings": {
-            "title": "Substanz",
-            "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt."
-          }
-        },
-        "v3": {
-          "type": "value",
-          "settings": {
-            "title": "Direktheit",
-            "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager."
-          }
-        },
-        "v4": {
-          "type": "value",
-          "settings": {
-            "title": "Tempo",
-            "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen."
-          }
-        }
+        "v1": { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." } },
+        "v2": { "type": "value", "settings": { "title": "Substanz", "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt." } },
+        "v3": { "type": "value", "settings": { "title": "Direktheit", "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager." } },
+        "v4": { "type": "value", "settings": { "title": "Tempo", "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen." } }
       },
-      "block_order": [
-        "v1",
-        "v2",
-        "v3",
-        "v4"
-      ],
-      "settings": {
-        "kicker": "Variation 1",
-        "heading": "Werte, die sich durchziehen.",
-        "intro": "Zigzag-Layout mit progressiv gezeichneter SVG-Linie.",
-        "color_scheme": "scheme-1",
-        "accent_color": "#1f2328",
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
+      "block_order": ["v1", "v2", "v3", "v4"],
+      "settings": { "kicker": "Variation 1", "heading": "Werte, die sich durchziehen.", "intro": "Zigzag-Layout mit progressiv gezeichneter SVG-Linie.", "color_scheme": "scheme-1", "accent_color": "#1f2328", "padding_top": 80, "padding_bottom": 80 }
     },
     "avw_qa": {
       "type": "about-values-wave",
       "blocks": {
-        "v1": {
-          "type": "value",
-          "settings": {
-            "title": "Klarheit",
-            "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen."
-          }
-        },
-        "v2": {
-          "type": "value",
-          "settings": {
-            "title": "Substanz",
-            "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt."
-          }
-        },
-        "v3": {
-          "type": "value",
-          "settings": {
-            "title": "Direktheit",
-            "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager."
-          }
-        },
-        "v4": {
-          "type": "value",
-          "settings": {
-            "title": "Tempo",
-            "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen."
-          }
-        }
+        "v1": { "type": "value", "settings": { "title": "Klarheit", "text": "Wir sagen, was wir tun, in einer Sprache, die alle im Raum verstehen." } },
+        "v2": { "type": "value", "settings": { "title": "Substanz", "text": "Strategie, die Hand und Fuß hat — und sich in Zahlen prüfen lässt." } },
+        "v3": { "type": "value", "settings": { "title": "Direktheit", "text": "Du sprichst mit dem Team, das deine Arbeit verantwortet — nicht mit einem Account-Manager." } },
+        "v4": { "type": "value", "settings": { "title": "Tempo", "text": "Sprints mit klaren Releases. Erste Ergebnisse in Wochen, nicht Quartalen." } }
       },
-      "block_order": [
-        "v1",
-        "v2",
-        "v3",
-        "v4"
-      ],
-      "settings": {
-        "kicker": "Variation 2",
-        "heading": "Werte im Fluss.",
-        "intro": "Horizontale Werte mit kontinuierlich fließender Sinus-Welle.",
-        "flow_duration": 18,
-        "color_scheme": "scheme-1",
-        "accent_color": "#1f2328",
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
+      "block_order": ["v1", "v2", "v3", "v4"],
+      "settings": { "kicker": "Variation 2", "heading": "Werte im Fluss.", "intro": "Horizontale Werte mit kontinuierlich fließender Sinus-Welle.", "flow_duration": 18, "color_scheme": "scheme-1", "accent_color": "#1f2328", "padding_top": 80, "padding_bottom": 80 }
     },
     "hero_web_build_qa": {
       "type": "hero-web-build",
@@ -527,14 +301,5 @@
       }
     }
   },
-  "order": [
-    "landingpage_qa",
-    "ni_text_qa",
-    "addon_services_qa",
-    "cta_compact_qa",
-    "contact_form_qa",
-    "avt_qa",
-    "avw_qa",
-    "hero_web_build_qa"
-  ]
+  "order": ["landingpage_qa", "ni_text_qa", "addon_services_qa", "cta_compact_qa", "contact_form_qa", "avt_qa", "avw_qa", "hero_web_build_qa"]
 }
