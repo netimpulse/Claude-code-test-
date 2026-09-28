@@ -20,7 +20,7 @@
   /* Mockup palette: the browser card is always white, so its text is fixed ink. */
   --hwb-text: var(--c-ink);
   --hwb-text-soft: rgba(13, 13, 13, 0.65);
-  --hwb-text-muted: rgba(13, 13, 13, 0.55);
+  --hwb-text-muted: rgba(13, 13, 13, 0.6); /* >= 4.5:1 on white and sand (WCAG 1.4.3) */
   --hwb-line: rgba(13, 13, 13, 0.12);
 
   /* Phase variables — JS writes 0..1 floats each frame; CSS reads them. */

@@ -1,6 +1,6 @@
 {% comment %}
   NI Text — simple text block (Plan S6b).
-  Heading (h2, optional serif accent via accent-heading, *Wort*) + body text
+  Heading (h2, or h1 via heading_tag; optional serif accent via accent-heading, *Wort*) + body text
   with independent alignment controls per element (left / center / right).
   Colours come from the colour scheme tokens (--color-*); an empty scheme
   falls back to the root tokens (scheme-sand). bg_color / text_color are
@@ -13,6 +13,10 @@
   assign heading_align = section.settings.heading_align | default: 'left'
   assign text_align = section.settings.text_align | default: 'left'
   assign max_width = section.settings.max_width | default: 760
+  assign heading_tag = 'h2'
+  if section.settings.heading_tag == 'h1'
+    assign heading_tag = 'h1'
+  endif
 -%}
 
 {{ 'section-ni-text.css' | asset_url | stylesheet_tag }}
@@ -35,9 +39,9 @@
 >
   <div class="ni-text__inner">
     {%- if section.settings.heading != blank -%}
-      <h2 id="ni-text-heading-{{ section.id }}" class="ni-text__heading ni-text--align-{{ heading_align }}">
+      <{{ heading_tag }} id="ni-text-heading-{{ section.id }}" class="ni-text__heading ni-text--align-{{ heading_align }}">
         {%- render 'accent-heading', text: section.settings.heading -%}
-      </h2>
+      </{{ heading_tag }}>
     {%- endif -%}
     {%- if section.settings.body != blank -%}
       <div class="ni-text__body ni-text--align-{{ text_align }}">
@@ -53,6 +57,17 @@
   "tag": "section",
   "settings": [
     { "type": "textarea", "id": "heading", "label": "Überschrift", "default": "Eine kurze, klare Überschrift" },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Überschrift-Ebene",
+      "info": "H1, wenn dieser Textblock der Hauptinhalt der Seite ist und es sonst kein H1 gibt.",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h2"
+    },
     {
       "type": "select",
       "id": "heading_align",

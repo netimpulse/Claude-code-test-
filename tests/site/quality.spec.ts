@@ -60,16 +60,24 @@ for (const pageDef of ACCEPTED_PAGES) {
       test("Struktur, Barrierefreiheit, keine Fehler", async ({ page }) => {
         const errors: string[] = [];
         page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
+        const isNotFoundPage = pageDef.path === QA.paths.notFound;
+        const docPath = pageDef.path.split("?")[0];
         page.on("console", (m) => {
           if (m.type() !== "error") return;
           const url = m.location().url || "";
+          // Die 404-Seite liefert ihr eigenes Dokument absichtlich mit Status 404
+          // aus; Chrome meldet das als "Failed to load resource". Nur genau dieses
+          // Dokument wird ignoriert (Status wird unten separat geprueft), jede
+          // andere Ressource bleibt streng.
+          if (isNotFoundPage && /status of 404/.test(m.text()) && url && new URL(url).pathname === docPath) return;
           if (url.includes("myshopify.com") || url.includes("/cdn/shop/t/")) {
-            errors.push(`console: ${m.text()}`);
+            errors.push(`console: ${m.text()} (${url})`);
           }
         });
 
         await page.emulateMedia({ reducedMotion: "reduce" });
-        await page.goto(withTheme(pageDef.path), { waitUntil: "networkidle" });
+        const response = await page.goto(withTheme(pageDef.path), { waitUntil: "networkidle" });
+        if (isNotFoundPage) expect(response?.status(), "404-Seite antwortet mit 404").toBe(404);
         await scrollThrough(page);
 
         // Kein horizontaler Scroll

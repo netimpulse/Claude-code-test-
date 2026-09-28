@@ -25,6 +25,12 @@
         "step": 10,
         "unit": "px",
         "default": 160
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Square image, at least 64 × 64 px. Without an image the theme uses its own NetImpulse icon."
       }
     ]
   },

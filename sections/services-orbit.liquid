@@ -1,7 +1,7 @@
 {% comment %}
   Services Orbit (Leistungsbühne, Plan S6a)
   ----------------------------------------------------------------
-  Head: eyebrow, h2 with optional serif accent (accent-heading, *Wort*)
+  Head: eyebrow, h2 (or h1 via heading_tag) with optional serif accent (accent-heading, *Wort*)
   and intro. Below: a card (--r-lg, 1px line, no shadow) with the orbit
   graphic on a 5 % tinted board on the left and the detail column on the
   right. Service blocks sit at fixed angles around a ring; selecting one
@@ -22,6 +22,15 @@
   assign step = 0
   if block_count > 0
     assign step = 360.0 | divided_by: block_count
+  endif
+
+  # Heading level: h1 when the section opens the page; the detail titles
+  # follow one level below so the outline has no gaps.
+  assign heading_tag = 'h2'
+  assign detail_tag = 'h3'
+  if section.settings.heading_tag == 'h1'
+    assign heading_tag = 'h1'
+    assign detail_tag = 'h2'
   endif
 
   assign secondary_url = section.settings.secondary_url
@@ -64,9 +73,9 @@
             <p class="services-orbit__kicker eyebrow">{{ section.settings.kicker | escape }}</p>
           {%- endif -%}
           {%- if section.settings.heading != blank -%}
-            <h2 id="sorb-heading-{{ section.id }}" class="services-orbit__title">
+            <{{ heading_tag }} id="sorb-heading-{{ section.id }}" class="services-orbit__title">
               {%- render 'accent-heading', text: section.settings.heading -%}
-            </h2>
+            </{{ heading_tag }}>
           {%- endif -%}
         </div>
         {%- if show_intro -%}
@@ -130,7 +139,7 @@
                 <span class="services-orbit__detail-number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
                 <span>{{ detail_label | escape }}</span>
               </p>
-              <h3 class="services-orbit__detail-title">{{ block.settings.title | escape }}</h3>
+              <{{ detail_tag }} class="services-orbit__detail-title">{{ block.settings.title | escape }}</{{ detail_tag }}>
               {%- if block.settings.description != blank -%}
                 <div class="services-orbit__detail-text">{{ block.settings.description }}</div>
               {%- endif -%}
@@ -209,6 +218,17 @@
       "id": "heading",
       "label": "t:services_orbit.heading_label",
       "default": "Ein System aus Sichtbarkeit, Design und Umsetzung."
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "t:services_orbit.heading_tag_label",
+      "info": "t:services_orbit.heading_tag_info",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h2"
     },
     {
       "type": "textarea",

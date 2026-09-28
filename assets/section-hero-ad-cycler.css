@@ -16,7 +16,7 @@
   /* Mockup palette: the ad card is always white, so its text is fixed ink. */
   --ac-text: var(--c-ink);
   --ac-text-soft: rgba(13, 13, 13, 0.65);
-  --ac-text-muted: rgba(13, 13, 13, 0.55);
+  --ac-text-muted: rgba(13, 13, 13, 0.6); /* >= 4.5:1 on white and sand (WCAG 1.4.3) */
   --ac-line: rgba(13, 13, 13, 0.1);
   --ac-bg-soft: #e9eeed;
   --ac-card-bg: #ffffff;
@@ -28,7 +28,9 @@
   /* Natural status colours: live = red, winning variant = green —
      hardcoded so they keep their meaning regardless of scheme. */
   --ac-live: #ff3b30;
-  --ac-win: #16a34a;
+  --ac-win: #15803d; /* white "WIN" text >= 4.5:1 */
+  /* Text-safe red (>= 4.5:1, WCAG 1.4.3); the blinking dot keeps --ac-live. */
+  --ac-live-text: #c5221f;
   --ac-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
 }
 .hero-ac *, .hero-ac *::before, .hero-ac *::after { box-sizing: border-box; }
@@ -134,7 +136,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--ac-live);
+  color: var(--ac-live-text);
 }
 .hero-ac__test-dot {
   width: 7px;

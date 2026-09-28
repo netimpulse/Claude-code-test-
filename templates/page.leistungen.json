@@ -120,6 +120,7 @@
       "settings": {
         "kicker": "Unsere Leistungen",
         "heading": "Ein System aus Sichtbarkeit, Design und Umsetzung.",
+        "heading_tag": "h1",
         "intro": "",
         "show_intro": true,
         "center_eyebrow": "Fokus",

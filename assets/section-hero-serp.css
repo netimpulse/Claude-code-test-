@@ -17,7 +17,7 @@
   /* Mockup palette: the SERP card is always white, so its text is fixed ink. */
   --hs-text: var(--c-ink);
   --hs-text-soft: rgba(13, 13, 13, 0.65);
-  --hs-text-muted: rgba(13, 13, 13, 0.55);
+  --hs-text-muted: rgba(13, 13, 13, 0.6); /* >= 4.5:1 on white and sand (WCAG 1.4.3) */
   --hs-line: rgba(13, 13, 13, 0.1);
   --hs-line-strong: rgba(13, 13, 13, 0.18);
   --hs-bg-soft: #f6f8f8;
@@ -227,12 +227,14 @@
 }
 /* Non-brand favicons get natural, distinct brand-like colours
    (hardcoded) so the results list looks real instead of grey. */
-.hero-serp__favicon--c0 { background: #4285f4; color: #ffffff; }
-.hero-serp__favicon--c1 { background: #ea4335; color: #ffffff; }
-.hero-serp__favicon--c2 { background: #34a853; color: #ffffff; }
+/* Favicon monograms are text: darker Google-like tones keep white letters
+   at >= 4.5:1 (WCAG 1.4.3). The engine wordmark keeps the original colours. */
+.hero-serp__favicon--c0 { background: #1967d2; color: #ffffff; }
+.hero-serp__favicon--c1 { background: #c5221f; color: #ffffff; }
+.hero-serp__favicon--c2 { background: #188038; color: #ffffff; }
 .hero-serp__favicon--c3 { background: #fbbc05; color: #1a1a1a; }
 .hero-serp__favicon--c4 { background: #9334e6; color: #ffffff; }
-.hero-serp__favicon--c5 { background: #ff6d00; color: #ffffff; }
+.hero-serp__favicon--c5 { background: #c2410c; color: #ffffff; }
 
 .hero-serp__row--brand .hero-serp__favicon {
   background: var(--hs-text, #0e1716);

@@ -16,7 +16,7 @@
   /* Mockup palette: the chat card is always white, so its text is fixed ink. */
   --hg-text: var(--c-ink);
   --hg-text-soft: rgba(13, 13, 13, 0.65);
-  --hg-text-muted: rgba(13, 13, 13, 0.55);
+  --hg-text-muted: rgba(13, 13, 13, 0.6); /* >= 4.5:1 on white and sand (WCAG 1.4.3) */
   --hg-line: rgba(13, 13, 13, 0.1);
   --hg-bg-soft: #eff2f1;
   --hg-card-bg: #ffffff;

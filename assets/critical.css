@@ -13,6 +13,15 @@ body {
   min-height: 100svh;
 }
 
+/* Focus scrolling (Tab, anchors) keeps a margin: the sticky header must never
+   cover the focused element at the top (WCAG 2.4.11), and at the bottom the
+   element stays clear of fixed bottom overlays (browser toolbars, the Shopify
+   preview bar). */
+html {
+  scroll-padding-top: calc(var(--header-h, 76px) + 16px);
+  scroll-padding-bottom: 96px;
+}
+
 html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
   overflow: hidden;
 }
