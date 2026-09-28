@@ -1,15 +1,30 @@
+/* Hero Ad Cycler — design-system copy column (SYS §6 "Hero", plan S6e) next
+   to the animated A/B-test ad mockup. Copy, buttons, stat strip and surface
+   come from the section's color scheme (.color-<id>, root = scheme-sand); the
+   mockup keeps its own palette and patterns (allowlist, plan Anhang B).
+   No gradients, blur or shadows outside the mockup. */
 .hero-ac {
   position: relative;
   display: block;
-  padding: var(--ac-pad-top, 62px) clamp(1.25rem, 4vw, 4rem) var(--ac-pad-bottom, 62px);
-  background: var(--ac-bg, #f3f6f6);
-  color: var(--ac-text, #0e1716);
+  padding-block:
+    min(var(--ac-pad-top, 48px), clamp(24px, 3vw, 48px))
+    min(var(--ac-pad-bottom, 80px), clamp(40px, 5vw, 80px));
+  background: var(--color-bg);
+  color: var(--color-text);
   overflow: hidden;
-  font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
-  --ac-signal: #1c4948;
-  --ac-signal-soft: #9ccfd0;
-  --ac-signal-tint: rgba(156, 207, 208, 0.18);
-  --ac-signal-tint-strong: rgba(156, 207, 208, 0.45);
+  font-family: var(--font-body);
+  /* Mockup palette: the ad card is always white, so its text is fixed ink. */
+  --ac-text: var(--c-ink);
+  --ac-text-soft: rgba(13, 13, 13, 0.65);
+  --ac-text-muted: rgba(13, 13, 13, 0.55);
+  --ac-line: rgba(13, 13, 13, 0.1);
+  --ac-bg-soft: #e9eeed;
+  --ac-card-bg: #ffffff;
+  /* Brand signal inside the mockup (settings accent_color / accent_soft). */
+  --ac-signal: var(--ac-accent, var(--c-teal));
+  --ac-signal-soft: var(--ac-accent-soft, #9ccfd0);
+  --ac-signal-tint: color-mix(in srgb, var(--ac-signal-soft) 18%, transparent);
+  --ac-signal-tint-strong: color-mix(in srgb, var(--ac-signal-soft) 45%, transparent);
   /* Natural status colours: live = red, winning variant = green —
      hardcoded so they keep their meaning regardless of scheme. */
   --ac-live: #ff3b30;
@@ -19,112 +34,89 @@
 .hero-ac *, .hero-ac *::before, .hero-ac *::after { box-sizing: border-box; }
 
 .hero-ac__inner {
-  max-width: 1440px;
-  margin: 0 auto;
+  width: min(var(--page-max, 1440px), calc(100% - 2 * var(--page-x)));
+  margin-inline: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  gap: clamp(1.75rem, 4vw, 3.5rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-7);
   align-items: center;
 }
-@media (max-width: 900px) {
-  .hero-ac__inner { grid-template-columns: minmax(0, 1fr); }
+.hero-ac__copy { grid-column: 1 / span 7; min-width: 0; }
+.hero-ac__panel { grid-column: 8 / span 5; }
+@media (max-width: 1100px) {
+  .hero-ac__copy,
+  .hero-ac__panel { grid-column: 1 / -1; }
 }
 
-.hero-ac__copy { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
-
-.hero-ac__eyebrow {
-  margin: 0;
-  font-family: var(--ac-mono);
-  font-size: calc(0.72rem * var(--fs-heading, 1));
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ac-text-soft, rgba(0,0,0,0.65));
-}
+.hero-ac__eyebrow { margin: 0 0 var(--s-5); color: var(--color-text); }
 
 .hero-ac__heading {
   margin: 0;
-  font-size: calc(clamp(1.76rem, 4.21vw, 3.12rem) * var(--fs-heading, 1));
-  line-height: 1.05;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-size: calc(var(--text-mega) * var(--fs-heading, 1));
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  text-wrap: balance;
   display: flex;
   flex-direction: column;
-  gap: 0.05em;
-  overflow-wrap: anywhere;
+  gap: 0.08em;
+  overflow-wrap: break-word;
 }
-.hero-ac__heading-accent { color: var(--ac-signal); margin-right: 0.25em; }
+/* Serif accent (em.it) keeps the text colour (SYS §2: never tinted). */
+.hero-ac__heading-accent { color: inherit; }
 
 .hero-ac__body {
-  margin: 0;
-  font-size: calc(clamp(0.74rem, 0.86vw, 0.82rem) * var(--fs-text, 1));
+  margin: var(--s-5) 0 0;
+  max-width: 52ch;
+  font-size: calc(var(--text-lead) * var(--fs-text, 1));
   line-height: 1.55;
-  color: var(--ac-text-soft, rgba(0,0,0,0.65));
-  max-width: 44ch;
+  color: var(--color-muted);
 }
-.hero-ac__body p { margin: 0 0 0.75rem; }
-.hero-ac__body p:last-child { margin-bottom: 0; }
+.hero-ac__body > * { margin: 0 0 0.75em; }
+.hero-ac__body > :last-child { margin-bottom: 0; }
 
-.hero-ac__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.35rem; }
-
-.hero-ac__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.25rem;
-  border: 1px solid transparent;
-  border-radius: 0;
-  font: inherit;
-  font-weight: 600;
-  font-size: calc(0.95rem * var(--fs-text, 1));
-  line-height: 1;
-  cursor: pointer;
-  text-decoration: none;
-  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+.hero-ac__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
 }
-.hero-ac__btn:focus-visible {
-  outline: 2px solid var(--ac-accent, #1c4948);
-  outline-offset: 3px;
-}
-.hero-ac__btn--primary {
-  background: var(--ac-accent, #1c4948);
-  color: #ffffff;
-  border-color: var(--ac-accent, #1c4948);
-}
-.hero-ac__btn--primary:hover { transform: translateY(-1px); }
-.hero-ac__btn--primary svg { width: 1em; height: 1em; }
-.hero-ac__btn--secondary {
-  background: transparent;
-  color: var(--ac-text, #0e1716);
-  border-color: var(--ac-line, rgba(0,0,0,0.18));
+.hero-ac__btn { font-size: calc(1rem * var(--fs-text, 1)); }
+.hero-ac__btn svg { width: 1em; height: 1em; flex: 0 0 1em; }
+@media (max-width: 860px) {
+  .hero-ac__actions .btn { flex: 1 1 100%; }
 }
 
 .hero-ac__stats {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--ac-line, rgba(0,0,0,0.1));
+  margin-top: var(--s-6);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--color-line);
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: var(--s-4) var(--s-6);
 }
 .hero-ac__stat-label {
-  font-family: var(--ac-mono);
-  font-size: calc(10px * var(--fs-text, 1));
+  font-size: calc(var(--text-label) * var(--fs-text, 1));
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ac-text-muted, rgba(0,0,0,0.5));
-  margin-bottom: 0.25rem;
+  color: var(--color-muted);
+  margin-bottom: var(--s-1);
 }
 .hero-ac__stat-value {
-  font-family: var(--ac-mono);
+  font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  font-size: calc(0.98rem * var(--fs-text, 1));
-  font-weight: 700;
+  font-size: calc(1.5rem * var(--fs-text, 1));
+  line-height: 1.1;
+  font-weight: 500;
   letter-spacing: -0.02em;
-  color: var(--ac-text, #0e1716);
+  color: var(--color-text);
 }
 
 /* Right panel */
 .hero-ac__panel { min-width: 0; }
+.hero-ac__panel-head { color: var(--color-muted); }
 
 .hero-ac__panel-head {
   display: flex;
@@ -135,7 +127,6 @@
   font-size: calc(0.7rem * var(--fs-text, 1));
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ac-text-soft, rgba(0,0,0,0.65));
   flex-wrap: wrap;
   gap: 0.5rem;
 }
@@ -160,10 +151,9 @@
 
 .hero-ac__card {
   background: var(--ac-card-bg, #ffffff);
-  border: 1px solid var(--ac-line, rgba(0,0,0,0.08));
-  border-radius: 0;
+  border: 1px solid var(--color-line);
+  border-radius: calc(var(--r-lg) - 4px);
   overflow: hidden;
-  box-shadow: 0 12px 32px rgba(11,11,14,0.06), 0 0 0 1px rgba(11,11,14,0.04);
 }
 
 .hero-ac__post-head {
@@ -335,7 +325,6 @@
   border-radius: 0;
   background: var(--ac-card-bg, #ffffff);
   border: 1px solid var(--ac-line, rgba(0,0,0,0.08));
-  transition: all 200ms ease;
   min-width: 0;
 }
 .hero-ac__tab.is-active {
@@ -373,5 +362,4 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-ac__slide { transition: none; }
   .hero-ac__test-dot { animation: none; }
-  .hero-ac__btn { transition: none; }
 }

@@ -1,7 +1,9 @@
 {% comment %}
   Hero Ticker — live performance dashboard with sparklines
   ----------------------------------------------------------------
-  Left column: eyebrow, two-tone headline, body, two CTAs.
+  Left column: eyebrow, two-part headline (second part in the
+  muted text colour, no serif accent), lead, two CTAs — all on the
+  design-system tokens; no reveal animation on the copy.
   Right column: dashboard mock with window chrome label and a
   configurable grid of metrics. Each metric block has its own
   label, sub-label, value (fixed or live-incrementing), delta
@@ -10,6 +12,10 @@
 
 {%- liquid
   assign scheme = section.settings.color_scheme
+  assign scheme_class = ''
+  if scheme != blank
+    assign scheme_class = 'color-' | append: scheme.id
+  endif
   assign accent = section.settings.accent_color
 -%}
 
@@ -23,35 +29,26 @@
   #shopify-section-{{ section.id }} .hero-ticker {
     --ht-pad-top: {{ section.settings.padding_top }}px;
     --ht-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --ht-accent: {{ accent }};
-    --ht-accent-soft: {{ accent | color_modify: 'alpha', 0.1 }};
-    {%- if scheme.settings.background != blank -%}
-      --ht-bg: {{ scheme.settings.background }};
-      --ht-bg-soft: #f6f8f8;
-      --ht-text: {{ scheme.settings.text }};
-      --ht-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
-      --ht-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
-      --ht-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
-      --ht-card-bg: #ffffff;
-    {%- endif -%}
+    {%- if accent != blank %}--ht-accent: {{ accent }};{% endif %}
   }
 {% endstyle %}
 
 <hero-ticker
-  class="hero-ticker full-width color-scheme color-{{ scheme.id }}"
+  class="hero-ticker full-width {{ scheme_class }}"
   data-section-id="{{ section.id }}"
   data-section-type="hero-ticker"
 >
   <div class="hero-ticker__inner">
     <div class="hero-ticker__copy">
       {%- if section.settings.eyebrow != blank -%}
-        <p class="hero-ticker__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <p class="hero-ticker__eyebrow eyebrow">{{ section.settings.eyebrow | escape }}</p>
       {%- endif -%}
 
       <h1 class="hero-ticker__heading">
         {%- if section.settings.heading_strong != blank -%}
           <span class="hero-ticker__heading-strong">{{ section.settings.heading_strong | escape }}</span>
         {%- endif -%}
+        {%- if section.settings.heading_strong != blank and section.settings.heading_muted != blank -%}{{ ' ' }}{%- endif -%}
         {%- if section.settings.heading_muted != blank -%}
           <span class="hero-ticker__heading-muted">{{ section.settings.heading_muted | escape }}</span>
         {%- endif -%}
@@ -61,24 +58,26 @@
         <div class="hero-ticker__body">{{ section.settings.body }}</div>
       {%- endif -%}
 
-      <div class="hero-ticker__actions">
-        {%- if section.settings.primary_label != blank -%}
-          <a class="hero-ticker__btn hero-ticker__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
-            <span>{{ section.settings.primary_label | escape }}</span>
-            <svg class="hero-ticker__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        {%- endif -%}
-        {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
-          <a class="hero-ticker__btn hero-ticker__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
-            {%- if section.settings.show_secondary_icon != false -%}
-              <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 1.5 10 6 2 10.5z" fill="currentColor"/></svg>
-            {%- endif -%}
-            <span>{{ section.settings.secondary_label | escape }}</span>
-          </a>
-        {%- endif -%}
-      </div>
+      {%- if section.settings.primary_label != blank or section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
+        <div class="hero-ticker__actions">
+          {%- if section.settings.primary_label != blank -%}
+            <a class="btn btn--primary hero-ticker__btn hero-ticker__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+              <span>{{ section.settings.primary_label | escape }}</span>
+              <svg class="hero-ticker__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
+            <a class="btn btn--secondary hero-ticker__btn hero-ticker__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+              {%- if section.settings.show_secondary_icon != false -%}
+                <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 1.5 10 6 2 10.5z" fill="currentColor"/></svg>
+              {%- endif -%}
+              <span>{{ section.settings.secondary_label | escape }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
 
     <div class="hero-ticker__dashboard" aria-hidden="true">
@@ -174,8 +173,8 @@
     {"type": "text", "id": "window_label", "label": "Window chrome label", "default": "impulse · client · acme co."},
     {"type": "text", "id": "live_label", "label": "Live indicator label", "default": "Live"},
     {"type": "header", "content": "Appearance"},
-    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
-    {"type": "color", "id": "accent_color", "label": "Accent / sparkline color", "default": "#1c4948"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand"},
+    {"type": "color", "id": "accent_color", "label": "Accent color", "info": "Akzent im Dashboard-Mockup (Live-Wert-Markierung).", "default": "#1c4948"},
     {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "header", "content": "Typography"},

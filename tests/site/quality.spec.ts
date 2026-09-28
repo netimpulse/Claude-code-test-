@@ -11,6 +11,12 @@ import { scrollThrough, runAxe, fontFaceLoaded } from "./helpers";
  */
 const ACCEPTED_PAGES: { name: string; path: string; home?: boolean }[] = [
   { name: "Startseite", path: QA.paths.home, home: true },
+  { name: "Leistungen", path: QA.paths.leistungen },
+  { name: "SEO", path: QA.paths.seo },
+  { name: "SEA", path: QA.paths.sea },
+  { name: "SMM", path: QA.paths.smm },
+  { name: "GEO", path: QA.paths.geo },
+  { name: "Webdesign", path: QA.paths.webDesign },
 ];
 
 /** Elemente, die bewusst Verlaeufe bzw. Endlos-Animationen haben duerfen. */

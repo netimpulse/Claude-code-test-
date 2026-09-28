@@ -33,6 +33,17 @@ const STRICT_FILES = [
   "snippets/ni-deck-graphic.liquid", // S5b2
   "sections/team-compact.liquid", // S5c
   "sections/cta-compact.liquid", // S5c
+  "sections/theme-store-preview.liquid", // Startseite, Theme-Store-Vorschau
+  "sections/services-orbit.liquid", // S6a
+  "sections/addon-services.liquid", // S6b
+  "sections/ni-text.liquid", // S6b
+  "sections/image-with-text.liquid", // S6c
+  "sections/service-aspects.liquid", // S6c
+  "sections/hero-serp.liquid", // S6d
+  "sections/hero-ticker.liquid", // S6d
+  "sections/hero-geo.liquid", // S6d
+  "sections/hero-ad-cycler.liquid", // S6e
+  "sections/hero-web-build.liquid", // S6e
 ];
 
 /** Bekannte Verstoesse gegen Regel 7; die Liste darf nur schrumpfen. */

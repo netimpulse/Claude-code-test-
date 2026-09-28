@@ -74,7 +74,8 @@
     }
 
     _fmt(n, short) {
-      if (!short) return Math.floor(n).toLocaleString('en-US');
+      // Number format follows the storefront language (<html lang>).
+      if (!short) return Math.floor(n).toLocaleString(document.documentElement.lang || undefined);
       if (n > 1000) return (n / 1000).toFixed(1) + 'k';
       return String(Math.floor(n));
     }

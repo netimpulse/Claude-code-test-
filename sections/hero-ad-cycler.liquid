@@ -1,8 +1,10 @@
 {% comment %}
   Hero Ad Cycler — creative variants cycling like an A/B test
   ----------------------------------------------------------------
-  Left column: eyebrow, three-line headline with one accent word,
-  body, two CTAs and a small stat strip.
+  Left column: eyebrow, three-line headline whose accent part
+  (heading_accent) is the serif accent (<em class="it">), lead, two
+  CTAs and a small stat strip — all on the design-system tokens;
+  no reveal animation on the copy.
   Right column: ad-test card. Header shows live A/B test label
   and ticking impressions counter. Card body cycles between
   variant blocks (tag, headline, sub, CTA, decorative art
@@ -13,6 +15,10 @@
 
 {%- liquid
   assign scheme = section.settings.color_scheme
+  assign scheme_class = ''
+  if scheme != blank
+    assign scheme_class = 'color-' | append: scheme.id
+  endif
   assign accent = section.settings.accent_color
   assign accent_soft = section.settings.accent_soft
 
@@ -38,24 +44,13 @@
   #shopify-section-{{ section.id }} .hero-ac {
     --ac-pad-top: {{ section.settings.padding_top }}px;
     --ac-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --ac-accent: {{ accent }};
-    --ac-accent-soft: {{ accent_soft }};
-    --ac-accent-tint: {{ accent_soft | color_modify: 'alpha', 0.18 }};
-    --ac-accent-tint-strong: {{ accent_soft | color_modify: 'alpha', 0.45 }};
-    {%- if scheme.settings.background != blank -%}
-      --ac-bg: {{ scheme.settings.background }};
-      --ac-bg-soft: #e9eeed;
-      --ac-text: {{ scheme.settings.text }};
-      --ac-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
-      --ac-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
-      --ac-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
-      --ac-card-bg: #ffffff;
-    {%- endif -%}
+    {%- if accent != blank %}--ac-accent: {{ accent }};{% endif %}
+    {%- if accent_soft != blank %}--ac-accent-soft: {{ accent_soft }};{% endif %}
   }
 {% endstyle %}
 
 <hero-ad-cycler
-  class="hero-ac full-width color-scheme color-{{ scheme.id }}"
+  class="hero-ac full-width {{ scheme_class }}"
   data-section-id="{{ section.id }}"
   data-section-type="hero-ad-cycler"
   data-variant-dur="{{ section.settings.variant_duration }}"
@@ -66,7 +61,7 @@
   <div class="hero-ac__inner">
     <div class="hero-ac__copy">
       {%- if section.settings.eyebrow != blank -%}
-        <p class="hero-ac__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <p class="hero-ac__eyebrow eyebrow">{{ section.settings.eyebrow | escape }}</p>
       {%- endif -%}
 
       <h1 class="hero-ac__heading">
@@ -74,13 +69,14 @@
           <span>{{ section.settings.heading_line_1 | escape }}</span>
         {%- endif -%}
         {%- if section.settings.heading_accent != blank or section.settings.heading_line_2 != blank -%}
+          {%- if section.settings.heading_line_1 != blank -%}{{ ' ' }}{%- endif -%}
           <span>
-            {%- if section.settings.heading_accent != blank -%}<span class="hero-ac__heading-accent">{{ section.settings.heading_accent | escape }}</span>{%- endif -%}
+            {%- if section.settings.heading_accent != blank -%}<em class="it hero-ac__heading-accent">{{ section.settings.heading_accent | escape }}</em>{%- endif -%}
             {%- if section.settings.heading_line_2 != blank -%} {{ section.settings.heading_line_2 | escape }}{%- endif -%}
           </span>
         {%- endif -%}
         {%- if section.settings.heading_line_3 != blank -%}
-          <span>{{ section.settings.heading_line_3 | escape }}</span>
+          {{ ' ' }}<span>{{ section.settings.heading_line_3 | escape }}</span>
         {%- endif -%}
       </h1>
 
@@ -88,19 +84,21 @@
         <div class="hero-ac__body">{{ section.settings.body }}</div>
       {%- endif -%}
 
-      <div class="hero-ac__actions">
-        {%- if section.settings.primary_label != blank -%}
-          <a class="hero-ac__btn hero-ac__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
-            <span>{{ section.settings.primary_label | escape }}</span>
-            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        {%- endif -%}
-        {%- if section.settings.secondary_label != blank -%}
-          <a class="hero-ac__btn hero-ac__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
-            <span>{{ section.settings.secondary_label | escape }}</span>
-          </a>
-        {%- endif -%}
-      </div>
+      {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
+        <div class="hero-ac__actions">
+          {%- if section.settings.primary_label != blank -%}
+            <a class="btn btn--primary hero-ac__btn hero-ac__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+              <span>{{ section.settings.primary_label | escape }}</span>
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.secondary_label != blank -%}
+            <a class="btn btn--secondary hero-ac__btn hero-ac__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+              <span>{{ section.settings.secondary_label | escape }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
 
       {%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
       {%- if stat_blocks.size > 0 -%}
@@ -230,9 +228,9 @@
     {"type": "header", "content": "Animation"},
     {"type": "range", "id": "variant_duration", "label": "Seconds per variant", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 3},
     {"type": "header", "content": "Appearance"},
-    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
-    {"type": "color", "id": "accent_color", "label": "Accent (deep)", "default": "#1c4948"},
-    {"type": "color", "id": "accent_soft", "label": "Accent (mist)", "default": "#9ccfd0"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand"},
+    {"type": "color", "id": "accent_color", "label": "Accent (deep)", "info": "Akzent im Anzeigen-Mockup (Variantenfläche, aktiver Tab).", "default": "#1c4948"},
+    {"type": "color", "id": "accent_soft", "label": "Accent (mist)", "info": "Heller Akzent im Anzeigen-Mockup (Muster, Tags).", "default": "#9ccfd0"},
     {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "header", "content": "Typography"},

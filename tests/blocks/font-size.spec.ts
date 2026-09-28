@@ -133,3 +133,31 @@ test.describe("Section font-size multipliers – services-orbit (R4)", () => {
     await expectScaleBinding(page, ".services-orbit__detail-panel.is-active .services-orbit__benefits li", "--fs-text");
   });
 });
+
+/**
+ * R4 (Plan S6d): the section multipliers --fs-heading / --fs-text reach the
+ * redesigned hero-serp on /pages/seo (the section is not on the QA page).
+ * Stored scales are 100 % → both variables resolve to 1.
+ */
+test.describe("Section font-size multipliers – hero-serp (R4)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(withTheme(QA.paths.seo), { waitUntil: "load" });
+    await passChallenge(page);
+    await page.waitForSelector(".hero-serp", { timeout: 15_000 });
+  });
+
+  test("Template scales reach the section root", async ({ page }) => {
+    expect(Number(await readVar(page, ".hero-serp", "--fs-heading"))).toBe(1);
+    expect(Number(await readVar(page, ".hero-serp", "--fs-text"))).toBe(1);
+  });
+
+  test("--fs-heading drives the h1", async ({ page }) => {
+    await expectScaleBinding(page, ".hero-serp__heading", "--fs-heading");
+  });
+
+  test("--fs-text drives the lead and the buttons", async ({ page }) => {
+    await expectScaleBinding(page, ".hero-serp__body", "--fs-text");
+    await expectScaleBinding(page, ".hero-serp__btn--primary", "--fs-text");
+  });
+});

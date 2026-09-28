@@ -14,12 +14,13 @@ import { QA, withTheme } from "../fixtures";
 const bg = (el: Element) => getComputedStyle(el).backgroundColor;
 const fg = (el: Element) => getComputedStyle(el).color;
 
-test.describe("Hero natural colours", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
-  });
+/** R1: each hero is checked on its real service page (plan S6d/S6e). */
+const go = (page: import("@playwright/test").Page, path: string) =>
+  page.goto(withTheme(path), { waitUntil: "networkidle" });
 
+test.describe("Hero natural colours", () => {
   test("Ticker window-control dots are red / amber / green", async ({ page }) => {
+    await go(page, QA.paths.sea);
     const dots = page.locator("[data-section-type='hero-ticker'] .hero-ticker__chrome-dots > span");
     await expect(dots).toHaveCount(3);
     expect(await dots.nth(0).evaluate(bg)).toBe("rgb(255, 95, 87)");
@@ -28,6 +29,7 @@ test.describe("Hero natural colours", () => {
   });
 
   test("Ticker deltas/sparklines are green for up, red for down; LIVE is red", async ({ page }) => {
+    await go(page, QA.paths.sea);
     const root = page.locator("[data-section-type='hero-ticker']").first();
     // First metric (Organic clicks) is positive → green.
     expect(await root.locator(".hero-ticker__metric-delta").first().evaluate(fg)).toBe("rgb(22, 163, 74)");
@@ -41,6 +43,7 @@ test.describe("Hero natural colours", () => {
   });
 
   test("SERP wordmark is multi-colour, active tab is Google blue, favicons coloured", async ({ page }) => {
+    await go(page, QA.paths.seo);
     const root = page.locator("[data-section-type='hero-serp']").first();
     const letters = root.locator(".hero-serp__engine span");
     await expect(letters.first()).toBeVisible();
@@ -56,6 +59,7 @@ test.describe("Hero natural colours", () => {
   });
 
   test("Ad cycler: LIVE test dot is red, winner badge is green", async ({ page }) => {
+    await go(page, QA.paths.smm);
     const root = page.locator("[data-section-type='hero-ad-cycler']").first();
     expect(await root.locator(".hero-ac__test-dot").evaluate(bg)).toBe("rgb(255, 59, 48)");
     const win = root.locator(".hero-ac__tab-win").first();
@@ -65,6 +69,7 @@ test.describe("Hero natural colours", () => {
   });
 
   test("GEO monitoring (online) dot is green", async ({ page }) => {
+    await go(page, QA.paths.geo);
     const dot = page.locator("[data-section-type='hero-geo'] .hero-geo__monitoring-dot").first();
     await expect(dot).toBeAttached();
     expect(await dot.evaluate(bg)).toBe("rgb(22, 163, 74)");
@@ -72,13 +77,30 @@ test.describe("Hero natural colours", () => {
 
   test("Mock panels have a hardcoded white background", async ({ page }) => {
     const white = "rgb(255, 255, 255)";
+    await go(page, QA.paths.geo);
     expect(await page.locator("[data-section-type='hero-geo'] .hero-geo__chat").first().evaluate(bg)).toBe(white);
+    await go(page, QA.paths.seo);
     expect(await page.locator("[data-section-type='hero-serp'] .hero-serp__mock").first().evaluate(bg)).toBe(white);
+    await go(page, QA.paths.sea);
     expect(await page.locator("[data-section-type='hero-ticker'] .hero-ticker__dashboard").first().evaluate(bg)).toBe(white);
+    await go(page, QA.paths.smm);
     expect(await page.locator("[data-section-type='hero-ad-cycler'] .hero-ac__card").first().evaluate(bg)).toBe(white);
+    await go(page, QA.paths.webDesign);
+    expect(await page.locator("[data-section-type='hero-web-build'] .hwb__viewport").first().evaluate(bg)).toBe(white);
+  });
+
+  test("Web-build browser dots are red / amber / green", async ({ page }) => {
+    await go(page, QA.paths.webDesign);
+    const dots = page.locator("[data-section-type='hero-web-build'] .hwb__dots > span");
+    await expect(dots).toHaveCount(3);
+    expect(await dots.nth(0).evaluate(bg)).toBe("rgb(227, 99, 99)");
+    expect(await dots.nth(1).evaluate(bg)).toBe("rgb(226, 182, 68)");
+    expect(await dots.nth(2).evaluate(bg)).toBe("rgb(91, 183, 121)");
   });
 
   test("ni-deck window dots are red / amber / green", async ({ page }) => {
+    // Not part of S6d/S6e; kept as before on the QA page.
+    await go(page, QA.paths.qaBlock);
     const dots = page.locator(".ni-device__dots span");
     expect(await dots.count()).toBeGreaterThanOrEqual(3);
     expect(await dots.nth(0).evaluate(bg)).toBe("rgb(255, 95, 87)");

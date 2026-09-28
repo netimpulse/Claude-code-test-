@@ -89,7 +89,8 @@
     _renderImpressions(t) {
       if (!this.impEl) return;
       const v = Math.floor(this.impBase + t * this.impRate);
-      this.impEl.textContent = v.toLocaleString('en-US');
+      // Number format follows the storefront language (<html lang>).
+      this.impEl.textContent = v.toLocaleString(document.documentElement.lang || undefined);
     }
   }
 

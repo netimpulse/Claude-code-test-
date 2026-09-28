@@ -65,8 +65,13 @@
 
     _layout() {
       for (let i = 0; i < this.rows.length; i++) {
-        this.rows[i].style.top = (i * this.rowHeight) + 'px';
+        this._place(this.rows[i], i);
       }
+    }
+
+    // Rows move via transform only (compositor-friendly, no layout per frame).
+    _place(row, pos) {
+      row.style.transform = 'translateY(' + (pos * this.rowHeight).toFixed(2) + 'px)';
     }
 
     _renderFinal() {
@@ -112,7 +117,7 @@
         } else if (i < this.brandIndex) {
           pos = i + eased;
         }
-        row.style.top = (pos * this.rowHeight) + 'px';
+        this._place(row, pos);
       }
       const brandRow = this.rows[this.brandIndex];
       if (brandRow) {
