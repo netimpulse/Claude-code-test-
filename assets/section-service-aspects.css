@@ -1,66 +1,68 @@
 /* section-service-aspects.css
- * Scoped styles for sections/service-aspects.liquid.
+ * Scoped styles for sections/service-aspects.liquid (Plan S6c).
  * Equal-size aspect tiles laid out on a staggered "gallery wall":
  * each desktop column carries a different vertical offset so the
- * tiles do not line up in a straight row. Colour values flow in via
- * CSS custom properties from the section's {% style %} block.
+ * tiles do not line up in a straight row. Colours come from the colour
+ * scheme tokens (.color-<scheme>); --sa-accent only exists when the
+ * accent_color setting is filled. Cards without shadow, no gradients.
  */
 
 .service-aspects {
+  --sa-a: var(--sa-accent, var(--color-accent, var(--c-teal)));
+
   position: relative;
-  padding-top: var(--sa-padding-top, 62px);
-  padding-bottom: var(--sa-padding-bottom, 62px);
-  background: var(--sa-bg, #ffffff);
-  color: var(--sa-text, #1f2328);
+  padding-block: min(var(--sa-padding-top, 80px), var(--section-y))
+    min(var(--sa-padding-bottom, 80px), var(--section-y));
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .service-aspects__inner {
-  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
-  margin: 0 auto;
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-x);
 }
 
 /* ---- Head ---- */
 .service-aspects__head {
-  max-width: 720px;
-  margin: 0 0 clamp(36px, 5vw, 56px);
+  max-width: 62rem;
+  margin: 0 0 clamp(40px, 5vw, 72px);
 }
 
 .service-aspects__kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--sa-muted, #6b7280);
-  font-size: calc(0.92rem * var(--fs-text, 1));
-  margin-bottom: 14px;
+  margin: 0 0 var(--s-5);
+  color: var(--color-muted);
 }
 
 .service-aspects__kicker::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: currentColor;
+  background: var(--sa-a);
 }
 
 .service-aspects__heading {
   margin: 0;
-  font-size: calc(clamp(1.56rem, 2.81vw, 2.5rem) * var(--fs-heading, 1));
-  line-height: 1.06;
-  letter-spacing: -0.03em;
-  font-weight: 800;
+  font-size: calc(var(--text-h2) * var(--fs-heading, 1));
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--color-heading, var(--color-text));
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .service-aspects__intro {
-  margin: 16px 0 0;
-  color: var(--sa-muted, #6b7280);
-  font-size: calc(clamp(0.78rem, 0.86vw, 0.87rem) * var(--fs-text, 1));
-  line-height: 1.6;
+  margin: var(--s-6) 0 0;
+  max-width: 60ch;
+  color: var(--color-muted);
+  font-size: calc(var(--text-lead) * var(--fs-text, 1));
+  line-height: 1.5;
 }
 
 /* ---- Grid (mobile-first: single column, no stagger) ---- */
 .service-aspects__grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(16px, 2vw, 24px);
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: 1fr; /* every row as tall as the tallest tile: equal size */
+  gap: var(--gutter);
 }
 
 /* ---- Tile (equal size, portrait: taller than wide) ---- */
@@ -69,43 +71,43 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 300px;
+  max-width: 320px;
   justify-self: center;
-  min-height: clamp(265px, 28vw, 312px);
-  padding: clamp(20px, 2vw, 28px);
-  border: 1.5px solid var(--sa-line-strong, rgba(31, 35, 40, 0.85));
-  border-radius: 0;
-  background: var(--sa-card, #ffffff);
-  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  min-height: clamp(265px, 28vw, 320px);
+  padding: clamp(20px, 2.2vw, 32px);
+  border: 1px solid var(--color-line);
+  border-radius: var(--r-lg);
+  background: var(--color-surface, var(--color-bg));
+  transition: border-color var(--dur) var(--ease);
 }
 
 .service-aspects__tile:hover {
-  border-color: var(--sa-accent, #4a7cff);
-  box-shadow: 0 18px 44px rgba(31, 35, 40, 0.12);
+  border-color: var(--color-line-strong, var(--color-line));
 }
 
 .service-aspects__tile-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--s-3);
 }
 
 .service-aspects__number {
-  font-size: calc(0.95rem * var(--fs-text, 1));
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--sa-accent, #4a7cff);
+  font-family: var(--font-display);
+  font-size: calc(1rem * var(--fs-text, 1));
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--sa-a);
 }
 
 .service-aspects__icon {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 0;
-  background: var(--sa-accent-soft, rgba(74, 124, 255, 0.12));
-  color: var(--sa-accent, #4a7cff);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--sa-a) 10%, var(--color-surface, var(--color-bg)));
+  color: var(--sa-a);
 }
 
 .service-aspects__icon svg {
@@ -115,37 +117,40 @@
 
 .service-aspects__tile-body {
   margin-top: auto;
-  padding-top: 18px;
+  padding-top: var(--s-5);
 }
 
 .service-aspects__tile-title {
   margin: 0;
-  font-size: calc(clamp(0.9rem, 1.17vw, 1.13rem) * var(--fs-heading, 1));
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  font-weight: 700;
+  font-size: calc(clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem) * var(--fs-heading, 1));
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: var(--color-heading, var(--color-text));
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .service-aspects__tile-text {
-  margin: 10px 0 0;
-  color: var(--sa-muted, #6b7280);
-  font-size: calc(0.96rem * var(--fs-text, 1));
+  margin: var(--s-3) 0 0;
+  color: var(--color-muted);
+  font-size: calc(var(--text-small) * var(--fs-text, 1));
   line-height: 1.5;
 }
 
 .service-aspects__placeholder {
-  padding: 48px;
-  border: 1px dashed var(--sa-line-strong, rgba(31, 35, 40, 0.22));
-  border-radius: 0;
+  margin: 0;
+  padding: var(--s-7);
+  border: 1px dashed var(--color-line-strong, var(--color-line));
+  border-radius: var(--r-lg);
   text-align: center;
-  color: var(--sa-muted, #6b7280);
+  color: var(--color-muted);
 }
 
 /* ---- Tablet: two columns with a gentle stagger ---- */
 @media (min-width: 680px) {
   .service-aspects__grid {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: clamp(20px, 2.4vw, 28px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     padding-bottom: calc(var(--sa-stagger, 48px) * 0.7);
   }
 
@@ -156,7 +161,7 @@
 /* ---- Desktop: 3 columns ---- */
 @media (min-width: 1000px) {
   .service-aspects__grid--cols-3 {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     padding-bottom: calc(var(--sa-stagger, 48px) * 1.4);
   }
 
@@ -166,7 +171,7 @@
 
   /* ---- Desktop: 4 columns ---- */
   .service-aspects__grid--cols-4 {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     padding-bottom: calc(var(--sa-stagger, 48px) * 1.3);
   }
 

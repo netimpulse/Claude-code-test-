@@ -115,7 +115,7 @@
         "badge_value": "50+",
         "badge_label": "Industries Served",
         "color_scheme": "scheme-sand",
-        "accent_color": "#b6e84f",
+        "accent_color": "",
         "padding_top": 64,
         "padding_bottom": 64,
         "heading_scale": 100,

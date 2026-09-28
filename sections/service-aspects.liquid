@@ -1,12 +1,14 @@
 {% comment %}
-  Service aspects
+  Service aspects (Leistungs-Unterseiten, Plan S6c)
   ----------------------------------------------------------------
-  Equal-size tiles describing the individual aspects of a service
-  (e.g. for SEO: Audit, Keyword research, On-page, ...). The tiles
-  are laid out on a staggered "gallery wall" — each desktop column
-  carries a different vertical offset so they do not sit in one
-  straight row. Each tile is a repeatable block (title + optional
-  number, icon and text).
+  Eyebrow + h2 (accent-heading, `*Wort*` = serif accent) + intro, then
+  equal-size tiles on a staggered "gallery wall": each desktop column
+  carries a different vertical offset. Tiles are cards without shadow
+  (--r-lg, 1px --color-line); number and icon use the accent.
+
+  Colours come from the colour scheme tokens (--color-*). accent_color
+  is optional (empty = --color-accent of the scheme).
+  Padding: min(setting, --section-y) – the setting acts as an upper bound.
 {% endcomment %}
 
 {%- liquid
@@ -20,25 +22,17 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .service-aspects {
-    --sa-accent: {{ accent }};
-    --sa-accent-soft: {{ accent | color_modify: 'alpha', 0.12 }};
+    {%- if accent != blank %}--sa-accent: {{ accent }};{% endif %}
     --sa-stagger: {{ section.settings.stagger }}px;
     --sa-padding-top: {{ section.settings.padding_top }}px;
     --sa-padding-bottom: {{ section.settings.padding_bottom }}px;
-    {%- if scheme.settings.background != blank -%}
-      --sa-bg: {{ scheme.settings.background }};
-      --sa-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
-      --sa-text: {{ scheme.settings.text }};
-      --sa-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
-      --sa-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.85 }};
-    {%- endif -%}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
 {% endstyle %}
 
 <section
-  class="service-aspects full-width color-{{ scheme.id }}"
+  class="service-aspects full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   {% if section.settings.heading != blank %}aria-labelledby="sa-heading-{{ section.id }}"{% endif %}
 >
@@ -46,13 +40,15 @@
     {%- if section.settings.kicker != blank or section.settings.heading != blank or section.settings.intro != blank -%}
       <div class="service-aspects__head">
         {%- if section.settings.kicker != blank -%}
-          <div class="service-aspects__kicker">{{ section.settings.kicker | escape }}</div>
+          <p class="service-aspects__kicker eyebrow">{{ section.settings.kicker | escape }}</p>
         {%- endif -%}
         {%- if section.settings.heading != blank -%}
-          <h2 id="sa-heading-{{ section.id }}" class="service-aspects__heading">{{ section.settings.heading }}</h2>
+          <h2 id="sa-heading-{{ section.id }}" class="service-aspects__heading">
+            {%- render 'accent-heading', text: section.settings.heading -%}
+          </h2>
         {%- endif -%}
         {%- if section.settings.intro != blank and section.settings.show_intro -%}
-          <p class="service-aspects__intro">{{ section.settings.intro }}</p>
+          <p class="service-aspects__intro">{{ section.settings.intro | escape }}</p>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -93,7 +89,7 @@
       </div>
     {%- else -%}
       <p class="service-aspects__placeholder">
-        {{ 'service_aspects.add_tiles' | t | default: 'Add tile blocks to get started.' }}
+        {{ 'service_aspects.add_tiles' | t }}
       </p>
     {%- endif -%}
   </div>
@@ -168,8 +164,7 @@
     {
       "type": "color",
       "id": "accent_color",
-      "label": "t:service_aspects.accent_color_label",
-      "default": "#4a7cff"
+      "label": "t:service_aspects.accent_color_label"
     },
     {
       "type": "range",

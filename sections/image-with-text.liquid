@@ -1,10 +1,16 @@
 {% comment %}
-  Image with text
+  Image with text (Leistungs-Unterseiten, Plan S6c)
   ----------------------------------------------------------------
-  A heading + rich-text column beside an image with an optional
-  floating stat badge. The merchant chooses which side the image
-  sits on (left / right) in the theme editor; the text takes the
-  other side. Stacks to a single column (image first) on mobile.
+  h2 (accent-heading, `*Wort*` = serif accent) + rich text beside a
+  photo (--r-lg, no shadow) with an optional flat stat badge. The
+  merchant chooses the image side; mobile stacks image first.
+  Without an image the frame becomes a Tafel graphic: 5 % tinted
+  surface, bars in --color-line and one accent bar in --color-accent.
+
+  Colours come from the colour scheme tokens (--color-*). accent_color
+  is optional (empty = --color-accent) and only tints the badge icon
+  and the accent bar; the button is always `.btn .btn--primary`.
+  Padding: min(setting, --section-y) – the setting acts as an upper bound.
 {% endcomment %}
 
 {%- liquid
@@ -17,57 +23,57 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .image-with-text {
-    --iwt-accent: {{ accent }};
+    {%- if accent != blank -%}
+      {%- assign accent_brightness = accent | color_brightness -%}
+      --iwt-accent: {{ accent }};
+      --iwt-on-accent: {% if accent_brightness > 150 %}#0d0d0d{% else %}#fffdf8{% endif %};
+    {%- endif -%}
     --iwt-padding-top: {{ section.settings.padding_top }}px;
     --iwt-padding-bottom: {{ section.settings.padding_bottom }}px;
-    {%- if scheme.settings.background != blank -%}
-      --iwt-bg: {{ scheme.settings.background }};
-      --iwt-text: {{ scheme.settings.text }};
-      --iwt-body: {{ scheme.settings.muted | default: scheme.settings.text }};
-      --iwt-line: {{ scheme.settings.text | color_modify: 'alpha', 0.08 }};
-      --iwt-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.22 }};
-      --iwt-badge-bg: {{ scheme.settings.text }};
-      --iwt-badge-text: {{ scheme.settings.background }};
-    {%- endif -%}
-    {%- comment -%} Button text contrasts with the actual accent (WCAG 1.4.3). {%- endcomment -%}
-    {%- assign accent_brightness = accent | color_brightness -%}
-    --iwt-on-accent: {% if accent_brightness > 150 %}#0d0d0d{% else %}#fffdf8{% endif %};
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
 {% endstyle %}
 
 <section
-  class="image-with-text full-width color-{{ scheme.id }}"
+  class="image-with-text full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   {% if section.settings.heading != blank %}aria-labelledby="iwt-heading-{{ section.id }}"{% endif %}
 >
   <div class="image-with-text__inner">
     <div class="image-with-text__grid image-with-text--image-{{ position }}">
       <div class="image-with-text__media">
-        <div class="image-with-text__frame">
+        <div class="image-with-text__frame{% if section.settings.image == blank %} image-with-text__frame--graphic{% endif %}">
           {%- if section.settings.image != blank -%}
-            {%- assign img_alt = section.settings.image.alt | default: section.settings.heading -%}
+            {%- assign heading_plain = section.settings.heading | remove: '*' -%}
+            {%- assign img_alt = section.settings.image.alt | default: heading_plain -%}
             {{
               section.settings.image
               | image_url: width: 1600
               | image_tag:
                 loading: 'lazy',
                 widths: '400, 600, 800, 1000, 1200, 1600',
-                sizes: '(min-width: 900px) 48vw, 100vw',
+                sizes: '(min-width: 901px) 48vw, 100vw',
                 alt: img_alt,
                 class: 'image-with-text__image'
             }}
           {%- else -%}
-            <div class="image-with-text__placeholder" aria-hidden="true">
-              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-                <rect x="6" y="9" width="36" height="30" rx="3"/>
-                <circle cx="17" cy="19" r="3"/>
-                <path d="M9 35l10-9 7 6 5-4 8 7"/>
-              </svg>
+            {%- comment -%} Tafel graphic: decorative bar chart, one accent bar. {%- endcomment -%}
+            <div class="image-with-text__graphic" aria-hidden="true">
+              <div class="image-with-text__graphic-lines">
+                <span class="image-with-text__graphic-line"></span>
+                <span class="image-with-text__graphic-line image-with-text__graphic-line--short"></span>
+              </div>
+              <div class="image-with-text__graphic-bars">
+                <span class="image-with-text__bar" style="--h: 34%"></span>
+                <span class="image-with-text__bar" style="--h: 48%"></span>
+                <span class="image-with-text__bar" style="--h: 42%"></span>
+                <span class="image-with-text__bar" style="--h: 61%"></span>
+                <span class="image-with-text__bar" style="--h: 72%"></span>
+                <span class="image-with-text__bar image-with-text__bar--accent" style="--h: 92%"></span>
+              </div>
             </div>
           {%- endif -%}
-
           {%- if section.settings.show_badge -%}
             <div class="image-with-text__badge">
               <span class="image-with-text__badge-icon" aria-hidden="true">
@@ -91,16 +97,18 @@
 
       <div class="image-with-text__content">
         {%- if section.settings.heading != blank -%}
-          <h2 id="iwt-heading-{{ section.id }}" class="image-with-text__heading">{{ section.settings.heading }}</h2>
+          <h2 id="iwt-heading-{{ section.id }}" class="image-with-text__heading">
+            {%- render 'accent-heading', text: section.settings.heading -%}
+          </h2>
         {%- endif -%}
         {%- if section.settings.body != blank -%}
           <div class="image-with-text__body">{{ section.settings.body }}</div>
         {%- endif -%}
         {%- if section.settings.link_label != blank -%}
           <div class="image-with-text__actions">
-            <a class="image-with-text__btn" href="{{ section.settings.link_url | default: '#' }}">
-              {{ section.settings.link_label | escape }}
-              <span aria-hidden="true">&rarr;</span>
+            <a class="btn btn--primary image-with-text__btn" href="{{ section.settings.link_url | default: '#' }}">
+              <span>{{ section.settings.link_label | escape }}</span>
+              <span class="btn__arrow" aria-hidden="true">&rarr;</span>
             </a>
           </div>
         {%- endif -%}
@@ -192,8 +200,7 @@
     {
       "type": "color",
       "id": "accent_color",
-      "label": "t:image_with_text.accent_color_label",
-      "default": "#b6e84f"
+      "label": "t:image_with_text.accent_color_label"
     },
     {
       "type": "range",
