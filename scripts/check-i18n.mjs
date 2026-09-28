@@ -27,6 +27,12 @@ const STRICT_FILES = [
   "sections/footer.liquid", // S4c
   "sections/sqe-header.liquid", // S4a1/S4a2
   "snippets/language-switcher.liquid", // S4b
+  "sections/ni-hero.liquid", // S5a1
+  "sections/ni-intro.liquid", // S5a2
+  "sections/ni-deck.liquid", // S5b1
+  "snippets/ni-deck-graphic.liquid", // S5b2
+  "sections/team-compact.liquid", // S5c
+  "sections/cta-compact.liquid", // S5c
 ];
 
 /** Bekannte Verstoesse gegen Regel 7; die Liste darf nur schrumpfen. */

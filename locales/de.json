@@ -133,7 +133,11 @@
     "add_tiles": "Füge Kachel-Blöcke hinzu, um zu starten."
   },
   "team_compact": {
-    "add_members": "Füge Teammitglied-Blöcke hinzu, um zu starten."
+    "add_members": "Füge Teammitglied-Blöcke hinzu, um zu starten.",
+    "photo_pending": "Foto folgt"
+  },
+  "cta_compact": {
+    "button_note": "Kostenlos und unverbindlich."
   },
   "about_stats": {
     "add_stats": "Füge Kennzahl-Blöcke hinzu, um zu starten."
@@ -146,6 +150,43 @@
   },
   "about_perspectives": {
     "add_perspectives": "Füge Perspektiven-Blöcke hinzu, um zu starten."
+  },
+  "ni_intro": {
+    "add_cards": "Füge im Theme-Editor Prinzipien als Blöcke hinzu."
+  },
+  "ni_deck": {
+    "add_cards": "Füge im Theme-Editor Leistungstafeln als Blöcke hinzu.",
+    "more_about": "Mehr zu {{ title }}",
+    "tags_label": "Schwerpunkte",
+    "visual": {
+      "search_query": "webdesign agentur gießen",
+      "search_hit_title": "Dein Unternehmen",
+      "search_hit_url": "deine-domain.de",
+      "search_result_2_title": "Agenturverzeichnis Hessen",
+      "search_result_2_url": "beispiel-verzeichnis.de",
+      "search_result_3_title": "Ratgeber Webdesign",
+      "search_result_3_url": "beispiel-magazin.de",
+      "campaign_metric": "Anfragen",
+      "campaign_period": "12 Wochen",
+      "campaign_legend_search": "Search",
+      "campaign_legend_shopping": "Shopping",
+      "campaign_legend_tracking": "Tracking aktiv",
+      "social_type": "Aa",
+      "social_word": "du",
+      "social_brand": "Ni",
+      "web_page": "Startseite",
+      "web_headline": "Klar erklärt.",
+      "web_headline_accent": "Gut geführt.",
+      "web_text": "Ein Weg vom ersten Blick bis zur Anfrage.",
+      "web_button": "Anfrage senden",
+      "shop_editor": "Theme-Editor",
+      "shop_section_header": "Header",
+      "shop_section_hero": "Hero",
+      "shop_section_products": "Produktraster",
+      "shop_section_reviews": "Bewertungen",
+      "shop_section_footer": "Footer",
+      "shop_edit": "bearbeiten"
+    }
   },
   "landingpage": {
     "empty": "Füge Landingpage-Blöcke hinzu (Hero, Bento, Kennzahlen, Case, Testimonial, Themes, CTA), um deine Seite aufzubauen.",

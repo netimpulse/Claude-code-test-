@@ -133,7 +133,11 @@
     "add_tiles": "Add tile blocks to get started."
   },
   "team_compact": {
-    "add_members": "Add team member blocks to get started."
+    "add_members": "Add team member blocks to get started.",
+    "photo_pending": "Photo coming soon"
+  },
+  "cta_compact": {
+    "button_note": "Free and without obligation."
   },
   "about_stats": {
     "add_stats": "Add stat blocks to get started."
@@ -146,6 +150,43 @@
   },
   "about_perspectives": {
     "add_perspectives": "Add perspective blocks to get started."
+  },
+  "ni_intro": {
+    "add_cards": "Add principles as blocks in the theme editor."
+  },
+  "ni_deck": {
+    "add_cards": "Add service slabs as blocks in the theme editor.",
+    "more_about": "More about {{ title }}",
+    "tags_label": "Focus areas",
+    "visual": {
+      "search_query": "web design agency giessen",
+      "search_hit_title": "Your business",
+      "search_hit_url": "your-domain.com",
+      "search_result_2_title": "Agency directory Hesse",
+      "search_result_2_url": "example-directory.com",
+      "search_result_3_title": "Web design guide",
+      "search_result_3_url": "example-magazine.com",
+      "campaign_metric": "Enquiries",
+      "campaign_period": "12 weeks",
+      "campaign_legend_search": "Search",
+      "campaign_legend_shopping": "Shopping",
+      "campaign_legend_tracking": "Tracking on",
+      "social_type": "Aa",
+      "social_word": "you",
+      "social_brand": "Ni",
+      "web_page": "Home page",
+      "web_headline": "Clearly explained.",
+      "web_headline_accent": "Well guided.",
+      "web_text": "One path from first glance to enquiry.",
+      "web_button": "Send enquiry",
+      "shop_editor": "Theme editor",
+      "shop_section_header": "Header",
+      "shop_section_hero": "Hero",
+      "shop_section_products": "Product grid",
+      "shop_section_reviews": "Reviews",
+      "shop_section_footer": "Footer",
+      "shop_edit": "edit"
+    }
   },
   "landingpage": {
     "empty": "Add landing-page blocks (Hero, Bento, Metrics, Case, Testimonial, Themes, CTA) to build your page.",

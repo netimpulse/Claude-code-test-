@@ -1,0 +1,93 @@
+{%- comment -%}
+  Decorative graphic for one ni-deck service slab (SYS §6 "Leistungstafel").
+  Static markup, aria-hidden, colours come from the slab's --slab-* variables.
+  All visible words are translatable (ni_deck.visual.*).
+
+  Accepts:
+  - visual {String}: 'search' | 'campaign' | 'social' | 'web' | 'shop'
+
+  Usage:
+  {% render 'ni-deck-graphic', visual: visual %}
+{%- endcomment -%}
+{%- case visual -%}
+  {%- when 'search' -%}
+    <div class="ni-deck-g ni-deck-g--search" aria-hidden="true">
+      <div class="ni-deck-g__searchbar">
+        <svg viewBox="0 0 16 16" focusable="false"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+        <span>{{ 'ni_deck.visual.search_query' | t }}</span>
+      </div>
+      <ol class="ni-deck-g__results">
+        <li class="is-hit">
+          <span class="ni-deck-g__pos">1</span>
+          <span><b>{{ 'ni_deck.visual.search_hit_title' | t }}</b><i>{{ 'ni_deck.visual.search_hit_url' | t }}</i></span>
+        </li>
+        <li>
+          <span class="ni-deck-g__pos">2</span>
+          <span><b>{{ 'ni_deck.visual.search_result_2_title' | t }}</b><i>{{ 'ni_deck.visual.search_result_2_url' | t }}</i></span>
+        </li>
+        <li>
+          <span class="ni-deck-g__pos">3</span>
+          <span><b>{{ 'ni_deck.visual.search_result_3_title' | t }}</b><i>{{ 'ni_deck.visual.search_result_3_url' | t }}</i></span>
+        </li>
+      </ol>
+    </div>
+  {%- when 'campaign' -%}
+    <div class="ni-deck-g ni-deck-g--campaign" aria-hidden="true">
+      <div class="ni-deck-g__meta">
+        <span>{{ 'ni_deck.visual.campaign_metric' | t }}</span>
+        <span>{{ 'ni_deck.visual.campaign_period' | t }}</span>
+      </div>
+      <svg class="ni-deck-g__chart" viewBox="0 0 240 120" focusable="false" preserveAspectRatio="none">
+        <path class="ni-deck-g__grid" d="M0 30H240M0 60H240M0 90H240"/>
+        <polyline class="ni-deck-g__line-muted" points="0,100 40,96 80,98 120,92 160,94 200,90 240,92"/>
+        <polyline class="ni-deck-g__line" points="0,104 40,96 80,88 120,72 160,62 200,46 240,30"/>
+      </svg>
+      <div class="ni-deck-g__legend">
+        <span>{{ 'ni_deck.visual.campaign_legend_search' | t }}</span>
+        <span>{{ 'ni_deck.visual.campaign_legend_shopping' | t }}</span>
+        <span>{{ 'ni_deck.visual.campaign_legend_tracking' | t }}</span>
+      </div>
+    </div>
+  {%- when 'social' -%}
+    <div class="ni-deck-g ni-deck-g--social" aria-hidden="true">
+      <span></span>
+      <span>{{ 'ni_deck.visual.social_type' | t }}</span>
+      <span></span>
+      <span></span>
+      <span>{{ 'ni_deck.visual.social_word' | t }}</span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span>{{ 'ni_deck.visual.social_brand' | t }}</span>
+    </div>
+  {%- when 'web' -%}
+    <div class="ni-deck-g ni-deck-g--web" aria-hidden="true">
+      <div class="ni-deck-g__webbar">
+        <i></i><i></i><i></i>
+        <span>{{ 'ni_deck.visual.search_hit_url' | t }}</span>
+      </div>
+      <div class="ni-deck-g__webbody">
+        <small>{{ 'ni_deck.visual.web_page' | t }}</small>
+        <strong>{{ 'ni_deck.visual.web_headline' | t }} <em>{{ 'ni_deck.visual.web_headline_accent' | t }}</em></strong>
+        <p>{{ 'ni_deck.visual.web_text' | t }}</p>
+        <span class="ni-deck-g__webbtn">{{ 'ni_deck.visual.web_button' | t }}</span>
+      </div>
+    </div>
+  {%- when 'shop' -%}
+    <div class="ni-deck-g ni-deck-g--shop" aria-hidden="true">
+      <div class="ni-deck-g__meta">
+        <span>{{ 'ni_deck.visual.shop_editor' | t }}</span>
+        <span>{{ 'ni_deck.visual.web_page' | t }}</span>
+      </div>
+      <ul class="ni-deck-g__sections">
+        <li>{{ 'ni_deck.visual.shop_section_header' | t }}</li>
+        <li>{{ 'ni_deck.visual.shop_section_hero' | t }}</li>
+        <li class="is-active">
+          {{- 'ni_deck.visual.shop_section_products' | t -}}
+          <span>{{ 'ni_deck.visual.shop_edit' | t }}</span>
+        </li>
+        <li>{{ 'ni_deck.visual.shop_section_reviews' | t }}</li>
+        <li>{{ 'ni_deck.visual.shop_section_footer' | t }}</li>
+      </ul>
+    </div>
+{%- endcase -%}
