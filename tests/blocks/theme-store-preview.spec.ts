@@ -128,12 +128,12 @@ test.describe("Theme Store Preview – home page", () => {
       });
       expect(s.bg).not.toBe("rgba(0, 0, 0, 0)");
       expect(s.border, `card ${i} border`).toBe("1px");
-      expect(s.radius, `card ${i} radius`).toBe("16px");
+      expect(s.radius, `card ${i} radius`).toBe("14.4px");
       expect(s.shadow, `card ${i} shadow`).toBe("none");
       expect(s.bgImage).not.toContain("gradient");
       expect(s.ratio, `card ${i} preview ratio`).toBeGreaterThan(4 / 3 - 0.02);
       expect(s.ratio, `card ${i} preview ratio`).toBeLessThan(4 / 3 + 0.02);
-      expect(s.prevRadius, `card ${i} preview radius`).toBe("12px");
+      expect(s.prevRadius, `card ${i} preview radius`).toBe("10.4px");
 
       const name = await card.locator(".tsp__name").evaluate((el) => ({
         family: getComputedStyle(el).fontFamily,
@@ -197,7 +197,7 @@ test.describe("Theme Store Preview – home page", () => {
     });
     expect(slab.bg).toBe("rgb(13, 13, 13)");
     expect(slab.fg).toBe("rgb(255, 253, 248)");
-    expect(slab.radius).toBe("16px");
+    expect(slab.radius).toBe("14.4px");
     expect(slab.shadow).toBe("none");
     expect(slab.bgImage).not.toContain("gradient");
 

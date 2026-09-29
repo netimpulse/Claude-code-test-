@@ -67,7 +67,7 @@ async function tokenPx(page: Page, token: string, prop: "fontSize" | "paddingTop
     ({ t, p }) => {
       const probe = document.createElement("div");
       (probe.style as any)[p] = `var(${t})`;
-      document.body.appendChild(probe);
+      (document.getElementById("MainContent") ?? document.body).appendChild(probe);
       const px = parseFloat((getComputedStyle(probe) as any)[p]);
       probe.remove();
       return px;

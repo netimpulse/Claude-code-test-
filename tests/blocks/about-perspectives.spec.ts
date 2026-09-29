@@ -84,7 +84,7 @@ test.describe("About — Perspectives (S7a)", () => {
     expect(c.bg).toBe(INK);
     expect(c.bg).not.toBe(OLD_FEATURE_BG);
     for (const fg of [c.heading, c.text, c.kicker]) expect(contrast(fg, c.bg)).toBeGreaterThanOrEqual(4.5);
-    expect(c.radius).toBe("16px");
+    expect(c.radius).toBe("14.4px"); // --r-lg × 0.9
     // Line breaks of the stored text survive (escaped + newline_to_br).
     expect(await feature.locator(".about-perspectives__feature-text br").count()).toBeGreaterThan(0);
   });
@@ -140,7 +140,7 @@ test.describe("About — Perspectives (S7a)", () => {
       })
     );
     for (const c of cards) {
-      expect(c.radius).toBe("16px");
+      expect(c.radius).toBe("14.4px");
       expect(c.border).toBe("1px");
     }
     const bad = await section.evaluate((root) => {

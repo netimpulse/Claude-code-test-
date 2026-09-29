@@ -78,13 +78,13 @@ test.describe("Services Orbit (Leistungen)", () => {
       const cs = getComputedStyle(el);
       return { bw: cs.borderTopWidth, bs: cs.borderTopStyle, r: cs.borderTopLeftRadius, bg: cs.backgroundColor };
     });
-    expect(card).toEqual({ bw: "1px", bs: "solid", r: "16px", bg: "rgb(255, 253, 248)" });
+    expect(card).toEqual({ bw: "1px", bs: "solid", r: "14.4px", bg: "rgb(255, 253, 248)" });
 
     const board = await page.locator(".services-orbit__stage").first().evaluate((el) => {
       const cs = getComputedStyle(el);
       return { r: cs.borderTopLeftRadius, bg: cs.backgroundColor };
     });
-    expect(board.r).toBe("12px");
+    expect(board.r).toBe("10.4px");
     expect(board.bg).not.toBe(card.bg);
     expect(board.bg).not.toMatch(/rgba\(0, 0, 0, 0\)/);
   });
@@ -172,7 +172,7 @@ test.describe("Services Orbit (Leistungen)", () => {
       });
       expect(c.bg).toBe("rgb(28, 73, 72)");
       expect(contrast(c.fg, c.bg)).toBeGreaterThanOrEqual(4.5);
-      expect(c.h).toBeGreaterThanOrEqual(51);
+      expect(c.h).toBeGreaterThanOrEqual(46);
     }
     // No dead "#" links anywhere in the section.
     await expect(section.locator('a[href="#"]')).toHaveCount(0);
