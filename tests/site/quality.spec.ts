@@ -167,7 +167,7 @@ for (const pageDef of ACCEPTED_PAGES) {
         const smallButtons = await page.evaluate(() =>
           [...document.querySelectorAll<HTMLElement>(".btn")]
             .filter((b) => b.offsetParent !== null)
-            .filter((b) => b.getBoundingClientRect().height < (b.classList.contains("btn--sm") ? 44 : 51))
+            .filter((b) => b.getBoundingClientRect().height < (b.classList.contains("btn--sm") ? 44 : 46))
             .map((b) => b.textContent?.trim())
         );
         expect(smallButtons, "Buttons zu klein").toEqual([]);

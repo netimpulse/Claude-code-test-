@@ -90,6 +90,7 @@ body {
   font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
 }
+#MainContent, .shopify-section-group-footer-group { font-size: var(--text-body, 1rem); }
 
 /**
  * Design-system base (premium redesign). Everything sits in :where() so any
@@ -155,7 +156,7 @@ body {
   border: 1px solid transparent;
   border-radius: var(--btn-radius);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--text-btn, 1rem);
   font-weight: 500;
   line-height: 1.2;
   text-decoration: none;
