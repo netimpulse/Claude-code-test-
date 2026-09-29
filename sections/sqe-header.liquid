@@ -1,19 +1,13 @@
 {% comment %}
-  SQE Header — Skeleton-kompatibler Re-Build des SQE-2 Headers.
+  SQE Header – NetImpulse-Designsystem (SYS §6 „Header“, Referenz Variante D).
 
-  Improvements gegenueber SQE-2 v10:
-    - {% stylesheet %} + externes JS statt inline <style>/<script>
-    - Shopify-natives color_scheme statt 4 einzelner color settings
-    - keine Dawn-Snippet-Dependencies (header-drawer, cart-notification …)
-    - sauberer sticky-Mechanismus auf einer einzigen JS-Datei
-    - eingebauter Predictive-Search (Produkte + Seiten + Blog-Artikel) mit
-      Typo-Toleranz (Levenshtein) und verwandten Treffern
-    - section.id-Scoped CSS via custom properties statt class.NAME-{{ section.id }}
-    - shopify:section:load / unload / select hooks fuer Editor-Live-Edit
-
-  Behaelt die SQE-spezifischen Position-Feintuning-Slider (logo_pos_x/y,
-  menu_nudge_x, menu_pos_y, actions_pos_x/y, etc.) — das war der USP der
-  Original-Section.
+  - Wortmarke (Work Sans 600, tuerkiser Punkt) oder Logo-Bild (Setting use_wordmark)
+  - Navigation mittig, Werkzeuge rechts: Sprachumschalter, Trenner, Suche, Warenkorb, CTA
+  - ≤1024px: Menue-Button (Pill) und Panel mit Navigation, Sprache und CTA
+  - eingebauter Predictive-Search (assets/sqe-predictive-search.js), Texte per data-i18n-*
+  - Sticky-Modi und Editor-Hooks in assets/sqe-header.js
+  - Die Positions-Slider wirken als Versatz relativ zum Standard (gespeicherte Werte 2 % / 0 px
+    ergeben das Layout aus dem Designsystem).
 {% endcomment %}
 
 {%- liquid
@@ -25,103 +19,83 @@
   assign show_account = section.settings.show_account
   assign show_cart = section.settings.show_cart
   assign show_cta = section.settings.show_cta
-  assign cta_text = section.settings.cta_text
-  assign cta_link = section.settings.cta_link
+  assign cta_link = section.settings.cta_link | default: routes.root_url
+  assign fallback_cta = 'header.cta_fallback' | t
+  assign cta_text = section.settings.cta_text | default: fallback_cta
   assign logo_image = section.settings.logo_image | default: settings.logo
-
-  assign menu_weight = '400'
-  if section.settings.menu_bold
-    assign menu_weight = '700'
+  assign wordmark = section.settings.wordmark_text
+  if wordmark == blank
+    assign wordmark = shop.name
   endif
+  assign show_wordmark = true
+  if section.settings.use_wordmark == false and logo_image != blank
+    assign show_wordmark = false
+  endif
+
+  assign show_lang = false
+  if section.settings.show_language_switcher and localization.available_languages.size > 1
+    assign show_lang = true
+  endif
+
+  assign header_h = section.settings.header_height | default: 76
+  assign header_h_mobile = header_h | at_most: 68
+
+  assign logo_offset = section.settings.logo_pos_x | minus: 2
+  assign actions_offset = section.settings.actions_pos_x | minus: 2
+  assign hamburger_offset = section.settings.hamburger_pos_x | minus: 2
+
+  assign drawer_id = 'sqe-drawer-' | append: section.id
+  assign lang_label_id = 'sqe-lang-label-' | append: section.id
 -%}
 
 <section
   id="shopify-section-{{ section.id }}-inner"
-  class="sqe-header full-width"
+  class="sqe-header full-width color-{{ scheme.id }}"
   data-section-id="{{ section.id }}"
   data-section-type="sqe-header"
-  data-sticky="{{ sticky }}"
-  data-nav-align="{{ nav_align }}"
+  data-sticky="{{ sticky | escape }}"
+  data-nav-align="{{ nav_align | escape }}"
   data-border="{{ section.settings.show_border }}"
-  style="
-    --sqe-bg: {{ scheme.settings.background | default: '#FFFFFF' }};
-    --sqe-text: {{ scheme.settings.text | default: '#1F3A5F' }};
-    --sqe-muted: {{ scheme.settings.muted | default: '#6B7280' }};
-    --sqe-accent: {{ scheme.settings.accent | default: '#F2B705' }};
-    --sqe-on-accent: {{ scheme.settings.on_primary_button | default: '#1F3A5F' }};
-    --sqe-h: {{ section.settings.header_height }}px;
-    --sqe-menu-size: {{ section.settings.menu_font_size }}px;
-    --sqe-menu-weight: {{ menu_weight }};
-    --sqe-cta-size: {{ section.settings.cta_font_size }}px;
-    --sqe-logo-x: {{ section.settings.logo_pos_x }}%;
-    --sqe-logo-y: {{ section.settings.logo_pos_y }}px;
-    --sqe-menu-nudge-x: {{ section.settings.menu_nudge_x }}px;
-    --sqe-menu-nudge-y: {{ section.settings.menu_pos_y }}px;
-    --sqe-actions-x: {{ section.settings.actions_pos_x }}%;
-    --sqe-actions-y: {{ section.settings.actions_pos_y }}px;
-    --sqe-search-x: {{ section.settings.search_pos_x }}px;
-    --sqe-search-y: {{ section.settings.search_pos_y }}px;
-    --sqe-account-x: {{ section.settings.account_pos_x }}px;
-    --sqe-account-y: {{ section.settings.account_pos_y }}px;
-    --sqe-cart-x: {{ section.settings.cart_pos_x }}px;
-    --sqe-cart-y: {{ section.settings.cart_pos_y }}px;
-    --sqe-cta-x: {{ section.settings.cta_pos_x }}px;
-    --sqe-cta-y: {{ section.settings.cta_pos_y }}px;
-    --sqe-hamburger-x: {{ section.settings.hamburger_pos_x }}%;
-    --sqe-hamburger-y: {{ section.settings.hamburger_pos_y }}px;
-    --sqe-mobile-logo: {{ section.settings.mobile_logo_size }}px;
-    --sqe-mobile-icon: {{ section.settings.mobile_icon_size }}px;
-  "
+  data-brand-type="{{ section.settings.use_brand_typography }}"
 >
   <div class="sqe-header__inner">
-    <button
-      type="button"
-      class="sqe-header__hamburger"
-      aria-label="Menu"
-      aria-expanded="false"
-      aria-controls="sqe-drawer-{{ section.id }}"
-      data-sqe-drawer-toggle
-    >
-      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="4" y1="7"  x2="20" y2="7"/>
-        <line x1="4" y1="12" x2="20" y2="12"/>
-        <line x1="4" y1="17" x2="20" y2="17"/>
-      </svg>
-    </button>
-
     <div class="sqe-header__logo">
-      {%- if request.page_type == 'index' -%}<h1 class="sqe-header__h1">{%- endif -%}
-      <a href="{{ routes.root_url }}" class="sqe-header__logo-link" aria-label="{{ shop.name | escape }}">
-        {%- if logo_image != blank -%}
-          {%- assign logo_alt = logo_image.alt | default: shop.name | escape -%}
-          {{ logo_image | image_url: width: 600 | image_tag:
+      <a href="{{ routes.root_url }}" class="sqe-header__logo-link" aria-label="{{ wordmark | escape }}">
+        {%- if show_wordmark -%}
+          <span class="sqe-header__wordmark">
+            <span class="sqe-header__wordmark-dot" aria-hidden="true"></span>
+            <span class="sqe-header__logo-text">{{ wordmark | escape }}</span>
+          </span>
+        {%- else -%}
+          {%- assign logo_alt = logo_image.alt | default: wordmark | escape -%}
+          {{
+            logo_image
+            | image_url: width: 600
+            | image_tag:
               widths: '160, 240, 320, 480, 600',
               sizes: '(max-width: 750px) 30vw, 240px',
               class: 'sqe-header__logo-img',
               alt: logo_alt,
               preload: true
           }}
-        {%- else -%}
-          <span class="sqe-header__logo-text">{{ shop.name }}</span>
         {%- endif -%}
       </a>
-      {%- if request.page_type == 'index' -%}</h1>{%- endif -%}
     </div>
 
-    <nav class="sqe-header__nav" aria-label="Main navigation">
+    <nav class="sqe-header__nav" aria-label="{{ 'header.main_navigation' | t | escape }}">
       {%- if menu != blank -%}
         <ul class="sqe-header__nav-list" role="list">
           {%- for link in menu.links -%}
             <li class="sqe-header__nav-item{% if link.current %} is-active{% endif %}{% if link.links.size > 0 %} has-children{% endif %}">
               <a class="sqe-header__nav-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
-                {{ link.title | escape }}
+                {{- link.title | escape -}}
               </a>
               {%- if link.links.size > 0 -%}
                 <ul class="sqe-header__dropdown" role="list">
                   {%- for child in link.links -%}
                     <li>
                       <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>
-                        {{ child.title | escape }}
+                        {{- child.title | escape -}}
                       </a>
                     </li>
                   {%- endfor -%}
@@ -134,17 +108,24 @@
     </nav>
 
     <div class="sqe-header__actions">
+      {%- if show_lang -%}
+        <div class="sqe-header__lang">
+          {% render 'language-switcher', section_id: section.id, suffix: 'desktop' %}
+        </div>
+        <span class="sqe-header__sep" aria-hidden="true"></span>
+      {%- endif -%}
+
       {%- if show_search -%}
         <button
           type="button"
-          class="sqe-header__icon sqe-header__icon--search"
-          aria-label="Suchen"
+          class="icon-btn sqe-header__icon sqe-header__icon--search"
+          aria-label="{{ 'header.search' | t | escape }}"
           aria-expanded="false"
           aria-controls="sqe-search-{{ section.id }}"
           data-sqe-search-toggle
         >
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/>
           </svg>
         </button>
       {%- endif -%}
@@ -152,67 +133,92 @@
       {%- if show_account and shop.customer_accounts_enabled -%}
         <a
           href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
-          class="sqe-header__icon sqe-header__icon--account"
+          class="icon-btn sqe-header__icon sqe-header__icon--account"
           rel="nofollow"
-          aria-label="{% if customer %}Account{% else %}Log in{% endif %}"
+          aria-label="{% if customer %}{{ 'header.account' | t | escape }}{% else %}{{ 'header.log_in' | t | escape }}{% endif %}"
         >
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
         </a>
       {%- endif -%}
 
       {%- if show_cart -%}
-        <a href="{{ routes.cart_url }}" class="sqe-header__icon sqe-header__icon--cart" aria-label="Cart">
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 0 1-8 0"/>
+        <a
+          href="{{ routes.cart_url }}"
+          class="icon-btn sqe-header__icon sqe-header__icon--cart"
+          aria-label="{{ 'header.cart' | t: count: cart.item_count | escape }}"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 8h14l-1.2 11.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>
           </svg>
-          {%- if cart.item_count > 0 -%}
-            <span class="sqe-header__cart-count" data-cart-count aria-hidden="true">{{ cart.item_count }}</span>
-            <span class="visually-hidden">{{ cart.item_count }} items in cart</span>
-          {%- else -%}
-            <span class="sqe-header__cart-count" data-cart-count aria-hidden="true" hidden>0</span>
-          {%- endif -%}
+          <span class="sqe-header__cart-count" data-cart-count aria-hidden="true"{% if cart.item_count == 0 %} hidden{% endif %}>
+            {{- cart.item_count -}}
+          </span>
         </a>
       {%- endif -%}
 
-      {%- if show_cta and cta_text != blank -%}
-        <a href="{{ cta_link | default: '#' }}" class="sqe-header__cta">
-          {{ cta_text | escape }}
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+      {%- if show_cta -%}
+        <a href="{{ cta_link }}" class="btn btn--primary btn--sm sqe-header__cta">
+          {{- cta_text | escape -}}
+          <svg class="btn__arrow" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>
           </svg>
         </a>
       {%- endif -%}
+
+      <button
+        type="button"
+        class="sqe-header__menu-toggle"
+        aria-expanded="false"
+        aria-controls="{{ drawer_id }}"
+        data-sqe-drawer-toggle
+      >
+        <span class="sqe-header__menu-label">{{ 'header.menu' | t }}</span>
+        <span class="sqe-header__bars" aria-hidden="true"></span>
+      </button>
     </div>
 
     {%- if show_search -%}
-      <div class="sqe-header__search" id="sqe-search-{{ section.id }}" data-sqe-search hidden>
+      <div
+        class="sqe-header__search"
+        id="sqe-search-{{ section.id }}"
+        data-sqe-search
+        data-i18n-products="{{ 'header.search_products' | t | escape }}"
+        data-i18n-pages="{{ 'header.search_pages' | t | escape }}"
+        data-i18n-articles="{{ 'header.search_articles' | t | escape }}"
+        data-i18n-did-you-mean="{{ 'header.search_did_you_mean' | t | escape }}"
+        data-i18n-no-results="{{ 'header.search_no_results' | t: terms: '__Q__' | escape }}"
+        hidden
+      >
         <form action="{{ routes.search_url }}" method="get" role="search" data-sqe-search-form>
           <input type="hidden" name="options[prefix]" value="last">
           <input type="hidden" name="type" value="product,page,article">
           <div class="sqe-search__input-wrap">
-            <svg class="sqe-search__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            <svg class="sqe-search__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/>
             </svg>
             <input
               type="search"
               name="q"
               class="sqe-search__input"
-              placeholder="Suchen…"
+              placeholder="{{ 'header.search_placeholder' | t | escape }}"
               autocomplete="off"
               autocorrect="off"
               autocapitalize="off"
               spellcheck="false"
-              aria-label="Search"
+              aria-label="{{ 'header.search_label' | t | escape }}"
               aria-controls="sqe-search-results-{{ section.id }}"
               aria-expanded="false"
               data-sqe-search-input
             >
-            <button type="button" class="sqe-search__close" data-sqe-search-close aria-label="Close">
-              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button
+              type="button"
+              class="sqe-search__close"
+              data-sqe-search-close
+              aria-label="{{ 'header.search_close' | t | escape }}"
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
               </svg>
             </button>
@@ -229,27 +235,53 @@
     {%- endif -%}
   </div>
 
-  {%- if menu != blank -%}
-    <div id="sqe-drawer-{{ section.id }}" class="sqe-header__drawer" data-sqe-drawer hidden>
-      <ul class="sqe-header__drawer-list" role="list">
-        {%- for link in menu.links -%}
-          <li>
-            <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
-            {%- if link.links.size > 0 -%}
-              <ul role="list">
-                {%- for child in link.links -%}
-                  <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
-                {%- endfor -%}
-              </ul>
-            {%- endif -%}
-          </li>
-        {%- endfor -%}
-        {%- if show_cta and cta_text != blank -%}
-          <li><a class="sqe-header__drawer-cta" href="{{ cta_link | default: '#' }}">{{ cta_text | escape }}</a></li>
-        {%- endif -%}
-      </ul>
-    </div>
-  {%- endif -%}
+  <div id="{{ drawer_id }}" class="sqe-header__drawer" data-sqe-drawer hidden>
+    {%- if menu != blank -%}
+      <nav class="sqe-header__drawer-nav" aria-label="{{ 'header.mobile_navigation' | t | escape }}">
+        <ul class="sqe-header__drawer-list" role="list">
+          {%- for link in menu.links -%}
+            <li>
+              <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              {%- if link.links.size > 0 -%}
+                <ul class="sqe-header__drawer-sub" role="list">
+                  {%- for child in link.links -%}
+                    <li>
+                      <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>
+                        {{- child.title | escape -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- if show_lang -%}
+      <div class="sqe-header__panel-lang">
+        <span class="label-caps sqe-header__panel-lang-label" id="{{ lang_label_id }}">
+          {{- 'localization.language_label' | t -}}
+        </span>
+        {% render 'language-switcher',
+          section_id: section.id,
+          suffix: 'panel',
+          modifier: 'panel',
+          labelled_by: lang_label_id
+        %}
+      </div>
+    {%- endif -%}
+
+    {%- if show_cta -%}
+      <a class="btn btn--primary btn--block sqe-header__drawer-cta" href="{{ cta_link }}">
+        {{- cta_text | escape -}}
+        <svg class="btn__arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>
+        </svg>
+      </a>
+    {%- endif -%}
+  </div>
 </section>
 
 <script src="{{ 'sqe-header.js' | asset_url }}" defer="defer"></script>
@@ -258,346 +290,468 @@
 {%- endif -%}
 
 {% style %}
-  /* Wrapper gets the header background so the sticky bar is opaque across the full
-     viewport (the .shopify-section grid would otherwise leave the side margins transparent). */
+  :root { --header-h: {{ header_h }}px; }
+  @media (max-width: 1024px) {
+    :root { --header-h: {{ header_h_mobile }}px; }
+  }
+
+  /* The wrapper carries the header background so the sticky bar spans the full viewport. */
   #shopify-section-{{ section.id }} {
-    background: {{ scheme.settings.background | default: '#FFFFFF' }};
+    {%- if scheme %}
+    background: color-mix(in srgb, {{ scheme.settings.background }} 95%, transparent);
+    {%- else %}
+    background: color-mix(in srgb, var(--c-bg) 95%, transparent);
+    {%- endif %}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
+    --sqe-menu-size: {{ section.settings.menu_font_size }}px;
+    --sqe-menu-weight: {% if section.settings.menu_bold %}700{% else %}400{% endif %};
+    --sqe-cta-size: {{ section.settings.cta_font_size }}px;
+    --sqe-logo-offset: {{ logo_offset }}%;
+    --sqe-logo-y: {{ section.settings.logo_pos_y }}px;
+    --sqe-menu-nudge-x: {{ section.settings.menu_nudge_x }}px;
+    --sqe-menu-nudge-y: {{ section.settings.menu_pos_y }}px;
+    --sqe-actions-offset: {{ actions_offset }}%;
+    --sqe-actions-y: {{ section.settings.actions_pos_y }}px;
+    --sqe-search-x: {{ section.settings.search_pos_x }}px;
+    --sqe-search-y: {{ section.settings.search_pos_y }}px;
+    --sqe-account-x: {{ section.settings.account_pos_x }}px;
+    --sqe-account-y: {{ section.settings.account_pos_y }}px;
+    --sqe-cart-x: {{ section.settings.cart_pos_x }}px;
+    --sqe-cart-y: {{ section.settings.cart_pos_y }}px;
+    --sqe-cta-x: {{ section.settings.cta_pos_x }}px;
+    --sqe-cta-y: {{ section.settings.cta_pos_y }}px;
+    --sqe-hamburger-offset: {{ hamburger_offset }}%;
+    --sqe-hamburger-y: {{ section.settings.hamburger_pos_y }}px;
+    --sqe-mobile-logo: {{ section.settings.mobile_logo_size }}px;
+    --sqe-mobile-icon: {{ section.settings.mobile_icon_size }}px;
   }
   /* Sticky modes pin the wrapper from the start, so it never scrolls away in the first place. */
   #shopify-section-{{ section.id }}.is-sticky {
     position: sticky;
     top: 0;
     z-index: 30;
-    transition: transform .25s ease;
-    will-change: transform;
+    transition: transform var(--dur, 0.35s) var(--ease, ease);
   }
   #shopify-section-{{ section.id }}.is-hidden { transform: translateY(-100%); }
 {% endstyle %}
 
 {% stylesheet %}
   .sqe-header {
-    background: var(--sqe-bg);
-    color: var(--sqe-text);
-    width: 100%;
-    box-sizing: border-box;
     position: relative;
     z-index: 30;
-    font-weight: 400;
+    width: 100%;
+    color: var(--color-text);
+    background: transparent;
   }
   .sqe-header *,
   .sqe-header *::before,
   .sqe-header *::after { box-sizing: border-box; }
-  .sqe-header[data-border="true"] { border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent); }
+  .sqe-header[data-border="true"] { border-bottom: 1px solid var(--color-line); }
+  html.sqe-menu-open { overflow: hidden; }
 
   .sqe-header__inner {
-    height: var(--sqe-h);
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 2rem;
     position: relative;
     display: flex;
     align-items: center;
+    gap: var(--s-6);
+    height: var(--header-h);
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-x);
   }
 
-  /* Logo — absolute so X/Y nudge is consistent on desktop */
+  /* Logo / wordmark */
   .sqe-header__logo {
-    position: absolute;
-    left: var(--sqe-logo-x);
-    top: 50%;
-    transform: translateY(-50%) translateY(var(--sqe-logo-y));
-    z-index: 5;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-inline-start: var(--sqe-logo-offset, 0%);
+    transform: translateY(var(--sqe-logo-y, 0px));
   }
-  .sqe-header__h1 { margin: 0; padding: 0; font-size: inherit; font-weight: inherit; }
   .sqe-header__logo-link {
-    display: flex; align-items: center;
-    color: inherit; text-decoration: none;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: inherit;
+    text-decoration: none;
   }
   .sqe-header__logo-img {
-    max-height: calc(var(--sqe-h) - 20px);
-    width: auto; height: auto; display: block;
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: calc(var(--header-h) - 20px);
   }
-  .sqe-header__logo-text {
-    font-weight: 700;
-    font-size: calc(1.4rem * var(--fs-heading, 1));
+  .sqe-header__wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: calc(1.3125rem * var(--fs-heading, 1));
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
     white-space: nowrap;
+    color: var(--c-ink-strong);
+  }
+  .sqe-header__wordmark-dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c-accent);
+    border: 1px solid var(--c-teal);
   }
 
-  /* Nav */
+  /* Navigation */
   .sqe-header__nav {
-    position: absolute;
-    top: 50%;
-    z-index: 4;
+    flex: 1;
+    min-width: 0;
     display: flex;
+    justify-content: center;
+    transform: translate(var(--sqe-menu-nudge-x, 0px), var(--sqe-menu-nudge-y, 0px));
   }
-  .sqe-header[data-nav-align="left"] .sqe-header__nav {
-    left: 2rem;
-    transform: translateY(-50%) translate(var(--sqe-menu-nudge-x), var(--sqe-menu-nudge-y));
-  }
-  .sqe-header[data-nav-align="center"] .sqe-header__nav {
-    left: 50%;
-    transform: translate(-50%, -50%) translate(var(--sqe-menu-nudge-x), var(--sqe-menu-nudge-y));
-  }
-  .sqe-header[data-nav-align="right"] .sqe-header__nav {
-    right: calc(var(--sqe-actions-x) + 180px);
-    transform: translateY(-50%) translate(var(--sqe-menu-nudge-x), var(--sqe-menu-nudge-y));
-  }
+  .sqe-header[data-nav-align="left"] .sqe-header__nav { justify-content: flex-start; }
+  .sqe-header[data-nav-align="right"] .sqe-header__nav { justify-content: flex-end; }
   .sqe-header__nav-list {
-    list-style: none; padding: 0; margin: 0;
-    display: flex; align-items: center; gap: 2rem;
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 2.2vw, 36px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
+  .sqe-header__nav-item { position: relative; }
   .sqe-header__nav-link {
+    position: relative;
+    display: inline-block;
+    padding-block: var(--s-3);
     color: inherit;
     text-decoration: none;
     font-size: calc(var(--sqe-menu-size) * var(--fs-text, 1));
     font-weight: var(--sqe-menu-weight);
-    line-height: 1;
-    padding: .25rem 0;
-    border-bottom: 2px solid transparent;
-    transition: color .15s ease, border-color .15s ease;
+    line-height: 1.2;
   }
-  .sqe-header__nav-link:hover { color: var(--sqe-accent); }
-  .sqe-header__nav-item.is-active > .sqe-header__nav-link {
-    color: var(--sqe-accent);
-    border-bottom-color: var(--sqe-accent);
+  .sqe-header[data-brand-type="true"] .sqe-header__nav-link {
+    font-size: calc(0.9875rem * var(--fs-text, 1));
+    font-weight: 500;
   }
-  .sqe-header__nav-item { position: relative; }
-  .sqe-header__dropdown {
-    list-style: none; padding: .5rem 0; margin: 0;
+  .sqe-header__nav-link::after {
+    content: "";
     position: absolute;
-    top: calc(100% + 4px);
     left: 0;
-    min-width: 200px;
-    background: var(--sqe-bg);
-    border: 1px solid color-mix(in srgb, var(--sqe-text) 8%, transparent);
-    border-radius: 0;
-    box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    opacity: 0; pointer-events: none;
+    right: 0;
+    bottom: 7px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--dur) var(--ease);
+  }
+  .sqe-header__nav-link:hover::after,
+  .sqe-header__nav-link[aria-current="page"]::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .sqe-header__dropdown {
+    position: absolute;
+    top: 100%;
+    left: calc(var(--s-4) * -1);
+    min-width: 220px;
+    margin: 0;
+    padding: var(--s-2) 0;
+    list-style: none;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--r-sm);
+    opacity: 0;
+    pointer-events: none;
     transform: translateY(-4px);
-    transition: opacity .15s ease, transform .15s ease;
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
   }
-  .sqe-header__dropdown li a {
-    display: block;
-    padding: .5rem 1rem;
-    color: inherit; text-decoration: none;
-    font-size: calc((var(--sqe-menu-size) - 1px) * var(--fs-text, 1));
+  .sqe-header__dropdown a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--s-4);
+    color: inherit;
+    text-decoration: none;
+    font-size: calc(0.9375rem * var(--fs-text, 1));
   }
-  .sqe-header__dropdown li a:hover { color: var(--sqe-accent); }
+  .sqe-header__dropdown a:hover,
+  .sqe-header__dropdown a[aria-current="page"] { text-decoration: underline; text-underline-offset: 5px; }
   .sqe-header__nav-item.has-children:hover .sqe-header__dropdown,
   .sqe-header__nav-item.has-children:focus-within .sqe-header__dropdown {
-    opacity: 1; pointer-events: auto; transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
-  /* Actions */
+  /* Tools */
   .sqe-header__actions {
-    position: absolute;
-    top: 50%;
-    right: var(--sqe-actions-x);
-    transform: translateY(-50%) translateY(var(--sqe-actions-y));
-    display: flex; align-items: center; gap: .85rem;
-    z-index: 5;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: var(--s-1);
+    margin-inline-start: auto;
+    margin-inline-end: var(--sqe-actions-offset, 0%);
+    transform: translateY(var(--sqe-actions-y, 0px));
   }
-  .sqe-header__icon {
-    display: inline-grid; place-items: center;
-    width: 38px; height: 38px;
-    background: none; border: 0; color: inherit;
-    border-radius: 0;
-    cursor: pointer;
-    transition: background .15s ease, color .15s ease;
+  .sqe-header__sep {
+    width: 1px;
+    height: 22px;
+    margin-inline: var(--s-2);
+    background: var(--color-line);
   }
-  .sqe-header__icon:hover { background: color-mix(in srgb, var(--sqe-text) 6%, transparent); color: var(--sqe-accent); }
-  .sqe-header__icon--search { transform: translate(var(--sqe-search-x), var(--sqe-search-y)); }
-  .sqe-header__icon--account { transform: translate(var(--sqe-account-x), var(--sqe-account-y)); position: relative; }
-  .sqe-header__icon--cart { transform: translate(var(--sqe-cart-x), var(--sqe-cart-y)); position: relative; }
+  .sqe-header__icon { position: relative; color: var(--color-icon, inherit); }
+  .sqe-header__icon svg { width: 20px; height: 20px; }
+  .sqe-header__icon--search { transform: translate(var(--sqe-search-x, 0px), var(--sqe-search-y, 0px)); }
+  .sqe-header__icon--account { transform: translate(var(--sqe-account-x, 0px), var(--sqe-account-y, 0px)); }
+  .sqe-header__icon--cart { transform: translate(var(--sqe-cart-x, 0px), var(--sqe-cart-y, 0px)); }
   .sqe-header__cart-count {
     position: absolute;
-    top: 2px; right: 2px;
-    min-width: 18px; height: 18px;
+    top: 5px;
+    right: 3px;
+    min-width: 18px;
+    height: 18px;
     padding: 0 5px;
-    display: grid; place-items: center;
-    background: var(--sqe-accent);
-    color: var(--sqe-on-accent);
-    border-radius: 0;
-    font-size: calc(11px * var(--fs-text, 1)); font-weight: 700; line-height: 1;
+    border-radius: var(--r-pill);
+    background: var(--c-teal);
+    color: var(--c-surface);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
   }
   .sqe-header__cart-count[hidden] { display: none; }
-
   .sqe-header__cta {
-    display: inline-flex; align-items: center; gap: .35rem;
-    padding: .6rem 1rem;
-    background: var(--sqe-accent);
-    color: var(--sqe-on-accent);
-    border-radius: 0;
+    margin-inline-start: var(--s-4);
+    white-space: nowrap;
     font-size: calc(var(--sqe-cta-size) * var(--fs-text, 1));
-    font-weight: 700;
-    text-decoration: none;
-    transition: filter .15s ease, transform .12s ease;
-    transform: translate(var(--sqe-cta-x), var(--sqe-cta-y));
+    transform: translate(var(--sqe-cta-x, 0px), var(--sqe-cta-y, 0px));
   }
-  .sqe-header__cta:hover { filter: brightness(.96); }
-  .sqe-header__cta:active { transform: translate(var(--sqe-cta-x), var(--sqe-cta-y)) scale(.98); }
+  .sqe-header[data-brand-type="true"] .sqe-header__cta { font-size: calc(var(--text-small) * var(--fs-text, 1)); }
 
-  /* Hamburger (mobile only) */
-  .sqe-header__hamburger {
+  /* Menu button + panel (≤1024px) */
+  .sqe-header__menu-toggle {
     display: none;
-    position: absolute;
-    left: var(--sqe-hamburger-x);
-    top: 50%;
-    transform: translateY(-50%) translateY(var(--sqe-hamburger-y));
-    width: var(--sqe-mobile-icon); height: var(--sqe-mobile-icon);
-    background: none; border: 0; color: inherit;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-3);
+    min-width: 44px;
+    min-height: 44px;
+    margin-inline-end: var(--sqe-hamburger-offset, 0%);
+    padding: 0 var(--s-4);
+    border: 1px solid var(--color-text);
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-weight: 500;
+    line-height: 1;
     cursor: pointer;
-    z-index: 6;
+    transform: translateY(var(--sqe-hamburger-y, 0px));
   }
+  .sqe-header__menu-toggle[aria-expanded="true"] { background: var(--color-text); color: var(--color-bg); }
+  .sqe-header__bars {
+    width: 16px;
+    height: 8px;
+    border-block: 1.5px solid currentColor;
+    transition: transform var(--dur) var(--ease);
+  }
+  .sqe-header__menu-toggle[aria-expanded="true"] .sqe-header__bars { transform: scaleY(0.2); }
+
+  .sqe-header__drawer {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    z-index: 25;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--s-5) var(--page-x) var(--s-7);
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-line);
+    color: var(--color-text);
+  }
+  .sqe-header__drawer[hidden] { display: none; }
+  .sqe-header__drawer-list,
+  .sqe-header__drawer-sub { margin: 0; padding: 0; list-style: none; }
+  .sqe-header__drawer-list > li > a {
+    display: block;
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-heading, inherit);
+    font-family: var(--font-display);
+    font-size: calc(1.75rem * var(--fs-heading, 1));
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-decoration: none;
+  }
+  .sqe-header__drawer-sub a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline-start: var(--s-4);
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-muted);
+    font-size: calc(1rem * var(--fs-text, 1));
+    text-decoration: none;
+  }
+  .sqe-header__drawer a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+  .sqe-header__panel-lang {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-6);
+  }
+  .sqe-header__panel-lang-label { color: var(--color-muted); }
+  .sqe-header__drawer-cta { margin-top: var(--s-6); }
 
   /* Inline search */
   .sqe-header__search {
     position: absolute;
     inset: 0 0 auto 0;
-    background: var(--sqe-bg);
-    padding: .85rem 2rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
     z-index: 20;
-    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    padding: var(--s-3) var(--page-x);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-line);
   }
   .sqe-header__search[hidden] { display: none; }
-  .sqe-search__input-wrap {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
+  .sqe-search__input-wrap { position: relative; max-width: 800px; margin: 0 auto; }
+  .sqe-search__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-muted);
+    pointer-events: none;
   }
-  .sqe-search__icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--sqe-muted); pointer-events: none; }
   .sqe-search__input {
     width: 100%;
-    padding: .9rem 3rem .9rem 2.75rem;
+    min-height: 52px;
+    padding: 0 3.5rem 0 2.75rem;
     font: inherit;
     font-size: calc(1rem * var(--fs-text, 1));
-    color: var(--sqe-text);
-    background: color-mix(in srgb, var(--sqe-text) 4%, transparent);
-    border: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
-    border-radius: 0;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--r-sm);
   }
-  .sqe-search__input:focus {
-    outline: none;
-    border-color: var(--sqe-accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sqe-accent) 25%, transparent);
-  }
+  .sqe-search__input:focus-visible { border-color: var(--color-text); }
   .sqe-search__close {
-    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-    width: 32px; height: 32px;
-    display: grid; place-items: center;
-    background: none; border: 0; color: var(--sqe-muted);
-    border-radius: 0;
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--color-muted);
     cursor: pointer;
   }
-  .sqe-search__close:hover { background: color-mix(in srgb, var(--sqe-text) 8%, transparent); color: var(--sqe-text); }
-
+  .sqe-search__close:hover { color: var(--color-text); }
   .sqe-search__results {
-    margin: .75rem auto 0;
     max-width: 800px;
-    background: var(--sqe-bg);
-    border: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
-    border-radius: 0;
-    overflow: hidden;
     max-height: min(70vh, 520px);
+    margin: var(--s-3) auto 0;
     overflow-y: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--r-sm);
   }
   .sqe-search__results[hidden] { display: none; }
-  .sqe-search-group { padding: .5rem .25rem; }
+  .sqe-search-group { padding: var(--s-2) var(--s-1); }
   .sqe-search-group__heading {
     margin: 0;
-    padding: .35rem .85rem;
-    font-size: calc(.75rem * var(--fs-heading, 1)); font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-    color: var(--sqe-muted);
+    padding: var(--s-2) var(--s-3);
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
   }
   .sqe-search-result {
     display: grid;
     grid-template-columns: 44px 1fr auto;
     align-items: center;
-    gap: .75rem;
-    padding: .55rem .85rem;
+    gap: var(--s-3);
+    padding: var(--s-2) var(--s-3);
     color: inherit;
     text-decoration: none;
-    border-radius: 0;
   }
-  .sqe-search-result + .sqe-search-result { border-top: 1px solid color-mix(in srgb, var(--sqe-text) 6%, transparent); }
+  .sqe-search-result + .sqe-search-result { border-top: 1px solid var(--color-line); }
   .sqe-search-result:hover,
-  .sqe-search-result.is-focused {
-    background: color-mix(in srgb, var(--sqe-accent) 10%, transparent);
-  }
+  .sqe-search-result.is-focused { background: var(--color-bg); }
   .sqe-search-result__media {
-    width: 44px; height: 44px;
-    border-radius: 0;
+    width: 44px;
+    height: 44px;
     overflow: hidden;
-    background: color-mix(in srgb, var(--sqe-text) 6%, transparent);
+    border-radius: var(--r-sm);
+    background: var(--c-sand);
   }
-  .sqe-search-result__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .sqe-search-result__title { font-weight: 600; font-size: calc(.95rem * var(--fs-heading, 1)); }
-  .sqe-search-result__meta { font-size: calc(.8rem * var(--fs-text, 1)); color: var(--sqe-muted); }
-  .sqe-search-result__price { font-size: calc(.9rem * var(--fs-text, 1)); font-weight: 700; white-space: nowrap; }
-  .sqe-search-result mark {
-    background: color-mix(in srgb, var(--sqe-accent) 35%, transparent);
-    color: inherit;
-    padding: 0 2px;
-    border-radius: 0;
-  }
+  .sqe-search-result__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .sqe-search-result__title { font-weight: 500; font-size: calc(0.9375rem * var(--fs-text, 1)); }
+  .sqe-search-result__meta { font-size: calc(0.8125rem * var(--fs-text, 1)); color: var(--color-muted); }
+  .sqe-search-result__price { font-size: calc(0.875rem * var(--fs-text, 1)); font-weight: 600; white-space: nowrap; }
+  .sqe-search-result mark { padding: 0 2px; background: var(--c-sand); color: inherit; }
   .sqe-search-empty,
   .sqe-search-typo {
-    padding: 1rem 1rem;
-    color: var(--sqe-muted);
-    font-size: calc(.9rem * var(--fs-text, 1));
+    padding: var(--s-4);
+    color: var(--color-muted);
+    font-size: calc(0.9375rem * var(--fs-text, 1));
   }
   .sqe-search-typo button {
-    background: none; border: 0; padding: 0;
-    color: var(--sqe-accent);
-    font: inherit; cursor: pointer; text-decoration: underline;
+    min-height: 32px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-link);
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
   }
 
-  /* Drawer (mobile) */
-  .sqe-header__drawer {
-    position: absolute;
-    inset: 100% 0 auto 0;
-    background: var(--sqe-bg);
-    border-top: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
-    border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 10%, transparent);
-    padding: .5rem 1rem 1rem;
-    z-index: 15;
-  }
-  .sqe-header__drawer[hidden] { display: none; }
-  .sqe-header__drawer-list { list-style: none; padding: 0; margin: 0; }
-  .sqe-header__drawer-list a {
-    display: block; padding: .65rem .5rem;
-    color: inherit; text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--sqe-text) 6%, transparent);
-  }
-  .sqe-header__drawer-list a[aria-current="page"] { color: var(--sqe-accent); font-weight: 600; }
-  .sqe-header__drawer-list ul { list-style: none; padding: 0 0 0 1rem; margin: 0; }
-  .sqe-header__drawer-list ul a { font-size: calc(.9rem * var(--fs-text, 1)); color: var(--sqe-muted); }
-  .sqe-header__drawer-cta {
-    margin-top: .75rem;
-    display: inline-block;
-    background: var(--sqe-accent) !important;
-    color: var(--sqe-on-accent) !important;
-    border: 0 !important;
-    border-radius: 0;
-    padding: .65rem 1.25rem !important;
-    font-weight: 700;
+  @media (min-width: 1025px) {
+    .sqe-header__drawer { display: none; }
   }
 
-  /* Sticky modes live in the section-scoped style block above (needs Liquid). */
-
-  /* Mobile */
-  @media (max-width: 989px) {
-    .sqe-header__inner { padding: 0 1rem; }
-    .sqe-header__nav { display: none; }
-    .sqe-header__hamburger { display: grid; place-items: center; }
-    .sqe-header__logo { left: 50%; transform: translate(-50%, -50%); }
-    .sqe-header__logo-img,
-    .sqe-header__logo-text { max-height: var(--sqe-mobile-logo); font-size: calc(1.1rem * var(--fs-heading, 1)); }
-    .sqe-header__actions { right: 1rem; gap: .25rem; }
-    .sqe-header__icon { width: var(--sqe-mobile-icon); height: var(--sqe-mobile-icon); }
+  @media (max-width: 1024px) {
+    .sqe-header__inner { gap: var(--s-3); }
+    .sqe-header__nav,
+    .sqe-header__lang,
+    .sqe-header__sep,
     .sqe-header__cta { display: none; }
+    .sqe-header__menu-toggle { display: inline-flex; }
+    .sqe-header__logo-img { max-height: var(--sqe-mobile-logo); }
+    .sqe-header__icon {
+      width: max(44px, var(--sqe-mobile-icon));
+      height: max(44px, var(--sqe-mobile-icon));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .sqe-header__wordmark { gap: 8px; font-size: calc(1.1875rem * var(--fs-heading, 1)); }
+    .sqe-header__menu-toggle { width: 44px; padding: 0; }
+    .sqe-header__menu-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sqe-header__nav-link::after,
+    .sqe-header__dropdown,
+    .sqe-header__bars { transition: none; }
   }
 {% endstylesheet %}
 
@@ -611,7 +765,20 @@
       "type": "image_picker",
       "id": "logo_image",
       "label": "Logo image",
-      "info": "Overrides the global theme logo. Falls back to the global logo, then to the shop name as text."
+      "info": "Overrides the global theme logo. Falls back to the global logo, then to the wordmark text."
+    },
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Wordmark text",
+      "info": "Empty = shop name."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_wordmark",
+      "label": "Show wordmark instead of logo image",
+      "info": "Design-system wordmark (Work Sans 600 with accent dot). Turn off to show the logo image.",
+      "default": true
     },
 
     { "type": "header", "content": "Navigation" },
@@ -659,6 +826,13 @@
       "default": 15
     },
     { "type": "checkbox", "id": "menu_bold", "label": "Bold", "default": true },
+    {
+      "type": "checkbox",
+      "id": "use_brand_typography",
+      "label": "Use design-system typography",
+      "info": "Menu and CTA use the design-system sizes and weights. Font size and bold settings are ignored while this is on.",
+      "default": true
+    },
 
     { "type": "header", "content": "CTA button" },
     { "type": "checkbox", "id": "show_cta", "label": "Show CTA", "default": true },
@@ -676,6 +850,13 @@
     { "type": "checkbox", "id": "show_search",  "label": "Search icon",  "default": true },
     { "type": "checkbox", "id": "show_account", "label": "Account icon", "default": true },
     { "type": "checkbox", "id": "show_cart",    "label": "Cart icon",    "default": true },
+    {
+      "type": "checkbox",
+      "id": "show_language_switcher",
+      "label": "Language switcher",
+      "info": "Only shown when more than one language is published.",
+      "default": true
+    },
 
     { "type": "header", "content": "Logo position" },
     { "type": "range", "id": "logo_pos_x", "label": "Logo X", "min": 0, "max": 90, "step": 1, "unit": "%",  "default": 2 },

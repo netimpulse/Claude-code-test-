@@ -6,12 +6,15 @@
   "scripts": {
     "theme:check": "shopify theme check",
     "theme:push:dev": "shopify theme push -e development --unpublished",
+    "theme:push:redesign": "shopify theme push -e redesign --nodelete",
     "theme:push:prod": "shopify theme push -e production",
     "qa:visual": "playwright test",
-    "qa:full": "npm run theme:check && npm run qa:visual",
+    "i18n:check": "node scripts/check-i18n.mjs",
+    "qa:full": "npm run i18n:check && npm run theme:check && npm run qa:visual",
     "playwright:install": "playwright install chromium"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@playwright/test": "^1.48.0"
   }
 }

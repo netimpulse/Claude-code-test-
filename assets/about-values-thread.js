@@ -1,15 +1,20 @@
 /* about-values-thread.js
- * Triggers the line-drawing animation when the stage scrolls into view.
- * Reduced-motion users skip the animation entirely (CSS handles end state).
+ * Draws the values thread once when the stage scrolls into view.
+ * Progressive enhancement: the markup shows the finished line and all
+ * values; only when this script runs (and motion is allowed) the stage
+ * is "armed" (hidden start state) and then revealed via .is-drawn.
+ * Reduced-motion users skip the animation entirely.
  */
 
 class ValuesThread extends HTMLElement {
   connectedCallback() {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) {
       this.classList.add("is-drawn");
       return;
     }
 
+    this.classList.add("is-armed");
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {

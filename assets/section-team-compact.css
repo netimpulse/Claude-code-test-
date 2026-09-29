@@ -1,200 +1,199 @@
 /* section-team-compact.css
- * Scoped styles for sections/team-compact.liquid.
- * Small team teaser: header column (kicker + heading + CTA), intro
- * column and a row of circular avatars with name labels.
- * Colour values flow in via CSS custom properties set in the section's
- * {% style %} block (driven by the chosen color scheme + accent setting).
+ * Scoped styles for sections/team-compact.liquid (SYS §6 "Team", compact teaser).
+ * Surface, text and lines come from the colour scheme tokens (.color-<scheme>,
+ * default scheme-1 = sand). --tc-accent only exists when the accent_color
+ * setting is filled; otherwise the design token applies.
+ * One calm row: head (eyebrow, h2, link) · intro · avatars. No box, no shadow.
  */
 
 .team-compact {
-  position: relative;
-  padding-top: var(--tc-padding-top, 50px);
-  padding-bottom: var(--tc-padding-bottom, 50px);
-  background: var(--tc-bg, #f4eee2);
-  color: var(--tc-text, #1f2328);
+  --tc-pad-max: clamp(var(--s-7), 6vw, var(--s-9));
+  --tc-avatar: 60px;
+  --tc-overlap: 12px;
+  padding-block: min(var(--tc-padding-top, 96px), var(--tc-pad-max))
+    min(var(--tc-padding-bottom, 96px), var(--tc-pad-max));
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .team-compact__inner {
-  width: min(1280px, calc(100% - clamp(28px, 6vw, 80px)));
-  margin: 0 auto;
-}
-
-/* ---- Panel ---- */
-.team-compact__panel {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-x);
   display: grid;
-  grid-template-columns: 1.05fr 1.05fr 0.7fr;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-5);
   align-items: center;
-  gap: clamp(22px, 3.1vw, 47px);
-  padding: clamp(22px, 3.1vw, 44px);
-  background: var(--tc-card, #faf3e2);
-  border: 1px solid var(--tc-line, rgba(31, 35, 40, 0.1));
-  border-radius: 0;
 }
 
-/* ---- Header column ---- */
+/* ---- Head: eyebrow, h2, text link (columns 1–4) ---- */
+.team-compact__head {
+  grid-column: 1 / span 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
 .team-compact__kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--tc-muted, #6b665e);
-  font-size: calc(0.9rem * var(--fs-heading, 1));
-  margin-bottom: 14px;
+  margin: 0;
+  color: var(--color-text);
 }
 
 .team-compact__kicker::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: currentColor;
+  background: var(--tc-accent, var(--c-accent));
 }
 
 .team-compact__heading {
   margin: 0;
-  font-size: calc(clamp(1.72rem, 3.59vw, 3.12rem) * var(--fs-heading, 1));
-  line-height: 0.98;
-  letter-spacing: -0.04em;
-  font-weight: 800;
+  font-size: calc(clamp(2rem, 1.4rem + 1.6vw, 2.75rem) * var(--fs-heading, 1));
+  line-height: 1.02;
+  letter-spacing: -0.03em;
 }
 
 .team-compact__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: clamp(26px, 3vw, 40px);
-  color: var(--tc-text, #1f2328);
-  font-weight: 700;
-  text-decoration: none;
-  transition: color 180ms ease;
-}
-
-.team-compact__cta:hover {
-  color: var(--tc-accent, #1f2328);
+  font-size: var(--text-small);
 }
 
 .team-compact__cta-arrow {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1.5px solid var(--tc-line-strong, rgba(31, 35, 40, 0.4));
-  border-radius: 50%;
-  font-size: calc(1rem * var(--fs-text, 1));
-  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+  display: inline-block;
+  transition: transform var(--dur) var(--ease);
 }
 
 .team-compact__cta:hover .team-compact__cta-arrow {
-  background: var(--tc-text, #1f2328);
-  color: var(--tc-bg, #faf3e2);
-  border-color: var(--tc-text, #1f2328);
+  transform: translateX(4px);
 }
 
-/* ---- Intro column ---- */
+/* ---- Intro (columns 5–8) ---- */
 .team-compact__intro {
+  grid-column: 5 / span 4;
   margin: 0;
-  color: var(--tc-muted, #4a4a4a);
-  font-size: calc(clamp(0.78rem, 0.9vw, 0.87rem) * var(--fs-text, 1));
+  max-width: 48ch;
+  color: var(--color-muted);
+  font-size: calc(var(--text-body) * var(--fs-text, 1));
   line-height: 1.6;
-  max-width: 46ch;
 }
 
-/* ---- Avatars column ---- */
-.team-compact__avatars {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 28px 0;
-}
-
-.team-compact__member {
+/* ---- Avatars + names (columns 9–12) ---- */
+.team-compact__crew {
+  grid-column: 9 / span 4;
+  justify-self: end;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-left: -14px;
+  align-items: flex-start;
+  gap: var(--s-3);
+  min-width: 0;
 }
 
-.team-compact__member:first-child {
-  margin-left: 0;
+.team-compact__people {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--s-2);
+  padding-left: var(--tc-overlap);
 }
 
-.team-compact__avatar {
+.team-compact__photo {
   position: relative;
-  width: clamp(50px, 5.5vw, 72px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--tc-avatar-bg, #e6dcc8);
-  border: 2px solid var(--tc-card, #faf3e2);
   display: grid;
   place-items: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--tc-avatar);
+  height: var(--tc-avatar);
+  margin-left: calc(var(--tc-overlap) * -1);
   overflow: hidden;
-  color: var(--tc-text, #1f2328);
-  font-weight: 800;
-  font-size: calc(clamp(1.2rem, 1.8vw, 1.6rem) * var(--fs-heading, 1));
-  letter-spacing: -0.02em;
-  box-shadow: 0 6px 16px rgba(20, 16, 10, 0.08);
+  border: 2px solid var(--color-bg);
+  border-radius: 50%;
+  background: var(--c-sand-deep);
 }
 
-.team-compact__avatar img {
+.team-compact__img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 30%;
 }
 
-.team-compact__name {
-  font-size: calc(0.82rem * var(--fs-heading, 1));
-  font-weight: 700;
-  padding: 4px 12px;
-  background: var(--tc-card, #faf3e2);
-  border: 1px solid var(--tc-line, rgba(31, 35, 40, 0.12));
-  border-radius: 0;
-  white-space: nowrap;
+.team-compact__member--empty {
+  background: var(--c-ink);
+}
+
+.team-compact__initial {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.625rem;
+  line-height: 1;
+  color: var(--tc-accent, var(--c-accent));
+}
+
+.team-compact__names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text);
+}
+
+.team-compact__name + .team-compact__name::before {
+  content: "·";
+  margin-right: var(--s-3);
+  color: var(--color-muted);
 }
 
 .team-compact__placeholder {
-  padding: 32px;
-  border: 1px dashed var(--tc-line-strong, rgba(31, 35, 40, 0.22));
-  border-radius: 0;
-  text-align: center;
-  color: var(--tc-muted, #6b665e);
+  grid-column: 9 / span 4;
+  margin: 0;
+  padding: var(--s-4);
+  border: 1px dashed var(--color-line-strong);
+  border-radius: var(--r-sm);
+  color: var(--color-muted);
+  font-size: var(--text-small);
 }
 
-/* ---- Responsive ---- */
+/* ---- Tablet: head + intro side by side, avatars below ---- */
 @media (max-width: 1100px) {
-  .team-compact__panel {
-    grid-template-columns: 1fr 1fr;
+  .team-compact__head {
+    grid-column: 1 / span 6;
   }
 
-  .team-compact__avatars {
+  .team-compact__intro {
+    grid-column: 7 / span 6;
+  }
+
+  .team-compact__crew,
+  .team-compact__placeholder {
     grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
-
-  .team-compact__member {
-    margin-left: -10px;
+    justify-self: start;
   }
 }
 
-@media (max-width: 720px) {
-  .team-compact__panel {
-    grid-template-columns: 1fr;
-    padding: clamp(22px, 6vw, 32px);
+/* ---- Mobile: stacked, avatars stay one row ---- */
+@media (max-width: 860px) {
+  .team-compact__inner {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--s-5);
   }
 
-  .team-compact__heading {
-    font-size: calc(clamp(2rem, 9vw, 2.8rem) * var(--fs-heading, 1));
+  .team-compact__head,
+  .team-compact__intro,
+  .team-compact__crew,
+  .team-compact__placeholder {
+    grid-column: 1 / -1;
   }
 
-  .team-compact__avatars {
-    justify-content: flex-start;
+  .team-compact {
+    --tc-avatar: 56px;
   }
 }
 
-/* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
-  .team-compact__cta,
   .team-compact__cta-arrow {
     transition: none;
   }

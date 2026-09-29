@@ -18,6 +18,7 @@
   assign scheme = section.settings.color_scheme
   assign heading_font = section.settings.heading_font
   assign body_font = section.settings.body_font
+  assign fallback_all_label = 'theme_store.all_label' | t
 -%}
 
 {% style %}
@@ -36,16 +37,26 @@
 {% endstyle %}
 
 <section
-  class="theme-store full-width color-{{ scheme.id }}"
+  class="theme-store full-width{% if scheme != blank %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   data-section-type="theme-store"
+  data-i18n-no-matches="{{ 'theme_store.no_matches' | t | escape }}"
+  data-i18n-did-you-mean="{{ 'theme_store.did_you_mean' | t | escape }}"
   style="
-    --ts-accent: {{ scheme.settings.accent }};
     --ts-radius: {{ section.settings.card_radius }}px;
+    {%- if scheme != blank %}
+    --ts-accent: {{ scheme.settings.accent }};
     --ts-bg-card: {{ scheme.settings.background_card }};
     --ts-text: {{ scheme.settings.text }};
     --ts-muted: {{ scheme.settings.muted }};
     --ts-bg: {{ scheme.settings.background }};
+    {%- else %}
+    --ts-accent: var(--color-accent);
+    --ts-bg-card: var(--color-surface);
+    --ts-text: var(--color-text);
+    --ts-muted: var(--color-muted);
+    --ts-bg: var(--color-bg);
+    {%- endif %}
   "
 >
   <div class="theme-store__inner">
@@ -61,7 +72,7 @@
         </div>
       {% endif %}
 
-      <aside class="theme-store__sidebar" aria-label="{{ 'theme_store.filter_label' | t | default: 'Filters' }}">
+      <aside class="theme-store__sidebar" aria-label="{{ 'theme_store.filter_label' | t }}">
         <button
           type="button"
           class="theme-store__sidebar-toggle"
@@ -69,7 +80,7 @@
           aria-expanded="false"
           aria-controls="ts-sidebar-panel-{{ section.id }}"
         >
-          <span>{{ 'theme_store.filter_label' | t | default: 'Filters' }}</span>
+          <span>{{ 'theme_store.filter_label' | t }}</span>
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="18" height="18">
             <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -107,7 +118,7 @@
                 data-ts-cat="all"
                 aria-current="true"
               >
-                <span class="theme-store__cat-name">{{ section.settings.all_label | default: 'All themes' }}</span>
+                <span class="theme-store__cat-name">{{ section.settings.all_label | default: fallback_all_label | escape }}</span>
                 <span class="theme-store__cat-count">{{ total_count }}</span>
               </a>
             </li>
@@ -157,7 +168,7 @@
       <div class="theme-store__products">
         <div class="theme-store__searchbar" data-ts-search-root>
           <label for="ts-search-{{ section.id }}" class="theme-store__sr-only">
-            {{ 'theme_store.search_label' | t | default: 'Search themes' }}
+            {{ 'theme_store.search_label' | t }}
           </label>
           <div class="theme-store__search-input-wrap">
             <svg class="theme-store__search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -180,7 +191,7 @@
               type="button"
               class="theme-store__search-clear"
               data-ts-search-clear
-              aria-label="{{ 'theme_store.clear_search' | t | default: 'Clear search' }}"
+              aria-label="{{ 'theme_store.clear_search' | t }}"
               hidden
             >×</button>
           </div>
@@ -260,12 +271,12 @@
         </ul>
 
         <p class="theme-store__empty" data-ts-empty hidden>
-          {{ 'theme_store.empty' | t | default: 'No themes match this filter yet.' }}
+          {{ 'theme_store.empty' | t }}
         </p>
 
         {% if visible_count == 0 %}
           <p class="theme-store__empty">
-            {{ 'theme_store.empty' | t | default: 'No themes match this filter yet.' }}
+            {{ 'theme_store.empty' | t }}
           </p>
         {% endif %}
       </div>

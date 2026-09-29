@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { QA, withTheme } from "../fixtures";
+import { QA, withTheme, activeLocaleValue } from "../fixtures";
 
 /**
  * Block-spezifische Tests fuer sections/product.liquid (Product Detail Page).
@@ -109,8 +109,31 @@ test.describe("Product Detail – Section", () => {
     const trust = root.locator(".product-detail__trust");
     await expect(trust).toBeVisible();
     await expect(trust).toContainText("SSL-gesichert");
-    await expect(trust).toContainText("30-Tage Geld-zurück");
+    await expect(trust).toContainText("30-Tage-Geld-zurück");
     await expect(trust).toContainText("Rechnung");
+  });
+
+  test("UI labels come from the de locale (S7d i18n)", async ({ page }) => {
+    // Erwartung aus der aktiven Shop-Sprache (html[lang]); nach Umstellung auf DE -> de.json.
+    const de = (await activeLocaleValue(page, "product_detail")) as unknown as Record<string, string>;
+    const root = page.locator("[data-section-type='product-detail']").first();
+    await expect(root.locator(".product-detail__variant-label")).toHaveText(de.variant);
+    await expect(root.locator("[data-pd-qty-dec]")).toHaveAttribute("aria-label", de.qty_decrease);
+    await expect(root.locator("[data-pd-qty-inc]")).toHaveAttribute("aria-label", de.qty_increase);
+    await expect(root.locator("[data-pd-add] .product-detail__btn-label")).toHaveText(de.add_to_cart);
+  });
+
+  test("Section follows scheme-sand; add-to-cart uses the primary button colors", async ({ page }) => {
+    const root = page.locator("[data-section-type='product-detail']").first();
+    await expect(root).toHaveClass(/color-scheme-sand/);
+    const bg = await root.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(bg).toBe("rgb(248, 246, 241)"); // #f8f6f1
+    const btn = await root.locator("[data-pd-add]").evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return { bg: cs.backgroundColor, fg: cs.color };
+    });
+    expect(btn.bg).toBe("rgb(28, 73, 72)"); // #1c4948
+    expect(btn.fg).toBe("rgb(255, 253, 248)"); // #fffdf8
   });
 
   test("Section does not overflow horizontally at 320px viewport", async ({ page }) => {

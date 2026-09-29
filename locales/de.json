@@ -1,0 +1,330 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "404": {
+    "title": "404",
+    "eyebrow": "Fehler 404",
+    "not_found": "Diese Seite gibt es leider nicht.",
+    "text": "Vielleicht hat sich die Adresse geändert. Starte auf der Startseite oder nutze die Suche.",
+    "back_to_shopping": "Zur Startseite",
+    "search": "Zur Suche"
+  },
+  "blog": {
+    "article_comments": "Kommentare",
+    "article_metadata_html": "{{ date }} von {{ author }}",
+    "comments": "Kommentare",
+    "comments_with_count": {
+      "one": "{{ count }} Kommentar",
+      "other": "{{ count }} Kommentare"
+    },
+    "comment_form_body": "Kommentar",
+    "comment_form_email": "E-Mail",
+    "comment_form_email_info": "Deine E-Mail-Adresse wird nicht veröffentlicht.",
+    "comment_form_name": "Name",
+    "comment_form_submit": "Kommentar senden",
+    "comment_form_title": "Schreib einen Kommentar",
+    "comment_placeholder": "Schreib einen Kommentar …",
+    "comment_moderated": "Kommentare werden geprüft, bevor sie erscheinen.",
+    "comment_success": "Dein Kommentar wurde veröffentlicht. Danke!",
+    "comment_success_moderated": "Danke! Dein Kommentar erscheint, sobald er freigegeben ist.",
+    "read_time_html": "{{ minutes }} Min. Lesezeit",
+    "tagged": "Verschlagwortet mit",
+    "share": "Teilen",
+    "share_twitter": "Auf X teilen",
+    "share_facebook": "Auf Facebook teilen",
+    "share_linkedin": "Auf LinkedIn teilen",
+    "read_more": "Artikel lesen",
+    "pagination": "Seitennavigation",
+    "newsletter_placeholder": "Deine E-Mail-Adresse",
+    "newsletter_success": "Danke für deine Anmeldung!",
+    "newsletter_submit": "Abonnieren",
+    "email_placeholder": "name@beispiel.de",
+    "pagination_previous": "Zurück",
+    "pagination_next": "Weiter",
+    "comments_pagination": "Seiten der Kommentare",
+    "empty": "In diesem Blog gibt es noch keine Artikel."
+  },
+  "cart": {
+    "checkout": "Zur Kasse",
+    "title": "Warenkorb",
+    "update": "Aktualisieren",
+    "remove": "Entfernen",
+    "heading": "Dein Warenkorb",
+    "items_count": {
+      "one": "{{ count }} Position",
+      "other": "{{ count }} Positionen"
+    },
+    "empty": "Dein Warenkorb ist leer.",
+    "continue": "Weiter stöbern",
+    "quantity": "Menge",
+    "qty_decrease": "Menge verringern",
+    "qty_increase": "Menge erhöhen",
+    "subtotal": "Zwischensumme",
+    "discount": "Rabatt",
+    "total": "Gesamt",
+    "tax_included": "inkl. MwSt.",
+    "discount_code": "Rabattcode",
+    "discount_placeholder": "Code eingeben",
+    "discount_apply": "Anwenden",
+    "trust_badge": "Vertrauenssiegel"
+  },
+  "customers": {
+    "login": {
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "title": "Anmelden"
+    }
+  },
+  "collections": {
+    "title": "Kollektionen"
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Zu Apple Wallet hinzufügen",
+    "card": "Geschenkkarte",
+    "expired": "Diese Geschenkkarte ist abgelaufen",
+    "expires_on": "Gültig bis {{ expires_on }}",
+    "use_at_checkout": "Löse diese Geschenkkarte an der Kasse ein"
+  },
+  "password": {
+    "title": "Dieser Shop ist privat",
+    "password": "Passwort",
+    "enter": "Eintreten"
+  },
+  "search": {
+    "title": "Suche",
+    "placeholder": "Artikel, Seiten oder Produkte suchen",
+    "submit": "Suchen",
+    "no_results_html": "Keine Ergebnisse für {{ terms }}",
+    "results_for_html": "{{ count }} Ergebnisse für {{ terms }}",
+    "previous": "Zurück",
+    "next": "Weiter"
+  },
+  "theme_store": {
+    "search_label": "Themes durchsuchen",
+    "clear_search": "Suche löschen",
+    "filter_label": "Filter",
+    "empty": "Zu diesem Filter gibt es noch keine Themes.",
+    "all_label": "Alle Themes",
+    "no_matches": "Keine Treffer gefunden.",
+    "did_you_mean": "Meintest du"
+  },
+  "theme_store_preview": {
+    "prev": "Vorheriges Theme",
+    "next": "Nächstes Theme",
+    "add_collection": "Wähle im Theme-Editor eine Kollektion, um hier Themes anzuzeigen.",
+    "pick_product": "Theme-Produkt auswählen",
+    "add_themes": "Füge im Editor Theme-Karten hinzu und wähle für jede ein Produkt.",
+    "editor_only": "Nur im Editor sichtbar – ohne Produkt bleibt die Karte im Shop ausgeblendet."
+  },
+  "theme_store_deck": {
+    "prev": "Zurück",
+    "next": "Weiter",
+    "empty": "Füge im Theme-Editor Theme-Karten hinzu."
+  },
+  "services_overview": {
+    "tabs_label": "Leistung wählen",
+    "in_focus": "Im Fokus",
+    "previous": "Vorherige Leistung",
+    "next": "Nächste Leistung",
+    "add_services": "Füge Leistungs-Blöcke hinzu, um zu starten."
+  },
+  "team_overview": {
+    "more_about": "Mehr über",
+    "add_members": "Füge Teammitglied-Blöcke hinzu, um zu starten."
+  },
+  "product_detail": {
+    "placeholder_title": "Produkttitel",
+    "variant": "Variante",
+    "quantity": "Menge",
+    "qty_decrease": "Menge verringern",
+    "qty_increase": "Menge erhöhen",
+    "add_to_cart": "In den Warenkorb",
+    "sold_out": "Ausverkauft",
+    "rating_count_prefix": "aus",
+    "buy_now": "Sofortkauf"
+  },
+  "product_addons": {
+    "title": "Zusatzleistungen",
+    "price_from_html": "ab {{ price }}",
+    "price_on_request": "Preis auf Anfrage",
+    "choose_variant": "Variante wählen",
+    "sold_out": "ausverkauft",
+    "interest_hint": "Bei „Preis auf Anfrage\"-Leistungen vermerken wir dein Interesse mit der Bestellung. Du erhältst danach ein individuelles Angebot per Mail."
+  },
+  "hero_serp": {
+    "tabs_default": "Alle|Bilder|Shopping|News|Videos"
+  },
+  "hero_web_build": {
+    "status_default": "Build",
+    "step": "Schritt",
+    "badge_default": "LIVE · CR +62%",
+    "steps": {
+      "grid": "Raster",
+      "header": "Header",
+      "hero": "Hero",
+      "copy": "Text",
+      "cta": "CTA",
+      "features": "Features",
+      "imagery": "Bilder",
+      "color": "Farbe",
+      "ship": "Launch",
+      "idle": "Bereit"
+    }
+  },
+  "hero_float": {
+    "add_cards": "Füge im Theme-Editor Karten-Blöcke hinzu, um das Karussell zu füllen.",
+    "prev": "Vorherige Folie",
+    "next": "Nächste Folie"
+  },
+  "services_spotlight": {
+    "add_services": "Füge Leistungs-Blöcke hinzu, um zu starten."
+  },
+  "services_orbit": {
+    "add_services": "Füge Leistungs-Blöcke hinzu, um zu starten."
+  },
+  "addon_services": {
+    "add_cards": "Füge im Theme-Editor Karten hinzu.",
+    "request": "Jetzt anfragen"
+  },
+  "service_aspects": {
+    "add_tiles": "Füge Kachel-Blöcke hinzu, um zu starten."
+  },
+  "team_compact": {
+    "add_members": "Füge Teammitglied-Blöcke hinzu, um zu starten.",
+    "photo_pending": "Foto folgt"
+  },
+  "cta_compact": {
+    "button_note": "Kostenlos und unverbindlich."
+  },
+  "about_stats": {
+    "add_stats": "Füge Kennzahl-Blöcke hinzu, um zu starten."
+  },
+  "about_values": {
+    "add_values": "Füge Werte-Blöcke hinzu, um zu starten."
+  },
+  "about_timeline": {
+    "add_milestones": "Füge Meilenstein-Blöcke hinzu, um zu starten."
+  },
+  "about_intro": {
+    "editor_photo_hint": "Noch kein Bild gewählt: Die Section erscheint ohne Bildspalte. Wähle in den Section-Einstellungen ein Foto, um es hier anzuzeigen."
+  },
+  "about_values_thread": {
+    "add_values": "Füge Werte-Blöcke hinzu, um die Linie zu zeigen."
+  },
+  "about_perspectives": {
+    "add_perspectives": "Füge Perspektiven-Blöcke hinzu, um zu starten.",
+    "photo_pending": "Foto folgt"
+  },
+  "ni_intro": {
+    "add_cards": "Füge im Theme-Editor Prinzipien als Blöcke hinzu."
+  },
+  "ni_deck": {
+    "add_cards": "Füge im Theme-Editor Leistungstafeln als Blöcke hinzu.",
+    "more_about": "Mehr zu {{ title }}",
+    "tags_label": "Schwerpunkte",
+    "visual": {
+      "search_query": "webdesign agentur gießen",
+      "search_hit_title": "Dein Unternehmen",
+      "search_hit_url": "deine-domain.de",
+      "search_result_2_title": "Agenturverzeichnis Hessen",
+      "search_result_2_url": "beispiel-verzeichnis.de",
+      "search_result_3_title": "Ratgeber Webdesign",
+      "search_result_3_url": "beispiel-magazin.de",
+      "campaign_metric": "Anfragen",
+      "campaign_period": "12 Wochen",
+      "campaign_legend_search": "Search",
+      "campaign_legend_shopping": "Shopping",
+      "campaign_legend_tracking": "Tracking aktiv",
+      "social_type": "Aa",
+      "social_word": "du",
+      "social_brand": "Ni",
+      "web_page": "Startseite",
+      "web_headline": "Klar erklärt.",
+      "web_headline_accent": "Gut geführt.",
+      "web_text": "Ein Weg vom ersten Blick bis zur Anfrage.",
+      "web_button": "Anfrage senden",
+      "shop_editor": "Theme-Editor",
+      "shop_section_header": "Header",
+      "shop_section_hero": "Hero",
+      "shop_section_products": "Produktraster",
+      "shop_section_reviews": "Bewertungen",
+      "shop_section_footer": "Footer",
+      "shop_edit": "bearbeiten"
+    }
+  },
+  "landingpage": {
+    "empty": "Füge Landingpage-Blöcke hinzu (Hero, Bento, Kennzahlen, Case, Testimonial, Themes, CTA), um deine Seite aufzubauen.",
+    "add_cards": "Füge im Theme-Editor Bento-Karten hinzu.",
+    "add_collection": "Wähle im Editor eine Themes-Kollektion, um hier Produkte anzuzeigen.",
+    "compare": "Vorher und nachher zeigen",
+    "prev": "Zurück",
+    "next": "Weiter"
+  },
+  "footer": {
+    "nav_label": "Fußzeilen-Navigation",
+    "qr_code": "QR-Code",
+    "revocation": "Widerruf",
+    "back_to_top": "Nach oben",
+    "social": {
+      "linkedin": "LinkedIn",
+      "twitter": "X (Twitter)",
+      "instagram": "Instagram",
+      "medium": "Medium",
+      "facebook": "Facebook",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    }
+  },
+  "contact": {
+    "info_label": "Kontaktinformationen",
+    "success": "Danke! Deine Nachricht ist angekommen.",
+    "submit": "Nachricht senden",
+    "error_prefix": "Fehler"
+  },
+  "policy": {
+    "breadcrumb": "Brotkrumen-Navigation",
+    "breadcrumb_home": "Start",
+    "updated": "Stand"
+  },
+  "general": {
+    "errors_title": "Bitte überprüfe folgende Felder:",
+    "skip_to_content": "Zum Inhalt springen"
+  },
+  "meta": {
+    "tagged": "verschlagwortet mit „{{ tags }}“",
+    "page": "Seite {{ page }}"
+  },
+  "header": {
+    "main_navigation": "Hauptnavigation",
+    "mobile_navigation": "Mobile Navigation",
+    "menu": "Menü",
+    "search": "Suche",
+    "search_label": "Suchbegriff",
+    "search_placeholder": "Suchen …",
+    "search_close": "Suche schließen",
+    "search_products": "Produkte",
+    "search_pages": "Seiten",
+    "search_articles": "Artikel",
+    "search_did_you_mean": "Meintest du",
+    "search_no_results": "Keine Treffer für „{{ terms }}“.",
+    "cart": {
+      "one": "Warenkorb, {{ count }} Artikel",
+      "other": "Warenkorb, {{ count }} Artikel"
+    },
+    "account": "Konto",
+    "log_in": "Anmelden",
+    "cta_fallback": "Kontakt aufnehmen"
+  },
+  "localization": {
+    "language_label": "Sprache",
+    "submit": "Sprache ändern"
+  }
+}

@@ -10,8 +10,11 @@
 {
   "404": {
     "title": "404",
+    "eyebrow": "Error 404",
     "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
+    "text": "The address may have changed. Start on the homepage or use the search.",
+    "back_to_shopping": "Back to the homepage",
+    "search": "Go to search"
   },
   "blog": {
     "article_comments": "Comments",
@@ -41,13 +44,36 @@
     "pagination": "Pagination",
     "newsletter_placeholder": "Your email address",
     "newsletter_success": "Thanks for subscribing!",
+    "newsletter_submit": "Subscribe",
+    "email_placeholder": "name@example.com",
+    "pagination_previous": "Previous",
+    "pagination_next": "Next",
+    "comments_pagination": "Comment pages",
     "empty": "There are no articles in this blog yet."
   },
   "cart": {
     "checkout": "Checkout",
     "title": "Cart",
     "update": "Update",
-    "remove": "Remove"
+    "remove": "Remove",
+    "heading": "Your cart",
+    "items_count": {
+      "one": "{{ count }} item",
+      "other": "{{ count }} items"
+    },
+    "empty": "Your cart is empty.",
+    "continue": "Continue shopping",
+    "quantity": "Quantity",
+    "qty_decrease": "Decrease quantity",
+    "qty_increase": "Increase quantity",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "tax_included": "incl. VAT",
+    "discount_code": "Discount code",
+    "discount_placeholder": "Enter code",
+    "discount_apply": "Apply",
+    "trust_badge": "Trust badge"
   },
   "customers": {
     "login": {
@@ -77,20 +103,26 @@
     "placeholder": "Search articles, pages, or products",
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
-    "results_for_html": "{{ count }} results found for {{ terms }}"
+    "results_for_html": "{{ count }} results found for {{ terms }}",
+    "previous": "Previous",
+    "next": "Next"
   },
   "theme_store": {
     "search_label": "Search themes",
     "clear_search": "Clear search",
     "filter_label": "Filters",
-    "empty": "No themes match this filter yet."
+    "empty": "No themes match this filter yet.",
+    "all_label": "All themes",
+    "no_matches": "No matches found.",
+    "did_you_mean": "Did you mean"
   },
   "theme_store_preview": {
     "prev": "Previous theme",
     "next": "Next theme",
     "add_collection": "Pick a collection in the theme editor to preview themes here.",
     "pick_product": "Select a theme product",
-    "add_themes": "Add theme cards in the editor and pick a product for each."
+    "add_themes": "Add theme cards in the editor and pick a product for each.",
+    "editor_only": "Only visible in the editor – without a product the card stays hidden in the store."
   },
   "theme_store_deck": {
     "prev": "Previous",
@@ -114,9 +146,38 @@
     "quantity": "Quantity",
     "qty_decrease": "Decrease quantity",
     "qty_increase": "Increase quantity",
-    "add_to_cart": "In den Warenkorb",
+    "add_to_cart": "Add to cart",
     "sold_out": "Sold out",
-    "rating_count_prefix": "aus"
+    "rating_count_prefix": "of",
+    "buy_now": "Buy now"
+  },
+  "product_addons": {
+    "title": "Add-on services",
+    "price_from_html": "from {{ price }}",
+    "price_on_request": "Price on request",
+    "choose_variant": "choose a variant",
+    "sold_out": "sold out",
+    "interest_hint": "For “price on request” services we note your interest with the order. You will then receive an individual quote by email."
+  },
+  "hero_serp": {
+    "tabs_default": "All|Images|Shopping|News|Videos"
+  },
+  "hero_web_build": {
+    "status_default": "Build",
+    "step": "Step",
+    "badge_default": "LIVE · CR +62%",
+    "steps": {
+      "grid": "Grid",
+      "header": "Header",
+      "hero": "Hero",
+      "copy": "Copy",
+      "cta": "CTA",
+      "features": "Features",
+      "imagery": "Imagery",
+      "color": "Color",
+      "ship": "Ship",
+      "idle": "Idle"
+    }
   },
   "hero_float": {
     "add_cards": "Add card blocks in the theme editor to fill the carousel.",
@@ -129,11 +190,19 @@
   "services_orbit": {
     "add_services": "Add service blocks to get started."
   },
+  "addon_services": {
+    "add_cards": "Add cards in the theme editor.",
+    "request": "Enquire now"
+  },
   "service_aspects": {
     "add_tiles": "Add tile blocks to get started."
   },
   "team_compact": {
-    "add_members": "Add team member blocks to get started."
+    "add_members": "Add team member blocks to get started.",
+    "photo_pending": "Photo coming soon"
+  },
+  "cta_compact": {
+    "button_note": "Free and without obligation."
   },
   "about_stats": {
     "add_stats": "Add stat blocks to get started."
@@ -144,8 +213,52 @@
   "about_timeline": {
     "add_milestones": "Add milestone blocks to get started."
   },
+  "about_intro": {
+    "editor_photo_hint": "No image selected yet: the section is shown without an image column. Choose a photo in the section settings to show it here."
+  },
+  "about_values_thread": {
+    "add_values": "Add value blocks to show the thread."
+  },
   "about_perspectives": {
-    "add_perspectives": "Add perspective blocks to get started."
+    "add_perspectives": "Add perspective blocks to get started.",
+    "photo_pending": "Photo coming soon"
+  },
+  "ni_intro": {
+    "add_cards": "Add principles as blocks in the theme editor."
+  },
+  "ni_deck": {
+    "add_cards": "Add service slabs as blocks in the theme editor.",
+    "more_about": "More about {{ title }}",
+    "tags_label": "Focus areas",
+    "visual": {
+      "search_query": "web design agency giessen",
+      "search_hit_title": "Your business",
+      "search_hit_url": "your-domain.com",
+      "search_result_2_title": "Agency directory Hesse",
+      "search_result_2_url": "example-directory.com",
+      "search_result_3_title": "Web design guide",
+      "search_result_3_url": "example-magazine.com",
+      "campaign_metric": "Enquiries",
+      "campaign_period": "12 weeks",
+      "campaign_legend_search": "Search",
+      "campaign_legend_shopping": "Shopping",
+      "campaign_legend_tracking": "Tracking on",
+      "social_type": "Aa",
+      "social_word": "you",
+      "social_brand": "Ni",
+      "web_page": "Home page",
+      "web_headline": "Clearly explained.",
+      "web_headline_accent": "Well guided.",
+      "web_text": "One path from first glance to enquiry.",
+      "web_button": "Send enquiry",
+      "shop_editor": "Theme editor",
+      "shop_section_header": "Header",
+      "shop_section_hero": "Hero",
+      "shop_section_products": "Product grid",
+      "shop_section_reviews": "Reviews",
+      "shop_section_footer": "Footer",
+      "shop_edit": "edit"
+    }
   },
   "landingpage": {
     "empty": "Add landing-page blocks (Hero, Bento, Metrics, Case, Testimonial, Themes, CTA) to build your page.",
@@ -154,5 +267,64 @@
     "compare": "Reveal before and after",
     "prev": "Previous",
     "next": "Next"
+  },
+  "footer": {
+    "nav_label": "Footer navigation",
+    "qr_code": "QR code",
+    "revocation": "Right of withdrawal",
+    "back_to_top": "Back to top",
+    "social": {
+      "linkedin": "LinkedIn",
+      "twitter": "X (Twitter)",
+      "instagram": "Instagram",
+      "medium": "Medium",
+      "facebook": "Facebook",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    }
+  },
+  "contact": {
+    "info_label": "Contact information",
+    "success": "Thanks! Your message has arrived.",
+    "submit": "Send message",
+    "error_prefix": "Error"
+  },
+  "policy": {
+    "breadcrumb": "Breadcrumb",
+    "breadcrumb_home": "Home",
+    "updated": "Last updated"
+  },
+  "general": {
+    "errors_title": "Please check the following fields:",
+    "skip_to_content": "Skip to content"
+  },
+  "meta": {
+    "tagged": "tagged \"{{ tags }}\"",
+    "page": "Page {{ page }}"
+  },
+  "header": {
+    "main_navigation": "Main navigation",
+    "mobile_navigation": "Mobile navigation",
+    "menu": "Menu",
+    "search": "Search",
+    "search_label": "Search term",
+    "search_placeholder": "Search …",
+    "search_close": "Close search",
+    "search_products": "Products",
+    "search_pages": "Pages",
+    "search_articles": "Articles",
+    "search_did_you_mean": "Did you mean",
+    "search_no_results": "No results for “{{ terms }}”.",
+    "cart": {
+      "one": "Cart, {{ count }} item",
+      "other": "Cart, {{ count }} items"
+    },
+    "account": "Account",
+    "log_in": "Log in",
+    "cta_fallback": "Get in touch"
+  },
+  "localization": {
+    "language_label": "Language",
+    "submit": "Change language"
   }
 }

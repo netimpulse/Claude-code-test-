@@ -1,8 +1,11 @@
 {% comment %}
-  NI Text — simple text block.
-  Heading + body text with independent alignment controls per element
-  (left / center / right) plus the usual color-scheme, padding and
-  typography scaling settings used across the NI sections.
+  NI Text — simple text block (Plan S6b).
+  Heading (h2, or h1 via heading_tag; optional serif accent via accent-heading, *Wort*) + body text
+  with independent alignment controls per element (left / center / right).
+  Colours come from the colour scheme tokens (--color-*); an empty scheme
+  falls back to the root tokens (scheme-sand). bg_color / text_color are
+  optional overrides and only output when filled.
+  Padding: min(setting, --section-y) – the setting acts as an upper bound.
 {% endcomment %}
 
 {%- liquid
@@ -10,14 +13,16 @@
   assign heading_align = section.settings.heading_align | default: 'left'
   assign text_align = section.settings.text_align | default: 'left'
   assign max_width = section.settings.max_width | default: 760
+  assign heading_tag = 'h2'
+  if section.settings.heading_tag == 'h1'
+    assign heading_tag = 'h1'
+  endif
 -%}
 
 {{ 'section-ni-text.css' | asset_url | stylesheet_tag }}
 
 {% style %}
-  #shopify-section-{{ section.id }} {
-    {%- if scheme.settings.background != blank %}--ni-text-bg-fallback: {{ scheme.settings.background }};{% endif %}
-    {%- if scheme.settings.text != blank %}--ni-text-text-fallback: {{ scheme.settings.text }};{% endif %}
+  #shopify-section-{{ section.id }} .ni-text {
     {%- if section.settings.bg_color != blank %}--ni-text-bg: {{ section.settings.bg_color }};{% endif %}
     {%- if section.settings.text_color != blank %}--ni-text-text: {{ section.settings.text_color }};{% endif %}
     --ni-text-pad-top: {{ section.settings.padding_top }}px;
@@ -28,12 +33,15 @@
   }
 {% endstyle %}
 
-<section class="ni-text full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+<section
+  class="ni-text full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
+  {% if section.settings.heading != blank %}aria-labelledby="ni-text-heading-{{ section.id }}"{% endif %}
+>
   <div class="ni-text__inner">
     {%- if section.settings.heading != blank -%}
-      <h2 class="ni-text__heading ni-text--align-{{ heading_align }}">
-        {{- section.settings.heading | escape -}}
-      </h2>
+      <{{ heading_tag }} id="ni-text-heading-{{ section.id }}" class="ni-text__heading ni-text--align-{{ heading_align }}">
+        {%- render 'accent-heading', text: section.settings.heading -%}
+      </{{ heading_tag }}>
     {%- endif -%}
     {%- if section.settings.body != blank -%}
       <div class="ni-text__body ni-text--align-{{ text_align }}">
@@ -49,6 +57,17 @@
   "tag": "section",
   "settings": [
     { "type": "textarea", "id": "heading", "label": "Überschrift", "default": "Eine kurze, klare Überschrift" },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Überschrift-Ebene",
+      "info": "H1, wenn dieser Textblock der Hauptinhalt der Seite ist und es sonst kein H1 gibt.",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h2"
+    },
     {
       "type": "select",
       "id": "heading_align",
@@ -77,11 +96,11 @@
     { "type": "range", "id": "max_width", "label": "Max. Textbreite", "min": 480, "max": 1200, "step": 20, "unit": "px", "default": 760 },
 
     { "type": "header", "content": "Appearance" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
     { "type": "color", "id": "bg_color", "label": "Hintergrund", "info": "Leer = Color-Scheme" },
-    { "type": "color", "id": "text_color", "label": "Textfarbe" },
-    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
-    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "color", "id": "text_color", "label": "Textfarbe", "info": "Leer = Color-Scheme" },
+    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 160 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 160 },
 
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "heading_scale", "label": "Überschrift-Größe", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },

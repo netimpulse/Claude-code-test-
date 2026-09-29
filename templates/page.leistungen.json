@@ -24,12 +24,12 @@
             "label": "SEO",
             "center_title": "Suchmaschinenoptimierung",
             "title": "Gefunden werden, bevor andere sichtbar sind.",
-            "description": "<p><br/>Damit eure Website gefunden wird, braucht es mehr als ein paar Keywords. Inhalte, Technik und Struktur müssen sauber zusammenspielen – und genau darauf richten wir die Seite aus.<br/><br/></p>",
+            "description": "<p><br/>Damit deine Website gefunden wird, braucht es mehr als ein paar Keywords. Inhalte, Technik und Struktur müssen sauber zusammenspielen – und genau darauf richten wir die Seite aus.<br/><br/></p>",
             "benefit_1": "Keyword- und Seitenstruktur mit klarer Suchintention",
             "benefit_2": "Technische SEO-Grundlagen für Performance und Indexierung",
             "benefit_3": "Content-Aufbau für Leistungen, Standorte und Zielgruppen",
             "primary_label": "",
-            "primary_url": ""
+            "primary_url": "shopify://pages/seo"
           }
         },
         "service_mYqWcB": {
@@ -39,12 +39,12 @@
             "label": "SEA",
             "center_title": "Google Ads",
             "title": "Kampagnen, die Nachfrage gezielt aktivieren.",
-            "description": "<p><br/>Anzeigen zu schalten ist der einfache Teil. Entscheidend ist, dass sie die richtigen Menschen erreichen, sauber gemessen werden und am Ende Anfragen bringen, die für euch wirklich relevant sind.<br/><br/></p>",
+            "description": "<p><br/>Anzeigen zu schalten ist der einfache Teil. Entscheidend ist, dass sie die richtigen Menschen erreichen, sauber gemessen werden und am Ende Anfragen bringen, die für dich wirklich relevant sind.<br/><br/></p>",
             "benefit_1": "Saubere Kampagnen- und Anzeigengruppen-Struktur",
             "benefit_2": "Conversion-Tracking und klare Auswertung",
             "benefit_3": "Optimierung nach Suchintention, Budget und Zielwerten",
             "primary_label": "",
-            "primary_url": ""
+            "primary_url": "shopify://pages/sea"
           }
         },
         "service_JtbwXw": {
@@ -52,14 +52,14 @@
           "settings": {
             "icon": "smm",
             "label": "SMM",
-            "center_title": "Social Media Marketing",
+            "center_title": "Social-Media-Marketing",
             "title": "Aufmerksamkeit mit Wiedererkennung und Richtung.",
-            "description": "<p>Ein guter Social-Media-Auftritt zeigt nicht nur, dass es euch gibt. Er zeigt, wofür ihr steht. Mit klaren Themen, wiedererkennbaren Formaten und Inhalten, die zu eurer Marke passen, entsteht ein Auftritt, der im Kopf bleibt.<br/><br/></p>",
+            "description": "<p>Ein guter Social-Media-Auftritt zeigt nicht nur, dass es dich gibt. Er zeigt, wofür du stehst. Mit klaren Themen, wiedererkennbaren Formaten und Inhalten, die zu deiner Marke passen, entsteht ein Auftritt, der im Kopf bleibt.<br/><br/></p>",
             "benefit_1": "Content-Struktur für wiederkehrende Formate",
             "benefit_2": "Kampagnenideen passend zu Marke und Zielgruppe",
             "benefit_3": "Visuelle Systeme für mehr Wiedererkennung",
             "primary_label": "",
-            "primary_url": ""
+            "primary_url": "shopify://pages/smm"
           }
         },
         "service_388XBT": {
@@ -69,12 +69,12 @@
             "label": "Webdesign",
             "center_title": "Webdesign & UX",
             "title": "Websites, die erklären, führen und verkaufen.",
-            "description": "<p>Eine Website sollte sofort verständlich machen, wer ihr seid, was ihr anbietet und warum es relevant ist. Gutes Design hilft dabei nicht nur optisch, sondern führt Besucher Schritt für Schritt durch die Seite.<br/><br/></p>",
+            "description": "<p>Eine Website sollte sofort verständlich machen, wer du bist, was du anbietest und warum es relevant ist. Gutes Design hilft dabei nicht nur optisch, sondern führt Besucher Schritt für Schritt durch die Seite.<br/><br/></p>",
             "benefit_1": "Individuelle Layouts statt Standard-Template-Gefühl",
             "benefit_2": "UX-Struktur für Leistungen, Vertrauen und Kontakt",
             "benefit_3": "Responsive Design mit sauberer mobiler Führung",
             "primary_label": "",
-            "primary_url": ""
+            "primary_url": "shopify://pages/web-design"
           }
         },
         "service_yMn8GQ": {
@@ -82,10 +82,10 @@
           "settings": {
             "icon": "shopify",
             "label": "Shopify",
-            "center_title": "Shopify Entwicklung",
+            "center_title": "Shopify-Entwicklung",
             "title": "Shopify-Auftritte, die im Alltag skalieren.",
             "description": "<p>Ein guter Shopify-Shop muss nicht nur gut aussehen, sondern im Alltag einfach funktionieren. Inhalte, Produkte und neue Bereiche sollen sich sauber pflegen und erweitern lassen, ohne dass jedes Mal alles kompliziert wird.<br/><br/></p>",
-            "benefit_1": "Custom Sections mit Theme-Editor-Einstellungen",
+            "benefit_1": "Custom-Sections mit Theme-Editor-Einstellungen",
             "benefit_2": "Liquid, OS 2.0 und Dawn-kompatible Logik",
             "benefit_3": "Performance, mobile Optimierung und saubere Pflege",
             "primary_label": "",
@@ -104,7 +104,7 @@
             "benefit_2": "Schneller Start mit professioneller Grundstruktur",
             "benefit_3": "Erweiterbare Bausteine für spätere Optimierung",
             "primary_label": "",
-            "primary_url": ""
+            "primary_url": "shopify://pages/theme-store"
           }
         }
       },
@@ -120,6 +120,7 @@
       "settings": {
         "kicker": "Unsere Leistungen",
         "heading": "Ein System aus Sichtbarkeit, Design und Umsetzung.",
+        "heading_tag": "h1",
         "intro": "",
         "show_intro": true,
         "center_eyebrow": "Fokus",
@@ -128,9 +129,9 @@
         "secondary_label": "Projekt anfragen",
         "secondary_url": "",
         "color_scheme": "scheme-sand",
-        "accent_color": "#89b1b9",
-        "padding_top": 76,
-        "padding_bottom": 76,
+        "accent_color": "",
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -139,16 +140,16 @@
       "type": "ni-text",
       "name": "Text block",
       "settings": {
-        "heading": "Wie wird Abgerechnet",
+        "heading": "Wie wird abgerechnet?",
         "heading_align": "center",
-        "body": "<p>Das sich der Arbeitsaufwand für die einzelnen Leistungen stark nach der Größe des Unternhemens; dem Umfang der Website und der Anzahl der Produkte richtet, gibt es für die Leistungen einen Einheitspreis sondern nur auf Anfrage. Nachdem wir mit Ihnen ein kostenloses Erstgespräch geführt haben werden wir Ihnen ein Angebot zukommen lassen welches den Preis mit genauer aufführung der zu erbringenden Leistungen beinhaltet </p>",
+        "body": "<p>Da sich der Arbeitsaufwand für die einzelnen Leistungen stark nach der Größe des Unternehmens, dem Umfang der Website und der Anzahl der Produkte richtet, gibt es für die Leistungen keinen Einheitspreis, sondern Preise nur auf Anfrage. Nachdem wir mit dir ein kostenloses Erstgespräch geführt haben, werden wir dir ein Angebot zukommen lassen, welches den Preis mit genauer Aufführung der zu erbringenden Leistungen beinhaltet.</p>",
         "text_align": "left",
         "max_width": 760,
-        "color_scheme": "",
+        "color_scheme": "scheme-sand",
         "bg_color": "",
         "text_color": "",
-        "padding_top": 64,
-        "padding_bottom": 64,
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }
@@ -159,10 +160,10 @@
         "card_YJbGEd": {
           "type": "card",
           "settings": {
-            "title": "Theme Setup",
+            "title": "Theme-Setup",
             "description": "Für einen schnellen, sauberen Start.",
             "price": "ab 200 €",
-            "features": "Theme-Installation\nGrund-Konfiguration\nLogo & Farben\nE-Mail-Support",
+            "features": "Theme-Installation\nGrundkonfiguration\nLogo & Farben\nE-Mail-Support",
             "highlight": false,
             "badge_label": "BELIEBT",
             "show_button": true,
@@ -187,10 +188,10 @@
         "card_raMjCt": {
           "type": "card",
           "settings": {
-            "title": "Komplett Custom Theme",
+            "title": "Komplett-Custom-Theme",
             "description": "Maßgeschneidert für deine Marke.",
             "price": "Preis auf Anfrage",
-            "features": "Individuelles Design\nVolle Section-Architektur\nDedizierter Account-Manager\nSLA & Custom Onboarding",
+            "features": "Individuelles Design\nVolle Section-Architektur\nDedizierter Account-Manager\nSLA & Custom-Onboarding",
             "highlight": false,
             "badge_label": "BELIEBT",
             "show_button": true,
@@ -207,12 +208,12 @@
       "name": "Zusatzleistungen",
       "settings": {
         "heading": "Welche Zusatzleistungen bieten wir an?",
-        "subheading": "Von einem schnellen Setup bis zu komplett individuellen Themes — wir liefern, was zu deinem Shop passt.",
+        "subheading": "Von einem schnellen Setup bis zu komplett individuellen Themes – wir liefern, was zu deinem Shop passt.",
         "color_scheme": "scheme-sand",
-        "accent_color": "#89b1b9",
+        "accent_color": "",
         "card_radius": 18,
-        "padding_top": 80,
-        "padding_bottom": 80
+        "padding_top": 160,
+        "padding_bottom": 160
       }
     },
     "cta_compact_wtkPDL": {
@@ -220,15 +221,15 @@
       "name": "CTA compact",
       "settings": {
         "kicker": "Kontakt",
-        "heading": "Bereit für planbares Wachstum?",
+        "heading": "Bereit für planbares *Wachstum?*",
         "intro": "Lass uns gemeinsam anschauen, wo dein digitaler Auftritt gerade steht und was ihn wirklich nach vorne bringen kann. In einem kostenlosen Audit schauen wir auf Strategie, Design und Performance – also darauf, was schon gut funktioniert, wo noch Potenzial liegt und welche nächsten Schritte sinnvoll wären.",
         "show_intro": true,
         "button_label": "Jetzt anfragen",
-        "button_url": "",
-        "color_scheme": "scheme-sand",
-        "accent_color": "#89b1b9",
-        "padding_top": 64,
-        "padding_bottom": 64,
+        "button_url": "shopify://pages/kontakt",
+        "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
+        "accent_color": "",
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }

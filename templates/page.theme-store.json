@@ -41,25 +41,25 @@
         "feature_neFzy6": {
           "type": "feature",
           "settings": {
-            "text": "Mobile optimized"
+            "text": "Für Mobilgeräte optimiert"
           }
         },
         "feature_6YQn7L": {
           "type": "feature",
           "settings": {
-            "text": "SEO friendly"
+            "text": "SEO-freundlich"
           }
         },
         "feature_ppMLRj": {
           "type": "feature",
           "settings": {
-            "text": "Theme editor compatible"
+            "text": "Kompatibel mit dem Theme-Editor"
           }
         },
         "feature_3PFBMP": {
           "type": "feature",
           "settings": {
-            "text": "Fast load times"
+            "text": "Schnelle Ladezeiten"
           }
         }
       },
@@ -76,12 +76,12 @@
       "name": "t:theme_store.name",
       "settings": {
         "heading": "Theme Store",
-        "subheading": "Engineered for high-growth e-commerce.",
-        "search_placeholder": "Search themes…",
-        "categories_heading": "Categories",
-        "all_label": "All themes",
-        "features_heading": "Features",
-        "color_scheme": "",
+        "subheading": "Entwickelt für wachstumsstarken E-Commerce.",
+        "search_placeholder": "Themes durchsuchen …",
+        "categories_heading": "Kategorien",
+        "all_label": "",
+        "features_heading": "Funktionen",
+        "color_scheme": "scheme-sand",
         "heading_font": "work_sans_n7",
         "body_font": "work_sans_n4",
         "card_radius": 14,
@@ -94,15 +94,16 @@
       "name": "Text block",
       "settings": {
         "heading": "Bald verfügbar",
+        "heading_tag": "h1",
         "heading_align": "left",
-        "body": "<p>Bald wird Ihnen unser Theme Store zu verfügung stehen. Dort können Sie fertige Shopify Themes direkt von uns kaufen </p>",
+        "body": "<p>Bald wird dir unser Theme Store zur Verfügung stehen. Dort kannst du fertige Shopify-Themes direkt von uns kaufen.</p>",
         "text_align": "left",
         "max_width": 760,
-        "color_scheme": "",
+        "color_scheme": "scheme-sand",
         "bg_color": "",
         "text_color": "",
-        "padding_top": 64,
-        "padding_bottom": 64,
+        "padding_top": 160,
+        "padding_bottom": 160,
         "heading_scale": 100,
         "text_scale": 100
       }

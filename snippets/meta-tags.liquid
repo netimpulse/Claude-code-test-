@@ -2,6 +2,17 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
+{%- comment -%}
+  Always declare an icon: without one the browser requests /favicon.ico,
+  which the storefront answers with 404 (console error on every page).
+{%- endcomment -%}
+{%- if settings.favicon != blank -%}
+  <link rel="icon" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+  <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+{%- else -%}
+  <link rel="icon" type="image/svg+xml" href="{{ 'favicon.svg' | asset_url }}">
+{%- endif %}
+
 {%- liquid
   assign og_title = page_title | default: shop.name
   assign og_url = canonical_url | default: request.origin
@@ -87,8 +98,8 @@
 
 <title>
   {{ page_title }}
-  {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
-  {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+  {%- if current_tags -%}{%- assign joined_tags = current_tags | join: ', ' %} &ndash; {{ 'meta.tagged' | t: tags: joined_tags }}{% endif -%}
+  {%- if current_page != 1 %} &ndash; {{ 'meta.page' | t: page: current_page }}{% endif -%}
   {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
 </title>
 

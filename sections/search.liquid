@@ -1,64 +1,144 @@
 {% comment %}
   This section is used in the search template to render search results for
-  products, articles, and pages.
+  products, articles, and pages. Design-system base classes (.btn,
+  .text-link, .label-caps), exactly one h1, all texts from the locale files.
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/search
 {% endcomment %}
 
-<h1>{{ 'search.title' | t }}</h1>
+{%- liquid
+  assign input_id = 'SearchPage-' | append: section.id
+  assign search_terms = search.terms | escape
+  assign label_previous = 'search.previous' | t
+  assign label_next = 'search.next' | t
+-%}
 
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
+<div class="search-page full-width">
+  <h1 class="search-page__title">{{ 'search.title' | t }}</h1>
 
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
+  <form class="search-page__form" action="{{ routes.search_url }}" method="get" role="search">
+    <label class="visually-hidden" for="{{ input_id }}">{{ 'search.placeholder' | t }}</label>
+    <input
+      class="search-page__input"
+      id="{{ input_id }}"
+      type="search"
+      name="q"
+      value="{{ search.terms | escape }}"
+      placeholder="{{ 'search.placeholder' | t }}"
+    >
+    <button type="submit" class="btn btn--primary search-page__submit">{{ 'search.submit' | t }}</button>
+  </form>
 
-    <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
-            {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
-                {% endif %}
-              </p>
-            </div>
-          </div>
-        {% endfor %}
+  {%- if search.performed -%}
+    {%- if search.results_count == 0 -%}
+      <p class="search-page__count">{{ 'search.no_results_html' | t: terms: search_terms }}</p>
+    {%- else -%}
+      <p class="search-page__count">{{ 'search.results_for_html' | t: terms: search_terms, count: search.results_count }}</p>
 
-        {{ paginate | default_pagination }}
-      {% endpaginate %}
-    </div>
-  {% endif %}
-{% endif %}
+      {%- paginate search.results by 20 -%}
+        <ul class="search-page__results" role="list">
+          {% # Search result items may be an article, a page, or a product. %}
+          {%- for result in search.results -%}
+            <li class="search-page__result">
+              {%- assign featured_image = result.featured_image | default: result.image -%}
+              {%- if featured_image -%}
+                {% render 'image', class: 'search-page__image', image: featured_image, width: 400 %}
+              {%- endif -%}
+              <a class="search-page__link text-link" href="{{ result.url }}">{{ result.title | escape }}</a>
+              {%- if result.price -%}
+                <span class="search-page__price">{{ result.price | money_with_currency }}</span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="search-page__pagination">
+            {{ paginate | default_pagination: previous: label_previous, next: label_next }}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  {%- endif -%}
+</div>
 
 {% stylesheet %}
-  .search-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .search-page {
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: var(--section-y) var(--page-x);
   }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
-    grid-column: 1 / -1;
+  .search-page__title {
+    margin: 0;
+    font-size: calc(var(--text-h2) * var(--fs-heading, 1));
+  }
+  .search-page__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-7);
+    max-width: 44rem;
+  }
+  .search-page__input {
+    flex: 1 1 16rem;
+    min-width: 0;
+    min-height: 52px;
+    padding: 0 var(--s-4);
+    font-size: var(--text-body);
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--r-sm);
+  }
+  .search-page__input::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
+  }
+  .search-page__input:focus-visible {
+    outline-offset: 2px;
+    border-color: var(--focus-color);
+  }
+  .search-page__count {
+    margin: var(--s-6) 0 0;
+    color: var(--color-muted);
+  }
+  .search-page__results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+    gap: var(--s-7) var(--gutter);
+    margin: var(--s-7) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .search-page__result {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    min-width: 0;
+  }
+  .search-page__image {
+    display: block;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+  .search-page__link {
+    display: inline;
+    overflow-wrap: anywhere;
+  }
+  .search-page__price {
+    color: var(--color-muted);
+    font-size: var(--text-small);
+  }
+  .search-page__pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-top: var(--s-8);
+  }
+  .search-page__pagination a {
+    color: inherit;
+    text-underline-offset: 6px;
   }
 {% endstylesheet %}
 

@@ -1,16 +1,26 @@
+/* Hero Ticker — design-system copy column (SYS §6 "Hero", plan S6d) next to
+   the animated performance-dashboard mockup. Copy, buttons and surface come
+   from the section's color scheme (.color-<id>, root = scheme-sand); the
+   mockup keeps its natural dashboard colours (allowlist, plan Anhang B).
+   No gradients, blur or shadows outside the mockup. */
 .hero-ticker {
   position: relative;
   display: block;
-  padding: var(--ht-pad-top, 62px) clamp(1.25rem, 4vw, 4rem) var(--ht-pad-bottom, 62px);
-  background: var(--ht-bg, #f3f6f6);
-  color: var(--ht-text, #0e1716);
+  padding-block:
+    min(var(--ht-pad-top, 48px), clamp(24px, 3vw, 48px))
+    min(var(--ht-pad-bottom, 80px), clamp(40px, 5vw, 80px));
+  background: var(--color-bg);
+  color: var(--color-text);
   overflow: hidden;
-  font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-family: var(--font-body);
   --ht-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
-  /* Signal color is locked to the brand teal so the live indicator,
-     pulse, trend deltas and sparklines stay readable regardless of
-     the merchant's chosen colour scheme / accent. */
-  --ht-signal: #1c4948;
+  /* Mockup palette: the dashboard card is always white, so its text is fixed ink. */
+  --ht-text: var(--c-ink);
+  --ht-text-muted: rgba(13, 13, 13, 0.6); /* >= 4.5:1 on white and sand (WCAG 1.4.3) */
+  --ht-line: rgba(13, 13, 13, 0.1);
+  --ht-card-bg: #ffffff;
+  /* Brand signal inside the mockup (setting accent_color): live values. */
+  --ht-signal: var(--ht-accent, var(--c-teal));
   /* Window-chrome "traffic light" controls keep their normal
      red / amber / green colours regardless of the colour scheme. */
   --ht-win-close: #ff5f57;
@@ -21,98 +31,76 @@
   --ht-up: #16a34a;
   --ht-down: #dc2626;
   --ht-live: #ff3b30;
+  /* Darker text tones of the signal colours: >= 4.5:1 on the white card.
+     Dots and sparklines keep the bright tones (non-text). */
+  --ht-up-text: #15803d;
+  --ht-live-text: #c5221f;
 }
 .hero-ticker *, .hero-ticker *::before, .hero-ticker *::after { box-sizing: border-box; }
 
 .hero-ticker__inner {
-  max-width: 1440px;
-  margin: 0 auto;
+  width: min(var(--page-max, 1440px), calc(100% - 2 * var(--page-x)));
+  margin-inline: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  gap: clamp(1.75rem, 4vw, 3.5rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-7);
   align-items: center;
 }
-@media (max-width: 900px) {
-  .hero-ticker__inner { grid-template-columns: minmax(0, 1fr); }
+.hero-ticker__copy { grid-column: 1 / span 7; min-width: 0; }
+.hero-ticker__dashboard { grid-column: 8 / span 5; }
+@media (max-width: 1100px) {
+  .hero-ticker__copy,
+  .hero-ticker__dashboard { grid-column: 1 / -1; }
 }
 
-.hero-ticker__copy { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
-
-.hero-ticker__eyebrow {
-  margin: 0;
-  font-family: var(--ht-mono);
-  font-size: calc(0.72rem * var(--fs-heading, 1));
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ht-text-soft, rgba(0,0,0,0.65));
-}
+.hero-ticker__eyebrow { margin: 0 0 var(--s-5); color: var(--color-text); }
 
 .hero-ticker__heading {
   margin: 0;
-  font-size: calc(clamp(1.76rem, 4.21vw, 3.12rem) * var(--fs-heading, 1));
-  line-height: 1.05;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-size: calc(var(--text-mega) * var(--fs-heading, 1));
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  text-wrap: balance;
   display: flex;
   flex-direction: column;
-  gap: 0.05em;
-  overflow-wrap: anywhere;
+  gap: 0.08em;
+  overflow-wrap: break-word;
 }
-.hero-ticker__heading-strong { color: var(--ht-text, #0e1716); }
-.hero-ticker__heading-muted { color: var(--ht-text-muted, rgba(0,0,0,0.45)); }
+.hero-ticker__heading-strong { color: var(--color-heading, var(--color-text)); }
+/* Second headline part: muted text colour (no serif accent, plan S6d). */
+.hero-ticker__heading-muted { color: var(--color-muted); }
 
 .hero-ticker__body {
-  margin: 0;
-  font-size: calc(clamp(0.74rem, 0.86vw, 0.82rem) * var(--fs-text, 1));
+  margin: var(--s-5) 0 0;
+  max-width: 52ch;
+  font-size: calc(var(--text-lead) * var(--fs-text, 1));
   line-height: 1.55;
-  color: var(--ht-text-soft, rgba(0,0,0,0.65));
-  max-width: 44ch;
+  color: var(--color-muted);
 }
-.hero-ticker__body p { margin: 0 0 0.75rem; }
-.hero-ticker__body p:last-child { margin-bottom: 0; }
+.hero-ticker__body > * { margin: 0 0 0.75em; }
+.hero-ticker__body > :last-child { margin-bottom: 0; }
 
-.hero-ticker__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.35rem; }
-
-.hero-ticker__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.25rem;
-  border: 1px solid transparent;
-  border-radius: 0;
-  font: inherit;
-  font-weight: 600;
-  font-size: calc(0.95rem * var(--fs-text, 1));
-  line-height: 1;
-  cursor: pointer;
-  text-decoration: none;
-  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+.hero-ticker__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
 }
-.hero-ticker__btn:focus-visible {
-  outline: 2px solid var(--ht-accent, #1c4948);
-  outline-offset: 3px;
-}
-.hero-ticker__btn--primary {
-  background: var(--ht-accent, #1c4948);
-  color: #ffffff;
-  border-color: var(--ht-accent, #1c4948);
-}
-.hero-ticker__btn--primary:hover { transform: translateY(-1px); }
-.hero-ticker__btn--secondary {
-  background: transparent;
-  color: var(--ht-text, #0e1716);
-  border-color: var(--ht-line, rgba(0,0,0,0.18));
-}
+.hero-ticker__btn { font-size: calc(1rem * var(--fs-text, 1)); }
 .hero-ticker__btn--secondary svg { width: 0.85em; height: 0.85em; }
 .hero-ticker__btn-arrow { width: 1em; height: 1em; flex: 0 0 1em; }
+@media (max-width: 860px) {
+  .hero-ticker__actions .btn { flex: 1 1 100%; }
+}
 
 /* Dashboard */
 .hero-ticker__dashboard {
   background: var(--ht-card-bg, #ffffff);
-  border: 1px solid var(--ht-line, rgba(0,0,0,0.08));
-  border-radius: 0;
+  border: 1px solid var(--color-line);
+  border-radius: calc(var(--r-lg) - 4px);
   padding: 4px;
-  box-shadow: 0 12px 32px rgba(11,11,14,0.06), 0 0 0 1px rgba(11,11,14,0.04);
   min-width: 0;
 }
 
@@ -147,7 +135,7 @@
   font-size: calc(10px * var(--fs-text, 1));
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ht-live);
+  color: var(--ht-live-text);
 }
 .hero-ticker__chrome-pulse {
   width: 6px;
@@ -200,6 +188,7 @@
   color: var(--ht-text, #0e1716);
   overflow-wrap: anywhere;
 }
+.hero-ticker__metric-value[data-ht-value] { color: var(--ht-signal); }
 
 .hero-ticker__metric-meta {
   display: flex;
@@ -214,7 +203,7 @@
   gap: 0.2rem;
   font-size: calc(12px * var(--fs-text, 1));
   font-weight: 600;
-  color: var(--ht-up);
+  color: var(--ht-up-text);
 }
 .hero-ticker__metric--down .hero-ticker__metric-delta { color: var(--ht-down); }
 .hero-ticker__metric-delta svg { width: 12px; height: 12px; }
@@ -238,5 +227,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-ticker__chrome-pulse { animation: none; }
-  .hero-ticker__btn { transition: none; }
 }

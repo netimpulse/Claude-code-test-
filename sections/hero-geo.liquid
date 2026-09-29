@@ -1,8 +1,10 @@
 {% comment %}
   Hero GEO — be the answer ChatGPT gives
   ----------------------------------------------------------------
-  Left column: eyebrow (with sparkle icon), two-tone headline,
-  body, two CTAs, "tracked across" platform pills.
+  Left column: eyebrow, headline whose second part (heading_accent)
+  is the serif accent (<em class="it">), lead, two CTAs and the
+  "tracked across" platform pills — all on the design-system tokens;
+  no reveal animation on the copy.
   Right column: chat mock — user question types in, AI thinks
   with bouncing dots, then streams its answer with a highlighted
   brand word; citation chips appear once the answer is far enough.
@@ -12,6 +14,10 @@
 
 {%- liquid
   assign scheme = section.settings.color_scheme
+  assign scheme_class = ''
+  if scheme != blank
+    assign scheme_class = 'color-' | append: scheme.id
+  endif
   assign accent = section.settings.accent_color
 -%}
 
@@ -25,23 +31,12 @@
   #shopify-section-{{ section.id }} .hero-geo {
     --hg-pad-top: {{ section.settings.padding_top }}px;
     --hg-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --hg-accent: {{ accent }};
-    --hg-accent-tint: {{ accent | color_modify: 'alpha', 0.12 }};
-    --hg-accent-tint-strong: {{ accent | color_modify: 'alpha', 0.25 }};
-    {%- if scheme.settings.background != blank -%}
-      --hg-bg: {{ scheme.settings.background }};
-      --hg-bg-soft: #eff2f1;
-      --hg-text: {{ scheme.settings.text }};
-      --hg-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
-      --hg-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
-      --hg-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
-      --hg-card-bg: #ffffff;
-    {%- endif -%}
+    {%- if accent != blank %}--hg-accent: {{ accent }};{% endif %}
   }
 {% endstyle %}
 
 <hero-geo
-  class="hero-geo full-width color-scheme color-{{ scheme.id }}"
+  class="hero-geo full-width {{ scheme_class }}"
   data-section-id="{{ section.id }}"
   data-section-type="hero-geo"
   data-question="{{ section.settings.question | escape }}"
@@ -55,18 +50,16 @@
   <div class="hero-geo__inner">
     <div class="hero-geo__copy">
       {%- if section.settings.eyebrow != blank -%}
-        <p class="hero-geo__eyebrow">
-          <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M6 1l1.2 3.3L10.7 5.5 7.5 6.7 6 11 4.5 6.7 1.3 5.5l3.5-1.2L6 1z" fill="currentColor"/></svg>
-          <span>{{ section.settings.eyebrow | escape }}</span>
-        </p>
+        <p class="hero-geo__eyebrow eyebrow">{{ section.settings.eyebrow | escape }}</p>
       {%- endif -%}
 
       <h1 class="hero-geo__heading">
         {%- if section.settings.heading_strong != blank -%}
           <span class="hero-geo__heading-strong">{{ section.settings.heading_strong | escape }}</span>
         {%- endif -%}
+        {%- if section.settings.heading_strong != blank and section.settings.heading_accent != blank -%}{{ ' ' }}{%- endif -%}
         {%- if section.settings.heading_accent != blank -%}
-          <span class="hero-geo__heading-accent">{{ section.settings.heading_accent | escape }}</span>
+          <span class="hero-geo__heading-accent"><em class="it">{{ section.settings.heading_accent | escape }}</em></span>
         {%- endif -%}
       </h1>
 
@@ -74,21 +67,23 @@
         <div class="hero-geo__body">{{ section.settings.body }}</div>
       {%- endif -%}
 
-      <div class="hero-geo__actions">
-        {%- if section.settings.primary_label != blank -%}
-          <a class="hero-geo__btn hero-geo__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
-            <span>{{ section.settings.primary_label | escape }}</span>
-            <svg class="hero-geo__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        {%- endif -%}
-        {%- if section.settings.secondary_label != blank -%}
-          <a class="hero-geo__btn hero-geo__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
-            <span>{{ section.settings.secondary_label | escape }}</span>
-          </a>
-        {%- endif -%}
-      </div>
+      {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
+        <div class="hero-geo__actions">
+          {%- if section.settings.primary_label != blank -%}
+            <a class="btn btn--primary hero-geo__btn hero-geo__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+              <span>{{ section.settings.primary_label | escape }}</span>
+              <svg class="hero-geo__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.secondary_label != blank -%}
+            <a class="btn btn--secondary hero-geo__btn hero-geo__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+              <span>{{ section.settings.secondary_label | escape }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
 
       {%- assign platform_blocks = section.blocks | where: 'type', 'platform' -%}
       {%- if section.settings.tracked_label != blank or platform_blocks.size > 0 -%}
@@ -180,8 +175,8 @@
     {"type": "range", "id": "thinking_duration", "label": "Thinking pause (×0.1s)", "min": 4, "max": 20, "step": 1, "default": 12},
     {"type": "range", "id": "answer_duration", "label": "Answer stream (×0.1s)", "min": 30, "max": 120, "step": 5, "default": 70},
     {"type": "header", "content": "Appearance"},
-    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
-    {"type": "color", "id": "accent_color", "label": "Accent color", "default": "#1c4948"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand"},
+    {"type": "color", "id": "accent_color", "label": "Accent color", "info": "Akzent im Chat-Mockup (Marken-Markierung, Zitat-Chip).", "default": "#1c4948"},
     {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "header", "content": "Typography"},

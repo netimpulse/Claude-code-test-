@@ -17,14 +17,14 @@
         "heading": "",
         "columns": 3,
         "grid_gap": 28,
-        "card_radius": 0,
+        "card_radius": 16,
         "image_ratio": "4 / 3",
         "show_category": true,
         "show_excerpt": true,
         "show_author": true,
         "posts_per_page": 9,
-        "date_format": "%b %d, %Y",
-        "color_scheme": "scheme-1",
+        "date_format": "",
+        "color_scheme": "scheme-sand",
         "padding_top": 64,
         "padding_bottom": 80
       }

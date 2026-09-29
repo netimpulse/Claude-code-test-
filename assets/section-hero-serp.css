@@ -1,19 +1,32 @@
+/* Hero SERP — design-system copy column (SYS §6 "Hero", plan S6d) next to
+   the animated Google-SERP mockup. Copy, buttons and surface come from the
+   section's color scheme (.color-<id>, root = scheme-sand); the mockup keeps
+   its natural Google colours (allowlist, plan Anhang B). No gradients, blur
+   or shadows outside the mockup; mockup motion uses transform/opacity only. */
 .hero-serp {
   position: relative;
   display: block;
-  padding: var(--hs-pad-top, 62px) clamp(1.25rem, 4vw, 4rem) var(--hs-pad-bottom, 62px);
-  background: var(--hs-bg, #f3f6f6);
-  color: var(--hs-text, #0e1716);
+  padding-block:
+    min(var(--hs-pad-top, 48px), clamp(24px, 3vw, 48px))
+    min(var(--hs-pad-bottom, 80px), clamp(40px, 5vw, 80px));
+  background: var(--color-bg);
+  color: var(--color-text);
   overflow: hidden;
-  font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-family: var(--font-body);
   --hs-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
-  /* Signal colors are locked to the brand teal/mint so the SERP
-     animation (brand row highlight, rank badge, active tab, accent
-     headline word) stays readable regardless of merchant scheme. */
-  --hs-signal: #1c4948;
-  --hs-signal-soft: #9ccfd0;
-  --hs-signal-tint: rgba(156, 207, 208, 0.18);
-  --hs-signal-border: rgba(28, 73, 72, 0.18);
+  /* Mockup palette: the SERP card is always white, so its text is fixed ink. */
+  --hs-text: var(--c-ink);
+  --hs-text-soft: rgba(13, 13, 13, 0.65);
+  --hs-text-muted: rgba(13, 13, 13, 0.6); /* >= 4.5:1 on white and sand (WCAG 1.4.3) */
+  --hs-line: rgba(13, 13, 13, 0.1);
+  --hs-line-strong: rgba(13, 13, 13, 0.18);
+  --hs-bg-soft: #f6f8f8;
+  --hs-card-bg: #ffffff;
+  /* Brand signal inside the mockup (settings accent_color / accent_soft). */
+  --hs-signal: var(--hs-accent, var(--c-teal));
+  --hs-signal-soft: var(--hs-accent-soft, #9ccfd0);
+  --hs-signal-tint: color-mix(in srgb, var(--hs-signal-soft) 18%, #ffffff);
+  --hs-signal-border: color-mix(in srgb, var(--hs-signal) 18%, #ffffff);
 }
 
 .hero-serp *,
@@ -21,95 +34,68 @@
 .hero-serp *::after { box-sizing: border-box; }
 
 .hero-serp__inner {
-  max-width: 1440px;
-  margin: 0 auto;
+  width: min(var(--page-max, 1440px), calc(100% - 2 * var(--page-x)));
+  margin-inline: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  gap: clamp(1.75rem, 4vw, 3.5rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-7);
   align-items: center;
 }
+.hero-serp__copy { grid-column: 1 / span 7; min-width: 0; }
+.hero-serp__mock { grid-column: 8 / span 5; }
 
-@media (max-width: 900px) {
-  .hero-serp__inner { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 1100px) {
+  .hero-serp__copy,
+  .hero-serp__mock { grid-column: 1 / -1; }
 }
 
 /* Copy column */
-.hero-serp__copy { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
-
-.hero-serp__eyebrow {
-  margin: 0;
-  font-family: var(--hs-mono);
-  font-size: calc(0.72rem * var(--fs-heading, 1));
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--hs-text-soft, rgba(0,0,0,0.65));
-}
+.hero-serp__eyebrow { margin: 0 0 var(--s-5); color: var(--color-text); }
 
 .hero-serp__heading {
   margin: 0;
-  font-size: calc(clamp(1.76rem, 4.21vw, 3.12rem) * var(--fs-heading, 1));
-  line-height: 1.05;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  overflow-wrap: anywhere;
+  font-size: calc(var(--text-mega) * var(--fs-heading, 1));
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
-.hero-serp__heading-accent {
-  color: var(--hs-highlight, var(--hs-signal));
-}
+/* Serif accent (em.it); inherits the text colour unless the optional
+   heading_highlight_color setting is filled. */
+.hero-serp__heading-accent { color: var(--hs-highlight, inherit); }
 
 .hero-serp__body {
-  margin: 0;
-  font-size: calc(clamp(0.74rem, 0.86vw, 0.82rem) * var(--fs-text, 1));
+  margin: var(--s-5) 0 0;
+  max-width: 52ch;
+  font-size: calc(var(--text-lead) * var(--fs-text, 1));
   line-height: 1.55;
-  color: var(--hs-text-soft, rgba(0,0,0,0.65));
-  max-width: 44ch;
+  color: var(--color-muted);
 }
-.hero-serp__body p { margin: 0 0 0.75rem; }
-.hero-serp__body p:last-child { margin-bottom: 0; }
+.hero-serp__body > * { margin: 0 0 0.75em; }
+.hero-serp__body > :last-child { margin-bottom: 0; }
 
-.hero-serp__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.35rem; }
-
-.hero-serp__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.25rem;
-  border: 1px solid transparent;
-  border-radius: 0;
-  font: inherit;
-  font-weight: 600;
-  font-size: calc(0.95rem * var(--fs-text, 1));
-  line-height: 1;
-  cursor: pointer;
-  text-decoration: none;
-  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+.hero-serp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
 }
-.hero-serp__btn:focus-visible {
-  outline: 2px solid var(--hs-accent, #1c4948);
-  outline-offset: 3px;
-}
-.hero-serp__btn--primary {
-  background: var(--hs-accent, #1c4948);
-  color: #ffffff;
-  border-color: var(--hs-accent, #1c4948);
-}
-.hero-serp__btn--primary:hover { transform: translateY(-1px); }
-.hero-serp__btn--secondary {
-  background: transparent;
-  color: var(--hs-text, #0e1716);
-  border-color: var(--hs-line-strong, rgba(0,0,0,0.18));
-}
-.hero-serp__btn--secondary:hover { border-color: var(--hs-text-soft, rgba(0,0,0,0.4)); }
+.hero-serp__btn { font-size: calc(1rem * var(--fs-text, 1)); }
 .hero-serp__btn-arrow { width: 1em; height: 1em; flex: 0 0 1em; }
+
+@media (max-width: 860px) {
+  .hero-serp__actions .btn { flex: 1 1 100%; }
+}
 
 /* SERP mock */
 .hero-serp__mock {
   background: var(--hs-card-bg, #ffffff);
-  border: 1px solid var(--hs-line-strong, rgba(0,0,0,0.08));
-  border-radius: 0;
+  border: 1px solid var(--color-line);
+  border-radius: calc(var(--r-lg) - 4px);
   padding: 1.25rem;
-  box-shadow: 0 12px 32px rgba(11,11,14,0.06), 0 0 0 1px rgba(11,11,14,0.04);
   font-size: calc(14px * var(--fs-text, 1));
   min-width: 0;
 }
@@ -197,24 +183,32 @@
   height: calc(var(--hs-row-h, 64px) * var(--hs-row-count, 6));
 }
 
+/* Rows are moved by hero-serp.js via transform: translateY() (no top/left
+   animation). The brand highlight fades in via opacity on a pseudo layer. */
 .hero-serp__row {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   height: var(--hs-row-h, 64px);
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  transition: top 200ms cubic-bezier(.16,1,.3,1), transform 200ms cubic-bezier(.16,1,.3,1), background-color 200ms ease, border-color 200ms ease;
-  border: 1px solid transparent;
-  border-radius: 0;
-  padding: 0 0.5rem;
+  padding: 0 0.75rem;
+  will-change: transform;
 }
-.hero-serp__row--brand.is-lifted {
+.hero-serp__row--brand { z-index: 1; }
+.hero-serp__row--brand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: var(--hs-signal-tint);
-  border-color: var(--hs-signal-border);
-  padding: 0 0.875rem;
+  border: 1px solid var(--hs-signal-border);
+  opacity: 0;
+  transition: opacity 200ms ease;
 }
+.hero-serp__row--brand.is-lifted::before { opacity: 1; }
 
 .hero-serp__favicon {
   width: 28px;
@@ -233,12 +227,14 @@
 }
 /* Non-brand favicons get natural, distinct brand-like colours
    (hardcoded) so the results list looks real instead of grey. */
-.hero-serp__favicon--c0 { background: #4285f4; color: #ffffff; }
-.hero-serp__favicon--c1 { background: #ea4335; color: #ffffff; }
-.hero-serp__favicon--c2 { background: #34a853; color: #ffffff; }
+/* Favicon monograms are text: darker Google-like tones keep white letters
+   at >= 4.5:1 (WCAG 1.4.3). The engine wordmark keeps the original colours. */
+.hero-serp__favicon--c0 { background: #1967d2; color: #ffffff; }
+.hero-serp__favicon--c1 { background: #c5221f; color: #ffffff; }
+.hero-serp__favicon--c2 { background: #188038; color: #ffffff; }
 .hero-serp__favicon--c3 { background: #fbbc05; color: #1a1a1a; }
 .hero-serp__favicon--c4 { background: #9334e6; color: #ffffff; }
-.hero-serp__favicon--c5 { background: #ff6d00; color: #ffffff; }
+.hero-serp__favicon--c5 { background: #c2410c; color: #ffffff; }
 
 .hero-serp__row--brand .hero-serp__favicon {
   background: var(--hs-text, #0e1716);
@@ -287,7 +283,6 @@
 .hero-serp__row--brand.is-lifted .hero-serp__rank-badge { opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-serp__row { transition: none; }
+  .hero-serp__row--brand::before,
   .hero-serp__rank-badge { transition: none; }
-  .hero-serp__btn { transition: none; }
 }

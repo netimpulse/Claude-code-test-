@@ -1,16 +1,9 @@
 (() => {
   const CYCLE = 12; // seconds
-  const STEPS = [
-    { a: 0.2, l: '01 · Grid' },
-    { a: 1.4, l: '02 · Header' },
-    { a: 2.4, l: '03 · Hero' },
-    { a: 3.4, l: '04 · Copy' },
-    { a: 4.2, l: '05 · CTA' },
-    { a: 5.0, l: '06 · Features' },
-    { a: 6.4, l: '07 · Imagery' },
-    { a: 7.6, l: '08 · Color' },
-    { a: 8.8, l: '09 · Ship' },
-  ];
+  // Step start times; the labels come from the section markup (data-steps,
+  // locale keys hero_web_build.steps.*) so the mockup follows the language.
+  const STEP_STARTS = [0.2, 1.4, 2.4, 3.4, 4.2, 5.0, 6.4, 7.6, 8.8];
+  const DEFAULT_LABELS = ['Grid', 'Header', 'Hero', 'Copy', 'CTA', 'Features', 'Imagery', 'Color', 'Ship'];
 
   const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
   const easeOut = (p) => 1 - Math.pow(1 - p, 3);
@@ -26,6 +19,12 @@
       this.progressEl = this.querySelector('[data-hwb-progress]');
       this.stepEls = Array.from(this.querySelectorAll('.hwb__step'));
       this.urlFull = (this.urlEl && this.urlEl.dataset.urlFull) || 'yourstore.com';
+      const labels = (this.dataset.steps || '').split('|').map((l) => l.trim());
+      this.steps = STEP_STARTS.map((a, i) => ({
+        a,
+        l: String(i + 1).padStart(2, '0') + ' · ' + (labels[i] || DEFAULT_LABELS[i]),
+      }));
+      this.idleLabel = this.dataset.idle || 'Idle';
 
       const animate = this.dataset.animate !== 'false';
       const reduced =
@@ -54,8 +53,8 @@
       s.setProperty('--wipe', '1');
       s.setProperty('--shimmer-x', '110%');
       if (this.urlEl) this.urlEl.textContent = this.urlFull;
-      if (this.stepNumEl) this.stepNumEl.textContent = String(STEPS.length).padStart(2, '0');
-      if (this.stepLabelEl) this.stepLabelEl.textContent = STEPS[STEPS.length - 1].l;
+      if (this.stepNumEl) this.stepNumEl.textContent = String(this.steps.length).padStart(2, '0');
+      if (this.stepLabelEl) this.stepLabelEl.textContent = this.steps[this.steps.length - 1].l;
       if (this.progressEl) this.progressEl.textContent = '100%';
       this.stepEls.forEach((el) => el.classList.add('is-active'));
       if (this.stepEls.length) this.stepEls[this.stepEls.length - 1].classList.add('is-current');
@@ -136,8 +135,8 @@
 
       // Step labels + progress strip
       let currentStep = -1;
-      for (let i = 0; i < STEPS.length; i++) {
-        if (tc >= STEPS[i].a) currentStep = i;
+      for (let i = 0; i < this.steps.length; i++) {
+        if (tc >= this.steps[i].a) currentStep = i;
       }
       const stepIndex = currentStep < 0 ? 0 : currentStep;
       if (this.stepNumEl) {
@@ -145,7 +144,7 @@
         if (this.stepNumEl.textContent !== want) this.stepNumEl.textContent = want;
       }
       if (this.stepLabelEl) {
-        const want = currentStep < 0 ? 'Idle' : STEPS[currentStep].l;
+        const want = currentStep < 0 ? this.idleLabel : this.steps[currentStep].l;
         if (this.stepLabelEl.textContent !== want) this.stepLabelEl.textContent = want;
       }
       if (this.progressEl) {

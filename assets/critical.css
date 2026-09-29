@@ -13,6 +13,15 @@ body {
   min-height: 100svh;
 }
 
+/* Focus scrolling (Tab, anchors) keeps a margin: the sticky header must never
+   cover the focused element at the top (WCAG 2.4.11), and at the bottom the
+   element stays clear of fixed bottom overlays (browser toolbars, the Shopify
+   preview bar). */
+html {
+  scroll-padding-top: calc(var(--header-h, 76px) + 16px);
+  scroll-padding-bottom: 96px;
+}
+
 html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
   overflow: hidden;
 }
@@ -73,9 +82,176 @@ p:empty {
 
 /** Theme styles below */
 body {
-  font-family: var(--font-primary--family);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  font-family: var(--font-body, var(--font-primary--family));
+  font-size: var(--text-body, 1rem);
+  line-height: 1.65;
+  background-color: var(--color-bg, var(--color-background));
+  color: var(--color-text, var(--color-foreground));
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/**
+ * Design-system base (premium redesign). Everything sits in :where() so any
+ * section rule still wins; sections opt in via the shared classes below.
+ */
+:where(h1, h2, h3) {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  color: var(--color-heading, inherit);
+  text-wrap: balance;
+  hyphens: auto;
+}
+:where(h1) { font-size: calc(var(--text-display) * var(--fs-heading, 1)); line-height: 1; letter-spacing: -0.035em; }
+:where(h2) { font-size: calc(var(--text-h2) * var(--fs-heading, 1)); line-height: 1; letter-spacing: -0.035em; }
+:where(h3) { font-size: calc(var(--text-h3) * var(--fs-heading, 1)); line-height: 1.08; letter-spacing: -0.025em; font-weight: 500; }
+:where(strong, b) { font-weight: 600; }
+
+/* Serif accent inside headings (snippets/accent-heading.liquid) */
+:where(em.it) {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.1em;
+  line-height: 0;
+  letter-spacing: -0.012em;
+  padding-right: 0.04em;
+  color: inherit;
+}
+
+:where(.eyebrow) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+:where(.eyebrow)::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  flex: none;
+}
+:where(.label-caps) {
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Buttons */
+:where(.btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  min-height: var(--btn-h);
+  padding: 0 var(--btn-pad-x);
+  border: 1px solid transparent;
+  border-radius: var(--btn-radius);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+:where(.btn) :where(.btn__arrow, svg) { transition: transform var(--dur) var(--ease); }
+:where(.btn:hover) :where(.btn__arrow, svg) { transform: translateX(3px); }
+:where(.btn--primary) {
+  background: var(--color-btn-bg);
+  color: var(--color-btn-fg);
+  border-color: var(--color-btn-border);
+}
+:where(.btn--primary:hover) {
+  background: var(--color-btn-bg-hover);
+  border-color: var(--color-btn-bg-hover);
+  color: var(--color-btn-fg-hover);
+}
+:where(.btn--secondary) {
+  background: transparent;
+  color: var(--color-btn2-fg);
+  border-color: currentColor;
+}
+:where(.btn--secondary:hover) {
+  background: var(--color-btn2-bg-hover);
+  border-color: var(--color-btn2-bg-hover);
+  color: var(--color-btn2-fg-hover);
+}
+:where(.btn--sm) { min-height: var(--btn-h-sm); padding: 0 var(--s-5); font-size: var(--text-small); }
+:where(.btn--block) { display: flex; width: 100%; justify-content: space-between; }
+
+:where(.text-link) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  transition: color var(--dur) var(--ease), text-decoration-thickness var(--dur) var(--ease);
+}
+:where(.text-link:hover) { color: var(--color-link); text-decoration-thickness: 2px; }
+
+:where(.icon-btn) {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease);
+}
+:where(.icon-btn:hover) { background: var(--c-sand); }
+
+/* Focus, skip link, utilities */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--focus-width, 2px) solid var(--focus-color, currentColor);
+  outline-offset: var(--focus-offset, 3px);
+}
+.skip-link {
+  position: absolute;
+  top: var(--s-2);
+  left: var(--s-2);
+  z-index: 1000;
+  padding: var(--s-3) var(--s-5);
+  border-radius: var(--r-pill);
+  background: var(--c-teal);
+  color: var(--c-surface);
+  font-weight: 500;
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+[id="MainContent"] { scroll-margin-top: var(--header-h); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /** Section layout utilities */
@@ -114,4 +290,51 @@ body {
 /* Child elements that use the full-width utility class span the entire viewport. */
 .shopify-section > .full-width {
   grid-column: 1 / -1;
+}
+
+/* ==========================================================================
+ * Legal texts and simple pages (S7b)
+ * Shopify renders /policies/* itself as .shopify-policy__container >
+ * .shopify-policy__title h1 + .shopify-policy__body .rte. sections/page.liquid
+ * (e.g. /pages/widerruf) uses .page-prose with the same layout.
+ * .rte base typography sits in :where() so section CSS (article) still wins.
+ * ========================================================================== */
+:where(.rte) { font-size: var(--text-body); line-height: 1.65; overflow-wrap: break-word; }
+:where(.rte) :where(p, ul, ol, table, blockquote) { margin-block: 0 1em; }
+:where(.rte) :where(h2) { margin-block: 2em 0.6em; font-size: var(--text-h3); line-height: 1.08; letter-spacing: -0.025em; font-weight: 500; }
+:where(.rte) :where(h3, h4, h5, h6) { margin-block: 1.6em 0.5em; font-family: var(--font-display); font-size: 1.25rem; line-height: 1.2; font-weight: 600; }
+:where(.rte) :where(p, li) { max-width: 72ch; }
+:where(.rte) :where(ul, ol) { padding-inline-start: 1.25em; }
+:where(.rte) :where(li + li) { margin-block-start: 0.4em; }
+:where(.rte) :where(a) {
+  color: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  overflow-wrap: anywhere;
+  transition: color var(--dur) var(--ease), text-decoration-thickness var(--dur) var(--ease);
+}
+:where(.rte) :where(a:hover) { color: var(--color-link); text-decoration-thickness: 2px; }
+:where(.rte) :where(table) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+:where(.rte) :where(th, td) { padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--color-line); text-align: start; }
+
+.shopify-policy__container,
+.page-prose {
+  width: 100%;
+  max-width: calc(72ch + 2 * var(--page-x));
+  margin-inline: auto;
+  padding: var(--section-y) var(--page-x);
+}
+.shopify-policy__title h1,
+.page-prose__title {
+  margin: 0 0 var(--s-7);
+  font-size: calc(var(--text-h2) * var(--fs-heading, 1));
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.shopify-policy__body .rte,
+.page-prose__body {
+  font-size: var(--text-body);
+  line-height: 1.65;
 }

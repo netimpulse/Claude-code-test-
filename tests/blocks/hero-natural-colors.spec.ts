@@ -9,17 +9,42 @@ import { QA, withTheme } from "../fixtures";
  *  - dashboard ticker: green positive / red negative deltas + sparklines, red LIVE
  *  - ad cycler: red LIVE test dot, green winner badge
  *  - GEO chat: green "monitoring" (online) dot
+ * Exception: the ni-deck web graphic on the home page uses neutral outlined
+ * browser dots (design system), checked at the end of this file.
  */
 
 const bg = (el: Element) => getComputedStyle(el).backgroundColor;
 const fg = (el: Element) => getComputedStyle(el).color;
 
-test.describe("Hero natural colours", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(withTheme(QA.paths.qaBlock), { waitUntil: "networkidle" });
-  });
+/** WCAG contrast of an element's text color against its nearest opaque background. */
+const textContrast = (el: Element) => {
+  const parse = (c: string) => (c.match(/[\d.]+/g) || []).map(Number);
+  const lum = ([r, g, b]: number[]) => {
+    const f = (v: number) => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    };
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  };
+  const text = parse(getComputedStyle(el).color);
+  let node: Element | null = el;
+  let back = [255, 255, 255];
+  while (node) {
+    const c = parse(getComputedStyle(node).backgroundColor);
+    if (c.length >= 3 && (c.length < 4 || c[3] > 0.95)) { back = c.slice(0, 3); break; }
+    node = node.parentElement;
+  }
+  const [a, b] = [lum(text), lum(back)].sort((x, y) => y - x);
+  return (a + 0.05) / (b + 0.05);
+};
 
+/** R1: each hero is checked on its real service page (plan S6d/S6e). */
+const go = (page: import("@playwright/test").Page, path: string) =>
+  page.goto(withTheme(path), { waitUntil: "networkidle" });
+
+test.describe("Hero natural colours", () => {
   test("Ticker window-control dots are red / amber / green", async ({ page }) => {
+    await go(page, QA.paths.sea);
     const dots = page.locator("[data-section-type='hero-ticker'] .hero-ticker__chrome-dots > span");
     await expect(dots).toHaveCount(3);
     expect(await dots.nth(0).evaluate(bg)).toBe("rgb(255, 95, 87)");
@@ -28,19 +53,27 @@ test.describe("Hero natural colours", () => {
   });
 
   test("Ticker deltas/sparklines are green for up, red for down; LIVE is red", async ({ page }) => {
+    await go(page, QA.paths.sea);
     const root = page.locator("[data-section-type='hero-ticker']").first();
-    // First metric (Organic clicks) is positive → green.
-    expect(await root.locator(".hero-ticker__metric-delta").first().evaluate(fg)).toBe("rgb(22, 163, 74)");
+    // First metric (Organic clicks) is positive → green. Text uses the darker
+    // AA variant (#15803d); the bright green stays for non-text signals.
+    const upDelta = root.locator(".hero-ticker__metric-delta").first();
+    expect(await upDelta.evaluate(fg)).toBe("rgb(21, 128, 61)");
+    expect(await upDelta.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
     // Third metric (Cost per acquisition) points down → red.
     const down = root.locator(".hero-ticker__metric--down");
     await expect(down).toHaveCount(1);
     expect(await down.locator(".hero-ticker__metric-delta").evaluate(fg)).toBe("rgb(220, 38, 38)");
     expect(await down.locator(".hero-ticker__spark").evaluate(fg)).toBe("rgb(220, 38, 38)");
-    // LIVE indicator is red.
+    // LIVE indicator dot is bright red; the LIVE label text uses the AA red.
     expect(await root.locator(".hero-ticker__chrome-pulse").evaluate(bg)).toBe("rgb(255, 59, 48)");
+    const live = root.locator(".hero-ticker__chrome-live");
+    expect(await live.evaluate(fg)).toBe("rgb(197, 34, 31)");
+    expect(await live.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
   });
 
   test("SERP wordmark is multi-colour, active tab is Google blue, favicons coloured", async ({ page }) => {
+    await go(page, QA.paths.seo);
     const root = page.locator("[data-section-type='hero-serp']").first();
     const letters = root.locator(".hero-serp__engine span");
     await expect(letters.first()).toBeVisible();
@@ -52,37 +85,84 @@ test.describe("Hero natural colours", () => {
     // A non-brand favicon is no longer grey (has a saturated background).
     const fav = root.locator(".hero-serp__favicon--c0").first();
     await expect(fav).toBeVisible();
-    expect(await fav.evaluate(bg)).toBe("rgb(66, 133, 244)");
+    // Darker blue so the white initials reach 4.5:1.
+    expect(await fav.evaluate(bg)).toBe("rgb(25, 103, 210)");
+    expect(await fav.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
   });
 
   test("Ad cycler: LIVE test dot is red, winner badge is green", async ({ page }) => {
+    await go(page, QA.paths.smm);
     const root = page.locator("[data-section-type='hero-ad-cycler']").first();
     expect(await root.locator(".hero-ac__test-dot").evaluate(bg)).toBe("rgb(255, 59, 48)");
     const win = root.locator(".hero-ac__tab-win").first();
     if (await win.count()) {
-      expect(await win.evaluate(bg)).toBe("rgb(22, 163, 74)");
+      expect(await win.evaluate(bg)).toBe("rgb(21, 128, 61)");
+      expect(await win.evaluate(textContrast)).toBeGreaterThanOrEqual(4.5);
     }
   });
 
   test("GEO monitoring (online) dot is green", async ({ page }) => {
+    await go(page, QA.paths.geo);
     const dot = page.locator("[data-section-type='hero-geo'] .hero-geo__monitoring-dot").first();
     await expect(dot).toBeAttached();
     expect(await dot.evaluate(bg)).toBe("rgb(22, 163, 74)");
   });
 
-  test("Mock panels have a hardcoded white background", async ({ page }) => {
-    const white = "rgb(255, 255, 255)";
-    expect(await page.locator("[data-section-type='hero-geo'] .hero-geo__chat").first().evaluate(bg)).toBe(white);
-    expect(await page.locator("[data-section-type='hero-serp'] .hero-serp__mock").first().evaluate(bg)).toBe(white);
-    expect(await page.locator("[data-section-type='hero-ticker'] .hero-ticker__dashboard").first().evaluate(bg)).toBe(white);
-    expect(await page.locator("[data-section-type='hero-ad-cycler'] .hero-ac__card").first().evaluate(bg)).toBe(white);
+  for (const [name, path, selector] of [
+    ["GEO chat", QA.paths.geo, "[data-section-type='hero-geo'] .hero-geo__chat"],
+    ["SERP mock", QA.paths.seo, "[data-section-type='hero-serp'] .hero-serp__mock"],
+    ["Ticker dashboard", QA.paths.sea, "[data-section-type='hero-ticker'] .hero-ticker__dashboard"],
+    ["Ad cycler card", QA.paths.smm, "[data-section-type='hero-ad-cycler'] .hero-ac__card"],
+    ["Web-build viewport", QA.paths.webDesign, "[data-section-type='hero-web-build'] .hwb__viewport"],
+  ] as const) {
+    test(`Mock panel has a hardcoded white background: ${name}`, async ({ page }) => {
+      await go(page, path);
+      const panel = page.locator(selector).first();
+      await expect(panel).toBeVisible({ timeout: 15_000 });
+      await expect.poll(() => panel.evaluate(bg)).toBe("rgb(255, 255, 255)");
+    });
+  }
+
+  test("Web-build browser dots are red / amber / green", async ({ page }) => {
+    await go(page, QA.paths.webDesign);
+    const dots = page.locator("[data-section-type='hero-web-build'] .hwb__dots > span");
+    await expect(dots).toHaveCount(3);
+    expect(await dots.nth(0).evaluate(bg)).toBe("rgb(227, 99, 99)");
+    expect(await dots.nth(1).evaluate(bg)).toBe("rgb(226, 182, 68)");
+    expect(await dots.nth(2).evaluate(bg)).toBe("rgb(91, 183, 121)");
   });
 
-  test("ni-deck window dots are red / amber / green", async ({ page }) => {
-    const dots = page.locator(".ni-device__dots span");
-    expect(await dots.count()).toBeGreaterThanOrEqual(3);
-    expect(await dots.nth(0).evaluate(bg)).toBe("rgb(255, 95, 87)");
-    expect(await dots.nth(1).evaluate(bg)).toBe("rgb(254, 188, 46)");
-    expect(await dots.nth(2).evaluate(bg)).toBe("rgb(40, 200, 64)");
+  test("ni-deck web graphic: three browser dots, outlined in the slab's muted colour", async ({ page }) => {
+    // Redesign: ni-deck (home page) no longer has the .ni-device mock with
+    // traffic-light dots. Its web graphic (snippets/ni-deck-graphic.liquid,
+    // visual "web") shows three browser dots that section-ni-deck.css draws as
+    // 9px rings in currentColor (= --slab-muted of the slab) without a fill.
+    await go(page, QA.paths.home);
+    const bar = page.locator(".ni-deck .ni-deck-g--web .ni-deck-g__webbar").first();
+    await expect(bar).toBeAttached();
+    const dots = bar.locator(":scope > i");
+    await expect(dots).toHaveCount(3);
+    const muted = await bar.evaluate(fg);
+    for (let i = 0; i < 3; i++) {
+      const s = await dots.nth(i).evaluate((el) => {
+        const cs = getComputedStyle(el);
+        return {
+          w: cs.width,
+          h: cs.height,
+          radius: cs.borderTopLeftRadius,
+          bw: cs.borderTopWidth,
+          bs: cs.borderTopStyle,
+          bc: cs.borderTopColor,
+          bg: cs.backgroundColor,
+        };
+      });
+      expect(s.w, `dot ${i} width`).toBe("9px");
+      expect(s.h, `dot ${i} height`).toBe("9px");
+      expect(s.radius, `dot ${i} round`).toBe("50%");
+      expect(s.bw).toBe("1px");
+      expect(s.bs).toBe("solid");
+      expect(s.bc, `dot ${i} ring in the slab muted colour`).toBe(muted);
+      expect(s.bg, `dot ${i} has no fill`).toBe("rgba(0, 0, 0, 0)");
+    }
   });
 });

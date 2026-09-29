@@ -1,45 +1,49 @@
 {% comment %}
-  Contact form
+  Contact form (SYS §5/§6: Formular- und Fehlerzustands-Muster)
   ----------------------------------------------------------------
-  Links: heading + Kontaktformular mit beliebig vielen Feldern.
-  Rechts: Kontaktinfos (Adresse, Telefon, E-Mail, ...).
-  Keine Karte. Form nutzt {% form 'contact' %} -> Submissions
-  gehen an die in der Shop-Konfig hinterlegte E-Mail.
+  Heading (accent-heading, *Wort*-Konvention) + Untertitel, darunter
+  links die Kontaktinfos (ohne Kasten), rechts das Formular.
+  Form nutzt {% form 'contact' %} -> Submissions gehen an die in der
+  Shop-Konfig hinterlegte E-Mail.
+
+  Farben kommen aus den Schema-Tokens (.color-<scheme>, Default
+  scheme-sand). accent_color ist optional und färbt nur dekorative
+  Linien (--cf-accent existiert nur, wenn das Setting gefüllt ist).
 
   Field-Blocks: text, email, tel, textarea, select (Dropdown).
-  Pro Feld: required-Toggle, optionale Spaltenbreite, bei "select"
-  eine Option-Liste (eine Zeile = eine Option).
+  Fehler je Feld: 2px --color-error, aria-invalid + aria-describedby
+  auf einen Text mit „Fehler“-Label (contact.error_prefix).
 {% endcomment %}
 
 {%- liquid
   assign scheme = section.settings.color_scheme
   assign accent = section.settings.accent_color
   assign anchor_id = 'ContactForm-' | append: section.id
+  assign heading_tag = section.settings.heading_tag | default: 'h1'
+  assign sub_tag = 'h3'
+  if heading_tag == 'h1'
+    assign sub_tag = 'h2'
+  endif
+  assign fallback_info_label = 'contact.info_label' | t
+  assign fallback_success = 'contact.success' | t
+  assign fallback_submit = 'contact.submit' | t
+  assign error_prefix = 'contact.error_prefix' | t
 -%}
 
 {{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
 
 {% style %}
   #shopify-section-{{ section.id }} .contact-form {
-    --cf-accent: {{ accent }};
+    {%- if accent != blank %}--cf-accent: {{ accent }};{% endif %}
     --cf-padding-top: {{ section.settings.padding_top }}px;
     --cf-padding-bottom: {{ section.settings.padding_bottom }}px;
-    {%- if scheme.settings.background != blank -%}
-      --cf-bg: {{ scheme.settings.background }};
-      --cf-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
-      --cf-text: {{ scheme.settings.text }};
-      --cf-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
-      --cf-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
-      --cf-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.32 }};
-      --cf-input-bg: {{ scheme.settings.text | color_modify: 'alpha', 0.04 }};
-    {%- endif -%}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
 {% endstyle %}
 
 <section
-  class="contact-form full-width color-{{ scheme.id }}"
+  class="contact-form full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   {% if section.settings.heading != blank %}aria-labelledby="cf-heading-{{ section.id }}"{% endif %}
 >
@@ -47,7 +51,9 @@
     {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
       <header class="contact-form__header">
         {%- if section.settings.heading != blank -%}
-          <h2 id="cf-heading-{{ section.id }}" class="contact-form__heading">{{ section.settings.heading | escape }}</h2>
+          <{{ heading_tag }} id="cf-heading-{{ section.id }}" class="contact-form__heading contact-form__heading--{{ heading_tag }}">
+            {%- render 'accent-heading', text: section.settings.heading -%}
+          </{{ heading_tag }}>
         {%- endif -%}
         {%- if section.settings.subheading != blank -%}
           <p class="contact-form__subheading">{{ section.settings.subheading | escape }}</p>
@@ -56,9 +62,9 @@
     {%- endif -%}
 
     <div class="contact-form__grid">
-      <aside class="contact-form__info-col" aria-label="{{ section.settings.info_heading | default: 'Kontaktinformationen' | escape }}">
+      <aside class="contact-form__info-col" aria-label="{{ section.settings.info_heading | default: fallback_info_label | escape }}">
         {%- if section.settings.info_heading != blank -%}
-          <h3 class="contact-form__info-heading">{{ section.settings.info_heading | escape }}</h3>
+          <{{ sub_tag }} class="contact-form__info-heading label-caps">{{ section.settings.info_heading | escape }}</{{ sub_tag }}>
         {%- endif -%}
 
         <ul class="contact-form__info-list" role="list">
@@ -66,7 +72,7 @@
             {%- if block.type == 'info' -%}
               <li class="contact-form__info-item" {{ block.shopify_attributes }}>
                 {%- if block.settings.label != blank -%}
-                  <span class="contact-form__info-label">{{ block.settings.label | escape }}</span>
+                  <span class="contact-form__info-label label-caps">{{ block.settings.label | escape }}</span>
                 {%- endif -%}
                 {%- if block.settings.content != blank -%}
                   <div class="contact-form__info-content">{{ block.settings.content }}</div>
@@ -77,24 +83,27 @@
         </ul>
       </aside>
 
-      <div class="contact-form__form-col" id="{{ anchor_id }}">
+      <div class="contact-form__form-col">
         {%- form 'contact', class: 'contact-form__form', id: anchor_id -%}
           {%- if form.posted_successfully? -%}
             <p class="contact-form__success" role="status">
-              {{ section.settings.success_message | default: 'Danke! Deine Nachricht ist angekommen.' | escape }}
+              {{ section.settings.success_message | default: fallback_success | escape }}
             </p>
           {%- endif -%}
 
           {%- if form.errors -%}
             <div class="contact-form__errors" role="alert">
-              <p class="contact-form__errors-title">{{ 'general.errors_title' | t | default: 'Bitte überprüfe folgende Felder:' | escape }}</p>
-              <ul>
+              <p class="contact-form__errors-title">
+                <span class="label-caps">{{ error_prefix | escape }}</span>
+                {{ 'general.errors_title' | t | escape }}
+              </p>
+              <ul class="contact-form__errors-list">
                 {%- for field in form.errors -%}
                   <li>
                     {%- if field == 'form' -%}
-                      {{ form.errors.messages[field] }}
+                      {{ form.errors.messages[field] | escape }}
                     {%- else -%}
-                      {{ form.errors.translated_fields[field] }} {{ form.errors.messages[field] }}
+                      {{ form.errors.translated_fields[field] | capitalize | escape }} {{ form.errors.messages[field] | escape }}
                     {%- endif -%}
                   </li>
                 {%- endfor -%}
@@ -105,15 +114,22 @@
           <div class="contact-form__fields">
             {%- for block in section.blocks -%}
               {%- if block.type == 'field' -%}
-                {%- assign field_id = 'CFField-' | append: section.id | append: '-' | append: block.id -%}
-                {%- assign field_name = block.settings.name | default: 'field' -%}
-                {%- assign input_name = 'contact[' | append: field_name | append: ']' -%}
-                {%- assign required = block.settings.required -%}
-                {%- assign width = block.settings.width | default: 'full' -%}
+                {%- liquid
+                  assign field_id = 'CFField-' | append: section.id | append: '-' | append: block.id
+                  assign error_id = field_id | append: '-error'
+                  assign field_name = block.settings.name | default: 'field'
+                  assign input_name = 'contact[' | append: field_name | append: ']'
+                  assign required = block.settings.required
+                  assign width = block.settings.width | default: 'full'
+                  assign invalid = false
+                  if form.errors and form.errors contains field_name
+                    assign invalid = true
+                  endif
+                -%}
 
-                <div class="contact-form__field contact-form__field--{{ width }}{% if block.settings.type == 'textarea' %} contact-form__field--block{% endif %}" {{ block.shopify_attributes }}>
+                <div class="contact-form__field contact-form__field--{{ width }}{% if block.settings.type == 'textarea' %} contact-form__field--block{% endif %}{% if invalid %} is-invalid{% endif %}" {{ block.shopify_attributes }}>
                   <label class="contact-form__label" for="{{ field_id }}">
-                    {{ block.settings.label | escape }}
+                    {{- block.settings.label | escape -}}
                     {%- if required -%}<span class="contact-form__required" aria-hidden="true">*</span>{%- endif -%}
                   </label>
 
@@ -126,7 +142,8 @@
                         rows="5"
                         placeholder="{{ block.settings.placeholder | escape }}"
                         {% if required %}required aria-required="true"{% endif %}
-                      ></textarea>
+                        {% if invalid %}aria-invalid="true" aria-describedby="{{ error_id }}"{% endif %}
+                      >{% if field_name == 'body' and form.body != blank %}{{ form.body | escape }}{% endif %}</textarea>
 
                     {%- when 'select' -%}
                       {%- assign options = block.settings.options | newline_to_br | split: '<br />' -%}
@@ -135,6 +152,7 @@
                         name="{{ input_name }}"
                         class="contact-form__input contact-form__select"
                         {% if required %}required aria-required="true"{% endif %}
+                        {% if invalid %}aria-invalid="true" aria-describedby="{{ error_id }}"{% endif %}
                       >
                         {%- if block.settings.placeholder != blank -%}
                           <option value="" disabled selected>{{ block.settings.placeholder | escape }}</option>
@@ -148,30 +166,54 @@
                       </select>
 
                     {%- else -%}
-                      {%- assign input_type = block.settings.type | default: 'text' -%}
-                      {%- assign autocomplete = '' -%}
-                      {%- if input_type == 'email' -%}{%- assign autocomplete = 'email' -%}{%- endif -%}
-                      {%- if input_type == 'tel' -%}{%- assign autocomplete = 'tel' -%}{%- endif -%}
-                      {%- if field_name == 'name' -%}{%- assign autocomplete = 'name' -%}{%- endif -%}
-                      {%- if field_name == 'company' -%}{%- assign autocomplete = 'organization' -%}{%- endif -%}
+                      {%- liquid
+                        assign input_type = block.settings.type | default: 'text'
+                        assign autocomplete = ''
+                        if input_type == 'email'
+                          assign autocomplete = 'email'
+                        endif
+                        if input_type == 'tel'
+                          assign autocomplete = 'tel'
+                        endif
+                        if field_name == 'name'
+                          assign autocomplete = 'name'
+                        endif
+                        if field_name == 'company'
+                          assign autocomplete = 'organization'
+                        endif
+                        assign prefill = ''
+                        if field_name == 'email'
+                          assign prefill = form.email
+                        endif
+                      -%}
                       <input
                         type="{{ input_type }}"
                         id="{{ field_id }}"
                         name="{{ input_name }}"
                         class="contact-form__input"
                         placeholder="{{ block.settings.placeholder | escape }}"
+                        {% if prefill != blank %}value="{{ prefill | escape }}"{% endif %}
                         {% if autocomplete != blank %}autocomplete="{{ autocomplete }}"{% endif %}
                         {% if required %}required aria-required="true"{% endif %}
+                        {% if invalid %}aria-invalid="true" aria-describedby="{{ error_id }}"{% endif %}
                       >
                   {%- endcase -%}
+
+                  {%- if invalid -%}
+                    <p class="contact-form__error" id="{{ error_id }}">
+                      <span class="label-caps">{{ error_prefix | escape }}</span>
+                      {{ form.errors.translated_fields[field_name] | capitalize | escape }} {{ form.errors.messages[field_name] | escape }}
+                    </p>
+                  {%- endif -%}
                 </div>
               {%- endif -%}
             {%- endfor -%}
           </div>
 
           <div class="contact-form__actions">
-            <button type="submit" class="contact-form__submit">
-              {{ section.settings.submit_label | default: 'Nachricht senden' | escape }}
+            <button type="submit" class="btn btn--primary btn--block contact-form__submit">
+              <span>{{ section.settings.submit_label | default: fallback_submit | escape }}</span>
+              <span class="btn__arrow" aria-hidden="true">&rarr;</span>
             </button>
           </div>
         {%- endform -%}
@@ -186,16 +228,27 @@
   "tag": "section",
   "class": "shopify-section--contact-form",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Lass uns reden." },
-    { "type": "textarea", "id": "subheading", "label": "Untertitel", "default": "Erzähl uns von deinem Projekt — wir melden uns innerhalb von 48 Stunden mit klaren nächsten Schritten." },
+    { "type": "text", "id": "heading", "label": "Überschrift", "info": "Ein Wort in *Sternchen* wird als Serif-Akzent gesetzt.", "default": "Lass uns reden." },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Überschrift-Ebene",
+      "info": "H1, wenn das Formular der Hauptinhalt der Seite ist (z. B. Kontaktseite).",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h1"
+    },
+    { "type": "textarea", "id": "subheading", "label": "Untertitel", "default": "Erzähl uns von deinem Projekt – wir melden uns innerhalb von 48 Stunden mit klaren nächsten Schritten." },
     { "type": "header", "content": "Formular" },
     { "type": "text", "id": "submit_label", "label": "Button-Text", "default": "Nachricht senden" },
     { "type": "text", "id": "success_message", "label": "Erfolgsmeldung", "default": "Danke! Wir melden uns innerhalb von 48 Stunden." },
     { "type": "header", "content": "Info-Spalte" },
     { "type": "text", "id": "info_heading", "label": "Info-Überschrift", "default": "Kontakt" },
     { "type": "header", "content": "Darstellung" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Farbschema", "default": "scheme-1" },
-    { "type": "color", "id": "accent_color", "label": "Akzentfarbe (Submit-Button)", "default": "#1f2328" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Farbschema", "default": "scheme-sand" },
+    { "type": "color", "id": "accent_color", "label": "Akzentfarbe (Linien)", "info": "Leer = Designsystem. Färbt nur dekorative Linien, nie den Button." },
     { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
     { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
     { "type": "header", "content": "Typografie" },

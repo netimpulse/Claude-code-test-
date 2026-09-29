@@ -133,10 +133,29 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  // Locale-aware storefront root (e.g. "/" or "/en/"), same pattern as
+  // assets/product-detail.js.
+  const ROOT_URL =
+    (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+  // Translated UI strings come from data-i18n-* attributes on the section
+  // container (rendered via `| t` in sections/theme-store.liquid).
+  function labelsFor(el) {
+    const root = el.closest(`[data-section-type="${SECTION_TYPE}"]`);
+    const data = (root && root.dataset) || {};
+    return {
+      noMatches: data.i18nNoMatches || '',
+      didYouMean: data.i18nDidYouMean || '',
+    };
+  }
+
   function renderResults(container, items, suggestion, onSuggest) {
+    const labels = labelsFor(container);
     if (!items.length && !suggestion) {
-      container.innerHTML =
-        '<div class="theme-store__search-empty">No matches found.</div>';
+      const empty = document.createElement('div');
+      empty.className = 'theme-store__search-empty';
+      empty.textContent = labels.noMatches;
+      container.replaceChildren(empty);
       container.hidden = false;
       return;
     }
@@ -155,7 +174,7 @@
     if (suggestion) {
       parts.unshift(`
         <div class="theme-store__search-suggest">
-          Did you mean
+          ${escapeHtml(labels.didYouMean)}
           <button type="button" data-ts-suggest="${escapeHtml(suggestion)}">${escapeHtml(suggestion)}</button>?
         </div>
       `);
@@ -187,7 +206,7 @@
   }
 
   function fetchPredictive(query) {
-    const url = `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=6&resources[options][unavailable_products]=last`;
+    const url = `${ROOT_URL.replace(/\/?$/, '/')}search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=6&resources[options][unavailable_products]=last`;
     return fetch(url, { headers: { Accept: 'application/json' } })
       .then(r => r.ok ? r.json() : null)
       .then(data => {

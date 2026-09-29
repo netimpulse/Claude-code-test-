@@ -2,6 +2,12 @@
   const sections = document.querySelectorAll('[data-section-type="cart"]');
   if (!sections.length) return;
 
+  // Locale-aware storefront root (e.g. "/" or "/en/"), same pattern as
+  // assets/product-detail.js.
+  const ROOT_URL =
+    (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+  const cartChangeUrl = () => ROOT_URL.replace(/\/?$/, '/') + 'cart/change.js';
+
   sections.forEach((section) => initCart(section));
 
   function initCart(section) {
@@ -69,7 +75,7 @@
       const body = { line, quantity };
       if (sectionId) body.sections = sectionId;
 
-      fetch('/cart/change.js', {
+      fetch(cartChangeUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(body),
@@ -166,6 +172,9 @@
         }
         const qtyInput = itemEl.querySelector('[data-cart-qty-input]');
         if (qtyInput) qtyInput.value = String(item.quantity);
+        // The line stays in the DOM on this path, so release the busy state
+        // (replaceSection gets fresh, enabled markup instead).
+        setLineBusy(itemEl, false);
       });
       updateCartCount(currentSection, cart.item_count);
     }

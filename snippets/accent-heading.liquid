@@ -1,0 +1,39 @@
+{%- comment -%}
+  Renders a heading text with an optional serif accent.
+
+  Convention: wrap one word or phrase in asterisks inside the heading setting,
+  e.g. "Online-Präsenz für *dein* Unternehmen". The first *…* pair becomes
+  <em class="it">…</em>; any further asterisks stay as plain characters.
+  The text is always escaped before the <em> is inserted.
+
+  Accepts:
+  - text {String}: the heading text from a setting
+
+  Usage:
+  <h2 class="x__heading">{% render 'accent-heading', text: section.settings.heading %}</h2>
+{%- endcomment -%}
+{%- liquid
+  assign safe = text | escape
+  # Pad both ends so split never drops an empty leading or trailing part.
+  assign parts = safe | prepend: '~' | append: '~' | split: '*'
+  if parts.size >= 3
+    assign before = parts[0] | remove_first: '~'
+    assign accent = parts[1]
+    assign rest = ''
+    for part in parts offset: 2
+      if forloop.index > 1
+        assign rest = rest | append: '*'
+      endif
+      assign rest = rest | append: part
+    endfor
+    assign rest_size = rest.size | minus: 1
+    assign rest = rest | slice: 0, rest_size
+    echo before
+    echo '<em class="it">'
+    echo accent
+    echo '</em>'
+    echo rest
+  else
+    echo safe
+  endif
+-%}

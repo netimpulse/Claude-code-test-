@@ -36,9 +36,16 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 800 },
-        channel: "chromium",
+        ...(process.env.PW_CHROMIUM_PATH ? {} : { channel: "chromium" }),
         launchOptions: {
+          // Optional fuer Cloud-/Proxy-Umgebungen: vorinstalliertes Chromium
+          // und ausgehender Proxy. Ohne ENV bleibt alles wie bisher.
+          ...(process.env.PW_CHROMIUM_PATH
+            ? { executablePath: process.env.PW_CHROMIUM_PATH }
+            : {}),
+          ...(process.env.PW_PROXY ? { proxy: { server: process.env.PW_PROXY } } : {}),
           args: [
+            ...(process.env.PW_EXTRA_ARGS ? process.env.PW_EXTRA_ARGS.split(" ") : []),
             "--disable-blink-features=AutomationControlled",
             "--disable-features=IsolateOrigins,site-per-process",
           ],

@@ -150,8 +150,10 @@
         this.countEl.textContent = pad(safe + 1) + ' / ' + pad(this.total);
       }
       if (this.progressEl) {
-        var pct = ((safe + 1) / this.total) * 100;
-        this.progressEl.style.setProperty('--progress', pct + '%');
+        var ratio = (safe + 1) / this.total;
+        this.progressEl.style.setProperty('--progress', ratio * 100 + '%');
+        // Drawn via transform: scaleX (compositor-only animation)
+        this.progressEl.style.setProperty('--progress-scale', String(ratio));
       }
       if (this.live) {
         this.live.textContent = (this.centers[safe] || '') + ' — ' + (safe + 1) + '/' + this.total;

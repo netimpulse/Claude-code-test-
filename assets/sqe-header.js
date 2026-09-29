@@ -36,7 +36,10 @@
         const onScroll = () => {
           const y = window.scrollY;
           const headerH = wrapper.offsetHeight;
-          if (y <= headerH) {
+          if (document.documentElement.classList.contains("sqe-menu-open")) {
+            // Menu panel open: keep the bar visible.
+            wrapper.classList.remove("is-hidden");
+          } else if (y <= headerH) {
             // Near the top: never hide.
             wrapper.classList.remove("is-hidden");
           } else if (y - lastY > threshold) {
@@ -55,22 +58,28 @@
       }
     }
 
-    // -------- Mobile drawer --------
+    // -------- Mobile menu panel --------
     const drawerToggle = section.querySelector("[data-sqe-drawer-toggle]");
     const drawer = section.querySelector("[data-sqe-drawer]");
+    const setDrawer = (open, { returnFocus = false } = {}) => {
+      if (!drawerToggle || !drawer) return;
+      drawer.hidden = !open;
+      drawerToggle.setAttribute("aria-expanded", String(open));
+      document.documentElement.classList.toggle("sqe-menu-open", open);
+      if (open && wrapper) wrapper.classList.remove("is-hidden");
+      if (!open && returnFocus) drawerToggle.focus();
+    };
     if (drawerToggle && drawer) {
-      drawerToggle.addEventListener("click", () => {
-        const open = !drawer.hidden;
-        drawer.hidden = open;
-        drawerToggle.setAttribute("aria-expanded", String(!open));
-      });
-      // Close drawer on link click
+      drawerToggle.addEventListener("click", () => setDrawer(drawer.hidden));
+      // Close panel on link click
       drawer.addEventListener("click", (e) => {
-        if (e.target.closest("a")) {
-          drawer.hidden = true;
-          drawerToggle.setAttribute("aria-expanded", "false");
-        }
+        if (e.target.closest("a")) setDrawer(false);
       });
+      // Close when the viewport grows past the menu breakpoint.
+      const mq = window.matchMedia("(min-width: 1025px)");
+      const onMq = (e) => { if (e.matches) setDrawer(false); };
+      mq.addEventListener("change", onMq);
+      section._sqeMq = { mq, onMq };
     }
 
     // -------- Search toggle --------
@@ -97,16 +106,28 @@
     }
     if (searchClose) searchClose.addEventListener("click", closeSearch);
 
-    // Esc closes search
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && searchPanel && !searchPanel.hidden) closeSearch();
-    });
+    // Esc closes search, then the menu panel
+    const onKeydown = (e) => {
+      if (e.key !== "Escape") return;
+      if (searchPanel && !searchPanel.hidden) closeSearch();
+      else if (drawer && !drawer.hidden) setDrawer(false, { returnFocus: true });
+    };
+    document.addEventListener("keydown", onKeydown);
 
     // Click outside closes search
-    document.addEventListener("click", (e) => {
+    const onDocClick = (e) => {
       if (!searchPanel || searchPanel.hidden) return;
       if (!searchPanel.contains(e.target) && !searchToggle?.contains(e.target)) closeSearch();
-    });
+    };
+    document.addEventListener("click", onDocClick);
+
+    section._sqeCleanup = () => {
+      document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("click", onDocClick);
+      window.removeEventListener("resize", setVar);
+      if (section._sqeMq) section._sqeMq.mq.removeEventListener("change", section._sqeMq.onMq);
+      document.documentElement.classList.remove("sqe-menu-open");
+    };
   }
 
   function bind() {
@@ -127,8 +148,8 @@
   });
   document.addEventListener("shopify:section:unload", (e) => {
     const node = e.target.querySelector("[data-section-type='sqe-header']");
-    if (node && node._sqeScroll) {
-      window.removeEventListener("scroll", node._sqeScroll);
-    }
+    if (!node) return;
+    if (node._sqeScroll) window.removeEventListener("scroll", node._sqeScroll);
+    if (node._sqeCleanup) node._sqeCleanup();
   });
 })();

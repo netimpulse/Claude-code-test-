@@ -104,3 +104,88 @@ test.describe("Block font-size controls", () => {
     await lp.locator(".lp-cta").first().screenshot({ path: "qa-screenshots/font-size-cta.png" });
   });
 });
+
+/**
+ * R4 (Plan S6a): the section multipliers --fs-heading / --fs-text reach the
+ * redesigned services-orbit on /pages/leistungen (the section is not on the
+ * QA page). Stored scales are 100 % → both variables resolve to 1.
+ */
+test.describe("Section font-size multipliers – services-orbit (R4)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(withTheme(QA.paths.leistungen), { waitUntil: "load" });
+    await passChallenge(page);
+    await page.waitForSelector(".services-orbit", { timeout: 15_000 });
+  });
+
+  test("Template scales reach the section root", async ({ page }) => {
+    expect(Number(await readVar(page, ".services-orbit", "--fs-heading"))).toBe(1);
+    expect(Number(await readVar(page, ".services-orbit", "--fs-text"))).toBe(1);
+  });
+
+  test("--fs-heading drives the h2 and the detail title", async ({ page }) => {
+    await expectScaleBinding(page, ".services-orbit__title", "--fs-heading");
+    await expectScaleBinding(page, ".services-orbit__detail-panel.is-active .services-orbit__detail-title", "--fs-heading");
+  });
+
+  test("--fs-text drives the detail copy and the benefits", async ({ page }) => {
+    await expectScaleBinding(page, ".services-orbit__detail-panel.is-active .services-orbit__detail-text", "--fs-text");
+    await expectScaleBinding(page, ".services-orbit__detail-panel.is-active .services-orbit__benefits li", "--fs-text");
+  });
+});
+
+/**
+ * R4 (Plan S6d): the section multipliers --fs-heading / --fs-text reach the
+ * redesigned hero-serp on /pages/seo (the section is not on the QA page).
+ * Stored scales are 100 % → both variables resolve to 1.
+ */
+test.describe("Section font-size multipliers – hero-serp (R4)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(withTheme(QA.paths.seo), { waitUntil: "load" });
+    await passChallenge(page);
+    await page.waitForSelector(".hero-serp", { timeout: 15_000 });
+  });
+
+  test("Template scales reach the section root", async ({ page }) => {
+    expect(Number(await readVar(page, ".hero-serp", "--fs-heading"))).toBe(1);
+    expect(Number(await readVar(page, ".hero-serp", "--fs-text"))).toBe(1);
+  });
+
+  test("--fs-heading drives the h1", async ({ page }) => {
+    await expectScaleBinding(page, ".hero-serp__heading", "--fs-heading");
+  });
+
+  test("--fs-text drives the lead and the buttons", async ({ page }) => {
+    await expectScaleBinding(page, ".hero-serp__body", "--fs-text");
+    await expectScaleBinding(page, ".hero-serp__btn--primary", "--fs-text");
+  });
+});
+
+/**
+ * R4 (Plan S7a): the section multipliers --fs-heading / --fs-text reach the
+ * redesigned about-intro on /pages/ueber-uns (the section is not on the QA
+ * page). Stored scales are 100 % → both variables resolve to 1.
+ */
+test.describe("Section font-size multipliers – about-intro (R4)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(withTheme(QA.paths.ueberUns), { waitUntil: "load" });
+    await passChallenge(page);
+    await page.waitForSelector(".about-intro", { timeout: 15_000 });
+  });
+
+  test("Template scales reach the section root", async ({ page }) => {
+    expect(Number(await readVar(page, ".about-intro", "--fs-heading"))).toBe(1);
+    expect(Number(await readVar(page, ".about-intro", "--fs-text"))).toBe(1);
+  });
+
+  test("--fs-heading drives the h1", async ({ page }) => {
+    await expectScaleBinding(page, ".about-intro__heading", "--fs-heading");
+  });
+
+  test("--fs-text drives the body lead and the button", async ({ page }) => {
+    await expectScaleBinding(page, ".about-intro__body > :first-child", "--fs-text");
+    await expectScaleBinding(page, ".about-intro__btn", "--fs-text");
+  });
+});

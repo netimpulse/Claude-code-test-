@@ -344,6 +344,8 @@
     "name": "Services orbit",
     "kicker_label": "Kicker",
     "heading_label": "Heading",
+    "heading_tag_label": "Heading level",
+    "heading_tag_info": "Use H1 when this section opens the page and there is no other H1 (e.g. the services page).",
     "intro_label": "Intro",
     "center_eyebrow_label": "Center eyebrow",
     "actions_header": "Default CTAs",

@@ -7,7 +7,7 @@
         "subtitle_suffix": "digital · sofort startklar",
         "checkout_label": "Zur Kasse",
         "empty_text": "Dein Warenkorb ist leer.",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-sand",
         "card_radius": 14
       },
       "blocks": {
@@ -26,7 +26,7 @@
         },
         "trust_money_back": {
           "type": "trust_badge",
-          "settings": { "visible": true, "icon": "refresh", "text": "30-Tage Geld-zurück" }
+          "settings": { "visible": true, "icon": "refresh", "text": "30-Tage-Geld-zurück" }
         },
         "payments": {
           "type": "payment_methods",

@@ -36,6 +36,7 @@
   assign show_buy_now = section.settings.show_buy_now
   assign show_discount_badge = section.settings.show_discount_badge
   assign show_trust_strip = section.settings.show_trust_strip
+  assign fallback_buy_now = 'product_detail.buy_now' | t
 -%}
 
 <section
@@ -91,7 +92,7 @@
           {%- if has_product -%}
             {{ product.title | escape }}
           {%- else -%}
-            {{ 'product_detail.placeholder_title' | t | default: 'Product title' }}
+            {{ 'product_detail.placeholder_title' | t }}
           {%- endif -%}
         </h1>
 
@@ -115,7 +116,7 @@
             <span class="product-detail__rating-value">{{ rating_score | escape }}</span>
             {%- if section.settings.rating_count != blank -%}
               <span class="product-detail__rating-count">
-                {{ 'product_detail.rating_count_prefix' | t | default: 'aus' }}
+                {{ 'product_detail.rating_count_prefix' | t }}
                 {{ section.settings.rating_count | escape }}
               </span>
             {%- endif -%}
@@ -162,7 +163,7 @@
               {%- if product.variants.size > 1 -%}
                 <div class="product-detail__variant">
                   <label for="pd-variant-{{ section.id }}" class="product-detail__variant-label">
-                    {{ 'product_detail.variant' | t | default: 'Variant' }}
+                    {{ 'product_detail.variant' | t }}
                   </label>
                   <select
                     id="pd-variant-{{ section.id }}"
@@ -182,7 +183,7 @@
                         data-available="{{ variant.available }}"
                         {% if variant == current_variant %}selected{% endif %}
                       >
-                        {{ variant.title }} — {{ variant.price | money }}{% unless variant.available %} ({{ 'product_detail.sold_out' | t | default: 'Sold out' }}){% endunless %}
+                        {{ variant.title | escape }} — {{ variant.price | money }}{% unless variant.available %} ({{ 'product_detail.sold_out' | t }}){% endunless %}
                       </option>
                     {%- endfor -%}
                   </select>
@@ -194,13 +195,13 @@
               <div class="product-detail__cta-row">
                 <div class="product-detail__qty">
                   <label for="pd-qty-{{ section.id }}" class="visually-hidden">
-                    {{ 'product_detail.quantity' | t | default: 'Quantity' }}
+                    {{ 'product_detail.quantity' | t }}
                   </label>
                   <button
                     type="button"
                     class="product-detail__qty-btn"
                     data-pd-qty-dec
-                    aria-label="{{ 'product_detail.qty_decrease' | t | default: 'Decrease quantity' }}"
+                    aria-label="{{ 'product_detail.qty_decrease' | t }}"
                   >−</button>
                   <input
                     id="pd-qty-{{ section.id }}"
@@ -216,7 +217,7 @@
                     type="button"
                     class="product-detail__qty-btn"
                     data-pd-qty-inc
-                    aria-label="{{ 'product_detail.qty_increase' | t | default: 'Increase quantity' }}"
+                    aria-label="{{ 'product_detail.qty_increase' | t }}"
                   >+</button>
                 </div>
 
@@ -229,9 +230,9 @@
                 >
                   <span class="product-detail__btn-label">
                     {%- if current_variant.available -%}
-                      {{ 'product_detail.add_to_cart' | t | default: 'In den Warenkorb' }}
+                      {{ 'product_detail.add_to_cart' | t }}
                     {%- else -%}
-                      {{ 'product_detail.sold_out' | t | default: 'Sold out' }}
+                      {{ 'product_detail.sold_out' | t }}
                     {%- endif -%}
                   </span>
                   <span aria-hidden="true" class="product-detail__btn-arrow">→</span>
@@ -246,7 +247,7 @@
                   {% unless current_variant.available %}disabled{% endunless %}
                 >
                   <span class="product-detail__btn-label">
-                    {{ section.settings.buy_now_label | default: 'Sofortkauf' | escape }}
+                    {{ section.settings.buy_now_label | default: fallback_buy_now | escape }}
                   </span>
                   <span aria-hidden="true" class="product-detail__btn-arrow">→</span>
                 </button>
@@ -268,7 +269,7 @@
           {%- else -%}
             <div class="product-detail__form" aria-hidden="true">
               <button type="button" class="product-detail__add-to-cart" disabled>
-                {{ 'product_detail.add_to_cart' | t | default: 'In den Warenkorb' }}
+                {{ 'product_detail.add_to_cart' | t }}
               </button>
             </div>
           {%- endif -%}
@@ -314,6 +315,10 @@
 
 {% stylesheet %}
   .product-detail {
+    /* Map the legacy global tokens onto the section's color scheme (scheme-sand
+       by default) so surfaces, text and borders follow the palette. */
+    --color-background: var(--color-bg, #fff);
+    --color-foreground: var(--color-text, #1a1a1a);
     background: var(--color-background, #fff);
     color: var(--color-foreground, #1a1a1a);
     padding: var(--pd-pad-top, 64px) var(--page-margin, 20px) var(--pd-pad-bottom, 64px);
@@ -576,12 +581,15 @@
   }
   .product-detail__add-to-cart {
     flex: 1 1 200px;
-    background: var(--color-foreground, #111);
-    color: var(--color-background, #fff);
-    border: 1px solid var(--color-foreground, #111);
+    background: var(--color-btn-bg, var(--color-foreground, #111));
+    color: var(--color-btn-fg, var(--color-background, #fff));
+    border: 1px solid var(--color-btn-border, var(--color-foreground, #111));
   }
   .product-detail__add-to-cart:hover:not([disabled]) {
     transform: translateY(-1px);
+    background: var(--color-btn-bg-hover, var(--color-btn-bg, var(--color-foreground, #111)));
+    border-color: var(--color-btn-bg-hover, var(--color-btn-border, var(--color-foreground, #111)));
+    color: var(--color-btn-fg-hover, var(--color-btn-fg, var(--color-background, #fff)));
     box-shadow: 0 8px 20px color-mix(in srgb, var(--color-foreground, #111) 18%, transparent);
   }
   .product-detail__add-to-cart[disabled] {
@@ -592,12 +600,13 @@
   .product-detail__buy-now {
     width: 100%;
     background: transparent;
-    color: var(--color-foreground, #111);
-    border: 1px solid color-mix(in srgb, var(--color-foreground, #111) 24%, transparent);
+    color: var(--color-btn2-fg, var(--color-foreground, #111));
+    border: 1px solid var(--color-btn2-border, color-mix(in srgb, var(--color-foreground, #111) 24%, transparent));
   }
   .product-detail__buy-now:hover:not([disabled]) {
-    background: color-mix(in srgb, var(--color-foreground, #111) 6%, transparent);
-    border-color: color-mix(in srgb, var(--color-foreground, #111) 40%, transparent);
+    background: var(--color-btn2-bg-hover, color-mix(in srgb, var(--color-foreground, #111) 6%, transparent));
+    border-color: var(--color-btn2-bg-hover, color-mix(in srgb, var(--color-foreground, #111) 40%, transparent));
+    color: var(--color-btn2-fg-hover, var(--color-foreground, #111));
   }
   .product-detail__buy-now[disabled] {
     opacity: 0.5;
@@ -997,7 +1006,7 @@
       "type": "text",
       "id": "consultation_label",
       "label": "Consultation label",
-      "default": "Erst beraten lassen — 20 Min, kostenfrei"
+      "default": "Erst beraten lassen – 20 Min., kostenfrei"
     },
     {
       "type": "url",
@@ -1024,7 +1033,7 @@
       "type": "text",
       "id": "trust_2",
       "label": "Trust item 2",
-      "default": "30-Tage Geld-zurück"
+      "default": "30-Tage-Geld-zurück"
     },
     {
       "type": "text",

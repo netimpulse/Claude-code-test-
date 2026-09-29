@@ -1,10 +1,17 @@
 {% comment %}
-  Team compact
+  Team compact (SYS §6 "Team", sand surface via scheme-1) – compact teaser
   ----------------------------------------------------------------
-  Small team teaser: kicker + heading + CTA on the left, intro
-  paragraph in the middle, a row of circular avatars (initials or
-  photo) with name labels on the right. Repeatable member blocks
-  (preset ships three members; up to eight allowed).
+  One calm row without a box: left eyebrow, h2 with serif accent
+  (accent-heading) and a text link; middle a short muted intro; right a
+  row of small round avatars (slightly overlapping, 2px ring in the
+  surface colour) with the names as a small label line underneath.
+  Member without photo: ink circle with the initial in Newsreader italic.
+  Mobile: stacked, avatars stay one row.
+
+  Colours come from the colour scheme tokens (--color-*). accent_color
+  is optional and only tints the eyebrow dot and the monogram when set.
+  Padding: min(setting, clamp(48px, 6vw, 96px)) – the setting is an upper
+  bound, the section stays a narrow in-between row.
 {% endcomment %}
 
 {%- liquid
@@ -17,87 +24,83 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .team-compact {
-    --tc-accent: {{ accent }};
+    {%- if accent != blank %}--tc-accent: {{ accent }};{% endif %}
     --tc-padding-top: {{ section.settings.padding_top }}px;
     --tc-padding-bottom: {{ section.settings.padding_bottom }}px;
-    {%- if scheme.settings.background != blank -%}
-      --tc-bg: {{ scheme.settings.background }};
-      --tc-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
-      --tc-text: {{ scheme.settings.text }};
-      --tc-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
-      --tc-line: {{ scheme.settings.text | color_modify: 'alpha', 0.1 }};
-      --tc-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.4 }};
-      --tc-avatar-bg: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
-    {%- endif -%}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
 {% endstyle %}
 
 <section
-  class="team-compact full-width color-{{ scheme.id }}"
+  class="team-compact full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   {% if section.settings.heading != blank %}aria-labelledby="tc-heading-{{ section.id }}"{% endif %}
 >
   <div class="team-compact__inner">
-    <div class="team-compact__panel">
-      <div class="team-compact__column team-compact__column--header">
-        {%- if section.settings.kicker != blank -%}
-          <div class="team-compact__kicker">{{ section.settings.kicker | escape }}</div>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 id="tc-heading-{{ section.id }}" class="team-compact__heading">{{ section.settings.heading }}</h2>
-        {%- endif -%}
-        {%- if section.settings.cta_label != blank -%}
-          <a class="team-compact__cta" href="{{ section.settings.cta_url | default: '#' }}">
-            <span>{{ section.settings.cta_label | escape }}</span>
-            <span class="team-compact__cta-arrow" aria-hidden="true">&rarr;</span>
-          </a>
-        {%- endif -%}
-      </div>
-
-      <div class="team-compact__column team-compact__column--intro">
-        {%- if section.settings.intro != blank and section.settings.show_intro -%}
-          <p class="team-compact__intro">{{ section.settings.intro }}</p>
-        {%- endif -%}
-      </div>
-
-      <div class="team-compact__column team-compact__column--avatars">
-        {%- if block_count > 0 -%}
-          <ul class="team-compact__avatars">
-            {%- for block in section.blocks -%}
-              {%- assign auto_initials = block.settings.name | strip | upcase | slice: 0, 1 -%}
-              {%- assign initials = block.settings.initials | default: auto_initials -%}
-              <li class="team-compact__member" {{ block.shopify_attributes }}>
-                <div class="team-compact__avatar" aria-hidden="{% if block.settings.name == blank %}true{% else %}false{% endif %}">
-                  {%- if block.settings.photo != blank -%}
-                    {%- assign photo_alt = block.settings.photo.alt | default: block.settings.name -%}
-                    {{
-                      block.settings.photo
-                      | image_url: width: 200
-                      | image_tag:
-                        loading: 'lazy',
-                        widths: '80, 120, 160, 200, 280',
-                        sizes: '92px',
-                        alt: photo_alt
-                    }}
-                  {%- else -%}
-                    <span class="team-compact__initials">{{ initials | escape }}</span>
-                  {%- endif -%}
-                </div>
-                {%- if block.settings.name != blank -%}
-                  <span class="team-compact__name">{{ block.settings.name | escape }}</span>
-                {%- endif -%}
-              </li>
-            {%- endfor -%}
-          </ul>
-        {%- else -%}
-          <p class="team-compact__placeholder">
-            {{ 'team_compact.add_members' | t | default: 'Add team member blocks to get started.' }}
-          </p>
-        {%- endif -%}
-      </div>
+    <div class="team-compact__head">
+      {%- if section.settings.kicker != blank -%}
+        <p class="team-compact__kicker eyebrow">{{ section.settings.kicker | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 id="tc-heading-{{ section.id }}" class="team-compact__heading">
+          {%- render 'accent-heading', text: section.settings.heading -%}
+        </h2>
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        <a class="text-link team-compact__cta" href="{{ section.settings.cta_url | default: routes.root_url }}">
+          {{- section.settings.cta_label | escape -}}
+          <span class="team-compact__cta-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      {%- endif -%}
     </div>
+
+    {%- if section.settings.intro != blank and section.settings.show_intro -%}
+      <p class="team-compact__intro">{{ section.settings.intro | escape }}</p>
+    {%- endif -%}
+
+    {%- if block_count > 0 -%}
+      <div class="team-compact__crew">
+        <div class="team-compact__people" aria-hidden="true">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign member_name = block.settings.name | strip
+              assign auto_initial = member_name | upcase | slice: 0, 1
+              assign initial = block.settings.initials | strip | default: auto_initial
+            -%}
+            <span
+              class="team-compact__member team-compact__photo{% if block.settings.photo == blank %} team-compact__member--empty{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.photo != blank -%}
+                {{
+                  block.settings.photo
+                  | image_url: width: 192
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '64, 128, 192',
+                    sizes: '64px',
+                    alt: '',
+                    class: 'team-compact__img'
+                }}
+              {%- elsif initial != blank -%}
+                <span class="team-compact__initial">{{ initial | escape }}</span>
+              {%- endif -%}
+            </span>
+          {%- endfor -%}
+        </div>
+        <ul class="team-compact__names label-caps" role="list">
+          {%- for block in section.blocks -%}
+            {%- assign member_name = block.settings.name | strip -%}
+            {%- if member_name != blank -%}
+              <li class="team-compact__name">{{ member_name | escape }}</li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- elsif request.design_mode -%}
+      <p class="team-compact__placeholder">{{ 'team_compact.add_members' | t }}</p>
+    {%- endif -%}
   </div>
 </section>
 
@@ -117,7 +120,7 @@
       "type": "textarea",
       "id": "heading",
       "label": "t:team_compact.heading_label",
-      "default": "Direkt. Klar. Ohne Agentur-Umwege."
+      "default": "Direkt. Klar. *Ohne Umwege.*"
     },
     {
       "type": "textarea",
@@ -154,8 +157,7 @@
     {
       "type": "color",
       "id": "accent_color",
-      "label": "t:team_compact.accent_color_label",
-      "default": "#1f2328"
+      "label": "t:team_compact.accent_color_label"
     },
     {
       "type": "range",
@@ -165,7 +167,7 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 64
+      "default": 96
     },
     {
       "type": "range",
@@ -175,7 +177,7 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 64
+      "default": 96
     },
     {
       "type": "header",

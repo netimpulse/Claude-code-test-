@@ -1,29 +1,24 @@
 {% comment %}
-  NI Hero — editorial split hero (sand design). Standalone section:
-  add it from "Add section". Oversized headline, label line, dual CTA
-  and a media panel with a live caption and a floating "book a call" tag.
+  NI Hero — two-column hero of the home page (design system "Variante D").
+  Content (eyebrow, h1 with serif accent, lead, buttons) on the left,
+  photo with a figcaption on the right. No reveal, fade or looping
+  animation here: h1 and photo are the LCP candidates.
 {% endcomment %}
 
 {%- liquid
   assign scheme = section.settings.color_scheme
-  assign accent = section.settings.accent_color
-  if accent == blank
-    assign accent = scheme.settings.accent
+  assign scheme_class = ''
+  if scheme != blank
+    assign scheme_class = 'color-' | append: scheme.id
   endif
+  assign accent = section.settings.accent_color
 -%}
 
 {% style %}
   #shopify-section-{{ section.id }} {
-    --lp-bg: {{ scheme.settings.background | default: '#f8f6f1' }};
-    --lp-surface: {{ scheme.settings.background_card | default: '#fffdf8' }};
-    --lp-text: {{ scheme.settings.text | default: '#050505' }};
-    --lp-muted: {{ scheme.settings.muted | default: '#6b665e' }};
-    --lp-line: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.12 }};
-    --lp-line-strong: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.22 }};
-    --lp-maxw: 1440px;
     --lp-pad-top: {{ section.settings.padding_top }}px;
     --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --lp-accent: {{ accent }};
+    {%- if accent != blank %}--lp-accent: {{ accent }};{% endif %}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
     {%- if section.settings.primary_btn_bg != blank %}--ni-btn-primary-bg: {{ section.settings.primary_btn_bg }};{% endif %}
@@ -37,14 +32,14 @@
   }
 {% endstyle %}
 
-<ni-hero class="ni-hero full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
+<ni-hero class="ni-hero full-width {{ scheme_class }}" {{ section.shopify_attributes }}>
   <div class="ni-hero__shell">
-    <div class="ni-hero__content ni-reveal">
+    <div class="ni-hero__content">
       {%- if section.settings.label != blank -%}
-        <span class="ni-hero__label">{{ section.settings.label | escape }}</span>
+        <p class="ni-hero__label eyebrow">{{ section.settings.label | escape }}</p>
       {%- endif -%}
       {%- if section.settings.heading != blank -%}
-        <h1 class="ni-hero__title">{{ section.settings.heading | escape }}</h1>
+        <h1 class="ni-hero__title">{% render 'accent-heading', text: section.settings.heading %}</h1>
       {%- endif -%}
       {%- if section.settings.body != blank -%}
         <p class="ni-hero__copy">{{ section.settings.body | escape }}</p>
@@ -52,26 +47,39 @@
       {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
         <div class="ni-hero__actions">
           {%- if section.settings.primary_label != blank -%}
-            <a class="ni-btn ni-btn--primary" href="{{ section.settings.primary_url | default: '#' }}">{{ section.settings.primary_label | escape }}</a>
+            <a class="btn btn--primary ni-btn ni-btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+              {{- section.settings.primary_label | escape -}}
+              <span class="btn__arrow" aria-hidden="true">→</span>
+            </a>
           {%- endif -%}
           {%- if section.settings.secondary_label != blank -%}
-            <a class="ni-btn ni-btn--ghost" href="{{ section.settings.secondary_url | default: '#' }}">{{ section.settings.secondary_label | escape }}</a>
+            <a class="btn btn--secondary ni-btn ni-btn--ghost" href="{{ section.settings.secondary_url | default: '#' }}">
+              {{- section.settings.secondary_label | escape -}}
+            </a>
           {%- endif -%}
         </div>
       {%- endif -%}
+      {%- if section.settings.book_label != blank -%}
+        <a class="text-link ni-hero__book" href="{{ section.settings.book_url | default: '#' }}">
+          {{- section.settings.book_label | escape -}}
+        </a>
+      {%- endif -%}
     </div>
 
-    <div class="ni-hero__media ni-reveal">
+    <figure class="ni-hero__media">
       <div class="ni-hero__photo">
         {%- if section.settings.image != blank -%}
-          {%- assign img_alt = section.settings.image.alt | default: section.settings.heading | escape -%}
+          {%- liquid
+            assign heading_plain = section.settings.heading | remove: '*'
+            assign img_alt = section.settings.image.alt | default: heading_plain | escape
+          -%}
           {{
             section.settings.image
             | image_url: width: 1500
             | image_tag:
               loading: 'eager',
               fetchpriority: 'high',
-              sizes: '(min-width: 1120px) 52vw, 100vw',
+              sizes: '(min-width: 1101px) 40vw, 100vw',
               widths: '600, 900, 1200, 1500',
               alt: img_alt,
               class: 'ni-hero__img'
@@ -79,25 +87,19 @@
         {%- else -%}
           <div class="ni-hero__img ni-hero__img--ph" aria-hidden="true"></div>
         {%- endif -%}
-
-        {%- if section.settings.caption_title != blank or section.settings.caption_text != blank -%}
-          <div class="ni-hero__caption">
-            <span class="ni-pulse" aria-hidden="true"></span>
-            <div>
-              {%- if section.settings.caption_title != blank -%}<b>{{ section.settings.caption_title | escape }}</b>{%- endif -%}
-              {%- if section.settings.caption_text != blank -%}<span>{{ section.settings.caption_text | escape }}</span>{%- endif -%}
-            </div>
-          </div>
-        {%- endif -%}
       </div>
-
-      {%- if section.settings.book_label != blank -%}
-        <a class="ni-hero__book" href="{{ section.settings.book_url | default: '#' }}">
-          <span class="ni-cal" aria-hidden="true"></span>
-          {{ section.settings.book_label | escape }}
-        </a>
+      {%- if section.settings.caption_title != blank or section.settings.caption_text != blank -%}
+        <figcaption class="ni-hero__figcaption">
+          {%- if section.settings.caption_title != blank -%}
+            <strong>{{ section.settings.caption_title | escape }}</strong>
+          {%- endif -%}
+          {%- if section.settings.caption_title != blank and section.settings.caption_text != blank -%}{{ ' ' }}{%- endif -%}
+          {%- if section.settings.caption_text != blank -%}
+            <span>{{ section.settings.caption_text | escape }}</span>
+          {%- endif -%}
+        </figcaption>
       {%- endif -%}
-    </div>
+    </figure>
   </div>
 </ni-hero>
 
@@ -109,8 +111,8 @@
   "name": "NI Hero",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "label", "label": "Label line", "default": "Online Marketing Studio" },
-    { "type": "textarea", "id": "heading", "label": "Headline", "default": "Marketing, das sichtbar verkauft" },
+    { "type": "text", "id": "label", "label": "Label line", "default": "Online-Marketing-Studio" },
+    { "type": "textarea", "id": "heading", "label": "Headline", "info": "Setze ein Wort in *Sternchen*, um es als Serif-Akzent hervorzuheben.", "default": "Marketing, das *sichtbar* verkauft" },
     { "type": "textarea", "id": "body", "label": "Body text", "default": "NetImpulse entwickelt Websites, Kampagnen und Shopify-Erlebnisse für Unternehmen, die online klarer auftreten, besser gefunden werden und professioneller verkaufen wollen." },
     { "type": "header", "content": "Call to action" },
     { "type": "text", "id": "primary_label", "label": "Primary button label", "default": "Kostenloses Erstgespräch" },
@@ -119,10 +121,10 @@
     { "type": "url", "id": "secondary_url", "label": "Secondary button link" },
     { "type": "header", "content": "Media" },
     { "type": "image_picker", "id": "image", "label": "Hero image" },
-    { "type": "text", "id": "caption_title", "label": "Caption title", "default": "NetImpulse Prinzip" },
+    { "type": "text", "id": "caption_title", "label": "Caption title", "default": "NetImpulse-Prinzip" },
     { "type": "text", "id": "caption_text", "label": "Caption text", "default": "Strategie, Gestaltung und Umsetzung arbeiten als ein System." },
-    { "type": "text", "id": "book_label", "label": "Floating tag label", "default": "Termin buchen" },
-    { "type": "url", "id": "book_url", "label": "Floating tag link" },
+    { "type": "text", "id": "book_label", "label": "Text link label", "info": "Optionaler Text-Link unter den Buttons." },
+    { "type": "url", "id": "book_url", "label": "Text link" },
     { "type": "header", "content": "Button colors", "info": "Leer lassen, um die Farben des Color Schemes zu verwenden." },
     { "type": "color", "id": "primary_btn_bg", "label": "Primary button background" },
     { "type": "color", "id": "primary_btn_text", "label": "Primary button text" },
@@ -134,9 +136,9 @@
     { "type": "color", "id": "secondary_btn_border", "label": "Secondary button border" },
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
-    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#050505" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "info": "Farbe des Eyebrow-Punkts. Leer lassen, um den Design-Akzent zu verwenden." },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 48 },
-    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }

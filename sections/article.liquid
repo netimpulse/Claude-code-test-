@@ -1,10 +1,18 @@
 {% comment %}
-  Article — editorial blog post
+  Article — editorial blog post (SYS: light scheme, reading typography)
   ----------------------------------------------------------------
-  Full-bleed hero (featured image + overlaid category & title), a
-  readable rich-text body with styled pull-quotes, inline images and
-  responsive video embeds, a tag/share footer and a native comments
-  section (list + form). Mobile-first.
+  Header in the reading column (category eyebrow, the page's only h1,
+  subtitle, meta line), then the featured image as a photo with --r-lg
+  (no overlay, no gradient). Body in .rte reading type (--text-body,
+  line-height 1.7, max 68ch, h2/h3 in Bricolage, links in .text-link
+  style), pull quotes on a --color-surface card, tags + share, editor
+  blocks (newsletter/CTA, related posts) and native comments.
+
+  Colours come from the colour scheme tokens (--color-*); quote_* only
+  override the quote card when they are filled (empty = design system).
+  Date: an empty date_format uses the locale-aware `format: 'date'`.
+  overlay_opacity is kept for compatibility but no longer rendered
+  (SYS: no overlays on photos).
 
   Optional per-article extras (set in the article's metafields):
     - article.metafields.custom.category       → category label override
@@ -20,11 +28,6 @@
   assign s = section.settings
   assign scheme = s.color_scheme
 
-  assign has_image = false
-  if article.image != blank
-    assign has_image = true
-  endif
-
   assign category = ''
   if s.category_source == 'metafield'
     assign category = article.metafields.custom.category
@@ -39,7 +42,11 @@
   assign hero_subtitle = article.metafields.custom.hero_subtitle
 
   assign date_iso = article.published_at | date: '%Y-%m-%d'
-  assign date_nice = article.published_at | date: s.date_format
+  if s.date_format != blank
+    assign date_nice = article.published_at | date: s.date_format
+  else
+    assign date_nice = article.published_at | date: format: 'date'
+  endif
 
   assign words = article.content | strip_html | split: ' ' | size
   assign read_min = words | divided_by: 200 | at_least: 1
@@ -51,93 +58,75 @@
   if s.show_tags and article.tags.size > 0
     assign show_footer = true
   endif
+
+  assign fallback_newsletter_submit = 'blog.newsletter_submit' | t
+  assign label_prev = 'blog.pagination_previous' | t
+  assign label_next = 'blog.pagination_next' | t
 -%}
 
 {% style %}
-  #shopify-section-{{ section.id }} {
+  #shopify-section-{{ section.id }} .article {
     --art-pt: {{ s.padding_top }}px;
     --art-pb: {{ s.padding_bottom }}px;
     --art-content-w: {{ s.content_width }}px;
     --art-hero-h: {{ s.hero_height }}px;
-    --art-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
     --art-radius: {{ s.media_radius }}px;
-    {%- if scheme.settings.background != blank -%}
-      --art-bg: {{ scheme.settings.background }};
-      --art-card: {{ scheme.settings.background_card | default: scheme.settings.background }};
-      --art-text: {{ scheme.settings.text }};
-      --art-muted: {{ scheme.settings.muted | default: scheme.settings.text }};
-      --art-accent: {{ scheme.settings.accent | default: scheme.settings.text }};
-      --art-line: {{ scheme.settings.text | color_modify: 'alpha', 0.12 }};
-      --art-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.28 }};
-      --art-link: {{ scheme.settings.links | default: scheme.settings.accent }};
-      --art-chat-bubble: {{ scheme.settings.text | color_modify: 'alpha', 0.06 }};
-      --art-ring: {{ scheme.settings.accent | default: scheme.settings.text | color_modify: 'alpha', 0.2 }};
+    {%- if s.quote_background != blank %}
+    --art-quote-bg: {{ s.quote_background }};
     {%- endif -%}
-    {%- if s.quote_background != blank -%}
-      --art-quote-bg: {{ s.quote_background }};
-    {%- endif -%}
-    {%- if s.quote_text != blank -%}
-      --art-quote-text: {{ s.quote_text }};
-      --art-quote-mark: {{ s.quote_text | color_modify: 'alpha', 0.55 }};
-    {%- endif -%}
+    {%- if s.quote_text != blank %}
+    --art-quote-text: {{ s.quote_text }};
+    {%- endif %}
   }
 {% endstyle %}
 
-<article class="article full-width color-{{ scheme.id }}" data-section-id="{{ section.id }}">
-  {%- comment -%} ---------- Hero ---------- {%- endcomment -%}
-  {%- if has_image -%}
-    <header class="article__hero article__hero--image" style="--art-align: {{ s.text_align }};">
-      {%- assign hero_alt = article.image.alt | default: article.title -%}
-      {{
-        article.image
-        | image_url: width: 2400
-        | image_tag:
-          loading: 'eager',
-          fetchpriority: 'high',
-          widths: '600, 900, 1200, 1600, 2000, 2400',
-          sizes: '100vw',
-          class: 'article__hero-img',
-          alt: hero_alt
-      }}
-      <div class="article__hero-overlay" aria-hidden="true"></div>
-      <div class="article__hero-inner">
-        {%- if s.show_category and category != blank -%}
-          <span class="article__category">{{ category | escape }}</span>
+<article
+  class="article article--align-{{ s.text_align }} full-width{% if scheme %} color-{{ scheme.id }}{% endif %}"
+  data-section-id="{{ section.id }}"
+>
+  {%- comment -%} ---------- Header + photo ---------- {%- endcomment -%}
+  <header class="article__hero{% if article.image != blank %} article__hero--image{% else %} article__hero--text{% endif %}">
+    <div class="article__hero-inner">
+      {%- if s.show_category and category != blank -%}
+        <p class="article__category eyebrow">{{ category | escape }}</p>
+      {%- endif -%}
+      <h1 class="article__hero-title">{{ article.title | escape }}</h1>
+      {%- if hero_subtitle != blank -%}
+        <p class="article__hero-subtitle">{{ hero_subtitle | escape }}</p>
+      {%- endif -%}
+      <p class="article__meta">
+        {%- if s.show_author and article.author != blank -%}
+          <span class="article__author">{{ article.author | escape }}</span>
+          <span class="article__meta-sep" aria-hidden="true">&middot;</span>
         {%- endif -%}
-        <h1 class="article__hero-title">{{ article.title | escape }}</h1>
-        {%- if hero_subtitle != blank -%}
-          <p class="article__hero-subtitle">{{ hero_subtitle | escape }}</p>
+        <time class="article__date" datetime="{{ date_iso }}">{{ date_nice }}</time>
+        {%- if s.show_reading_time -%}
+          <span class="article__meta-sep" aria-hidden="true">&middot;</span>
+          <span class="article__readtime">{{ 'blog.read_time_html' | t: minutes: read_min }}</span>
         {%- endif -%}
-      </div>
-    </header>
-  {%- else -%}
-    <header class="article__hero article__hero--text" style="--art-align: {{ s.text_align }};">
-      <div class="article__hero-inner">
-        {%- if s.show_category and category != blank -%}
-          <span class="article__category">{{ category | escape }}</span>
-        {%- endif -%}
-        <h1 class="article__hero-title">{{ article.title | escape }}</h1>
-        {%- if hero_subtitle != blank -%}
-          <p class="article__hero-subtitle">{{ hero_subtitle | escape }}</p>
-        {%- endif -%}
-      </div>
-    </header>
-  {%- endif -%}
+      </p>
+    </div>
+
+    {%- if article.image != blank -%}
+      <figure class="article__hero-media">
+        {%- assign hero_alt = article.image.alt | default: article.title -%}
+        {{
+          article.image
+          | image_url: width: 2400
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            widths: '600, 900, 1200, 1600, 2000, 2400',
+            sizes: '(min-width: 1440px) 1328px, calc(100vw - 40px)',
+            class: 'article__hero-img',
+            alt: hero_alt
+        }}
+      </figure>
+    {%- endif -%}
+  </header>
 
   {%- comment -%} ---------- Body ---------- {%- endcomment -%}
   <div class="article__container">
-    <div class="article__meta">
-      {%- if s.show_author -%}
-        <span class="article__author">{{ article.author }}</span>
-        <span class="article__meta-sep" aria-hidden="true">&middot;</span>
-      {%- endif -%}
-      <time class="article__date" datetime="{{ date_iso }}">{{ date_nice }}</time>
-      {%- if s.show_reading_time -%}
-        <span class="article__meta-sep" aria-hidden="true">&middot;</span>
-        <span class="article__readtime">{{ 'blog.read_time_html' | t: minutes: read_min }}</span>
-      {%- endif -%}
-    </div>
-
     {%- if s.show_title_above_body -%}
       <h2 class="article__title">{{ article.title | escape }}</h2>
     {%- endif -%}
@@ -150,21 +139,28 @@
       <div class="article__footer">
         {%- if s.show_tags and article.tags.size > 0 -%}
           <div class="article__tags">
-            <span class="article__tags-label">{{ 'blog.tagged' | t }}</span>
-            {%- for tag in article.tags -%}
-              {%- assign tag_handle = tag | handleize -%}
-              <a class="article__tag" href="{{ blog.url }}/tagged/{{ tag_handle }}">{{ tag }}</a>
-            {%- endfor -%}
+            <span class="article__tags-label label-caps">{{ 'blog.tagged' | t }}</span>
+            <ul class="article__tag-list" role="list">
+              {%- for tag in article.tags -%}
+                <li><a class="article__tag" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
           </div>
         {%- endif -%}
         {%- if s.show_share -%}
           {%- assign share_url = shop.url | append: article.url | url_encode -%}
           {%- assign share_title = article.title | url_encode -%}
           <div class="article__share">
-            <span class="article__share-label">{{ 'blog.share' | t }}</span>
-            <a class="article__share-link" href="https://twitter.com/intent/tweet?text={{ share_title }}&url={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'blog.share_twitter' | t }}">X</a>
-            <a class="article__share-link" href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'blog.share_facebook' | t }}">f</a>
-            <a class="article__share-link" href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'blog.share_linkedin' | t }}">in</a>
+            <span class="article__share-label label-caps">{{ 'blog.share' | t }}</span>
+            <a class="article__share-link" href="https://twitter.com/intent/tweet?text={{ share_title }}&url={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'blog.share_twitter' | t }}">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.8 3h3.1l-6.8 7.7 8 10.3h-6.2l-4.9-6.3L5.4 21H2.3l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg>
+            </a>
+            <a class="article__share-link" href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'blog.share_facebook' | t }}">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.5 1.6-1.5h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V13h2.7v8h3.1Z"/></svg>
+            </a>
+            <a class="article__share-link" href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'blog.share_linkedin' | t }}">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M4.98 3.5a2.1 2.1 0 1 1 0 4.2 2.1 2.1 0 0 1 0-4.2ZM3.2 9h3.6v12H3.2V9Zm5.9 0h3.4v1.6h.1c.5-.9 1.7-1.9 3.4-1.9 3.6 0 4.3 2.4 4.3 5.5V21h-3.6v-6c0-1.4 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H9.1V9Z"/></svg>
+            </a>
           </div>
         {%- endif -%}
       </div>
@@ -182,36 +178,52 @@
               {{ block.shopify_attributes }}
               {%- if block.settings.background != blank %} style="--art-cta-bg: {{ block.settings.background }};"{% endif -%}
             >
-              {%- if block.settings.heading != blank -%}
-                <h2 class="article-cta__heading">{{ block.settings.heading | escape }}</h2>
-              {%- endif -%}
-              {%- if block.settings.text != blank -%}
-                <div class="article-cta__text rte">{{ block.settings.text }}</div>
-              {%- endif -%}
+              <div class="article-cta__text-wrap">
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="article-cta__heading">{%- render 'accent-heading', text: block.settings.heading -%}</h2>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="article-cta__text rte">{{ block.settings.text }}</div>
+                {%- endif -%}
+              </div>
               {%- if block.settings.mode == 'newsletter' -%}
                 {%- form 'customer', class: 'article-cta__form' -%}
                   <input type="hidden" name="contact[tags]" value="newsletter">
                   {%- if form.posted_successfully? -%}
                     <p class="article-cta__success" role="status">{{ 'blog.newsletter_success' | t }}</p>
                   {%- else -%}
+                    {%- if form.errors -%}
+                      <div class="article__notice article__notice--error" role="alert" id="NewsletterError-{{ block.id }}">
+                        {{ form.errors | default_errors }}
+                      </div>
+                    {%- endif -%}
                     <label class="visually-hidden" for="NewsletterEmail-{{ block.id }}">{{ 'blog.comment_form_email' | t }}</label>
                     <input
+                      class="article__input"
                       type="email"
                       id="NewsletterEmail-{{ block.id }}"
                       name="contact[email]"
-                      value="{{ form.email }}"
+                      value="{{ form.email | escape }}"
                       placeholder="{{ 'blog.newsletter_placeholder' | t }}"
                       autocomplete="email"
+                      spellcheck="false"
                       required
+                      {%- if form.errors %} aria-invalid="true" aria-describedby="NewsletterError-{{ block.id }}"{% endif %}
                     >
-                    {%- assign nl_label = block.settings.button_label | default: 'Subscribe' -%}
-                    <button type="submit" class="article__btn">{{ nl_label | escape }}</button>
+                    {%- assign nl_label = block.settings.button_label | default: fallback_newsletter_submit -%}
+                    <button type="submit" class="btn btn--primary article-cta__submit">
+                      <span>{{ nl_label | escape }}</span>
+                      <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+                    </button>
                   {%- endif -%}
                 {%- endform -%}
               {%- elsif block.settings.button_label != blank -%}
-                <a class="article__btn article-cta__btn" href="{{ block.settings.button_url | default: '#' }}">
-                  {{- block.settings.button_label | escape -}}
-                </a>
+                <div class="article-cta__actions">
+                  <a class="btn btn--primary article-cta__btn" href="{{ block.settings.button_url | default: routes.root_url }}">
+                    <span>{{ block.settings.button_label | escape }}</span>
+                    <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+                  </a>
+                </div>
               {%- endif -%}
             </div>
           {%- when 'related' -%}
@@ -220,40 +232,49 @@
               {%- assign shown = 0 -%}
               <div class="article-related" {{ block.shopify_attributes }}>
                 {%- if block.settings.heading != blank -%}
-                  <h2 class="article-related__heading">{{ block.settings.heading | escape }}</h2>
+                  <h2 class="article-related__heading">{%- render 'accent-heading', text: block.settings.heading -%}</h2>
                 {%- endif -%}
-                <div class="article-related__grid">
+                <ul class="article-related__grid" role="list">
                   {%- for art in blog.articles -%}
                     {%- if art.id == article.id -%}{%- continue -%}{%- endif -%}
                     {%- if shown >= related_count -%}{%- break -%}{%- endif -%}
-                    {%- assign shown = shown | plus: 1 -%}
-                    <a class="article-related__card" href="{{ art.url }}">
-                      {%- if block.settings.show_image -%}
-                        <div class="article-related__media">
-                          {%- if art.image != blank -%}
-                            {%- assign rel_alt = art.image.alt | default: art.title -%}
-                            {{
-                              art.image
-                              | image_url: width: 600
-                              | image_tag:
-                                loading: 'lazy',
-                                widths: '300, 400, 600',
-                                sizes: '(min-width: 750px) 30vw, 90vw',
-                                class: 'article-related__img',
-                                alt: rel_alt
-                            }}
-                          {%- else -%}
-                            <div class="article-related__placeholder"></div>
-                          {%- endif -%}
-                        </div>
-                      {%- endif -%}
-                      <span class="article-related__title">{{ art.title | escape }}</span>
-                      <time class="article-related__date" datetime="{{ art.published_at | date: '%Y-%m-%d' }}">
-                        {{- art.published_at | date: s.date_format -}}
-                      </time>
-                    </a>
+                    {%- liquid
+                      assign shown = shown | plus: 1
+                      if s.date_format != blank
+                        assign rel_date = art.published_at | date: s.date_format
+                      else
+                        assign rel_date = art.published_at | date: format: 'date'
+                      endif
+                    -%}
+                    <li class="article-related__item">
+                      <a class="article-related__card" href="{{ art.url }}">
+                        {%- if block.settings.show_image -%}
+                          <span class="article-related__media">
+                            {%- if art.image != blank -%}
+                              {%- assign rel_alt = art.image.alt | default: art.title -%}
+                              {{
+                                art.image
+                                | image_url: width: 600
+                                | image_tag:
+                                  loading: 'lazy',
+                                  widths: '300, 400, 600',
+                                  sizes: '(min-width: 861px) 30vw, 90vw',
+                                  class: 'article-related__img',
+                                  alt: rel_alt
+                              }}
+                            {%- else -%}
+                              <span class="article-related__placeholder"></span>
+                            {%- endif -%}
+                          </span>
+                        {%- endif -%}
+                        <span class="article-related__body">
+                          <span class="article-related__title">{{ art.title | escape }}</span>
+                          <time class="article-related__date" datetime="{{ art.published_at | date: '%Y-%m-%d' }}">{{ rel_date }}</time>
+                        </span>
+                      </a>
+                    </li>
                   {%- endfor -%}
-                </div>
+                </ul>
               </div>
             {%- endif -%}
         {%- endcase -%}
@@ -261,112 +282,135 @@
     </div>
   {%- endif -%}
 
-  {%- comment -%} ---------- Comments (chat-style) ---------- {%- endcomment -%}
+  {%- comment -%} ---------- Comments ---------- {%- endcomment -%}
   {%- if blog.comments_enabled? -%}
-    <section class="article__comments article__comments--{{ s.comments_layout }}" id="comments">
-      <div class="article__comments-inner">
-        <h2 class="article__comments-title">
-          {%- if article.comments_count > 0 -%}
-            {{ 'blog.comments_with_count' | t: count: article.comments_count }}
-          {%- else -%}
-            {{ 'blog.comments' | t }}
-          {%- endif -%}
-        </h2>
-
-        {%- if comment != blank and comment.status -%}
-          {%- if comment.status == 'pending' or blog.moderated? -%}
-            <p class="article__notice article__notice--info" role="status">{{ 'blog.comment_success_moderated' | t }}</p>
-          {%- else -%}
-            <p class="article__notice article__notice--success" role="status">{{ 'blog.comment_success' | t }}</p>
-          {%- endif -%}
-        {%- endif -%}
-
+    <section class="article__comments article__comments--{{ s.comments_layout }}" id="comments" aria-labelledby="CommentsTitle-{{ section.id }}">
+      <h2 class="article__comments-title" id="CommentsTitle-{{ section.id }}">
         {%- if article.comments_count > 0 -%}
-          {%- paginate article.comments by 20 -%}
-            <ol class="article__comment-list" role="list">
-              {%- for comment in article.comments -%}
-                {%- assign c_initial = comment.author | strip | slice: 0, 1 | upcase -%}
-                <li class="article__comment" id="comment-{{ comment.id }}">
-                  <div class="article__comment-avatar" aria-hidden="true">{{ c_initial | default: '?' }}</div>
-                  <div class="article__comment-bubble">
-                    <div class="article__comment-head">
-                      <span class="article__comment-author">{{ comment.author | escape }}</span>
-                      <time class="article__comment-date" datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">
-                        {{- comment.created_at | date: s.date_format -}}
-                      </time>
-                    </div>
-                    <div class="article__comment-body rte">{{ comment.content }}</div>
-                  </div>
-                </li>
-              {%- endfor -%}
-            </ol>
-            {%- if paginate.pages > 1 -%}
-              <nav class="article__pagination" aria-label="{{ 'blog.comments' | t }}">
-                {{ paginate | default_pagination: anchor: 'comments' }}
-              </nav>
-            {%- endif -%}
-          {%- endpaginate -%}
+          {{ 'blog.comments_with_count' | t: count: article.comments_count }}
+        {%- else -%}
+          {{ 'blog.comments' | t }}
         {%- endif -%}
+      </h2>
 
-        <div class="article__form-wrap">
-          <h3 class="article__form-title">{{ 'blog.comment_form_title' | t }}</h3>
-          {%- form 'new_comment', article, class: 'article__composer' -%}
-            {%- if form.errors -%}
-              <div class="article__notice article__notice--error" role="alert">
-                {{ form.errors | default_errors }}
-              </div>
-            {%- endif -%}
-            <div class="article__composer-meta">
-              <div class="article__field article__field--inline">
-                <label for="CommentAuthor-{{ section.id }}">{{ 'blog.comment_form_name' | t }}</label>
-                <input
-                  type="text"
-                  name="comment[author]"
-                  id="CommentAuthor-{{ section.id }}"
-                  value="{{ form.author }}"
-                  placeholder="{{ 'blog.comment_form_name' | t }}"
-                  autocomplete="name"
-                  required
-                >
-              </div>
-              <div class="article__field article__field--inline">
-                <label for="CommentEmail-{{ section.id }}">
-                  {{- 'blog.comment_form_email' | t }}
-                  <span class="article__field-hint">&middot; {{ 'blog.comment_form_email_info' | t }}</span>
-                </label>
-                <input
-                  type="email"
-                  name="comment[email]"
-                  id="CommentEmail-{{ section.id }}"
-                  value="{{ form.email }}"
-                  placeholder="name@example.com"
-                  autocomplete="email"
-                  spellcheck="false"
-                  required
-                >
-              </div>
+      {%- if comment != blank and comment.status -%}
+        {%- if comment.status == 'pending' or blog.moderated? -%}
+          <p class="article__notice" role="status">{{ 'blog.comment_success_moderated' | t }}</p>
+        {%- else -%}
+          <p class="article__notice" role="status">{{ 'blog.comment_success' | t }}</p>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if article.comments_count > 0 -%}
+        {%- paginate article.comments by 20 -%}
+          <ol class="article__comment-list" role="list">
+            {%- for comment in article.comments -%}
+              {%- liquid
+                assign c_initial = comment.author | strip | slice: 0, 1 | upcase
+                if s.date_format != blank
+                  assign c_date = comment.created_at | date: s.date_format
+                else
+                  assign c_date = comment.created_at | date: format: 'date'
+                endif
+              -%}
+              <li class="article__comment" id="comment-{{ comment.id }}">
+                <span class="article__comment-avatar" aria-hidden="true">{{ c_initial | default: '?' | escape }}</span>
+                <div class="article__comment-bubble">
+                  <p class="article__comment-head">
+                    <span class="article__comment-author">{{ comment.author | escape }}</span>
+                    <time class="article__comment-date" datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">{{ c_date }}</time>
+                  </p>
+                  <div class="article__comment-body rte">{{ comment.content }}</div>
+                </div>
+              </li>
+            {%- endfor -%}
+          </ol>
+          {%- if paginate.pages > 1 -%}
+            <nav class="article__pagination" aria-label="{{ 'blog.comments_pagination' | t }}">
+              {{ paginate | default_pagination: anchor: 'comments', previous: label_prev, next: label_next }}
+            </nav>
+          {%- endif -%}
+        {%- endpaginate -%}
+      {%- endif -%}
+
+      <div class="article__form-wrap">
+        <h3 class="article__form-title">{{ 'blog.comment_form_title' | t }}</h3>
+        {%- form 'new_comment', article, class: 'article__composer' -%}
+          {%- liquid
+            assign err_author = false
+            assign err_email = false
+            assign err_body = false
+            if form.errors
+              if form.errors contains 'author'
+                assign err_author = true
+              endif
+              if form.errors contains 'email'
+                assign err_email = true
+              endif
+              if form.errors contains 'body'
+                assign err_body = true
+              endif
+            endif
+          -%}
+          {%- if form.errors -%}
+            <div class="article__notice article__notice--error" role="alert" id="CommentErrors-{{ section.id }}">
+              {{ form.errors | default_errors }}
             </div>
-            <div class="article__composer-bar">
-              <label class="visually-hidden" for="CommentBody-{{ section.id }}">{{ 'blog.comment_form_body' | t }}</label>
-              <textarea
-                name="comment[body]"
-                id="CommentBody-{{ section.id }}"
-                rows="1"
-                placeholder="{{ 'blog.comment_placeholder' | t }}"
+          {%- endif -%}
+          <div class="article__composer-meta">
+            <div class="article__field">
+              <label for="CommentAuthor-{{ section.id }}">{{ 'blog.comment_form_name' | t }}</label>
+              <input
+                class="article__input"
+                type="text"
+                name="comment[author]"
+                id="CommentAuthor-{{ section.id }}"
+                value="{{ form.author | escape }}"
+                autocomplete="name"
                 required
-              >{{ form.body }}</textarea>
-              <button type="submit" class="article__send" aria-label="{{ 'blog.comment_form_submit' | t }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                  <path d="M22 2 11 13"></path>
-                  <path d="M22 2 15 22l-4-9-9-4 20-7Z"></path>
-                </svg>
-              </button>
+                {%- if err_author %} aria-invalid="true" aria-describedby="CommentErrors-{{ section.id }}"{% endif %}
+              >
             </div>
+            <div class="article__field">
+              <label for="CommentEmail-{{ section.id }}">{{ 'blog.comment_form_email' | t }}</label>
+              <input
+                class="article__input"
+                type="email"
+                name="comment[email]"
+                id="CommentEmail-{{ section.id }}"
+                value="{{ form.email | escape }}"
+                placeholder="{{ 'blog.email_placeholder' | t }}"
+                autocomplete="email"
+                spellcheck="false"
+                required
+                aria-describedby="CommentEmailHint-{{ section.id }}{% if err_email %} CommentErrors-{{ section.id }}{% endif %}"
+                {%- if err_email %} aria-invalid="true"{% endif %}
+              >
+              <p class="article__field-hint" id="CommentEmailHint-{{ section.id }}">{{ 'blog.comment_form_email_info' | t }}</p>
+            </div>
+          </div>
+          <div class="article__field">
+            <label for="CommentBody-{{ section.id }}">{{ 'blog.comment_form_body' | t }}</label>
+            <textarea
+              class="article__input article__textarea"
+              name="comment[body]"
+              id="CommentBody-{{ section.id }}"
+              rows="5"
+              placeholder="{{ 'blog.comment_placeholder' | t }}"
+              required
+              {%- if err_body %} aria-invalid="true" aria-describedby="CommentErrors-{{ section.id }}"{% endif %}
+            >{{ form.body | escape }}</textarea>
+          </div>
+          <div class="article__composer-actions">
+            <button type="submit" class="btn btn--primary article__send">
+              <span>{{ 'blog.comment_form_submit' | t }}</span>
+              <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+            </button>
             {%- if blog.moderated? -%}
               <p class="article__form-note">{{ 'blog.comment_moderated' | t }}</p>
             {%- endif -%}
-          {%- endform -%}
-        </div>
+          </div>
+        {%- endform -%}
       </div>
     </section>
   {%- endif -%}
@@ -442,7 +486,7 @@
       "max": 32,
       "step": 2,
       "unit": "px",
-      "default": 0
+      "default": 16
     },
     {
       "type": "header",
@@ -464,8 +508,7 @@
       "type": "text",
       "id": "date_format",
       "label": "t:article.date_format_label",
-      "info": "t:article.date_format_info",
-      "default": "%b %d, %Y"
+      "info": "t:article.date_format_info"
     },
     {
       "type": "checkbox",
@@ -497,14 +540,12 @@
     {
       "type": "color",
       "id": "quote_background",
-      "label": "t:article.quote_background_label",
-      "default": "#ece4cf"
+      "label": "t:article.quote_background_label"
     },
     {
       "type": "color",
       "id": "quote_text",
-      "label": "t:article.quote_text_label",
-      "default": "#1f2328"
+      "label": "t:article.quote_text_label"
     },
     {
       "type": "header",

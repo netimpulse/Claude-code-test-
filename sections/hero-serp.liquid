@@ -1,8 +1,9 @@
 {% comment %}
   Hero SERP — animated rank-jump dashboard
   ----------------------------------------------------------------
-  Left column: eyebrow, two-tone headline with highlight, body,
-  two CTAs. Right column: mock Google SERP — a search bar that
+  Left column: eyebrow, headline with a serif accent word
+  (heading_highlight as <em class="it">), lead, two CTAs — all on
+  the design-system tokens; no reveal animation on the copy. Right column: mock Google SERP — a search bar that
   types the configured query, result tabs, and a results list
   where the row flagged as "your brand" jumps from its initial
   position to the top while rows above it shift down. Everything,
@@ -11,9 +12,14 @@
 
 {%- liquid
   assign scheme = section.settings.color_scheme
+  assign scheme_class = ''
+  if scheme != blank
+    assign scheme_class = 'color-' | append: scheme.id
+  endif
   assign accent = section.settings.accent_color
   assign accent_soft = section.settings.accent_soft
   assign highlight_color = section.settings.heading_highlight_color
+  assign fallback_tabs = 'hero_serp.tabs_default' | t
 
   assign brand_index = -1
   for block in section.blocks
@@ -34,28 +40,14 @@
   #shopify-section-{{ section.id }} .hero-serp {
     --hs-pad-top: {{ section.settings.padding_top }}px;
     --hs-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --hs-accent: {{ accent }};
-    --hs-accent-soft: {{ accent_soft }};
-    --hs-accent-tint: {{ accent_soft | color_modify: 'alpha', 0.18 }};
-    --hs-accent-border: {{ accent | color_modify: 'alpha', 0.18 }};
-    {%- if highlight_color != blank -%}
-      --hs-highlight: {{ highlight_color }};
-    {%- endif -%}
-    {%- if scheme.settings.background != blank -%}
-      --hs-bg: {{ scheme.settings.background }};
-      --hs-bg-soft: #f6f8f8;
-      --hs-text: {{ scheme.settings.text }};
-      --hs-text-soft: {{ scheme.settings.text | color_modify: 'alpha', 0.65 }};
-      --hs-text-muted: {{ scheme.settings.text | color_modify: 'alpha', 0.45 }};
-      --hs-line: {{ scheme.settings.text | color_modify: 'alpha', 0.10 }};
-      --hs-line-strong: {{ scheme.settings.text | color_modify: 'alpha', 0.18 }};
-      --hs-card-bg: #ffffff;
-    {%- endif -%}
+    {%- if accent != blank %}--hs-accent: {{ accent }};{% endif %}
+    {%- if accent_soft != blank %}--hs-accent-soft: {{ accent_soft }};{% endif %}
+    {%- if highlight_color != blank %}--hs-highlight: {{ highlight_color }};{% endif %}
   }
 {% endstyle %}
 
 <hero-serp
-  class="hero-serp full-width color-scheme color-{{ scheme.id }}"
+  class="hero-serp full-width {{ scheme_class }}"
   data-section-id="{{ section.id }}"
   data-section-type="hero-serp"
   data-query="{{ section.settings.search_query | escape }}"
@@ -66,7 +58,7 @@
   <div class="hero-serp__inner">
     <div class="hero-serp__copy">
       {%- if section.settings.eyebrow != blank -%}
-        <p class="hero-serp__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <p class="hero-serp__eyebrow eyebrow">{{ section.settings.eyebrow | escape }}</p>
       {%- endif -%}
 
       <h1 class="hero-serp__heading">
@@ -75,7 +67,7 @@
         {%- endif -%}
         {%- if section.settings.heading_highlight != blank -%}
           {%- if section.settings.heading_before != blank -%}{{ ' ' }}{%- endif -%}
-          <span class="hero-serp__heading-accent">{{ section.settings.heading_highlight | escape }}</span>
+          <em class="it hero-serp__heading-accent">{{ section.settings.heading_highlight | escape }}</em>
         {%- endif -%}
         {%- if section.settings.heading_after != blank -%}
           {%- assign trail_first = section.settings.heading_after | slice: 0, 1 -%}
@@ -92,21 +84,23 @@
         <div class="hero-serp__body">{{ section.settings.body }}</div>
       {%- endif -%}
 
-      <div class="hero-serp__actions">
-        {%- if section.settings.primary_label != blank -%}
-          <a class="hero-serp__btn hero-serp__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
-            <span>{{ section.settings.primary_label | escape }}</span>
-            <svg class="hero-serp__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        {%- endif -%}
-        {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
-          <a class="hero-serp__btn hero-serp__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
-            <span>{{ section.settings.secondary_label | escape }}</span>
-          </a>
-        {%- endif -%}
-      </div>
+      {%- if section.settings.primary_label != blank or section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
+        <div class="hero-serp__actions">
+          {%- if section.settings.primary_label != blank -%}
+            <a class="btn btn--primary hero-serp__btn hero-serp__btn--primary" href="{{ section.settings.primary_url | default: '#' }}">
+              <span>{{ section.settings.primary_label | escape }}</span>
+              <svg class="hero-serp__btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3 8h9.5M9 4.5 12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.show_secondary_button != false and section.settings.secondary_label != blank -%}
+            <a class="btn btn--secondary hero-serp__btn hero-serp__btn--secondary" href="{{ section.settings.secondary_url | default: '#' }}">
+              <span>{{ section.settings.secondary_label | escape }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
 
     <div class="hero-serp__mock" aria-hidden="true">
@@ -126,7 +120,7 @@
       </div>
 
       <div class="hero-serp__tabs">
-        {%- assign tabs = section.settings.tabs | default: 'All|Images|Shopping|News|Videos' | split: '|' -%}
+        {%- assign tabs = section.settings.tabs | default: fallback_tabs | split: '|' -%}
         {%- for tab in tabs -%}
           <span class="hero-serp__tab{% if forloop.first %} hero-serp__tab--active{% endif %}">{{ tab | strip | escape }}</span>
         {%- endfor -%}
@@ -178,7 +172,7 @@
     {"type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "SEO · Organic search"},
     {"type": "textarea", "id": "heading_before", "label": "Heading text (before highlight)", "default": "Show up first when buyers "},
     {"type": "text", "id": "heading_highlight", "label": "Heading highlight word", "default": "search"},
-    {"type": "color", "id": "heading_highlight_color", "label": "Highlight color", "info": "Optional. Overrides the default highlight color."},
+    {"type": "color", "id": "heading_highlight_color", "label": "Highlight color", "info": "Optional. Leer lassen: Der Akzent erscheint als Serif-Kursiv in der Textfarbe (Designsystem)."},
     {"type": "text", "id": "heading_after", "label": "Heading text (after highlight)", "default": "."},
     {"type": "richtext", "id": "body", "label": "Body", "default": "<p>We tune your pages, fix what Google trips over, and earn the links that move you up the list. First results in 60–90 days.</p>"},
     {"type": "header", "content": "Buttons"},
@@ -196,9 +190,9 @@
     {"type": "range", "id": "cycle_duration", "label": "Cycle length", "min": 5, "max": 20, "step": 1, "unit": "s", "default": 8},
     {"type": "range", "id": "typing_duration", "label": "Typing speed (×0.1s)", "info": "How long it takes to type the query. 14 = 1.4 seconds.", "min": 5, "max": 40, "step": 1, "default": 14},
     {"type": "header", "content": "Appearance"},
-    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1"},
-    {"type": "color", "id": "accent_color", "label": "Accent color", "default": "#1c4948"},
-    {"type": "color", "id": "accent_soft", "label": "Accent (soft)", "default": "#9ccfd0"},
+    {"type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand"},
+    {"type": "color", "id": "accent_color", "label": "Accent color", "info": "Farbe der eigenen Marke im Such-Mockup.", "default": "#1c4948"},
+    {"type": "color", "id": "accent_soft", "label": "Accent (soft)", "info": "Heller Akzent im Such-Mockup (Rang-Badge, Markierung).", "default": "#9ccfd0"},
     {"type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80},
     {"type": "header", "content": "Typography"},

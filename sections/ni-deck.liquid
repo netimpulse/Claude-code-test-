@@ -1,28 +1,24 @@
 {% comment %}
-  NI Deck — vertical sticky service deck (sand design). Each card (a
-  section block) sticks near the top while the next one scrolls up and
-  layers over it. Full-bleed background with a soft radial wash.
+  NI Deck — service stage with stacked slabs (SYS §6 "Leistungstafel").
+  Head: h2 with serif accent (accent-heading) + optional "all services" link.
+  Each card block is an <article> slab: copy (number · label, h3, paragraphs,
+  pill tags, round arrow) on the left, a decorative graphic on the right
+  (snippets/ni-deck-graphic.liquid). Slab colours come from static tokens via
+  --slab-* per tone. Sticky stacking only from 1101px width and 760px height.
 {% endcomment %}
 
 {%- liquid
   assign scheme = section.settings.color_scheme
   assign accent = section.settings.accent_color
-  if accent == blank
-    assign accent = scheme.settings.accent
-  endif
 -%}
 
 {% style %}
-  #shopify-section-{{ section.id }} {
-    --lp-bg: {{ scheme.settings.background | default: '#f8f6f1' }};
-    --lp-surface: {{ scheme.settings.background_card | default: '#fffdf8' }};
-    --lp-text: {{ scheme.settings.text | default: '#050505' }};
-    --lp-muted: {{ scheme.settings.muted | default: '#6b665e' }};
-    --lp-line: {{ scheme.settings.text | default: '#050505' | color_modify: 'alpha', 0.12 }};
-    --lp-maxw: 1440px;
-    --lp-pad-top: {{ section.settings.padding_top }}px;
-    --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
+  #shopify-section-{{ section.id }} .ni-deck {
+    --ni-deck-pad-top: {{ section.settings.padding_top }}px;
+    --ni-deck-pad-bottom: {{ section.settings.padding_bottom }}px;
+    {%- if accent != blank %}
     --lp-accent: {{ accent }};
+    {%- endif %}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
@@ -30,15 +26,20 @@
 
 <ni-deck class="ni-deck full-width color-{{ scheme.id }}" {{ section.shopify_attributes }}>
   <div class="ni-deck__shell">
-    <header class="ni-deck__head ni-reveal">
-      <div>
+    <header class="ni-deck__head">
+      <div class="ni-deck__head-main">
         {%- if section.settings.kicker != blank -%}
-          <span class="ni-deck__kicker">{{ section.settings.kicker | escape }}</span>
+          <p class="ni-deck__kicker eyebrow">{{ section.settings.kicker | escape }}</p>
         {%- endif -%}
         {%- if section.settings.heading != blank -%}
-          <h2 class="ni-deck__title">{{ section.settings.heading | escape }}</h2>
+          <h2 class="ni-deck__title">{% render 'accent-heading', text: section.settings.heading %}</h2>
         {%- endif -%}
       </div>
+      {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
+        <a class="ni-deck__all text-link" href="{{ section.settings.link_url }}">
+          {{- section.settings.link_label | escape }} <span class="ni-deck__all-arrow" aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
       {%- if section.settings.text != blank and section.settings.show_intro -%}
         <p class="ni-deck__text">{{ section.settings.text | escape }}</p>
       {%- endif -%}
@@ -46,58 +47,107 @@
 
     <div class="ni-deck__stack">
       {%- for block in section.blocks -%}
-        {%- assign tone = block.settings.tone | default: 'light' -%}
-        <article class="ni-deck-card ni-deck-card--{{ tone }}" {{ block.shopify_attributes }}>
+        {%- liquid
+          assign tone = block.settings.tone | default: 'light'
+          assign visual = block.settings.visual | default: 'auto'
+          if visual == 'auto'
+            assign label_key = block.settings.label | downcase
+            if label_key contains 'seo'
+              assign visual = 'search'
+            elsif label_key contains 'smm' or label_key contains 'social'
+              assign visual = 'social'
+            elsif label_key contains 'shop'
+              assign visual = 'shop'
+            elsif label_key contains 'web'
+              assign visual = 'web'
+            elsif label_key contains 'sea' or label_key contains 'ads'
+              assign visual = 'campaign'
+            else
+              assign slot = forloop.index0 | modulo: 5
+              case slot
+                when 0
+                  assign visual = 'search'
+                when 1
+                  assign visual = 'campaign'
+                when 2
+                  assign visual = 'social'
+                when 3
+                  assign visual = 'web'
+                else
+                  assign visual = 'shop'
+              endcase
+            endif
+          endif
+
+          assign title_id = 'NiDeckTitle-' | append: block.id
+          assign more_name = block.settings.label | default: block.settings.title
+          assign paragraphs = block.settings.text | escape | newline_to_br | strip_newlines | split: '<br /><br />'
+        -%}
+        <article
+          class="ni-deck-card ni-deck-card--{{ tone | escape }}{% if visual == 'none' %} ni-deck-card--no-visual{% endif %}"
+          style="--i: {{ forloop.index0 }};"
+          {% if block.settings.title != blank %}aria-labelledby="{{ title_id }}"{% endif %}
+          {{ block.shopify_attributes }}
+        >
           <div class="ni-deck-card__copy">
-            <div class="ni-deck-card__topline">
-              <span>{{ block.settings.number | escape }}</span>
-              <span>{{ block.settings.label | escape }}</span>
-            </div>
-            <div class="ni-deck-card__lede">
-              {%- if block.settings.title != blank -%}
-                <h3 class="ni-deck-card__title">{{ block.settings.title | escape }}</h3>
+            <div class="ni-deck-card__topline label-caps">
+              {%- if block.settings.number != blank -%}
+                <span class="ni-deck-card__number">{{ block.settings.number | escape }}</span>
               {%- endif -%}
-              {%- if block.settings.text != blank -%}
-                <p class="ni-deck-card__text">{{ block.settings.text | escape }}</p>
+              {%- if block.settings.label != blank -%}
+                <span class="ni-deck-card__label">{{ block.settings.label | escape }}</span>
               {%- endif -%}
             </div>
+            {%- if block.settings.title != blank -%}
+              <h3 class="ni-deck-card__title" id="{{ title_id }}">{{ block.settings.title | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <div class="ni-deck-card__text">
+                {%- for paragraph in paragraphs -%}
+                  {%- assign paragraph_text = paragraph | strip -%}
+                  {%- if paragraph_text != blank -%}
+                    <p>{{ paragraph_text }}</p>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
             <div class="ni-deck-card__actions">
-              <div class="ni-deck-card__tags">
-                {%- if block.settings.tag_1 != blank -%}<span>{{ block.settings.tag_1 | escape }}</span>{%- endif -%}
-                {%- if block.settings.tag_2 != blank -%}<span>{{ block.settings.tag_2 | escape }}</span>{%- endif -%}
-                {%- if block.settings.tag_3 != blank -%}<span>{{ block.settings.tag_3 | escape }}</span>{%- endif -%}
-              </div>
+              {%- if block.settings.tag_1 != blank or block.settings.tag_2 != blank or block.settings.tag_3 != blank -%}
+                <ul class="ni-deck-card__tags" aria-label="{{ 'ni_deck.tags_label' | t }}">
+                  {%- if block.settings.tag_1 != blank -%}<li>{{ block.settings.tag_1 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.tag_2 != blank -%}<li>{{ block.settings.tag_2 | escape }}</li>{%- endif -%}
+                  {%- if block.settings.tag_3 != blank -%}<li>{{ block.settings.tag_3 | escape }}</li>{%- endif -%}
+                </ul>
+              {%- endif -%}
               {%- if block.settings.link_url != blank -%}
-                <a class="ni-deck-card__link" href="{{ block.settings.link_url }}" aria-label="{{ block.settings.title | escape }}">→</a>
+                <a
+                  class="ni-deck-card__link"
+                  href="{{ block.settings.link_url }}"
+                  aria-label="{{ 'ni_deck.more_about' | t: title: more_name | escape }}"
+                >
+                  <span aria-hidden="true">→</span>
+                </a>
               {%- endif -%}
             </div>
           </div>
-          <div class="ni-deck-card__visual" aria-hidden="true">
-            <div class="ni-device">
-              <div class="ni-device__bar">
-                <div class="ni-device__dots"><span></span><span></span><span></span></div>
-                {%- if block.settings.device_label != blank -%}
-                  <div class="ni-device__label">{{ block.settings.device_label | escape }}</div>
-                {%- endif -%}
-              </div>
-              <div class="ni-device__lines"><span></span><span></span><span></span><span></span></div>
-              <div class="ni-device__metrics"><span></span><span></span><span></span></div>
+          {%- if visual != 'none' -%}
+            <div class="ni-deck-card__visual">
+              {%- render 'ni-deck-graphic', visual: visual -%}
             </div>
-          </div>
+          {%- endif -%}
         </article>
       {%- else -%}
-        <p class="ni-deck__empty">{{ 'landingpage.add_cards' | t | default: 'Add service cards in the theme editor.' }}</p>
+        <p class="ni-deck__empty">{{ 'ni_deck.add_cards' | t }}</p>
       {%- endfor -%}
     </div>
 
     {%- if section.settings.note != blank -%}
-      <p class="ni-deck__note ni-reveal">{{ section.settings.note | escape }}</p>
+      <p class="ni-deck__note">{{ section.settings.note | escape }}</p>
     {%- endif -%}
   </div>
 </ni-deck>
 
 {{ 'section-ni-deck.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'ni-reveal.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
@@ -105,15 +155,17 @@
   "tag": "section",
   "settings": [
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "Leistungen" },
-    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Ein Kartendeck, das beim Scrollen Schicht für Schicht arbeitet." },
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "Setze ein Wort oder eine Wortgruppe in *Sternchen*, um sie als Serif-Akzent zu zeigen.", "default": "Unsere Leistungen *im Überblick*" },
     { "type": "textarea", "id": "text", "label": "Intro text", "default": "Die nächste Leistung kommt von unten hoch, bleibt kurz im Fokus und legt sich über die vorherige Karte." },
     { "type": "checkbox", "id": "show_intro", "label": "Begleittext anzeigen", "default": true },
     { "type": "textarea", "id": "note", "label": "Closing note", "default": "Ein vertikaler Sticky-Stack: Beim Scrollen rückt jede Karte von unten nach und übernimmt den Fokus." },
+    { "type": "text", "id": "link_label", "label": "Link-Text (Kopfzeile)", "info": "Zum Beispiel „Alle Leistungen“. Wird nur mit Link angezeigt." },
+    { "type": "url", "id": "link_url", "label": "Link (Kopfzeile)" },
     { "type": "header", "content": "Appearance" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-sand" },
-    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#050505" },
-    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 120 },
-    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "info": "Leer lassen für die Designsystem-Farbe. Wirkt auf die Nummer heller Tafeln." },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 160 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 160 },
     { "type": "header", "content": "Typography" },
     { "type": "range", "id": "heading_scale", "label": "Heading size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
@@ -133,7 +185,8 @@
             { "value": "sand", "label": "Sand" },
             { "value": "sand-deep", "label": "Sand deep" },
             { "value": "dark", "label": "Dark" },
-            { "value": "cream", "label": "Cream" }
+            { "value": "cream", "label": "Cream" },
+            { "value": "teal", "label": "Teal (dark)" }
           ],
           "default": "light"
         },
@@ -146,7 +199,23 @@
         { "type": "text", "id": "tag_2", "label": "Tag 2" },
         { "type": "text", "id": "tag_3", "label": "Tag 3" },
         { "type": "header", "content": "Visual & link" },
-        { "type": "text", "id": "device_label", "label": "Device label", "default": "Dashboard" },
+        {
+          "type": "select",
+          "id": "visual",
+          "label": "Grafik",
+          "info": "Automatisch: nach Label (SEO, SEA, SMM, Webdesign, Shopify), sonst nach Position.",
+          "options": [
+            { "value": "auto", "label": "Automatisch" },
+            { "value": "search", "label": "Suchergebnis (SEO)" },
+            { "value": "campaign", "label": "Kurve (SEA)" },
+            { "value": "social", "label": "Raster (Social Media)" },
+            { "value": "web", "label": "Browser (Webdesign)" },
+            { "value": "shop", "label": "Theme-Editor (Shopify)" },
+            { "value": "none", "label": "Keine Grafik" }
+          ],
+          "default": "auto"
+        },
+        { "type": "text", "id": "device_label", "label": "Device label", "info": "Wird im neuen Design nicht mehr angezeigt.", "default": "Dashboard" },
         { "type": "url", "id": "link_url", "label": "Link" }
       ]
     }
@@ -156,11 +225,11 @@
       "name": "NI Deck",
       "category": "Landing",
       "blocks": [
-        { "type": "card", "settings": { "tone": "light", "number": "01", "label": "SEO", "title": "Gefunden werden", "text": "Technische Struktur, Inhalte und Suchintentionen werden so aufgebaut, dass eure Website langfristig Sichtbarkeit und Vertrauen gewinnt.", "tag_1": "Keyword Mapping", "tag_2": "Content", "tag_3": "Technik", "device_label": "Search Visibility" } },
+        { "type": "card", "settings": { "tone": "light", "number": "01", "label": "SEO", "title": "Gefunden werden", "text": "Technische Struktur, Inhalte und Suchintentionen werden so aufgebaut, dass deine Website langfristig Sichtbarkeit und Vertrauen gewinnt.", "tag_1": "Keyword-Mapping", "tag_2": "Content", "tag_3": "Technik", "device_label": "Search Visibility" } },
         { "type": "card", "settings": { "tone": "sand", "number": "02", "label": "SEA", "title": "Nachfrage aktivieren", "text": "Google Ads Kampagnen werden nicht nur gestartet, sondern sauber strukturiert, gemessen und auf rentable Anfragen ausgerichtet.", "tag_1": "Search", "tag_2": "Shopping", "tag_3": "Tracking", "device_label": "Campaign System" } },
         { "type": "card", "settings": { "tone": "sand-deep", "number": "03", "label": "SMM", "title": "Aufmerksamkeit formen", "text": "Social Media wird als klare Marken- und Inhaltsfläche gedacht: mit Struktur, Wiedererkennung und Beiträgen, die zum Angebot passen.", "tag_1": "Content", "tag_2": "Paid Social", "tag_3": "Brand", "device_label": "Content Flow" } },
         { "type": "card", "settings": { "tone": "dark", "number": "04", "label": "Webdesign", "title": "Website als Gespräch", "text": "Wir gestalten Seiten, die erklären, führen und verkaufen – clean, hochwertig und ohne das Gefühl eines ausgetauschten Standard-Templates.", "tag_1": "UX", "tag_2": "Designsystem", "tag_3": "Conversion", "device_label": "Interface" } },
-        { "type": "card", "settings": { "tone": "cream", "number": "05", "label": "Shopify", "title": "Shops, die skalieren", "text": "Custom Sections, Theme-Strukturen und Layouts, die im Editor pflegbar bleiben und trotzdem nicht wie ein Standard-Shop aussehen.", "tag_1": "Liquid", "tag_2": "OS 2.0", "tag_3": "Themes", "device_label": "Theme System" } }
+        { "type": "card", "settings": { "tone": "teal", "number": "05", "label": "Shopify", "title": "Shops, die skalieren", "text": "Custom Sections, Theme-Strukturen und Layouts, die im Editor pflegbar bleiben und trotzdem nicht wie ein Standard-Shop aussehen.", "tag_1": "Liquid", "tag_2": "OS 2.0", "tag_3": "Themes", "device_label": "Theme System" } }
       ]
     }
   ]
