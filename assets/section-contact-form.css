@@ -22,8 +22,8 @@
 
 /* ---- Header ---- */
 .contact-form__header {
-  max-width: 60rem;
-  margin-bottom: clamp(40px, 5vw, 72px);
+  max-width: calc(60rem * var(--ui-scale, 1));
+  margin-bottom: calc(clamp(40px, 5vw, 72px) * var(--ui-scale, 1));
 }
 
 .contact-form__heading {
@@ -161,7 +161,7 @@
 .contact-form__input {
   display: block;
   width: 100%;
-  min-height: 52px;
+  min-height: calc(52px * var(--ui-scale, 1));
   padding: 0 var(--s-4);
   font: inherit;
   font-size: calc(var(--text-body) * var(--fs-text, 1));
@@ -191,7 +191,7 @@
 }
 
 .contact-form__textarea {
-  min-height: 168px;
+  min-height: calc(168px * var(--ui-scale, 1));
   padding-block: var(--s-3);
   resize: vertical;
 }
@@ -229,7 +229,7 @@
 .contact-form__error .label-caps,
 .contact-form__errors-title .label-caps {
   margin-right: var(--s-2);
-  font-size: 0.75rem;
+  font-size: max(0.75rem, calc(0.75rem * var(--ui-scale, 1)));
 }
 
 .contact-form__errors {

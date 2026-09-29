@@ -26,8 +26,8 @@
 
 /* ---- Head ---- */
 .service-aspects__head {
-  max-width: 62rem;
-  margin: 0 0 clamp(40px, 5vw, 72px);
+  max-width: calc(62rem * var(--ui-scale, 1));
+  margin: 0 0 calc(clamp(40px, 5vw, 72px) * var(--ui-scale, 1));
 }
 
 .service-aspects__kicker {
@@ -71,10 +71,10 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 320px;
+  max-width: calc(320px * var(--ui-scale, 1));
   justify-self: center;
-  min-height: clamp(265px, 28vw, 320px);
-  padding: clamp(20px, 2.2vw, 32px);
+  min-height: calc(clamp(265px, 28vw, 320px) * var(--ui-scale, 1));
+  padding: calc(clamp(20px, 2.2vw, 32px) * var(--ui-scale, 1));
   border: 1px solid var(--color-line);
   border-radius: var(--r-lg);
   background: var(--color-surface, var(--color-bg));
@@ -94,7 +94,7 @@
 
 .service-aspects__number {
   font-family: var(--font-display);
-  font-size: calc(1rem * var(--fs-text, 1));
+  font-size: calc(1rem * var(--fs-text, 1) * var(--ui-scale, 1));
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--sa-a);
@@ -111,8 +111,8 @@
 }
 
 .service-aspects__icon svg {
-  width: 22px;
-  height: 22px;
+  width: calc(22px * var(--ui-scale, 1));
+  height: calc(22px * var(--ui-scale, 1));
 }
 
 .service-aspects__tile-body {
@@ -122,7 +122,7 @@
 
 .service-aspects__tile-title {
   margin: 0;
-  font-size: calc(clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.12;
   letter-spacing: -0.02em;
   font-weight: 500;

@@ -47,8 +47,8 @@
 {% style %}
   #shopify-section-{{ section.id }} .services-orbit {
     {%- if accent != blank %}--sorb-accent: {{ accent }};{% endif %}
-    --sorb-padding-top: {{ section.settings.padding_top }}px;
-    --sorb-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --sorb-padding-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --sorb-padding-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }

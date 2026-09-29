@@ -83,7 +83,7 @@
 
 .article__hero-media {
   width: var(--art-wide);
-  margin: clamp(40px, 5vw, 72px) auto 0;
+  margin: calc(clamp(40px, 5vw, 72px) * var(--ui-scale, 1)) auto 0;
 }
 
 .article__hero-img {
@@ -98,12 +98,12 @@
 
 /* ---- 3. Reading type (.rte) ------------------------------------- */
 .article__container {
-  margin-top: clamp(40px, 5vw, 72px);
+  margin-top: calc(clamp(40px, 5vw, 72px) * var(--ui-scale, 1));
 }
 
 .article__title {
   margin: 0 0 var(--s-6);
-  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  font-size: calc(clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem) * var(--ui-scale, 1));
   line-height: 1.08;
   letter-spacing: -0.03em;
 }
@@ -140,14 +140,14 @@
 }
 
 .article__body h2 {
-  font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem);
+  font-size: calc(clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem) * var(--ui-scale, 1));
   font-weight: 600;
   line-height: 1.12;
   letter-spacing: -0.025em;
 }
 
 .article__body h3 {
-  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  font-size: calc(clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem) * var(--ui-scale, 1));
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -178,12 +178,12 @@
 .article__body :where(img, video) {
   width: 100%;
   height: auto;
-  margin: 2.5rem 0;
+  margin: calc(2.5rem * var(--ui-scale, 1)) 0;
   border-radius: var(--art-radius, var(--r-lg));
 }
 
 .article__body figure {
-  margin: 2.5rem 0;
+  margin: calc(2.5rem * var(--ui-scale, 1)) 0;
 }
 
 .article__body figure :where(img, video) {
@@ -198,7 +198,7 @@
 
 .article__body hr {
   height: 0;
-  margin: 3rem 0;
+  margin: calc(3rem * var(--ui-scale, 1)) 0;
   border: 0;
   border-top: 1px solid var(--color-line);
 }
@@ -252,7 +252,7 @@
 .article__embed {
   position: relative;
   aspect-ratio: 16 / 9;
-  margin: 2.5rem 0;
+  margin: calc(2.5rem * var(--ui-scale, 1)) 0;
   overflow: hidden;
   border-radius: var(--art-radius, var(--r-lg));
   background: var(--c-sand-deep);
@@ -267,8 +267,8 @@
 
 /* ---- 4. Pull quote ---------------------------------------------- */
 .article__body blockquote {
-  margin: 2.5rem 0;
-  padding: clamp(24px, 3.5vw, 40px);
+  margin: calc(2.5rem * var(--ui-scale, 1)) 0;
+  padding: calc(clamp(24px, 3.5vw, 40px) * var(--ui-scale, 1));
   border: 1px solid var(--color-line);
   border-radius: var(--r-lg);
   background: var(--art-quote-bg, var(--color-surface));
@@ -286,7 +286,7 @@
   display: block;
   height: 0.5em;
   margin-bottom: var(--s-4);
-  font-size: 3.5rem;
+  font-size: calc(3.5rem * var(--ui-scale, 1));
   font-weight: 600;
   line-height: 1;
   color: var(--art-quote-text, var(--color-accent));
@@ -319,7 +319,7 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--s-5);
-  margin-top: clamp(48px, 5vw, 72px);
+  margin-top: calc(clamp(48px, 5vw, 72px) * var(--ui-scale, 1));
   padding-top: var(--s-6);
   border-top: 1px solid var(--color-line);
 }
@@ -380,14 +380,14 @@
 .article__blocks {
   display: flex;
   flex-direction: column;
-  gap: clamp(48px, 6vw, 80px);
-  margin-top: clamp(64px, 8vw, 112px);
+  gap: calc(clamp(48px, 6vw, 80px) * var(--ui-scale, 1));
+  margin-top: calc(clamp(64px, 8vw, 112px) * var(--ui-scale, 1));
 }
 
 .article-cta {
   display: grid;
   gap: var(--s-6);
-  padding: clamp(24px, 4vw, 56px);
+  padding: calc(clamp(24px, 4vw, 56px) * var(--ui-scale, 1));
   border: 1px solid var(--color-line);
   border-radius: var(--r-lg);
   background: var(--art-cta-bg, var(--color-surface));
@@ -397,7 +397,7 @@
 .article-related__heading,
 .article__comments-title {
   margin: 0;
-  font-size: calc(clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.05;
   letter-spacing: -0.03em;
 }
@@ -496,7 +496,7 @@
 
 .article-related__title {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: calc(1.25rem * var(--ui-scale, 1));
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.015em;
@@ -523,8 +523,8 @@
 
 /* ---- 7. Comments + form fields ---------------------------------- */
 .article__comments {
-  margin-top: clamp(64px, 8vw, 112px);
-  padding-top: clamp(40px, 5vw, 64px);
+  margin-top: calc(clamp(64px, 8vw, 112px) * var(--ui-scale, 1));
+  padding-top: calc(clamp(40px, 5vw, 64px) * var(--ui-scale, 1));
   border-top: 1px solid var(--color-line);
 }
 
@@ -562,7 +562,7 @@
 
 .article__comment {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-columns: calc(40px * var(--ui-scale, 1)) minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
 }
@@ -570,8 +570,8 @@
 .article__comment-avatar {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: calc(40px * var(--ui-scale, 1));
+  height: calc(40px * var(--ui-scale, 1));
   border-radius: 50%;
   background: var(--c-sand-deep);
   color: var(--c-ink);
@@ -693,17 +693,17 @@
 
 .article__input {
   width: 100%;
-  min-height: 52px;
+  min-height: calc(52px * var(--ui-scale, 1));
   padding: 0 var(--s-4);
   border: 1px solid var(--color-line-strong);
   border-radius: var(--r-sm);
   background: var(--color-bg);
   color: var(--color-text);
-  font-size: 1rem;
+  font-size: 1rem; /* stays 16px: no iOS focus zoom */
 }
 
 .article__textarea {
-  min-height: 9rem;
+  min-height: calc(9rem * var(--ui-scale, 1));
   padding: var(--s-3) var(--s-4);
   line-height: 1.6;
   resize: vertical;

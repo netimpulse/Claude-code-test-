@@ -21,8 +21,8 @@
   }
   #shopify-section-{{ section.id }} .about-timeline {
     --at-accent: {{ accent }};
-    --at-padding-top: {{ section.settings.padding_top }}px;
-    --at-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --at-padding-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --at-padding-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     {%- if scheme.settings.background != blank -%}
       --at-bg: {{ scheme.settings.background }};
       --at-text: {{ scheme.settings.text }};

@@ -81,7 +81,7 @@
   gap: var(--s-3);
   margin-top: var(--s-6);
 }
-.hero-geo__btn { font-size: calc(1rem * var(--fs-text, 1)); }
+.hero-geo__btn { font-size: calc(1rem * var(--fs-text, 1) * var(--ui-scale, 1)); }
 .hero-geo__btn-arrow { width: 1em; height: 1em; flex: 0 0 1em; }
 @media (max-width: 860px) {
   .hero-geo__actions .btn { flex: 1 1 100%; }
@@ -105,7 +105,7 @@
 .hero-geo__platform {
   font-size: calc(var(--text-small) * var(--fs-text, 1));
   line-height: 1.2;
-  padding: 4px 12px;
+  padding: calc(4px * var(--ui-scale, 1)) calc(12px * var(--ui-scale, 1));
   border-radius: var(--r-pill);
   border: 1px solid var(--color-line);
   color: var(--color-text);
@@ -116,25 +116,25 @@
   background: var(--hg-card-bg, #ffffff);
   border: 1px solid var(--color-line);
   border-radius: calc(var(--r-lg) - 4px);
-  padding: 1.25rem;
-  min-height: clamp(281px, 36vw, 343px);
+  padding: calc(1.25rem * var(--ui-scale, 1));
+  min-height: calc(clamp(281px, 36vw, 343px) * var(--ui-scale, 1));
   display: flex;
   flex-direction: column;
-  gap: 1.125rem;
+  gap: calc(1.125rem * var(--ui-scale, 1));
   min-width: 0;
 }
 
 .hero-geo__chat-header {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding-bottom: 0.875rem;
+  gap: calc(0.625rem * var(--ui-scale, 1));
+  padding-bottom: calc(0.875rem * var(--ui-scale, 1));
   border-bottom: 1px solid var(--hg-line, rgba(0,0,0,0.08));
 }
 
 .hero-geo__avatar {
-  width: 24px;
-  height: 24px;
+  width: calc(24px * var(--ui-scale, 1));
+  height: calc(24px * var(--ui-scale, 1));
   flex: 0 0 24px;
   border-radius: 50%;
   background: var(--hg-text, #0e1716);
@@ -143,11 +143,11 @@
   align-items: center;
   justify-content: center;
 }
-.hero-geo__avatar svg { width: 13px; height: 13px; }
+.hero-geo__avatar svg { width: calc(13px * var(--ui-scale, 1)); height: calc(13px * var(--ui-scale, 1)); }
 .hero-geo__avatar--ai { background: var(--hg-text, #0e1716); }
 
 .hero-geo__assistant {
-  font-size: calc(13px * var(--fs-text, 1));
+  font-size: max(0.75rem, calc(13px * var(--fs-text, 1) * var(--ui-scale, 1)));
   font-weight: 600;
   color: var(--hg-text, #0e1716);
 }
@@ -155,7 +155,7 @@
   margin-left: auto;
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: calc(0.375rem * var(--ui-scale, 1));
   font-family: var(--hg-mono);
   font-size: calc(10px * var(--fs-text, 1));
   letter-spacing: 0.1em;
@@ -163,7 +163,7 @@
   color: var(--hg-text-soft, rgba(0,0,0,0.65));
 }
 .hero-geo__monitoring-dot {
-  width: 6px; height: 6px;
+  width: calc(6px * var(--ui-scale, 1)); height: calc(6px * var(--ui-scale, 1));
   border-radius: 50%;
   background: var(--hg-online);
   animation: hg-blink 1.8s infinite ease-in-out;
@@ -176,34 +176,34 @@
 .hero-geo__question-row { display: flex; justify-content: flex-end; }
 .hero-geo__question-bubble {
   max-width: 85%;
-  padding: 0.625rem 0.875rem;
+  padding: calc(0.625rem * var(--ui-scale, 1)) calc(0.875rem * var(--ui-scale, 1));
   border-radius: 0;
   background: var(--hg-bg-soft, #eef2f1);
-  font-size: calc(14px * var(--fs-text, 1));
+  font-size: calc(14px * var(--fs-text, 1) * var(--ui-scale, 1));
   line-height: 1.45;
   color: var(--hg-text, #0e1716);
 }
 
 .hero-geo__answer-row {
   display: flex;
-  gap: 0.75rem;
+  gap: calc(0.75rem * var(--ui-scale, 1));
   align-items: flex-start;
 }
 .hero-geo__answer {
   flex: 1;
   min-width: 0;
-  font-size: calc(14px * var(--fs-text, 1));
+  font-size: calc(14px * var(--fs-text, 1) * var(--ui-scale, 1));
   line-height: 1.6;
   color: var(--hg-text, #0e1716);
 }
 
 .hero-geo__thinking {
   display: inline-flex;
-  gap: 4px;
+  gap: calc(4px * var(--ui-scale, 1));
 }
 .hero-geo__thinking > span {
-  width: 6px;
-  height: 6px;
+  width: calc(6px * var(--ui-scale, 1));
+  height: calc(6px * var(--ui-scale, 1));
   border-radius: 50%;
   background: var(--hg-text-muted, rgba(0,0,0,0.35));
   opacity: 0.3;
@@ -216,7 +216,7 @@
 .hero-geo__answer-text mark {
   background: var(--hg-signal-tint-strong);
   border-radius: 0;
-  padding: 1px 4px;
+  padding: 1px calc(4px * var(--ui-scale, 1));
   margin: 0 -2px;
   color: var(--hg-text, #0e1716);
   font-weight: 600;
@@ -225,8 +225,8 @@
 
 .hero-geo__cursor {
   display: inline-block;
-  width: 6px;
-  height: 14px;
+  width: calc(6px * var(--ui-scale, 1));
+  height: calc(14px * var(--ui-scale, 1));
   background: var(--hg-text, #0e1716);
   vertical-align: middle;
   margin-left: 2px;
@@ -236,12 +236,12 @@
 
 .hero-geo__citations {
   margin-top: auto;
-  padding-top: 0.75rem;
+  padding-top: calc(0.75rem * var(--ui-scale, 1));
   border-top: 1px solid var(--hg-line, rgba(0,0,0,0.08));
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: calc(0.5rem * var(--ui-scale, 1));
 }
 .hero-geo__cited-label {
   font-family: var(--hg-mono);
@@ -253,7 +253,7 @@
 .hero-geo__citation {
   font-family: var(--hg-mono);
   font-size: calc(11px * var(--fs-text, 1));
-  padding: 3px 7px;
+  padding: calc(3px * var(--ui-scale, 1)) calc(7px * var(--ui-scale, 1));
   border-radius: 0;
   background: var(--hg-bg-soft, #f3f6f6);
   border: 1px solid var(--hg-line, rgba(0,0,0,0.08));

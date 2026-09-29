@@ -36,8 +36,8 @@
   }
   #shopify-section-{{ section.id }} .about-perspectives {
     {%- if accent != blank %}--ap-accent: {{ accent }};{% endif %}
-    --ap-padding-top: {{ section.settings.padding_top }}px;
-    --ap-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ap-padding-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --ap-padding-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
   }
   #shopify-section-{{ section.id }} .about-perspectives__feature {
     {%- if section.settings.feature_bg != blank %}--ap-feature-bg: {{ section.settings.feature_bg }};{% endif %}

@@ -30,7 +30,7 @@
   column-gap: var(--gutter);
   row-gap: var(--s-5);
   align-items: end;
-  margin-bottom: clamp(40px, 5vw, 80px);
+  margin-bottom: calc(clamp(40px, 5vw, 80px) * var(--ui-scale, 1));
 }
 
 .addon-services__heading {
@@ -69,7 +69,7 @@
 
 @media (min-width: 750px) {
   .addon-services__grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(calc(280px * var(--ui-scale, 1)), 1fr));
   }
 }
 
@@ -79,7 +79,7 @@
   flex-direction: column;
   gap: var(--s-6);
   min-width: 0;
-  padding: clamp(24px, 2.5vw, 40px);
+  padding: calc(clamp(24px, 2.5vw, 40px) * var(--ui-scale, 1));
   border: 1px solid var(--color-line);
   border-radius: min(var(--as-card-radius, 16px), var(--r-lg));
   background: var(--color-surface);
@@ -92,9 +92,9 @@
 .addon-services__badge {
   position: absolute;
   top: 0;
-  left: clamp(24px, 2.5vw, 40px);
+  left: calc(clamp(24px, 2.5vw, 40px) * var(--ui-scale, 1));
   transform: translateY(-50%);
-  padding: 4px 12px;
+  padding: calc(4px * var(--ui-scale, 1)) calc(12px * var(--ui-scale, 1));
   border-radius: var(--r-pill);
   background: var(--color-btn-bg);
   color: var(--color-btn-fg);

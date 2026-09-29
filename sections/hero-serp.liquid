@@ -38,8 +38,8 @@
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
   #shopify-section-{{ section.id }} .hero-serp {
-    --hs-pad-top: {{ section.settings.padding_top }}px;
-    --hs-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hs-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --hs-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     {%- if accent != blank %}--hs-accent: {{ accent }};{% endif %}
     {%- if accent_soft != blank %}--hs-accent-soft: {{ accent_soft }};{% endif %}
     {%- if highlight_color != blank %}--hs-highlight: {{ highlight_color }};{% endif %}

@@ -72,7 +72,7 @@
   color: var(--color-btn2-fg-hover);
 }
 
-.ni-hero__book { margin-top: var(--s-5); font-size: calc(1rem * var(--fs-text, 1)); }
+.ni-hero__book { margin-top: var(--s-5); font-size: calc(1rem * var(--fs-text, 1) * var(--ui-scale, 1)); }
 
 .ni-hero__photo {
   position: relative;

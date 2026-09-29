@@ -25,9 +25,9 @@
   #shopify-section-{{ section.id }} .ni-text {
     {%- if section.settings.bg_color != blank %}--ni-text-bg: {{ section.settings.bg_color }};{% endif %}
     {%- if section.settings.text_color != blank %}--ni-text-text: {{ section.settings.text_color }};{% endif %}
-    --ni-text-pad-top: {{ section.settings.padding_top }}px;
-    --ni-text-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --ni-text-maxw: {{ max_width }}px;
+    --ni-text-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --ni-text-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
+    --ni-text-maxw: calc({{ max_width }}px * var(--ui-scale, 1));
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }

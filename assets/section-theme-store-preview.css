@@ -228,7 +228,7 @@
   font-family: var(--font-accent);
   font-style: italic;
   font-weight: 500;
-  font-size: clamp(3.5rem, 2rem + 4vw, 5.5rem);
+  font-size: calc(clamp(3.5rem, 2rem + 4vw, 5.5rem) * var(--ui-scale, 1));
   line-height: 1;
   color: var(--c-ink);
 }
@@ -256,7 +256,7 @@
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 500;
-  font-size: calc(clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.1;
   letter-spacing: -0.02em;
   color: var(--color-heading, var(--color-text));
@@ -343,7 +343,7 @@
 
 .tsp__cta-heading {
   margin: 0 0 var(--s-5);
-  font-size: calc(clamp(1.5rem, 1.15rem + 1.3vw, 2.25rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.5rem, 1.15rem + 1.3vw, 2.25rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   font-weight: 600;
   line-height: 1.05;
   letter-spacing: -0.03em;

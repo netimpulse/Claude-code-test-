@@ -166,7 +166,8 @@
               {{- featured.price | money -}}
             </p>
             <a class="btn btn--primary theme-store__feature-btn" href="{{ featured.url }}">
-              <span>{{ 'theme_store.view_theme' | t: title: featured.title }}</span>
+              {%- assign featured_title_safe = featured.title | escape -%}
+              <span>{{ 'theme_store.view_theme' | t: title: featured_title_safe }}</span>
               <span class="btn__arrow" aria-hidden="true">&rarr;</span>
             </a>
           </div>
@@ -437,12 +438,12 @@
             {%- assign first_p = false -%}
             {
               "id": {{ p.id | json }},
-              "handle": {{ p.handle | json }},
-              "title": {{ p.title | json }},
-              "type": {{ p.type | default: '' | json }},
-              "category": {{ coll_label | json }},
-              "vendor": {{ p.vendor | json }},
-              "tags": {{ p.tags | json }}
+              "handle": {{ p.handle | json | replace: '</', '<\/' }},
+              "title": {{ p.title | json | replace: '</', '<\/' }},
+              "type": {{ p.type | default: '' | json | replace: '</', '<\/' }},
+              "category": {{ coll_label | json | replace: '</', '<\/' }},
+              "vendor": {{ p.vendor | json | replace: '</', '<\/' }},
+              "tags": {{ p.tags | json | replace: '</', '<\/' }}
             }
           {%- endunless -%}
         {%- endfor -%}

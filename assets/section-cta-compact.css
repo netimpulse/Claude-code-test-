@@ -36,7 +36,7 @@
 
 /* ---- Grid: text 1–7, actions 9–12 (bottom-aligned) ---- */
 .cta-compact__grid {
-  margin-top: clamp(40px, 5vw, 72px);
+  margin-top: calc(clamp(40px, 5vw, 72px) * var(--ui-scale, 1));
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);

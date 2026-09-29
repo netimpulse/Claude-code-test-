@@ -27,15 +27,17 @@
       .trim();
   }
 
-  // Damerau-Levenshtein-ish (transposition aware) - small implementation.
+  // Optimal string alignment distance (Damerau-Levenshtein with adjacent
+  // transpositions): "nvoa" -> "nova" costs 1.
   function editDistance(a, b) {
     if (a === b) return 0;
     const al = a.length, bl = b.length;
     if (!al) return bl;
     if (!bl) return al;
 
-    const prev = new Array(bl + 1);
-    const curr = new Array(bl + 1);
+    let prev2 = new Array(bl + 1).fill(0); // row i-2
+    let prev = new Array(bl + 1);          // row i-1
+    let curr = new Array(bl + 1);          // row i
     for (let j = 0; j <= bl; j++) prev[j] = j;
 
     for (let i = 1; i <= al; i++) {
@@ -52,10 +54,13 @@
           a.charCodeAt(i - 1) === b.charCodeAt(j - 2) &&
           a.charCodeAt(i - 2) === b.charCodeAt(j - 1)
         ) {
-          curr[j] = Math.min(curr[j], prev[j - 1] - 1 + cost + 1); // transposition
+          curr[j] = Math.min(curr[j], prev2[j - 2] + 1); // transposition
         }
       }
-      for (let j = 0; j <= bl; j++) prev[j] = curr[j];
+      const recycled = prev2;
+      prev2 = prev;
+      prev = curr;
+      curr = recycled;
     }
     return prev[bl];
   }
@@ -342,7 +347,24 @@
       });
     }
     const form = $('[data-ts-search-form]');
-    if (form) form.addEventListener('submit', (e) => { e.preventDefault(); });
+    const grid = $('[data-ts-product-grid]');
+    const bar = $('.theme-store__bar');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Enter/"Search" on a phone: close the keyboard and bring the results
+        // into view. A single hit is not opened automatically.
+        if (input) input.blur();
+        const target = empty && !empty.hidden ? empty : grid;
+        if (!target) return;
+        // Keep the results clear of the sticky filter bar.
+        const barStyle = bar ? getComputedStyle(bar) : null;
+        const offset = barStyle && barStyle.position === 'sticky' ? bar.offsetHeight : 0;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset - 16;
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
+      });
+    }
     if (clearBtn) {
       clearBtn.addEventListener('click', () => { setQuery(''); if (input) input.focus(); });
     }

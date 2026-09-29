@@ -31,9 +31,9 @@
 {% style %}
   #shopify-section-{{ section.id }} .addon-services {
     {%- if accent != blank %}--as-accent: {{ accent }};{% endif %}
-    --as-pad-top: {{ section.settings.padding_top }}px;
-    --as-pad-bottom: {{ section.settings.padding_bottom }}px;
-    --as-card-radius: {{ section.settings.card_radius }}px;
+    --as-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --as-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
+    --as-card-radius: calc({{ section.settings.card_radius }}px * var(--ui-scale, 1));
   }
 {% endstyle %}
 

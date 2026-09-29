@@ -167,7 +167,11 @@ for (const pageDef of ACCEPTED_PAGES) {
         const smallButtons = await page.evaluate(() =>
           [...document.querySelectorAll<HTMLElement>(".btn")]
             .filter((b) => b.offsetParent !== null)
-            .filter((b) => b.getBoundingClientRect().height < (b.classList.contains("btn--sm") ? 44 : 46))
+            .filter((b) => {
+              // Header keeps 100 % (--btn-h 52px); content/footer run at 90 % (≥ 46px).
+              const min = b.classList.contains("btn--sm") ? 44 : b.closest(".shopify-section-group-header-group") ? 51 : 46;
+              return b.getBoundingClientRect().height < min;
+            })
             .map((b) => b.textContent?.trim())
         );
         expect(smallButtons, "Buttons zu klein").toEqual([]);

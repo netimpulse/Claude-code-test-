@@ -132,7 +132,18 @@ test.describe("Theme Store – Template & i18n", () => {
 test.describe("Theme Store – JS behaviour under /en/ (local fixture)", () => {
   const ORIGIN = "https://theme-store.fixture.test";
 
-  async function mountFixture(page: Page, labels: Partial<Record<string, string>> = {}) {
+  type Item = { id: number; handle: string; title: string; cats: string; type: string; category: string };
+  const DEFAULT_ITEMS: Item[] = [
+    { id: 1, handle: "aurora", title: "Aurora", cats: "business", type: "Business Theme", category: "Business" },
+    { id: 2, handle: "quartz", title: "Quartz", cats: "business", type: "Business Theme", category: "Business" },
+    { id: 3, handle: "vienna", title: "Vienna", cats: "fashion", type: "Fashion Theme", category: "Fashion" },
+  ];
+
+  async function mountFixture(
+    page: Page,
+    labels: Partial<Record<string, string>> = {},
+    items: Item[] = DEFAULT_ITEMS
+  ) {
     const js = fs.readFileSync("assets/theme-store.js", "utf8");
     const attr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
     const l = {
@@ -173,9 +184,7 @@ test.describe("Theme Store – JS behaviour under /en/ (local fixture)", () => {
         </form>
         <p data-ts-hint hidden></p>
         <ul data-ts-product-grid>
-          ${card(1, "aurora", "Aurora", "business")}
-          ${card(2, "quartz", "Quartz", "business")}
-          ${card(3, "vienna", "Vienna", "fashion")}
+          ${items.map((it) => card(it.id, it.handle, it.title, it.cats)).join("\n")}
           <li data-ts-extra>CTA</li>
         </ul>
         <div data-ts-empty hidden>
@@ -184,11 +193,9 @@ test.describe("Theme Store – JS behaviour under /en/ (local fixture)", () => {
           <button type="button" data-ts-show-all>Show all</button>
         </div>
       </section>
-      <script type="application/json" data-ts-catalog="fx">[
-        {"id":1,"handle":"aurora","title":"Aurora","type":"Business Theme","category":"Business","vendor":"NetImpulse","tags":[]},
-        {"id":2,"handle":"quartz","title":"Quartz","type":"Business Theme","category":"Business","vendor":"NetImpulse","tags":[]},
-        {"id":3,"handle":"vienna","title":"Vienna","type":"Fashion Theme","category":"Fashion","vendor":"NetImpulse","tags":[]}
-      ]</script>
+      <script type="application/json" data-ts-catalog="fx">${JSON.stringify(
+        items.map(({ id, handle, title, type, category }) => ({ id, handle, title, type, category, vendor: "NetImpulse", tags: [] }))
+      ).replace(/<\//g, "<\\/")}</script>
       <script>window.Shopify = { routes: { root: "/en/" } };</script>
       <script src="/theme-store.js"></script>
     </body></html>`;
@@ -280,6 +287,40 @@ test.describe("Theme Store – JS behaviour under /en/ (local fixture)", () => {
     await expect(hint).toBeHidden();
   });
 
+  test("Transposed letters: 'Nvoa' finds Nova (optimal string alignment distance 1)", async ({ page }) => {
+    await mountFixture(page, {}, [
+      ...DEFAULT_ITEMS,
+      { id: 4, handle: "nova", title: "Nova", cats: "fashion", type: "Fashion Theme", category: "Fashion" },
+    ]);
+    await page.locator("[data-ts-search-input]").fill("Nvoa");
+    await expect(visible(page)).toHaveCount(1);
+    await expect(visible(page)).toHaveAttribute("data-title", "Nova");
+    await expect(page.locator("[data-ts-hint] button")).toHaveText("Nova");
+  });
+
+  test("Submit (Enter) closes the keyboard and keeps the page; a single hit is not opened", async ({ page }) => {
+    await mountFixture(page);
+    const input = page.locator("[data-ts-search-input]");
+    const before = page.url();
+    await input.fill("quartz");
+    await expect(visible(page)).toHaveCount(1);
+    await input.press("Enter");
+    await expect(input).not.toBeFocused();
+    await expect(visible(page)).toHaveCount(1);
+    expect(page.url()).toBe(before);
+    await expect(page.locator("[data-ts-search-input]")).toHaveValue("quartz");
+  });
+
+  test("Empty catalogue: no cards → empty state with the category message is visible", async ({ page }) => {
+    await mountFixture(page, {}, []);
+    await expect(page.locator("[data-ts-product]")).toHaveCount(0);
+    await expect(page.locator("[data-ts-empty]")).toBeVisible();
+    await expect(page.locator("[data-ts-empty-title]")).toHaveText("No themes match this filter yet.");
+    await expect(page.locator("[data-ts-extra]")).toBeHidden();
+    await expect(page.locator("[data-ts-reset-q]")).toBeHidden();
+    await expect(page.locator("[data-ts-count]")).toHaveText("0 themes");
+  });
+
   test("Predictive search results (locale-prefixed) add matches to the grid", async ({ page }) => {
     await mountFixture(page);
     await page.locator("[data-ts-search-input]").fill("elegant");
@@ -359,6 +400,30 @@ test.describe("Theme Store – Section on its real page", () => {
     expect(await root.locator(".theme-store__bar").evaluate((el) => getComputedStyle(el).position)).toBe("sticky");
   });
 
+  test("Sticky filter bar follows the header: flush to the top while scrolling down, below the header after scrolling up", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const root = await openStore(page);
+    const bar = root.locator(".theme-store__bar");
+    const header = page.locator(".shopify-section-group-header-group").first();
+    const barTop = () => bar.evaluate((el) => el.getBoundingClientRect().top);
+    const headerBottom = () => header.evaluate((el) => el.getBoundingClientRect().bottom);
+
+    await page.mouse.move(720, 450);
+    // Scroll down well past the bar's natural position.
+    for (let i = 0; i < 12; i++) await page.mouse.wheel(0, 250);
+    await expect(header).toHaveClass(/is-hidden/);
+    await expect.poll(barTop, { timeout: 5000 }).toBeLessThanOrEqual(1);
+    expect(await barTop()).toBeGreaterThanOrEqual(-1);
+
+    // Scroll up a little: the header comes back, the bar sits right below it.
+    for (let i = 0; i < 2; i++) await page.mouse.wheel(0, -150);
+    await expect(header).not.toHaveClass(/is-hidden/);
+    await expect
+      .poll(async () => Math.abs((await barTop()) - (await headerBottom())), { timeout: 5000 })
+      .toBeLessThan(0.5); // no 1px gap from the header's bottom border
+    expect(await headerBottom()).toBeGreaterThan(40);
+  });
+
   test("Category filter shows only matching products and updates URL; ?cat= deep link works", async ({ page }) => {
     const root = await openStore(page);
     const firstCat = root.locator("[data-ts-cat]:not([data-ts-cat='all'])").first();
@@ -382,7 +447,10 @@ test.describe("Theme Store – Section on its real page", () => {
     await expect(deep.locator("[data-ts-product]:not([hidden])")).toHaveCount(expected);
   });
 
-  test("Search filters the grid, tolerates typos and offers 'did you mean'", async ({ page }) => {
+  // Smoke test on live data: Shopify's own predictive search may already
+  // return the typo, so the "did you mean" hint is not deterministic here.
+  // The hint itself is covered by the fixture tests above ('Qarz', 'Nvoa').
+  test("Smoke: search filters the real grid, tolerates a missing letter, empty state", async ({ page }) => {
     const root = await openStore(page);
     const titles = (await root.locator(".theme-store__product-title").allInnerTexts()).map((t) => t.trim());
     const title = titles.find((t) => t.length >= 5);
@@ -397,12 +465,6 @@ test.describe("Theme Store – Section on its real page", () => {
     const typo = title!.slice(0, 2) + title!.slice(3);
     await input.fill(typo);
     await expect(root.locator(`[data-ts-product][data-title="${title}"]`)).toBeVisible();
-    const hint = root.locator("[data-ts-hint]");
-    if (await hint.isVisible()) {
-      await expect(hint.locator("button")).toBeVisible();
-      await hint.locator("button").click();
-      await expect(input).toHaveValue(/\S/);
-    }
 
     // No match at all → empty state with reset.
     await input.fill("zzqxwv");

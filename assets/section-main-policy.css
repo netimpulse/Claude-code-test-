@@ -13,7 +13,7 @@
   display: block;
   background: var(--policy-bg);
   color: var(--policy-text);
-  padding: var(--policy-pad-top, 80px) clamp(1rem, 4vw, 3rem) var(--policy-pad-bottom, 96px);
+  padding: var(--policy-pad-top, 80px) calc(clamp(1rem, 4vw, 3rem) * var(--ui-scale, 1)) var(--policy-pad-bottom, 96px);
   font-family: var(--font-body-family, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
 }
 
@@ -28,9 +28,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin-bottom: clamp(16px, 2vw, 24px);
-  font-size: calc(0.78rem * var(--fs-text, 1));
+  gap: calc(6px * var(--ui-scale, 1));
+  margin-bottom: calc(clamp(16px, 2vw, 24px) * var(--ui-scale, 1));
+  font-size: max(0.75rem, calc(0.78rem * var(--fs-text, 1) * var(--ui-scale, 1)));
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -47,8 +47,8 @@
 /* --- Title --- */
 
 .policy__title {
-  margin: 0 0 clamp(16px, 2vw, 24px);
-  font-size: calc(clamp(2rem, 4.4vw, 3.2rem) * var(--fs-heading, 1));
+  margin: 0 0 calc(clamp(16px, 2vw, 24px) * var(--ui-scale, 1));
+  font-size: calc(clamp(2rem, 4.4vw, 3.2rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.04;
   letter-spacing: -0.025em;
   font-weight: 800;
@@ -69,7 +69,7 @@
 /* --- Body --- */
 
 .policy__body {
-  font-size: calc(clamp(0.94rem, 1.1vw, 1.05rem) * var(--fs-text, 1));
+  font-size: calc(clamp(0.94rem, 1.1vw, 1.05rem) * var(--fs-text, 1) * var(--ui-scale, 1));
   line-height: 1.68;
   color: var(--policy-text);
 }
@@ -82,7 +82,7 @@
 .policy__body h4,
 .policy__body h5,
 .policy__body h6 {
-  margin: clamp(28px, 3.2vw, 44px) 0 clamp(10px, 1.4vw, 16px);
+  margin: calc(clamp(28px, 3.2vw, 44px) * var(--ui-scale, 1)) 0 calc(clamp(10px, 1.4vw, 16px) * var(--ui-scale, 1));
   line-height: 1.18;
   letter-spacing: -0.015em;
   font-weight: 800;
@@ -91,12 +91,12 @@
 .policy__body > :first-child h2,
 .policy__body > :first-child h3 { margin-top: 0; }
 
-.policy__body h1 { font-size: calc(clamp(1.6rem, 3.4vw, 2.4rem) * var(--fs-heading, 1)); }
-.policy__body h2 { font-size: calc(clamp(1.35rem, 2.5vw, 1.75rem) * var(--fs-heading, 1)); }
-.policy__body h3 { font-size: calc(clamp(1.15rem, 1.8vw, 1.35rem) * var(--fs-heading, 1)); }
-.policy__body h4 { font-size: calc(clamp(1.02rem, 1.4vw, 1.15rem) * var(--fs-heading, 1)); }
+.policy__body h1 { font-size: calc(clamp(1.6rem, 3.4vw, 2.4rem) * var(--fs-heading, 1) * var(--ui-scale, 1)); }
+.policy__body h2 { font-size: calc(clamp(1.35rem, 2.5vw, 1.75rem) * var(--fs-heading, 1) * var(--ui-scale, 1)); }
+.policy__body h3 { font-size: calc(clamp(1.15rem, 1.8vw, 1.35rem) * var(--fs-heading, 1) * var(--ui-scale, 1)); }
+.policy__body h4 { font-size: calc(clamp(1.02rem, 1.4vw, 1.15rem) * var(--fs-heading, 1) * var(--ui-scale, 1)); }
 .policy__body h5,
-.policy__body h6 { font-size: calc(0.95rem * var(--fs-heading, 1)); text-transform: uppercase; letter-spacing: 0.06em; }
+.policy__body h6 { font-size: calc(0.95rem * var(--fs-heading, 1) * var(--ui-scale, 1)); text-transform: uppercase; letter-spacing: 0.06em; }
 
 .policy__body p { margin: 0 0 1em; }
 .policy__body strong { font-weight: 700; }
@@ -132,7 +132,7 @@
 .policy__body hr {
   border: 0;
   border-top: 1px solid var(--policy-line);
-  margin: clamp(28px, 3vw, 44px) 0;
+  margin: calc(clamp(28px, 3vw, 44px) * var(--ui-scale, 1)) 0;
 }
 
 .policy__body table {
@@ -174,10 +174,10 @@
 /* --- Updated line --- */
 
 .policy__updated {
-  margin: clamp(32px, 4vw, 56px) 0 0;
-  padding-top: clamp(16px, 2vw, 24px);
+  margin: calc(clamp(32px, 4vw, 56px) * var(--ui-scale, 1)) 0 0;
+  padding-top: calc(clamp(16px, 2vw, 24px) * var(--ui-scale, 1));
   border-top: 1px solid var(--policy-line);
-  font-size: calc(0.85rem * var(--fs-text, 1));
+  font-size: calc(0.85rem * var(--fs-text, 1) * var(--ui-scale, 1));
   color: var(--policy-text-soft);
 }
 

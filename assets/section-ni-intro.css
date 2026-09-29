@@ -42,7 +42,7 @@
 
 /* Principles: index number over a 1px line, h3, muted text */
 .ni-intro__principles {
-  margin: clamp(64px, 8vw, 128px) 0 0;
+  margin: calc(clamp(64px, 8vw, 128px) * var(--ui-scale, 1)) 0 0;
   padding: 0;
   list-style: none;
   row-gap: var(--s-8);
@@ -56,14 +56,14 @@
   display: block;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
+  font-size: calc(clamp(3.5rem, 2.5rem + 3vw, 5.5rem) * var(--ui-scale, 1));
   line-height: 1;
   letter-spacing: -0.04em;
   color: var(--lp-accent, var(--color-accent));
 }
 .ni-intro-card__title {
   margin: var(--s-6) 0 0;
-  font-size: calc(clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
 }
 .ni-intro-card__text {
   margin: var(--s-4) 0 0;
@@ -73,7 +73,7 @@
 }
 
 .ni-intro__empty {
-  margin: clamp(64px, 8vw, 128px) 0 0;
+  margin: calc(clamp(64px, 8vw, 128px) * var(--ui-scale, 1)) 0 0;
   padding: var(--s-6);
   text-align: center;
   color: var(--color-muted);
@@ -83,7 +83,7 @@
 
 /* Photo 4:3 (columns 1–6) + h3 panel (8–12) */
 .ni-intro__panel {
-  margin-top: clamp(80px, 10vw, 160px);
+  margin-top: calc(clamp(80px, 10vw, 160px) * var(--ui-scale, 1));
   row-gap: var(--s-6);
   align-items: center;
 }
@@ -106,7 +106,7 @@
 .ni-intro__panel-copy { grid-column: 8 / span 5; }
 .ni-intro__panel-copy h3 {
   margin: 0;
-  font-size: calc(clamp(2rem, 1.3rem + 2.4vw, 3.5rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(2rem, 1.3rem + 2.4vw, 3.5rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.02;
   letter-spacing: -0.035em;
   font-weight: 600;

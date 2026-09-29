@@ -14,8 +14,8 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .ni-deck {
-    --ni-deck-pad-top: {{ section.settings.padding_top }}px;
-    --ni-deck-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --ni-deck-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --ni-deck-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     {%- if accent != blank %}
     --lp-accent: {{ accent }};
     {%- endif %}

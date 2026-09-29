@@ -29,8 +29,8 @@
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
   #shopify-section-{{ section.id }} .hero-geo {
-    --hg-pad-top: {{ section.settings.padding_top }}px;
-    --hg-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --hg-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --hg-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     {%- if accent != blank %}--hg-accent: {{ accent }};{% endif %}
   }
 {% endstyle %}
