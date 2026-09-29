@@ -4,7 +4,7 @@ import { QA, withTheme } from "../fixtures";
 /**
  * sections/services-orbit.liquid – Leistungsbühne (Plan S6a).
  * R1: the section is not on the QA page, it lives on /pages/leistungen.
- * Target: scheme-sand surface, eyebrow + h2 (--text-display, accent-heading),
+ * Target: scheme-sand surface, eyebrow + h1 on Leistungen (heading_tag) (--text-display, accent-heading),
  * a card with 1px line / --r-lg / no shadow, the orbit on a 5 % tinted board,
  * buttons from the scheme roles (.btn), no endless animation, reduced motion
  * respected, 390/320 without horizontal scroll.
@@ -41,11 +41,11 @@ test.describe("Services Orbit (Leistungen)", () => {
     await page.locator(".services-orbit").first().scrollIntoViewIfNeeded();
   });
 
-  test("Renders eyebrow, h2, six nodes with labels and exactly one active panel", async ({ page }) => {
+  test("Renders eyebrow, h1 (page heading), six nodes with labels and exactly one active panel", async ({ page }) => {
     const section = page.locator(".services-orbit").first();
     await expect(section).toBeVisible();
     await expect(section.locator(".services-orbit__kicker.eyebrow")).toContainText("Unsere Leistungen");
-    const title = section.locator("h2.services-orbit__title");
+    const title = section.locator("h1.services-orbit__title");
     await expect(title).toBeVisible();
     expect(await title.textContent()).not.toContain("*");
     expect(await title.locator("em.it").count()).toBeLessThanOrEqual(1);
@@ -56,7 +56,7 @@ test.describe("Services Orbit (Leistungen)", () => {
     await expect(section.locator(".services-orbit__detail-panel.is-active")).toHaveCount(1);
   });
 
-  test("Sand scheme surface and h2 in the display size", async ({ page }) => {
+  test("Sand scheme surface and h1 in the display size", async ({ page }) => {
     const section = page.locator(".services-orbit").first();
     await expect(section).toHaveClass(/\bcolor-scheme-sand\b/);
     expect(await section.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(248, 246, 241)");
