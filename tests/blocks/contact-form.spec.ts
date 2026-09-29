@@ -38,7 +38,8 @@ async function tokenPx(page: Page, token: string): Promise<number> {
   return page.evaluate((t) => {
     const probe = document.createElement("span");
     probe.style.fontSize = `var(${t})`;
-    document.body.appendChild(probe);
+    // Measure inside the content area, where the tokens are scaled to 90 %.
+    (document.getElementById("MainContent") ?? document.body).appendChild(probe);
     const px = parseFloat(getComputedStyle(probe).fontSize);
     probe.remove();
     return px;
@@ -108,7 +109,7 @@ test.describe("contact-form section (Kontakt)", () => {
     expect(requiredStars).toBe(3);
   });
 
-  test("Felder: --r-sm, 1px --c-line-strong, min. 52px; Label Work Sans 500 in --text-small", async ({ page }) => {
+  test("Felder: --r-sm, 1px --c-line-strong, min. 46px; Label Work Sans 500 in --text-small", async ({ page }) => {
     const small = await tokenPx(page, "--text-small");
     const inputs = page.locator(".contact-form__input");
     const count = await inputs.count();
@@ -126,7 +127,7 @@ test.describe("contact-form section (Kontakt)", () => {
           r: cs.borderTopLeftRadius,
         };
       });
-      expect(s.h, `Feld ${i} Höhe`).toBeGreaterThanOrEqual(52);
+      expect(s.h, `Feld ${i} Höhe`).toBeGreaterThanOrEqual(46); // --btn-h at 90 % content scale
       expect(s.bw).toBe("1px");
       expect(s.bs).toBe("solid");
       expect(parseRgb(s.bc)).toEqual([125, 118, 107]); // --c-line-strong #7d766b
@@ -175,7 +176,7 @@ test.describe("contact-form section (Kontakt)", () => {
       const r = el.getBoundingClientRect();
       return { h: r.height, w: r.width, fw: form.width, bg: cs.backgroundColor, fg: cs.color, shadow: cs.boxShadow };
     });
-    expect(m.h).toBeGreaterThanOrEqual(51);
+    expect(m.h).toBeGreaterThanOrEqual(46);
     expect(Math.abs(m.w - m.fw)).toBeLessThanOrEqual(1);
     expect(parseRgb(m.bg)).toEqual([28, 73, 72]); // --color-btn-bg (scheme-sand), nie accent_color
     expect(contrast(m.fg, m.bg)).toBeGreaterThanOrEqual(4.5);

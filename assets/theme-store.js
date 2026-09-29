@@ -1,16 +1,21 @@
 /**
- * Theme Store section behavior:
- * - Predictive search dropdown with two layers:
- *     1) live call to Shopify's /search/suggest.json (covers vendor / tags / partial matches)
- *     2) local fuzzy matcher over the inline JSON catalog using a normalized
- *        Levenshtein-distance score, so typos still surface "close enough" themes.
- * - Sidebar category filter via ?cat=<handle> URL param, no page reload.
- * - Mobile sidebar accordion toggle.
+ * Theme Store section behavior (sections/theme-store.liquid):
+ * - Category filter via ?cat=<handle> URL param + history.pushState, no reload.
+ * - Search filters the grid directly:
+ *     1) local fuzzy matcher over the inline JSON catalog (normalized,
+ *        transposition-aware edit distance) so typos still find themes and
+ *        a "did you mean …" hint can be offered;
+ *     2) Shopify's predictive search (/search/suggest.json, locale-prefixed via
+ *        window.Shopify.routes.root) adds matches on vendor / tags / body.
+ * - Clear button and Escape reset the search; empty state with reset actions.
  *
+ * All UI strings come from data-i18n-* attributes (rendered via `| t`).
  * Editor-safe: re-initializes on shopify:section:load, no globals.
  */
 (function () {
   const SECTION_TYPE = 'theme-store';
+  const EXACT = 0.8; // substring / prefix / token-prefix hit
+  const FUZZY = 0.45; // "close enough" (typo tolerance)
 
   function normalize(str) {
     return (str || '')
@@ -22,15 +27,17 @@
       .trim();
   }
 
-  // Damerau-Levenshtein-ish (transposition aware) - small implementation.
+  // Optimal string alignment distance (Damerau-Levenshtein with adjacent
+  // transpositions): "nvoa" -> "nova" costs 1.
   function editDistance(a, b) {
     if (a === b) return 0;
     const al = a.length, bl = b.length;
     if (!al) return bl;
     if (!bl) return al;
 
-    const prev = new Array(bl + 1);
-    const curr = new Array(bl + 1);
+    let prev2 = new Array(bl + 1).fill(0); // row i-2
+    let prev = new Array(bl + 1);          // row i-1
+    let curr = new Array(bl + 1);          // row i
     for (let j = 0; j <= bl; j++) prev[j] = j;
 
     for (let i = 1; i <= al; i++) {
@@ -47,10 +54,13 @@
           a.charCodeAt(i - 1) === b.charCodeAt(j - 2) &&
           a.charCodeAt(i - 2) === b.charCodeAt(j - 1)
         ) {
-          curr[j] = Math.min(curr[j], prev[j - 1] - 1 + cost + 1); // transposition
+          curr[j] = Math.min(curr[j], prev2[j - 2] + 1); // transposition
         }
       }
-      for (let j = 0; j <= bl; j++) prev[j] = curr[j];
+      const recycled = prev2;
+      prev2 = prev;
+      prev = curr;
+      curr = recycled;
     }
     return prev[bl];
   }
@@ -85,40 +95,32 @@
     return Math.max(bestToken, whole * 0.55);
   }
 
-  function searchCatalog(catalog, rawQuery, limit) {
-    const q = normalize(rawQuery);
-    if (!q) return [];
+  function haystacksFor(item) {
+    return [
+      normalize(item.title),
+      normalize(item.type),
+      normalize(item.category),
+      normalize(item.vendor),
+      normalize(Array.isArray(item.tags) ? item.tags.join(' ') : item.tags)
+    ].filter(Boolean);
+  }
 
-    const scored = [];
-    for (const item of catalog) {
-      const haystacks = [
-        normalize(item.title),
-        normalize(item.type),
-        normalize(item.vendor),
-        normalize(Array.isArray(item.tags) ? item.tags.join(' ') : item.tags)
-      ].filter(Boolean);
-
-      let best = 0;
-      for (const h of haystacks) {
-        const s = fuzzyScore(q, h);
-        if (s > best) best = s;
-      }
-      if (best >= 0.45) scored.push({ item, score: best });
+  function scoreItem(q, item) {
+    let best = 0;
+    for (const h of item._hay) {
+      const s = fuzzyScore(q, h);
+      if (s > best) best = s;
     }
-    scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, limit).map(s => s.item);
+    return best;
   }
 
   // Suggest a "did you mean" alternative when the query has no strong matches.
-  function suggestAlternative(catalog, rawQuery) {
-    const q = normalize(rawQuery);
+  function suggestAlternative(items, q) {
     if (!q || q.length < 3) return null;
-
     let best = null;
     let bestSim = 0;
-    for (const item of catalog) {
-      const t = normalize(item.title);
-      const sim = fuzzyScore(q, t);
+    for (const item of items) {
+      const sim = fuzzyScore(q, normalize(item.title));
       if (sim > bestSim && sim >= 0.4 && sim < 0.85) {
         bestSim = sim;
         best = item.title;
@@ -127,101 +129,25 @@
     return best;
   }
 
-  function escapeHtml(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
   // Locale-aware storefront root (e.g. "/" or "/en/"), same pattern as
   // assets/product-detail.js.
   const ROOT_URL =
     (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
 
-  // Translated UI strings come from data-i18n-* attributes on the section
-  // container (rendered via `| t` in sections/theme-store.liquid).
-  function labelsFor(el) {
-    const root = el.closest(`[data-section-type="${SECTION_TYPE}"]`);
-    const data = (root && root.dataset) || {};
-    return {
-      noMatches: data.i18nNoMatches || '',
-      didYouMean: data.i18nDidYouMean || '',
-    };
-  }
-
-  function renderResults(container, items, suggestion, onSuggest) {
-    const labels = labelsFor(container);
-    if (!items.length && !suggestion) {
-      const empty = document.createElement('div');
-      empty.className = 'theme-store__search-empty';
-      empty.textContent = labels.noMatches;
-      container.replaceChildren(empty);
-      container.hidden = false;
-      return;
-    }
-
-    const parts = items.map(item => `
-      <a class="theme-store__search-result" href="${escapeHtml(item.url)}" role="option">
-        ${item.img ? `<img class="theme-store__search-result-img" src="${escapeHtml(item.img)}" alt="" loading="lazy">` : '<span class="theme-store__search-result-img" aria-hidden="true"></span>'}
-        <span>
-          <span class="theme-store__search-result-title">${escapeHtml(item.title)}</span><br>
-          <span class="theme-store__search-result-meta">${escapeHtml(item.type || item.vendor || '')}</span>
-        </span>
-        <span class="theme-store__search-result-price">${escapeHtml(item.price || '')}</span>
-      </a>
-    `);
-
-    if (suggestion) {
-      parts.unshift(`
-        <div class="theme-store__search-suggest">
-          ${escapeHtml(labels.didYouMean)}
-          <button type="button" data-ts-suggest="${escapeHtml(suggestion)}">${escapeHtml(suggestion)}</button>?
-        </div>
-      `);
-    }
-
-    container.innerHTML = parts.join('');
-    container.hidden = false;
-
-    if (suggestion) {
-      const btn = container.querySelector('[data-ts-suggest]');
-      if (btn) btn.addEventListener('click', () => onSuggest(btn.dataset.tsSuggest));
-    }
-  }
-
-  // Merge Shopify suggest results with fuzzy results, preserving order, dedupe by id.
-  function mergeResults(primary, secondary, limit) {
-    const seen = new Set();
-    const out = [];
-    for (const list of [primary, secondary]) {
-      for (const item of list) {
-        const key = item.id || item.url;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        out.push(item);
-        if (out.length >= limit) return out;
-      }
-    }
-    return out;
-  }
-
   function fetchPredictive(query) {
-    const url = `${ROOT_URL.replace(/\/?$/, '/')}search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=6&resources[options][unavailable_products]=last`;
+    const url = `${ROOT_URL.replace(/\/?$/, '/')}search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=10&resources[options][unavailable_products]=last`;
     return fetch(url, { headers: { Accept: 'application/json' } })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        const products = data?.resources?.results?.products || [];
-        return products.map(p => ({
-          id: p.id || p.handle,
-          title: p.title,
-          url: p.url,
-          type: p.product_type || '',
-          vendor: p.vendor || '',
-          price: p.price ? new Intl.NumberFormat(document.documentElement.lang || undefined, { style: 'currency', currency: window.Shopify?.currency?.active || 'USD' }).format(parseFloat(p.price)) : '',
-          img: p.featured_image?.url || p.image || ''
-        }));
+        const products = (data && data.resources && data.resources.results && data.resources.results.products) || [];
+        const keys = new Set();
+        products.forEach(p => {
+          if (p.handle) keys.add(String(p.handle));
+          if (p.id) keys.add(String(p.id));
+        });
+        return keys;
       })
-      .catch(() => []);
+      .catch(() => new Set());
   }
 
   function debounce(fn, ms) {
@@ -234,133 +160,16 @@
 
   function getActiveCat() {
     try {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('cat') || 'all';
+      return new URLSearchParams(window.location.search).get('cat') || 'all';
     } catch (_) { return 'all'; }
   }
 
-  function applyFilter(root, cat) {
-    const products = root.querySelectorAll('[data-ts-product]');
-    let visible = 0;
-    products.forEach(el => {
-      const cats = (el.dataset.cats || '').split(/\s+/).filter(Boolean);
-      const show = cat === 'all' || cats.includes(cat);
-      el.hidden = !show;
-      if (show) visible += 1;
-    });
-
-    root.querySelectorAll('[data-ts-cat]').forEach(link => {
-      const isActive = link.dataset.tsCat === cat;
-      link.classList.toggle('is-active', isActive);
-      link.setAttribute('aria-current', isActive ? 'true' : 'false');
-    });
-
-    const empty = root.querySelector('[data-ts-empty]');
-    if (empty) empty.hidden = visible !== 0;
-  }
-
-  function setCat(root, cat, push) {
-    if (push) {
-      try {
-        const url = new URL(window.location.href);
-        if (cat === 'all') url.searchParams.delete('cat');
-        else url.searchParams.set('cat', cat);
-        window.history.pushState({ cat }, '', url.toString());
-      } catch (_) { /* noop */ }
-    }
-    applyFilter(root, cat);
-  }
-
-  function initSidebarToggle(root) {
-    const btn = root.querySelector('[data-ts-sidebar-toggle]');
-    const panel = root.querySelector('[data-ts-sidebar-panel]');
-    if (!btn || !panel) return;
-    btn.addEventListener('click', () => {
-      const open = panel.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-  }
-
-  function initCategoryLinks(root) {
-    root.querySelectorAll('[data-ts-cat]').forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        setCat(root, link.dataset.tsCat, true);
-      });
-    });
-  }
-
-  function initSearch(root, sectionId) {
-    const input = root.querySelector('[data-ts-search-input]');
-    const results = root.querySelector('[data-ts-search-results]');
-    const clearBtn = root.querySelector('[data-ts-search-clear]');
-    const catalogScript = document.querySelector(`script[data-ts-catalog="${sectionId}"]`);
-
-    let catalog = [];
-    if (catalogScript) {
-      try { catalog = JSON.parse(catalogScript.textContent); }
-      catch (_) { catalog = []; }
-    }
-
-    if (!input || !results) return;
-
-    function close() {
-      results.hidden = true;
-      input.setAttribute('aria-expanded', 'false');
-    }
-
-    function open() {
-      results.hidden = false;
-      input.setAttribute('aria-expanded', 'true');
-    }
-
-    const runSearch = debounce(async (q) => {
-      if (!q || q.length < 2) { close(); return; }
-
-      const fuzzy = searchCatalog(catalog, q, 8);
-      // Render fuzzy first for instant feedback
-      renderResults(results, fuzzy, null, (s) => { input.value = s; runSearch.flush ? runSearch.flush() : runSearch(s); });
-      open();
-
-      // Then enhance with Shopify suggest
-      const primary = await fetchPredictive(q);
-      const merged = mergeResults(primary, fuzzy, 8);
-      const suggestion = merged.length === 0 ? suggestAlternative(catalog, q) : null;
-      renderResults(results, merged, suggestion, (s) => { input.value = s; runSearch(s); });
-    }, 180);
-
-    input.addEventListener('input', () => {
-      const v = input.value;
-      clearBtn.hidden = !v;
-      runSearch(v);
-    });
-
-    input.addEventListener('focus', () => {
-      if (input.value && input.value.length >= 2) open();
-    });
-
-    clearBtn.addEventListener('click', () => {
-      input.value = '';
-      clearBtn.hidden = true;
-      close();
-      input.focus();
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!root.contains(e.target)) close();
-    });
-
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { close(); return; }
-      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Enter') return;
-      const items = Array.from(results.querySelectorAll('.theme-store__search-result'));
-      if (!items.length) return;
-      let idx = items.findIndex(i => i.classList.contains('is-focused'));
-      if (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(items.length - 1, idx + 1); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); idx = Math.max(0, idx - 1); }
-      else if (e.key === 'Enter' && idx >= 0) { e.preventDefault(); items[idx].click(); return; }
-      items.forEach(i => i.classList.remove('is-focused'));
-      if (idx >= 0) items[idx].classList.add('is-focused');
+  // Replace the __N__ / __QUERY__ / __CATEGORY__ tokens that Liquid passes
+  // into the translated templates (data-i18n-*).
+  function fmt(tpl, vars) {
+    return String(tpl || '').replace(/__(N|QUERY|CATEGORY)__/g, (m, k) => {
+      const key = k.toLowerCase();
+      return key in vars ? String(vars[key]) : m;
     });
   }
 
@@ -369,16 +178,252 @@
     root.dataset.tsInitialized = 'true';
 
     const sectionId = root.dataset.sectionId;
-    initSidebarToggle(root);
-    initCategoryLinks(root);
-    initSearch(root, sectionId);
+    const i18n = root.dataset;
+    const $ = (s) => root.querySelector(s);
+    const input = $('[data-ts-search-input]');
+    const clearBtn = $('[data-ts-search-clear]');
+    const countEl = $('[data-ts-count]');
+    const hint = $('[data-ts-hint]');
+    const empty = $('[data-ts-empty]');
+    const emptyTitle = $('[data-ts-empty-title]');
+    const resetBtn = $('[data-ts-reset-q]');
+    const cards = Array.from(root.querySelectorAll('[data-ts-product]'));
+    const extras = Array.from(root.querySelectorAll('[data-ts-extra]'));
+    const catLinks = Array.from(root.querySelectorAll('[data-ts-cat]'));
 
-    applyFilter(root, getActiveCat());
+    // Catalog (title, type, vendor, tags, category label) keyed by product id.
+    let catalog = [];
+    const catalogScript = document.querySelector(`script[data-ts-catalog="${sectionId}"]`);
+    if (catalogScript) {
+      try { catalog = JSON.parse(catalogScript.textContent) || []; } catch (_) { catalog = []; }
+    }
+    const byId = new Map(catalog.map(item => [String(item.id), item]));
+    const entries = cards.map(el => {
+      const item = byId.get(String(el.dataset.productId)) || {
+        id: el.dataset.productId,
+        handle: el.dataset.productHandle,
+        title: el.dataset.title || '',
+      };
+      item._hay = haystacksFor(item);
+      return {
+        el,
+        item,
+        handle: String(el.dataset.productHandle || item.handle || ''),
+        id: String(el.dataset.productId || item.id || ''),
+        cats: (el.dataset.cats || '').split(/\s+/).filter(Boolean),
+      };
+    });
+
+    const state = { cat: getActiveCat(), q: '', remote: new Set(), remoteQ: '' };
+    if (state.cat !== 'all' && !catLinks.some(a => a.dataset.tsCat === state.cat)) state.cat = 'all';
+
+    function catLabel(cat) {
+      const link = catLinks.find(a => a.dataset.tsCat === cat);
+      return link ? (link.dataset.tsCatLabel || '') : '';
+    }
+
+    function setCount(main, subParts) {
+      if (!countEl) return;
+      const nodes = [document.createTextNode(main)];
+      const sub = subParts.filter(Boolean).join(' ');
+      if (sub) {
+        const span = document.createElement('span');
+        span.className = 'theme-store__count-sub';
+        span.textContent = ' ' + sub;
+        nodes.push(span);
+      }
+      countEl.replaceChildren(...nodes);
+    }
+
+    function renderHint(raw, suggestion) {
+      if (!hint) return;
+      if (!suggestion) { hint.hidden = true; hint.replaceChildren(); return; }
+      const lead = document.createElement('span');
+      lead.textContent = fmt(i18n.i18nNoExact, { query: raw }) + ' ' + (i18n.i18nDidYouMean || '');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'theme-store__hint-btn';
+      btn.dataset.tsSuggest = suggestion;
+      btn.textContent = suggestion;
+      const end = document.createElement('span');
+      end.textContent = '?';
+      hint.replaceChildren(lead, btn, end);
+      hint.hidden = false;
+    }
+
+    function apply(push) {
+      const raw = state.q.trim();
+      const q = normalize(raw);
+      const inCat = entries.filter(e => state.cat === 'all' || e.cats.includes(state.cat));
+      let shown = inCat;
+      let mode = inCat.length ? 'list' : 'none';
+      let suggestion = null;
+
+      if (q) {
+        const remote = state.remoteQ === q ? state.remote : null;
+        const scored = inCat.map(e => ({ e, s: scoreItem(q, e.item) }));
+        const exact = scored.filter(x => x.s >= EXACT || (remote && (remote.has(x.e.handle) || remote.has(x.e.id))));
+        if (exact.length) {
+          shown = exact.map(x => x.e);
+          mode = 'hits';
+        } else if (q.length >= 3) {
+          const fuzzy = scored.filter(x => x.s >= FUZZY).sort((a, b) => b.s - a.s);
+          shown = fuzzy.map(x => x.e);
+          mode = shown.length ? 'fuzzy' : 'none';
+          suggestion = shown.length ? shown[0].item.title : suggestAlternative(inCat.map(e => e.item), q);
+          if (!shown.length && suggestion) mode = 'none';
+        } else {
+          shown = [];
+          mode = 'none';
+        }
+      }
+
+      const visible = new Set(shown.map(e => e.el));
+      entries.forEach(e => { e.el.hidden = !visible.has(e.el); });
+      extras.forEach(x => { x.hidden = mode === 'none'; });
+
+      catLinks.forEach(link => {
+        const active = link.dataset.tsCat === state.cat;
+        link.classList.toggle('is-active', active);
+        link.setAttribute('aria-current', active ? 'true' : 'false');
+      });
+
+      const n = shown.length;
+      const inTxt = state.cat === 'all' ? '' : fmt(i18n.i18nInCategory, { category: catLabel(state.cat) });
+      if (!q) {
+        setCount(fmt(n === 1 ? i18n.i18nCountOne : i18n.i18nCountOther, { n }), [inTxt]);
+      } else if (mode === 'fuzzy') {
+        setCount(fmt(n === 1 ? i18n.i18nSimilarOne : i18n.i18nSimilarOther, { n }), [inTxt]);
+      } else {
+        setCount(fmt(n === 1 ? i18n.i18nResultsOne : i18n.i18nResultsOther, { n }), [fmt(i18n.i18nForQuery, { query: raw }), inTxt]);
+      }
+
+      renderHint(raw, suggestion);
+
+      if (empty) {
+        empty.hidden = mode !== 'none';
+        if (mode === 'none' && emptyTitle) {
+          emptyTitle.textContent = q ? fmt(i18n.i18nEmptyQuery, { query: raw }) : (i18n.i18nEmptyCategory || '');
+        }
+        if (resetBtn) resetBtn.hidden = !q;
+      }
+
+      if (clearBtn) clearBtn.hidden = !state.q;
+      if (input && input.value !== state.q) input.value = state.q;
+
+      if (push) {
+        try {
+          const url = new URL(window.location.href);
+          if (state.cat === 'all') url.searchParams.delete('cat');
+          else url.searchParams.set('cat', state.cat);
+          window.history.pushState({ cat: state.cat }, '', url.toString());
+        } catch (_) { /* noop */ }
+      }
+    }
+
+    let seq = 0;
+    const runRemote = debounce((value) => {
+      const q = normalize(value);
+      if (q.length < 2) return;
+      const mine = ++seq;
+      fetchPredictive(value.trim()).then(keys => {
+        if (mine !== seq || normalize(state.q) !== q) return;
+        state.remote = keys;
+        state.remoteQ = q;
+        apply(false);
+      });
+    }, 200);
+
+    function setQuery(value) {
+      state.q = value;
+      apply(false);
+      runRemote(value);
+    }
+
+    if (input) {
+      input.addEventListener('input', () => setQuery(input.value));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && state.q) { e.preventDefault(); setQuery(''); }
+      });
+    }
+    const form = $('[data-ts-search-form]');
+    const grid = $('[data-ts-product-grid]');
+    const bar = $('.theme-store__bar');
+
+    // Space the sticky UI can cover at the top of the viewport: the filter bar
+    // plus the header (it may slide back in as soon as the user scrolls up).
+    function stickyOffset() {
+      let offset = 0;
+      if (bar && getComputedStyle(bar).position === 'sticky') offset += bar.offsetHeight;
+      if (document.querySelector('.shopify-section-group-header-group.is-sticky')) {
+        const h = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sqe-header-h'));
+        if (h > 0) offset += h;
+      }
+      return offset;
+    }
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Enter/"Search": bring the results into view. A single hit is not
+        // opened automatically.
+        const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        if (coarse && countEl) {
+          // Touch: close the on-screen keyboard, keep focus on the result count.
+          if (!countEl.hasAttribute('tabindex')) countEl.setAttribute('tabindex', '-1');
+          countEl.focus({ preventScroll: true });
+          if (input && document.activeElement === input) input.blur();
+        } else if (coarse && input) {
+          input.blur();
+        }
+        const target = empty && !empty.hidden ? empty : grid;
+        if (!target) return;
+        const top = target.getBoundingClientRect().top + window.scrollY - stickyOffset() - 16;
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
+      });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => { setQuery(''); if (input) input.focus(); });
+    }
+
+    catLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        e.preventDefault();
+        state.cat = link.dataset.tsCat;
+        apply(true);
+      });
+    });
+
+    root.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-ts-suggest],[data-ts-reset-q],[data-ts-show-all]');
+      if (!t || !root.contains(t)) return;
+      if (t.hasAttribute('data-ts-suggest')) {
+        setQuery(t.dataset.tsSuggest || '');
+        if (input) input.focus();
+      } else if (t.hasAttribute('data-ts-reset-q')) {
+        setQuery('');
+        if (input) input.focus();
+      } else if (t.hasAttribute('data-ts-show-all')) {
+        state.cat = 'all';
+        state.q = '';
+        apply(true);
+        if (input) input.focus();
+      }
+    });
+
+    root._tsSync = () => {
+      state.cat = getActiveCat();
+      if (state.cat !== 'all' && !catLinks.some(a => a.dataset.tsCat === state.cat)) state.cat = 'all';
+      apply(false);
+    };
+
+    apply(false);
   }
 
   function initAll(scope) {
-    const containers = (scope || document).querySelectorAll(`[data-section-type="${SECTION_TYPE}"]`);
-    containers.forEach(initSection);
+    (scope || document).querySelectorAll(`[data-section-type="${SECTION_TYPE}"]`).forEach(initSection);
   }
 
   if (document.readyState === 'loading') {
@@ -397,21 +442,10 @@
       });
     }
   });
-  document.addEventListener('shopify:block:select', (e) => {
-    const root = e.target.closest(`[data-section-type="${SECTION_TYPE}"]`);
-    if (root) {
-      const panel = root.querySelector('[data-ts-sidebar-panel]');
-      const btn = root.querySelector('[data-ts-sidebar-toggle]');
-      if (panel && !panel.classList.contains('is-open')) {
-        panel.classList.add('is-open');
-        if (btn) btn.setAttribute('aria-expanded', 'true');
-      }
-    }
-  });
 
   window.addEventListener('popstate', () => {
     document.querySelectorAll(`[data-section-type="${SECTION_TYPE}"]`).forEach(root => {
-      applyFilter(root, getActiveCat());
+      if (typeof root._tsSync === 'function') root._tsSync();
     });
   });
 })();

@@ -102,7 +102,7 @@ for (const target of PAGES) {
         })
       );
       for (const s of styles) {
-        expect(s).toEqual({ radius: "16px", width: "1px", color: LINE, bg: SURFACE, shadow: "none" });
+        expect(s).toEqual({ radius: "14.4px", width: "1px", color: LINE, bg: SURFACE, shadow: "none" });
       }
 
       // Hover must not add a shadow either.

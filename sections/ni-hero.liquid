@@ -16,8 +16,8 @@
 
 {% style %}
   #shopify-section-{{ section.id }} {
-    --lp-pad-top: {{ section.settings.padding_top }}px;
-    --lp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --lp-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --lp-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     {%- if accent != blank %}--lp-accent: {{ accent }};{% endif %}
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};

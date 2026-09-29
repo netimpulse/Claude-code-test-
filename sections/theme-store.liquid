@@ -1,38 +1,90 @@
 {% comment %}
-  Theme Store layout:
-  - Header bar with predictive search (fuzzy / typo-tolerant)
-  - Sidebar with category filter (rendered from `category` blocks) plus
-    a built-in "All" entry that aggregates products from every linked
-    collection. Optional `feature` blocks render a static feature list.
-  - Product grid for the active category
+  Theme Store (design system, variant B with head + featured slab from C)
+  ----------------------------------------------------------------
+  - Compact head: eyebrow, h1 with serif accent (*word*), lead on the right.
+  - Featured slab (dark): product, type, title, text, tags, price, button,
+    large preview on the right. Hidden while `featured_product` is empty.
+  - Feature band from `feature` blocks (hairlines, icon + text).
+  - Sticky filter bar: category pills with count (from `category` blocks,
+    plus the built-in "All" entry), result count, search field.
+  - Two-column grid with large 4:3 previews and round arrows; cards without
+    an image show the initial in Newsreader italic + "preview coming soon".
+    Optional `cta` block: dark teal tile as the last grid item.
+  - Empty state ("no results") and "did you mean …" hint.
 
-  Filtering happens client-side via JS reading ?cat=<handle>:
-  - Liquid renders every product once with a data-cats attribute listing
-    every collection handle the product belongs to (dedupe by product id).
-  - JS toggles visibility based on the active category and updates URL
-    via history.pushState — no page reload.
+  Filtering and search happen client-side (assets/theme-store.js):
+  - Liquid renders every product once with data-cats listing every
+    collection handle it belongs to (dedupe by product id).
+  - ?cat=<handle> + history.pushState, no reload.
+  - Search filters the grid directly with typo tolerance; Shopify's
+    predictive search (locale-prefixed) adds matches on vendor/tags/body.
+
+  Legacy settings kept for compatibility (not rendered any more):
+  heading_font, body_font, card_radius. The design system fonts apply.
 {% endcomment %}
 
 {%- liquid
   assign render_limit = 50
   assign scheme = section.settings.color_scheme
-  assign heading_font = section.settings.heading_font
-  assign body_font = section.settings.body_font
   assign fallback_all_label = 'theme_store.all_label' | t
+  assign all_label = section.settings.all_label | default: fallback_all_label
+  assign heading_tag = section.settings.heading_tag | default: 'h1'
+  assign featured = section.settings.featured_product
+
+  assign seen_ids = ''
+  assign total_count = 0
+  assign feature_count = 0
+  assign cta_block = nil
+  for block in section.blocks
+    case block.type
+      when 'category'
+        if block.settings.collection != blank
+          for p in block.settings.collection.products limit: render_limit
+            assign marker = '|' | append: p.id | append: '|'
+            unless seen_ids contains marker
+              assign seen_ids = seen_ids | append: marker
+              assign total_count = total_count | plus: 1
+            endunless
+          endfor
+        endif
+      when 'feature'
+        if block.settings.text != blank
+          assign feature_count = feature_count | plus: 1
+        endif
+      when 'cta'
+        if cta_block == nil
+          assign cta_block = block
+        endif
+    endcase
+  endfor
+
+  if cta_block
+    assign cta_url = cta_block.settings.button_url
+    if cta_url == blank
+      assign cta_url = pages['kontakt'].url | default: routes.root_url
+    endif
+  endif
+
+  assign search_placeholder = section.settings.search_placeholder
+  if search_placeholder == blank
+    assign search_placeholder = 'theme_store.search_label' | t
+  endif
+  assign categories_label = section.settings.categories_heading
+  if categories_label == blank
+    assign categories_label = 'theme_store.categories_label' | t
+  endif
+  assign features_label = section.settings.features_heading
+  if features_label == blank
+    assign features_label = 'theme_store.features_label' | t
+  endif
 -%}
 
-{% style %}
-  {{ heading_font | font_face: font_display: 'swap' }}
-  {{ body_font | font_face: font_display: 'swap' }}
+{{ 'section-theme-store.css' | asset_url | stylesheet_tag }}
 
-  #shopify-section-{{ section.id }} {
+{% style %}
+  #shopify-section-{{ section.id }} .theme-store {
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
-  }
-
-  #shopify-section-{{ section.id }} .theme-store {
-    --ts-heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
-    --ts-body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
   }
 {% endstyle %}
 
@@ -40,251 +92,336 @@
   class="theme-store full-width{% if scheme != blank %} color-{{ scheme.id }}{% endif %}"
   data-section-id="{{ section.id }}"
   data-section-type="theme-store"
-  data-i18n-no-matches="{{ 'theme_store.no_matches' | t | escape }}"
+  aria-labelledby="ts-title-{{ section.id }}"
+  data-i18n-count-one="{{ 'theme_store.count_one' | t: n: '__N__' | escape }}"
+  data-i18n-count-other="{{ 'theme_store.count_other' | t: n: '__N__' | escape }}"
+  data-i18n-results-one="{{ 'theme_store.results_one' | t: n: '__N__' | escape }}"
+  data-i18n-results-other="{{ 'theme_store.results_other' | t: n: '__N__' | escape }}"
+  data-i18n-similar-one="{{ 'theme_store.similar_one' | t: n: '__N__' | escape }}"
+  data-i18n-similar-other="{{ 'theme_store.similar_other' | t: n: '__N__' | escape }}"
+  data-i18n-for-query="{{ 'theme_store.for_query' | t: query: '__QUERY__' | escape }}"
+  data-i18n-in-category="{{ 'theme_store.in_category' | t: category: '__CATEGORY__' | escape }}"
+  data-i18n-no-exact="{{ 'theme_store.no_exact' | t: query: '__QUERY__' | escape }}"
   data-i18n-did-you-mean="{{ 'theme_store.did_you_mean' | t | escape }}"
-  style="
-    --ts-radius: {{ section.settings.card_radius }}px;
-    {%- if scheme != blank %}
-    --ts-accent: {{ scheme.settings.accent }};
-    --ts-bg-card: {{ scheme.settings.background_card }};
-    --ts-text: {{ scheme.settings.text }};
-    --ts-muted: {{ scheme.settings.muted }};
-    --ts-bg: {{ scheme.settings.background }};
-    {%- else %}
-    --ts-accent: var(--color-accent);
-    --ts-bg-card: var(--color-surface);
-    --ts-text: var(--color-text);
-    --ts-muted: var(--color-muted);
-    --ts-bg: var(--color-bg);
-    {%- endif %}
-  "
+  data-i18n-empty-query="{{ 'theme_store.empty_query' | t: query: '__QUERY__' | escape }}"
+  data-i18n-empty-category="{{ 'theme_store.empty' | t | escape }}"
 >
-  <div class="theme-store__inner">
-    <div class="theme-store__grid">
-      {% if section.settings.heading != blank or section.settings.subheading != blank %}
-        <div class="theme-store__header">
-          {% if section.settings.heading != blank %}
-            <h2 class="theme-store__heading">{{ section.settings.heading }}</h2>
-          {% endif %}
-          {% if section.settings.subheading != blank %}
-            <p class="theme-store__subheading">{{ section.settings.subheading }}</p>
-          {% endif %}
+  <div class="theme-store__wrap">
+    {%- comment -%} Compact head {%- endcomment -%}
+    <header class="theme-store__head">
+      <div class="theme-store__head-text">
+        {%- if section.settings.kicker != blank -%}
+          <p class="theme-store__kicker eyebrow">{{ section.settings.kicker | escape }}</p>
+        {%- endif -%}
+        <{{ heading_tag }} id="ts-title-{{ section.id }}" class="theme-store__heading">
+          {%- if section.settings.heading != blank -%}
+            {%- render 'accent-heading', text: section.settings.heading -%}
+          {%- else -%}
+            {{- all_label | escape -}}
+          {%- endif -%}
+        </{{ heading_tag }}>
+      </div>
+      {%- if section.settings.subheading != blank -%}
+        <p class="theme-store__lead">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- comment -%} Featured slab (dark) {%- endcomment -%}
+    {%- if featured != blank -%}
+      {%- liquid
+        assign f_tags_src = section.settings.featured_tags
+        if f_tags_src == blank
+          assign f_tags_src = featured.tags | join: ','
+        endif
+        assign f_tags = f_tags_src | split: ','
+        assign f_initial = featured.title | strip | slice: 0, 1 | upcase
+      -%}
+      <article class="theme-store__feature" aria-labelledby="ts-feature-{{ section.id }}">
+        <div class="theme-store__feature-main">
+          <div class="theme-store__feature-top">
+            {%- if section.settings.featured_label != blank -%}
+              <span class="eyebrow">{{ section.settings.featured_label | escape }}</span>
+            {%- endif -%}
+            {%- if featured.type != blank -%}
+              <span class="label-caps theme-store__feature-type">{{ featured.type | escape }}</span>
+            {%- endif -%}
+          </div>
+          <h2 id="ts-feature-{{ section.id }}" class="theme-store__feature-title">{{ featured.title | escape }}</h2>
+          {%- if section.settings.featured_text != blank -%}
+            <div class="theme-store__feature-text">{{ section.settings.featured_text }}</div>
+          {%- endif -%}
+          {%- if f_tags_src != blank -%}
+            <ul class="theme-store__tags" aria-label="{{ 'theme_store.tags_label' | t }}">
+              {%- for tag in f_tags -%}
+                {%- assign tag_clean = tag | strip -%}
+                {%- if tag_clean != blank -%}
+                  <li>{{ tag_clean | escape }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          <div class="theme-store__feature-foot">
+            <p class="theme-store__feature-price">
+              <small>{{ 'theme_store.price_once' | t }}</small>
+              {{- featured.price | money -}}
+            </p>
+            <a class="btn btn--primary theme-store__feature-btn" href="{{ featured.url }}">
+              {%- comment -%} t escapes interpolated values itself (key without _html) {%- endcomment -%}
+              <span>{{ 'theme_store.view_theme' | t: title: featured.title }}</span>
+              <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
         </div>
-      {% endif %}
+        <div class="theme-store__feature-visual" aria-hidden="true">
+          {%- if featured.featured_image -%}
+            {{
+              featured.featured_image
+              | image_url: width: 1600, height: 1200, crop: 'center'
+              | image_tag:
+                loading: 'eager',
+                widths: '600, 800, 1000, 1200, 1600',
+                sizes: '(min-width: 1101px) 45vw, 92vw',
+                alt: '',
+                class: 'theme-store__feature-img'
+            }}
+          {%- else -%}
+            <div class="theme-store__noimg">
+              <span class="theme-store__noimg-bar"><i></i><i></i><i></i></span>
+              <span class="theme-store__noimg-initial">{{ f_initial | escape }}</span>
+              <span class="theme-store__noimg-tag label-caps">{{ 'theme_store.preview_soon' | t }}</span>
+            </div>
+          {%- endif -%}
+        </div>
+      </article>
+    {%- endif -%}
 
-      <aside class="theme-store__sidebar" aria-label="{{ 'theme_store.filter_label' | t }}">
-        <button
-          type="button"
-          class="theme-store__sidebar-toggle"
-          data-ts-sidebar-toggle
-          aria-expanded="false"
-          aria-controls="ts-sidebar-panel-{{ section.id }}"
-        >
-          <span>{{ 'theme_store.filter_label' | t }}</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="18" height="18">
-            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+    {%- comment -%} Feature band {%- endcomment -%}
+    {%- if feature_count > 0 -%}
+      <div class="theme-store__feats-wrap">
+        <h2 class="visually-hidden">{{ features_label | escape }}</h2>
+        <ul class="theme-store__feats" style="--ts-feats: {{ feature_count | at_most: 4 }};">
+          {%- for block in section.blocks -%}
+            {%- if block.type != 'feature' or block.settings.text == blank -%}{%- continue -%}{%- endif -%}
+            {%- liquid
+              assign icon = block.settings.icon | default: 'auto'
+              if icon == 'auto'
+                assign key = block.settings.text | downcase
+                if key contains 'mobil'
+                  assign icon = 'mobile'
+                elsif key contains 'seo' or key contains 'such'
+                  assign icon = 'seo'
+                elsif key contains 'editor'
+                  assign icon = 'editor'
+                elsif key contains 'schnell' or key contains 'fast' or key contains 'lade' or key contains 'speed'
+                  assign icon = 'speed'
+                else
+                  assign icon = 'check'
+                endif
+              endif
+            -%}
+            <li class="theme-store__feat" {{ block.shopify_attributes }}>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                {%- case icon -%}
+                  {%- when 'mobile' -%}
+                    <rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 17.5h2"/>
+                  {%- when 'seo' -%}
+                    <circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5M8 10.5l2 2 3.5-4"/>
+                  {%- when 'editor' -%}
+                    <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M12 9h6M12 13h4"/>
+                  {%- when 'speed' -%}
+                    <path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z"/>
+                  {%- else -%}
+                    <circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.5 2.5L16 9.5"/>
+                {%- endcase -%}
+              </svg>
+              <span>{{ block.settings.text | escape }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
 
-        <div id="ts-sidebar-panel-{{ section.id }}" class="theme-store__sidebar-panel" data-ts-sidebar-panel>
-          {% if section.settings.categories_heading != blank %}
-            <h3 class="theme-store__sidebar-heading">{{ section.settings.categories_heading }}</h3>
-          {% endif %}
-
-          {%- comment -%}
-            Build a unique list of products + remember which collections each one belongs to.
-            We pre-walk all category blocks so the sidebar counts and the JS catalog stay in sync.
-          {%- endcomment -%}
-          {%- assign seen_ids = '' -%}
-          {%- assign total_count = 0 -%}
+  {%- comment -%} Sticky filter bar {%- endcomment -%}
+  <div class="theme-store__bar">
+    <div class="theme-store__wrap theme-store__bar-inner">
+      <nav class="theme-store__cats" aria-label="{{ categories_label | escape }}">
+        <ul class="theme-store__pills">
+          <li>
+            <a href="{{ request.path }}" class="theme-store__pill is-active" data-ts-cat="all" data-ts-cat-label="{{ all_label | escape }}" aria-current="true">
+              <span class="theme-store__pill-name">{{ all_label | escape }}</span>
+              <span class="theme-store__pill-count" data-ts-cat-count>{{ total_count }}</span>
+            </a>
+          </li>
           {%- for block in section.blocks -%}
             {%- if block.type == 'category' and block.settings.collection != blank -%}
-              {%- assign coll = block.settings.collection -%}
-              {%- for p in coll.products limit: render_limit -%}
-                {%- assign marker = '|' | append: p.id | append: '|' -%}
-                {%- unless seen_ids contains marker -%}
-                  {%- assign seen_ids = seen_ids | append: marker -%}
-                  {%- assign total_count = total_count | plus: 1 -%}
-                {%- endunless -%}
+              {%- assign c = block.settings.collection -%}
+              {%- assign c_label = block.settings.label | default: c.title -%}
+              <li {{ block.shopify_attributes }}>
+                <a href="{{ request.path }}?cat={{ c.handle | url_encode }}" class="theme-store__pill" data-ts-cat="{{ c.handle | escape }}" data-ts-cat-label="{{ c_label | escape }}" aria-current="false">
+                  <span class="theme-store__pill-name">{{ c_label | escape }}</span>
+                  <span class="theme-store__pill-count" data-ts-cat-count>{{ c.products_count | at_most: render_limit }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      <p class="theme-store__count" data-ts-count aria-live="polite">
+        {%- if total_count == 1 -%}
+          {{- 'theme_store.count_one' | t: n: total_count -}}
+        {%- else -%}
+          {{- 'theme_store.count_other' | t: n: total_count -}}
+        {%- endif -%}
+      </p>
+
+      <form class="theme-store__search" role="search" action="{{ routes.search_url }}" method="get" data-ts-search-form>
+        <label for="ts-search-{{ section.id }}" class="visually-hidden">{{ 'theme_store.search_label' | t }}</label>
+        <div class="theme-store__search-field">
+          <svg class="theme-store__search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/>
+          </svg>
+          <input
+            id="ts-search-{{ section.id }}"
+            class="theme-store__search-input"
+            type="search"
+            name="q"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="{{ search_placeholder | escape }}"
+            data-ts-search-input
+            aria-controls="ts-grid-{{ section.id }}"
+          >
+          <input type="hidden" name="type" value="product">
+          <button type="button" class="theme-store__search-clear" data-ts-search-clear aria-label="{{ 'theme_store.clear_search' | t }}" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {%- comment -%} Results {%- endcomment -%}
+  <div class="theme-store__wrap theme-store__body">
+    <h2 class="visually-hidden">{{ all_label | escape }}</h2>
+    <p class="theme-store__hint" data-ts-hint aria-live="polite" hidden></p>
+
+    {%- assign rendered_ids = '' -%}
+    <ul id="ts-grid-{{ section.id }}" class="theme-store__grid" data-ts-product-grid aria-label="{{ all_label | escape }}">
+      {%- assign cat_index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type != 'category' or block.settings.collection == blank -%}{%- continue -%}{%- endif -%}
+        {%- assign coll = block.settings.collection -%}
+        {%- assign coll_label = block.settings.label | default: coll.title -%}
+        {%- assign tone = cat_index | modulo: 2 -%}
+        {%- assign cat_index = cat_index | plus: 1 -%}
+        {%- for product in coll.products limit: render_limit -%}
+          {%- assign marker = '|' | append: product.id | append: '|' -%}
+          {%- if rendered_ids contains marker -%}{%- continue -%}{%- endif -%}
+          {%- assign rendered_ids = rendered_ids | append: marker -%}
+
+          {%- comment -%} Every collection (within this section) the product belongs to {%- endcomment -%}
+          {%- assign cats = '' -%}
+          {%- for b2 in section.blocks -%}
+            {%- if b2.type == 'category' and b2.settings.collection != blank -%}
+              {%- for p2 in b2.settings.collection.products limit: render_limit -%}
+                {%- if p2.id == product.id -%}
+                  {%- assign cats = cats | append: b2.settings.collection.handle | append: ' ' -%}
+                  {%- break -%}
+                {%- endif -%}
               {%- endfor -%}
             {%- endif -%}
           {%- endfor -%}
+          {%- assign card_cat = product.type | default: coll_label -%}
+          {%- assign initial = product.title | strip | slice: 0, 1 | upcase -%}
 
-          <ul class="theme-store__cat-list">
-            <li>
-              <a
-                href="{{ request.path }}"
-                class="theme-store__cat-item is-active"
-                data-ts-cat="all"
-                aria-current="true"
-              >
-                <span class="theme-store__cat-name">{{ section.settings.all_label | default: fallback_all_label | escape }}</span>
-                <span class="theme-store__cat-count">{{ total_count }}</span>
+          <li
+            class="theme-store__card"
+            data-ts-product
+            data-product-id="{{ product.id }}"
+            data-product-handle="{{ product.handle | escape }}"
+            data-cats="{{ cats | strip | escape }}"
+            data-title="{{ product.title | escape }}"
+          >
+            <a class="theme-store__card-link" href="{{ product.url }}">
+              <div class="theme-store__media">
+                {%- if product.featured_image -%}
+                  {{
+                    product.featured_image
+                    | image_url: width: 1200, height: 900, crop: 'center'
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '400, 600, 800, 1000, 1200',
+                      sizes: '(min-width: 861px) 46vw, 92vw',
+                      alt: '',
+                      class: 'theme-store__img'
+                  }}
+                {%- else -%}
+                  <div class="theme-store__noimg theme-store__noimg--tone-{{ tone }}" aria-hidden="true">
+                    <span class="theme-store__noimg-bar"><i></i><i></i><i></i></span>
+                    <span class="theme-store__noimg-initial">{{ initial | escape }}</span>
+                    <span class="theme-store__noimg-tag label-caps">{{ 'theme_store.preview_soon' | t }}</span>
+                  </div>
+                {%- endif -%}
+                <span class="theme-store__go" aria-hidden="true">&rarr;</span>
+              </div>
+              <div class="theme-store__card-body">
+                <h3 class="theme-store__product-title">{{ product.title | escape }}</h3>
+                <p class="theme-store__price">{{ product.price | money }}</p>
+                {%- if card_cat != blank -%}
+                  <p class="theme-store__card-cat">{{ card_cat | escape }}</p>
+                {%- endif -%}
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- if cta_block -%}
+        <li class="theme-store__cta" data-ts-extra {{ cta_block.shopify_attributes }}>
+          <div class="theme-store__cta-tile">
+            {%- if cta_block.settings.label != blank -%}
+              <p class="eyebrow theme-store__cta-label">{{ cta_block.settings.label | escape }}</p>
+            {%- endif -%}
+            <div>
+              {%- if cta_block.settings.heading != blank -%}
+                <h3 class="theme-store__cta-heading">{{ cta_block.settings.heading | escape }}</h3>
+              {%- endif -%}
+              {%- if cta_block.settings.text != blank -%}
+                <p class="theme-store__cta-text">{{ cta_block.settings.text | escape }}</p>
+              {%- endif -%}
+            </div>
+            {%- if cta_block.settings.button_label != blank -%}
+              <a class="btn btn--primary theme-store__cta-btn" href="{{ cta_url }}">
+                <span>{{ cta_block.settings.button_label | escape }}</span>
+                <span class="btn__arrow" aria-hidden="true">&rarr;</span>
               </a>
-            </li>
-
-            {% for block in section.blocks %}
-              {% if block.type == 'category' and block.settings.collection != blank %}
-                {%- assign c = block.settings.collection -%}
-                <li {{ block.shopify_attributes }}>
-                  <a
-                    href="{{ request.path }}?cat={{ c.handle }}"
-                    class="theme-store__cat-item"
-                    data-ts-cat="{{ c.handle }}"
-                    aria-current="false"
-                  >
-                    <span class="theme-store__cat-name">{{ block.settings.label | default: c.title }}</span>
-                    <span class="theme-store__cat-count">{{ c.products_count }}</span>
-                  </a>
-                </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-
-          {%- assign has_features = false -%}
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'feature' -%}{%- assign has_features = true -%}{%- endif -%}
-          {%- endfor -%}
-
-          {% if has_features %}
-            {% if section.settings.features_heading != blank %}
-              <h3 class="theme-store__sidebar-heading theme-store__sidebar-heading--secondary">
-                {{ section.settings.features_heading }}
-              </h3>
-            {% endif %}
-            <ul class="theme-store__feature-list">
-              {% for block in section.blocks %}
-                {% if block.type == 'feature' %}
-                  <li class="theme-store__feature-item" {{ block.shopify_attributes }}>
-                    {{ block.settings.text }}
-                  </li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          {% endif %}
-        </div>
-      </aside>
-
-      <div class="theme-store__products">
-        <div class="theme-store__searchbar" data-ts-search-root>
-          <label for="ts-search-{{ section.id }}" class="theme-store__sr-only">
-            {{ 'theme_store.search_label' | t }}
-          </label>
-          <div class="theme-store__search-input-wrap">
-            <svg class="theme-store__search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
-              <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <input
-              id="ts-search-{{ section.id }}"
-              class="theme-store__search-input"
-              type="search"
-              name="q"
-              autocomplete="off"
-              spellcheck="false"
-              placeholder="{{ section.settings.search_placeholder | escape }}"
-              data-ts-search-input
-              aria-controls="ts-search-results-{{ section.id }}"
-              aria-expanded="false"
-            >
-            <button
-              type="button"
-              class="theme-store__search-clear"
-              data-ts-search-clear
-              aria-label="{{ 'theme_store.clear_search' | t }}"
-              hidden
-            >×</button>
+            {%- endif -%}
           </div>
-          <div
-            id="ts-search-results-{{ section.id }}"
-            class="theme-store__search-results"
-            role="listbox"
-            data-ts-search-results
-            hidden
-          ></div>
-        </div>
+        </li>
+      {%- endif -%}
+    </ul>
 
-        {%- comment -%}
-          Render every product once. data-cats is a space-separated list of every
-          collection handle the product belongs to, so JS can show/hide for
-          single-cat filters and "all" lets everything through.
-        {%- endcomment -%}
-        {%- assign rendered_ids = '' -%}
-        {%- assign visible_count = 0 -%}
-        <ul class="theme-store__product-grid" data-ts-product-grid>
-          {% for block in section.blocks %}
-            {% if block.type == 'category' and block.settings.collection != blank %}
-              {%- assign coll = block.settings.collection -%}
-              {% for product in coll.products limit: render_limit %}
-                {%- assign marker = '|' | append: product.id | append: '|' -%}
-                {%- unless rendered_ids contains marker -%}
-                  {%- assign rendered_ids = rendered_ids | append: marker -%}
-                  {%- assign visible_count = visible_count | plus: 1 -%}
-
-                  {%- comment -%} Collect every collection this product belongs to (within section) {%- endcomment -%}
-                  {%- assign cats = '' -%}
-                  {%- for b2 in section.blocks -%}
-                    {%- if b2.type == 'category' and b2.settings.collection != blank -%}
-                      {%- assign c2 = b2.settings.collection -%}
-                      {%- for p2 in c2.products limit: render_limit -%}
-                        {%- if p2.id == product.id -%}
-                          {%- assign cats = cats | append: c2.handle | append: ' ' -%}
-                        {%- endif -%}
-                      {%- endfor -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  <li
-                    class="theme-store__product"
-                    data-ts-product
-                    data-product-id="{{ product.id }}"
-                    data-product-handle="{{ product.handle }}"
-                    data-cats="{{ cats | strip }}"
-                  >
-                    <a class="theme-store__product-link" href="{{ product.url }}">
-                      <div class="theme-store__product-media">
-                        {% if product.featured_image %}
-                          {% render 'image',
-                            image: product.featured_image,
-                            class: 'theme-store__product-img',
-                            width: 600,
-                            height: 400,
-                            crop: 'center'
-                          %}
-                        {% else %}
-                          <div class="theme-store__product-placeholder" aria-hidden="true"></div>
-                        {% endif %}
-                      </div>
-                      <div class="theme-store__product-body">
-                        <h3 class="theme-store__product-title">{{ product.title | escape }}</h3>
-                        {% if product.type != blank %}
-                          <p class="theme-store__product-type">{{ product.type | escape }}</p>
-                        {% endif %}
-                        <p class="theme-store__product-price">{{ product.price | money }}</p>
-                      </div>
-                    </a>
-                  </li>
-                {%- endunless -%}
-              {% endfor %}
-            {% endif %}
-          {% endfor %}
-        </ul>
-
-        <p class="theme-store__empty" data-ts-empty hidden>
-          {{ 'theme_store.empty' | t }}
-        </p>
-
-        {% if visible_count == 0 %}
-          <p class="theme-store__empty">
-            {{ 'theme_store.empty' | t }}
-          </p>
-        {% endif %}
+    <div class="theme-store__empty" data-ts-empty {% if total_count > 0 %}hidden{% endif %}>
+      <p class="eyebrow">{{ 'theme_store.no_matches' | t }}</p>
+      <h2 class="theme-store__empty-title" data-ts-empty-title>{{ 'theme_store.empty' | t }}</h2>
+      <p class="theme-store__empty-text">{{ 'theme_store.empty_text' | t }}</p>
+      <div class="theme-store__empty-actions">
+        <button class="btn btn--primary btn--sm" type="button" data-ts-reset-q hidden>{{ 'theme_store.reset_search' | t }}</button>
+        <button class="btn btn--secondary btn--sm" type="button" data-ts-show-all>{{ 'theme_store.show_all' | t }}</button>
       </div>
+      {%- if cta_block and cta_block.settings.button_label != blank -%}
+        <p class="theme-store__empty-note">
+          {%- if cta_block.settings.heading != blank -%}{{ cta_block.settings.heading | escape }} {% endif -%}
+          <a class="text-link" href="{{ cta_url }}">{{ cta_block.settings.button_label | escape }} <span aria-hidden="true">&rarr;</span></a>
+        </p>
+      {%- endif -%}
     </div>
   </div>
 </section>
 
-{%- comment -%} Inline JSON catalog for predictive search fuzzy matching {%- endcomment -%}
+{%- comment -%} Inline JSON catalog for the typo-tolerant search {%- endcomment -%}
 <script type="application/json" data-ts-catalog="{{ section.id }}">
   [
     {%- assign first_p = true -%}
@@ -292,26 +429,21 @@
     {%- for block in section.blocks -%}
       {%- if block.type == 'category' and block.settings.collection != blank -%}
         {%- assign coll = block.settings.collection -%}
+        {%- assign coll_label = block.settings.label | default: coll.title -%}
         {%- for p in coll.products limit: render_limit -%}
           {%- assign marker = '|' | append: p.id | append: '|' -%}
           {%- unless catalog_seen contains marker -%}
             {%- assign catalog_seen = catalog_seen | append: marker -%}
             {%- unless first_p -%},{%- endunless -%}
             {%- assign first_p = false -%}
-            {%- if p.featured_image -%}
-              {%- assign img_src = p.featured_image | image_url: width: 200 -%}
-            {%- else -%}
-              {%- assign img_src = '' -%}
-            {%- endif -%}
             {
               "id": {{ p.id | json }},
-              "title": {{ p.title | json }},
-              "type": {{ p.type | default: '' | json }},
-              "url": {{ p.url | json }},
-              "price": {{ p.price | money | json }},
-              "img": {{ img_src | json }},
-              "vendor": {{ p.vendor | json }},
-              "tags": {{ p.tags | json }}
+              "handle": {{ p.handle | json | replace: '</', '<\/' }},
+              "title": {{ p.title | json | replace: '</', '<\/' }},
+              "type": {{ p.type | default: '' | json | replace: '</', '<\/' }},
+              "category": {{ coll_label | json | replace: '</', '<\/' }},
+              "vendor": {{ p.vendor | json | replace: '</', '<\/' }},
+              "tags": {{ p.tags | json | replace: '</', '<\/' }}
             }
           {%- endunless -%}
         {%- endfor -%}
@@ -322,283 +454,6 @@
 
 <script src="{{ 'theme-store.js' | asset_url }}" defer="defer"></script>
 
-{% stylesheet %}
-  .theme-store {
-    --ts-gap: 1.25rem;
-    background: var(--ts-bg, transparent);
-    color: var(--ts-text, var(--color-foreground, #333));
-    padding: clamp(1rem, 4vw, 3rem) var(--page-margin, 20px);
-    font-family: var(--ts-body-font, inherit);
-  }
-  .theme-store__heading,
-  .theme-store__sidebar-heading,
-  .theme-store__product-title {
-    font-family: var(--ts-heading-font, inherit);
-  }
-  .theme-store *,
-  .theme-store *::before,
-  .theme-store *::after { box-sizing: border-box; }
-  .theme-store__inner {
-    max-width: var(--page-width, 90rem);
-    margin: 0 auto;
-  }
-  .theme-store__sr-only {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
-  }
-  .theme-store__header {
-    text-align: center;
-    margin-bottom: var(--ts-gap);
-  }
-  .theme-store__heading {
-    margin: 0 0 0.4rem;
-    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--fs-heading, 1));
-    font-weight: 700;
-  }
-  .theme-store__subheading {
-    margin: 0;
-    color: var(--ts-muted, #888);
-    font-size: calc(clamp(0.95rem, 1.4vw, 1.05rem) * var(--fs-text, 1));
-  }
-
-  /* --- Search bar --- */
-  .theme-store__searchbar {
-    position: relative;
-    margin-bottom: var(--ts-gap);
-  }
-  .theme-store__search-input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  .theme-store__search-icon {
-    position: absolute;
-    left: 14px;
-    width: 20px;
-    height: 20px;
-    color: var(--ts-muted, #888);
-    pointer-events: none;
-  }
-  .theme-store__search-input {
-    width: 100%;
-    padding: 0.85rem 2.5rem 0.85rem 2.75rem;
-    font: inherit;
-    font-size: calc(1rem * var(--fs-text, 1));
-    color: var(--ts-text, inherit);
-    background: var(--ts-bg-card, #fff);
-    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 12%, transparent);
-    border-radius: 0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-    transition: border-color .15s ease, box-shadow .15s ease;
-  }
-  .theme-store__search-input:focus {
-    outline: none;
-    border-color: var(--ts-accent, #4a7cff);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ts-accent, #4a7cff) 22%, transparent);
-  }
-  .theme-store__search-clear {
-    position: absolute;
-    right: 10px;
-    width: 28px; height: 28px;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: transparent;
-    border: 0;
-    border-radius: 50%;
-    font-size: calc(1.4rem * var(--fs-text, 1)); line-height: 1;
-    color: var(--ts-muted, #888);
-    cursor: pointer;
-  }
-  .theme-store__search-clear:hover { background: color-mix(in srgb, var(--ts-text, #333) 8%, transparent); }
-
-  .theme-store__search-results {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0; right: 0;
-    z-index: 30;
-    max-height: 60vh;
-    overflow: auto;
-    background: var(--ts-bg-card, #fff);
-    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 10%, transparent);
-    border-radius: 0;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-  }
-  .theme-store__search-results[hidden] { display: none; }
-  .theme-store__search-result {
-    display: grid;
-    grid-template-columns: 48px 1fr auto;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.6rem 0.85rem;
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--ts-text, #333) 6%, transparent);
-  }
-  .theme-store__search-result:last-child { border-bottom: 0; }
-  .theme-store__search-result:hover,
-  .theme-store__search-result.is-focused {
-    background: color-mix(in srgb, var(--ts-accent, #4a7cff) 8%, transparent);
-  }
-  .theme-store__search-result-img {
-    width: 48px; height: 36px; object-fit: cover; border-radius: 0;
-    background: color-mix(in srgb, var(--ts-text, #333) 6%, transparent);
-  }
-  .theme-store__search-result-title { font-weight: 600; font-size: calc(0.95rem * var(--fs-heading, 1)); }
-  .theme-store__search-result-meta { font-size: calc(0.8rem * var(--fs-text, 1)); color: var(--ts-muted, #888); }
-  .theme-store__search-result-price { font-size: calc(0.9rem * var(--fs-text, 1)); font-weight: 600; }
-  .theme-store__search-empty,
-  .theme-store__search-suggest {
-    padding: 0.85rem 1rem;
-    color: var(--ts-muted, #888);
-    font-size: calc(0.9rem * var(--fs-text, 1));
-  }
-  .theme-store__search-suggest button {
-    background: none; border: 0; padding: 0; margin: 0;
-    color: var(--ts-accent, #4a7cff);
-    font: inherit; cursor: pointer; text-decoration: underline;
-  }
-
-  /* --- Layout: mobile first, sidebar collapses --- */
-  .theme-store__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--ts-gap);
-  }
-  .theme-store__sidebar {
-    background: var(--ts-bg-card, #fff);
-    border-radius: 0;
-    padding: 1rem;
-    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 8%, transparent);
-  }
-  .theme-store__sidebar-toggle {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    background: none; border: 0; padding: 0;
-    font: inherit; font-weight: 600; font-size: calc(1rem * var(--fs-text, 1));
-    color: inherit; cursor: pointer;
-  }
-  .theme-store__sidebar-toggle svg { transition: transform .2s ease; }
-  .theme-store__sidebar-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
-  .theme-store__sidebar-panel {
-    display: none;
-    margin-top: 0.85rem;
-  }
-  .theme-store__sidebar-panel.is-open { display: block; }
-
-  .theme-store__sidebar-heading {
-    margin: 0 0 0.5rem;
-    font-size: calc(1.05rem * var(--fs-heading, 1));
-    font-weight: 700;
-  }
-  .theme-store__sidebar-heading--secondary { margin-top: 1.25rem; }
-
-  .theme-store__cat-list,
-  .theme-store__feature-list {
-    list-style: none; padding: 0; margin: 0;
-    display: flex; flex-direction: column; gap: 2px;
-  }
-  .theme-store__cat-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.55rem 0.7rem;
-    border-radius: 0;
-    color: inherit;
-    text-decoration: none;
-    transition: background .12s ease;
-  }
-  .theme-store__cat-item:hover { background: color-mix(in srgb, var(--ts-text, #333) 6%, transparent); }
-  .theme-store__cat-item.is-active {
-    background: color-mix(in srgb, var(--ts-accent, #4a7cff) 14%, transparent);
-    font-weight: 600;
-  }
-  .theme-store__cat-count {
-    font-variant-numeric: tabular-nums;
-    color: var(--ts-muted, #888);
-    font-size: calc(0.9rem * var(--fs-text, 1));
-  }
-  .theme-store__cat-item.is-active .theme-store__cat-count { color: inherit; }
-
-  .theme-store__feature-item {
-    padding: 0.4rem 0.7rem;
-    color: var(--ts-muted, #666);
-    font-size: calc(0.95rem * var(--fs-text, 1));
-  }
-
-  /* --- Product grid --- */
-  .theme-store__products { min-width: 0; }
-  .theme-store__product-grid {
-    list-style: none; padding: 0; margin: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--ts-gap);
-  }
-  .theme-store__product {
-    background: var(--ts-bg-card, #fff);
-    border-radius: 0;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--ts-text, #333) 8%, transparent);
-    transition: transform .18s ease, box-shadow .18s ease;
-  }
-  .theme-store__product:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-  }
-  .theme-store__product[hidden] { display: none; }
-  .theme-store__product-link {
-    display: flex; flex-direction: column;
-    color: inherit; text-decoration: none;
-    height: 100%;
-  }
-  .theme-store__product-media {
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    background: color-mix(in srgb, var(--ts-text, #333) 5%, transparent);
-  }
-  .theme-store__product-img,
-  .theme-store__product-placeholder {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-  }
-  .theme-store__product-body { padding: 0.9rem 1rem 1.1rem; }
-  .theme-store__product-title {
-    margin: 0 0 0.15rem; font-size: calc(1.05rem * var(--fs-heading, 1)); font-weight: 700;
-  }
-  .theme-store__product-type {
-    margin: 0 0 0.5rem; color: var(--ts-muted, #666); font-size: calc(0.9rem * var(--fs-text, 1));
-  }
-  .theme-store__product-price {
-    margin: 0; font-weight: 700;
-  }
-  .theme-store__empty {
-    padding: 2rem; text-align: center; color: var(--ts-muted, #666);
-  }
-
-  /* --- Tablet+ --- */
-  @media (min-width: 750px) {
-    .theme-store__product-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  /* --- Desktop: sidebar visible by default --- */
-  @media (min-width: 990px) {
-    .theme-store__grid {
-      grid-template-columns: 250px minmax(0, 1fr);
-      grid-template-areas:
-        ".       header"
-        "sidebar products";
-      align-items: start;
-    }
-    .theme-store__header { grid-area: header; margin-bottom: 0; }
-    .theme-store__sidebar { grid-area: sidebar; }
-    .theme-store__products { grid-area: products; }
-    .theme-store__sidebar-toggle { display: none; }
-    .theme-store__sidebar-panel { display: block; margin-top: 0; }
-    .theme-store__product-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
   "name": "t:theme_store.name",
@@ -607,27 +462,77 @@
   "settings": [
     {
       "type": "text",
+      "id": "kicker",
+      "label": "Eyebrow",
+      "default": "Theme Store"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "t:theme_store.heading_label",
-      "default": "Premium Themes"
+      "info": "Ein Wort in *Sternchen* bekommt den Serif-Akzent, z. B. \"Fertige Themes, *eigene* Handschrift.\"",
+      "default": "Fertige Themes, *eigene* Handschrift."
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Überschrift-Ebene",
+      "info": "H1, wenn der Theme Store der Hauptinhalt der Seite ist und es sonst kein H1 gibt.",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h1"
     },
     {
       "type": "text",
       "id": "subheading",
       "label": "t:theme_store.subheading_label",
-      "default": "Engineered for high-growth e-commerce."
+      "default": "Entwickelt für wachsende Onlineshops: schnell, suchmaschinenfreundlich und im Theme-Editor frei anpassbar."
+    },
+    {
+      "type": "header",
+      "content": "Empfohlenes Theme",
+      "info": "Leer lassen, um die Tafel auszublenden."
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Produkt"
+    },
+    {
+      "type": "text",
+      "id": "featured_label",
+      "label": "Eyebrow",
+      "default": "Empfohlen"
+    },
+    {
+      "type": "richtext",
+      "id": "featured_text",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "featured_tags",
+      "label": "Schwerpunkte",
+      "info": "Durch Kommas getrennt. Leer = Produkt-Tags."
+    },
+    {
+      "type": "header",
+      "content": "Filter und Suche"
     },
     {
       "type": "text",
       "id": "search_placeholder",
       "label": "t:theme_store.search_placeholder_label",
-      "default": "Search themes…"
+      "default": "Theme suchen, z. B. Quartz"
     },
     {
       "type": "text",
       "id": "categories_heading",
       "label": "t:theme_store.categories_heading_label",
-      "default": "Categories"
+      "info": "Name der Kategorie-Navigation für Screenreader.",
+      "default": "Kategorien"
     },
     {
       "type": "text",
@@ -639,6 +544,7 @@
       "type": "text",
       "id": "features_heading",
       "label": "t:theme_store.features_heading_label",
+      "info": "Überschrift des Feature-Bands für Screenreader.",
       "default": "Features"
     },
     {
@@ -659,12 +565,14 @@
       "type": "font_picker",
       "id": "heading_font",
       "label": "t:theme_store.heading_font",
+      "info": "Veraltet: Es gelten die Schriften des Designsystems.",
       "default": "work_sans_n7"
     },
     {
       "type": "font_picker",
       "id": "body_font",
       "label": "t:theme_store.body_font",
+      "info": "Veraltet: Es gelten die Schriften des Designsystems.",
       "default": "work_sans_n4"
     },
     {
@@ -675,6 +583,7 @@
       "type": "range",
       "id": "card_radius",
       "label": "t:theme_store.card_radius",
+      "info": "Veraltet: Karten nutzen den Radius des Designsystems.",
       "min": 0,
       "max": 32,
       "step": 1,
@@ -727,6 +636,57 @@
           "id": "text",
           "label": "t:theme_store.block_feature_text",
           "default": "Mobile optimized"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "auto", "label": "Automatisch (nach Text)" },
+            { "value": "mobile", "label": "Smartphone" },
+            { "value": "seo", "label": "Suche" },
+            { "value": "editor", "label": "Editor" },
+            { "value": "speed", "label": "Blitz" },
+            { "value": "check", "label": "Haken" }
+          ],
+          "default": "auto"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "name": "Kachel „Nichts Passendes“",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Eyebrow",
+          "default": "Individuell"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Überschrift",
+          "default": "Nichts Passendes dabei?"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Wir entwickeln dein Shopify-Theme nach Maß – mit derselben Sorgfalt wie unsere fertigen Themes."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button-Text",
+          "default": "Individuelles Theme anfragen"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button-Link",
+          "info": "Leer = Kontaktseite."
         }
       ]
     }
@@ -742,7 +702,8 @@
         { "type": "feature", "settings": { "text": "Mobile optimized" } },
         { "type": "feature", "settings": { "text": "SEO friendly" } },
         { "type": "feature", "settings": { "text": "Theme editor compatible" } },
-        { "type": "feature", "settings": { "text": "Fast load times" } }
+        { "type": "feature", "settings": { "text": "Fast load times" } },
+        { "type": "cta" }
       ]
     }
   ]

@@ -42,8 +42,8 @@
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }
   #shopify-section-{{ section.id }} .hero-ac {
-    --ac-pad-top: {{ section.settings.padding_top }}px;
-    --ac-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --ac-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --ac-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     {%- if accent != blank %}--ac-accent: {{ accent }};{% endif %}
     {%- if accent_soft != blank %}--ac-accent-soft: {{ accent_soft }};{% endif %}
   }

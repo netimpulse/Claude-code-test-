@@ -109,7 +109,7 @@ for (const target of PAGES) {
       expect(colors.bg).toBe("rgb(158, 203, 208)");
       expect(colors.fg).toBe("rgb(5, 5, 5)");
       expect(contrast(colors.fg, colors.bg)).toBeGreaterThanOrEqual(4.5);
-      expect(colors.h).toBeGreaterThanOrEqual(51);
+      expect(colors.h).toBeGreaterThanOrEqual(46); // --btn-h at 90 % content scale
 
       // Block button: fills its column.
       const actions = await section.locator(".cta-compact__actions").boundingBox();

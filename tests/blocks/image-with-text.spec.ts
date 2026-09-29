@@ -151,7 +151,7 @@ for (const target of PAGES) {
         const frame = section.locator(".image-with-text__frame");
         if (target.instances[i].photo) {
           await expect(frame.locator("img.image-with-text__image")).toHaveCount(1);
-          expect(await frame.evaluate((el) => getComputedStyle(el).borderTopLeftRadius)).toBe("16px");
+          expect(await frame.evaluate((el) => getComputedStyle(el).borderTopLeftRadius)).toBe("14.4px"); // --r-lg × 0.9
           const alt = await frame.locator("img").getAttribute("alt");
           expect(alt ?? "").not.toContain("*");
         } else {
@@ -161,7 +161,7 @@ for (const target of PAGES) {
             const sectionBg = getComputedStyle(el.closest(".image-with-text") as HTMLElement).backgroundColor;
             return { radius: cs.borderTopLeftRadius, bg: cs.backgroundColor, sectionBg };
           });
-          expect(graphic.radius).toBe("12px");
+          expect(graphic.radius).toBe("10.4px"); // --r-lg × 0.9 − 4px
           expect(graphic.bg).not.toBe(graphic.sectionBg); // 5 % tint, not the plain surface
 
           const bars = frame.locator(".image-with-text__bar");
@@ -215,7 +215,7 @@ for (const target of PAGES) {
         });
         expect(c.bg).toBe(TEAL);
         expect(contrast(c.fg, c.bg)).toBeGreaterThanOrEqual(4.5);
-        expect(c.h).toBeGreaterThanOrEqual(51);
+        expect(c.h).toBeGreaterThanOrEqual(46);
         await btn.focus();
         await page.keyboard.press("Shift+Tab");
         await page.keyboard.press("Tab");

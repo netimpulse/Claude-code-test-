@@ -36,8 +36,8 @@
   }
   #shopify-section-{{ section.id }} .about-intro {
     {%- if accent != blank %}--ai-accent: {{ accent }};{% endif %}
-    --ai-padding-top: {{ section.settings.padding_top }}px;
-    --ai-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ai-padding-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --ai-padding-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
   }
 {% endstyle %}
 

@@ -43,7 +43,7 @@
 .ni-footer__wordmark {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(10px * var(--ui-scale, 1));
   min-height: 44px;
   font-family: var(--ni-footer-wordmark-family, var(--font-body));
   font-style: var(--ni-footer-wordmark-style, normal);
@@ -59,8 +59,8 @@
 .ni-footer__dot {
   flex: none;
   box-sizing: border-box;
-  width: 10px;
-  height: 10px;
+  width: calc(10px * var(--ui-scale, 1));
+  height: calc(10px * var(--ui-scale, 1));
   border-radius: 50%;
   border: 1px solid var(--c-teal);
   background: var(--c-accent);
@@ -105,9 +105,9 @@
 
 .ni-footer__qr-img {
   display: block;
-  width: 90px;
-  height: 90px;
-  padding: 6px;
+  width: calc(90px * var(--ui-scale, 1));
+  height: calc(90px * var(--ui-scale, 1));
+  padding: calc(6px * var(--ui-scale, 1));
   border-radius: var(--r-sm, 4px);
   background: #ffffff;
 }
@@ -150,7 +150,7 @@
 .ni-footer__link {
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
+  min-height: 24px; /* WCAG 2.5.8 target size, not scaled */
   color: inherit;
   text-decoration: none;
   overflow-wrap: anywhere;

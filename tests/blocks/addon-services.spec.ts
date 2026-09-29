@@ -150,7 +150,7 @@ test.describe("addon-services section – Designsoll (Leistungen)", () => {
         const s = getComputedStyle(el);
         return { bw: s.borderTopWidth, r: s.borderTopLeftRadius, bg: s.backgroundColor, sh: s.boxShadow };
       });
-      expect(cs).toEqual({ bw: "1px", r: "16px", bg: "rgb(255, 253, 248)", sh: "none" });
+      expect(cs).toEqual({ bw: "1px", r: "14.4px", bg: "rgb(255, 253, 248)", sh: "none" });
     }
     await cards.nth(0).hover();
     await page.waitForTimeout(400);
@@ -191,7 +191,7 @@ test.describe("addon-services section – Designsoll (Leistungen)", () => {
     });
     expect(c.bg).toBe("rgb(28, 73, 72)");
     expect(contrast(c.fg, c.bg)).toBeGreaterThanOrEqual(4.5);
-    expect(c.h).toBeGreaterThanOrEqual(51);
+    expect(c.h).toBeGreaterThanOrEqual(46);
   });
 
   test("Buttons without a link go to the contact page, never to #", async ({ page }) => {

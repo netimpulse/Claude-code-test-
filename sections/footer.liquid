@@ -67,10 +67,10 @@
     --ni-footer-wordmark-family: {{ section.settings.wordmark_font.family }}, {{ section.settings.wordmark_font.fallback_families }};
     --ni-footer-wordmark-style: {{ section.settings.wordmark_font.style }};
     --ni-footer-wordmark-weight: {{ section.settings.wordmark_font.weight }};
-    --ni-footer-wordmark-size: {{ section.settings.wordmark_size }}px;
+    --ni-footer-wordmark-size: calc({{ section.settings.wordmark_size }}px * var(--ui-scale, 1));
     {%- endunless %}
-    --ni-footer-pad-top: {{ section.settings.padding_top }}px;
-    --ni-footer-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --ni-footer-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --ni-footer-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     {%- if section.settings.revocation_color != blank %}
     --revocation-color: {{ section.settings.revocation_color }};
     --revocation-on-color: {{ section.settings.revocation_on_color | default: '#ffffff' }};

@@ -27,12 +27,12 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .blog {
-    --blog-pt: {{ s.padding_top }}px;
-    --blog-pb: {{ s.padding_bottom }}px;
+    --blog-pt: calc({{ s.padding_top }}px * var(--ui-scale, 1));
+    --blog-pb: calc({{ s.padding_bottom }}px * var(--ui-scale, 1));
     --blog-cols: {{ s.columns }};
     --blog-cols-tablet: {{ cols_tablet }};
-    --blog-gap: {{ s.grid_gap }}px;
-    --blog-radius: {{ s.card_radius }}px;
+    --blog-gap: calc({{ s.grid_gap }}px * var(--ui-scale, 1));
+    --blog-radius: calc({{ s.card_radius }}px * var(--ui-scale, 1));
     --blog-ratio: {{ s.image_ratio }};
   }
 {% endstyle %}

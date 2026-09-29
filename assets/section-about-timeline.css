@@ -19,38 +19,38 @@
 }
 
 .about-timeline__head {
-  max-width: 760px;
-  margin: 0 0 clamp(36px, 5vw, 56px);
+  max-width: calc(760px * var(--ui-scale, 1));
+  margin: 0 0 calc(clamp(36px, 5vw, 56px) * var(--ui-scale, 1));
 }
 
 .about-timeline__kicker {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: calc(12px * var(--ui-scale, 1));
   color: var(--at-muted, #6b665e);
-  font-size: calc(0.9rem * var(--fs-text, 1));
-  margin-bottom: 14px;
+  font-size: calc(0.9rem * var(--fs-text, 1) * var(--ui-scale, 1));
+  margin-bottom: calc(14px * var(--ui-scale, 1));
 }
 
 .about-timeline__kicker::before {
   content: "";
-  width: 28px;
+  width: calc(28px * var(--ui-scale, 1));
   height: 1px;
   background: currentColor;
 }
 
 .about-timeline__heading {
   margin: 0;
-  font-size: calc(clamp(1.56rem, 2.81vw, 2.5rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.56rem, 2.81vw, 2.5rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.04;
   letter-spacing: -0.03em;
   font-weight: 800;
 }
 
 .about-timeline__intro {
-  margin: 16px 0 0;
+  margin: calc(16px * var(--ui-scale, 1)) 0 0;
   color: var(--at-muted, #6b665e);
-  font-size: calc(clamp(0.78rem, 0.86vw, 0.87rem) * var(--fs-text, 1));
+  font-size: max(0.75rem, calc(clamp(0.78rem, 0.86vw, 0.87rem) * var(--fs-text, 1) * var(--ui-scale, 1)));
   line-height: 1.6;
   max-width: 60ch;
 }
@@ -61,31 +61,31 @@
   padding: 0;
   margin: 0;
   display: grid;
-  gap: clamp(28px, 4vw, 44px);
+  gap: calc(clamp(28px, 4vw, 44px) * var(--ui-scale, 1));
   position: relative;
 }
 
 .about-timeline__list::before {
   content: "";
   position: absolute;
-  left: 7px;
-  top: 6px;
-  bottom: 6px;
+  left: calc(7px * var(--ui-scale, 1));
+  top: calc(6px * var(--ui-scale, 1));
+  bottom: calc(6px * var(--ui-scale, 1));
   width: 1px;
   background: var(--at-line, rgba(31, 35, 40, 0.2));
 }
 
 .about-timeline__step {
   position: relative;
-  padding-left: 32px;
+  padding-left: calc(32px * var(--ui-scale, 1));
 }
 
 .about-timeline__dot {
   position: absolute;
   left: 0;
-  top: 6px;
-  width: 16px;
-  height: 16px;
+  top: calc(6px * var(--ui-scale, 1));
+  width: calc(16px * var(--ui-scale, 1));
+  height: calc(16px * var(--ui-scale, 1));
   border-radius: 50%;
   background: var(--at-accent, #1f2328);
   border: 3px solid var(--at-bg, #ffffff);
@@ -94,31 +94,31 @@
 
 .about-timeline__year {
   display: block;
-  font-size: calc(0.92rem * var(--fs-heading, 1));
+  font-size: calc(0.92rem * var(--fs-heading, 1) * var(--ui-scale, 1));
   font-weight: 800;
   letter-spacing: 0.05em;
   color: var(--at-accent, #1f2328);
-  margin-bottom: 8px;
+  margin-bottom: calc(8px * var(--ui-scale, 1));
 }
 
 .about-timeline__step-title {
   margin: 0;
-  font-size: calc(clamp(1.2rem, 1.6vw, 1.5rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(1.2rem, 1.6vw, 1.5rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.2;
   letter-spacing: -0.02em;
   font-weight: 800;
 }
 
 .about-timeline__step-text {
-  margin: 8px 0 0;
+  margin: calc(8px * var(--ui-scale, 1)) 0 0;
   color: var(--at-body, #3a3f45);
-  font-size: calc(0.98rem * var(--fs-text, 1));
+  font-size: max(1rem, calc(0.98rem * var(--fs-text, 1) * var(--ui-scale, 1)));
   line-height: 1.55;
   max-width: 40ch;
 }
 
 .about-timeline__placeholder {
-  padding: 32px;
+  padding: calc(32px * var(--ui-scale, 1));
   border: 1px dashed var(--at-line, rgba(31, 35, 40, 0.22));
   text-align: center;
   color: var(--at-muted, #6b665e);
@@ -128,13 +128,13 @@
 @media (min-width: 900px) {
   .about-timeline__list {
     grid-template-columns: repeat(var(--at-cols, 4), 1fr);
-    gap: clamp(24px, 3vw, 40px);
+    gap: calc(clamp(24px, 3vw, 40px) * var(--ui-scale, 1));
   }
 
   .about-timeline__list::before {
-    left: 12px;
-    right: 12px;
-    top: 8px;
+    left: calc(12px * var(--ui-scale, 1));
+    right: calc(12px * var(--ui-scale, 1));
+    top: calc(8px * var(--ui-scale, 1));
     bottom: auto;
     width: auto;
     height: 1px;
@@ -142,7 +142,7 @@
 
   .about-timeline__step {
     padding-left: 0;
-    padding-top: 36px;
+    padding-top: calc(36px * var(--ui-scale, 1));
   }
 
   .about-timeline__dot {

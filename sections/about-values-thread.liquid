@@ -34,8 +34,8 @@
   }
   #shopify-section-{{ section.id }} .avt {
     {%- if accent != blank %}--avt-accent: {{ accent }};{% endif %}
-    --avt-pad-top: {{ section.settings.padding_top }}px;
-    --avt-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --avt-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --avt-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
   }
 {% endstyle %}
 

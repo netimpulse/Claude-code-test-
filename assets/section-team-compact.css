@@ -8,8 +8,8 @@
 
 .team-compact {
   --tc-pad-max: clamp(var(--s-7), 6vw, var(--s-9));
-  --tc-avatar: 60px;
-  --tc-overlap: 12px;
+  --tc-avatar: calc(60px * var(--ui-scale, 1));
+  --tc-overlap: calc(12px * var(--ui-scale, 1));
   padding-block: min(var(--tc-padding-top, 96px), var(--tc-pad-max))
     min(var(--tc-padding-bottom, 96px), var(--tc-pad-max));
   background: var(--color-bg);
@@ -49,7 +49,7 @@
 
 .team-compact__heading {
   margin: 0;
-  font-size: calc(clamp(2rem, 1.4rem + 1.6vw, 2.75rem) * var(--fs-heading, 1));
+  font-size: calc(clamp(2rem, 1.4rem + 1.6vw, 2.75rem) * var(--fs-heading, 1) * var(--ui-scale, 1));
   line-height: 1.02;
   letter-spacing: -0.03em;
 }
@@ -126,7 +126,7 @@
   font-family: var(--font-accent);
   font-style: italic;
   font-weight: 500;
-  font-size: 1.625rem;
+  font-size: calc(1.625rem * var(--ui-scale, 1));
   line-height: 1;
   color: var(--tc-accent, var(--c-accent));
 }
@@ -189,7 +189,7 @@
   }
 
   .team-compact {
-    --tc-avatar: 56px;
+    --tc-avatar: calc(56px * var(--ui-scale, 1));
   }
 }
 

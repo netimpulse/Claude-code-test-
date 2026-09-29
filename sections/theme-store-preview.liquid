@@ -42,8 +42,8 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .tsp {
-    --tsp-pad-top: {{ section.settings.padding_top }}px;
-    --tsp-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --tsp-pad-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --tsp-pad-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
     {%- if section.settings.card_bg_light != blank %}--tsp-card-bg: {{ section.settings.card_bg_light }};{% endif %}

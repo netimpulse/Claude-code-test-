@@ -28,8 +28,8 @@
       --iwt-accent: {{ accent }};
       --iwt-on-accent: {% if accent_brightness > 150 %}#0d0d0d{% else %}#fffdf8{% endif %};
     {%- endif -%}
-    --iwt-padding-top: {{ section.settings.padding_top }}px;
-    --iwt-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --iwt-padding-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --iwt-padding-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }

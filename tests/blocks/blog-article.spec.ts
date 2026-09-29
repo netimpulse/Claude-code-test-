@@ -156,7 +156,7 @@ async function expectCard(card: Locator, name: string) {
   expect(st.bg, `${name}: --color-surface`).toBe(SURFACE);
   expect(st.border, `${name}: 1px line`).toBe("1px");
   expect(st.borderColor, `${name}: --color-line`).toBe(LINE);
-  expect(st.radius, `${name}: --r-lg`).toBe("16px");
+  expect(st.radius, `${name}: --r-lg × 0.9`).toBe("14.4px");
   expect(st.shadow, `${name}: no shadow`).toBe("none");
 }
 
@@ -224,7 +224,7 @@ test.describe("article page", () => {
     await expect(page.locator(".article__hero-overlay")).toHaveCount(0);
     const heroImg = page.locator(".article__hero-img");
     if ((await heroImg.count()) > 0) {
-      expect(await heroImg.evaluate((el) => getComputedStyle(el).borderTopLeftRadius)).toBe("16px");
+      expect(await heroImg.evaluate((el) => getComputedStyle(el).borderTopLeftRadius)).toBe("14.4px");
     }
 
     // Reading type
@@ -239,7 +239,7 @@ test.describe("article page", () => {
         family: cs.fontFamily,
       };
     });
-    expect(type.size, "--text-body 1.0625rem").toBeCloseTo(17, 0);
+    expect(type.size, "--text-body max(1rem, 1.0625rem × 0.9)").toBeCloseTo(16, 0);
     expect(type.lh / type.size, "line-height 1.7").toBeCloseTo(1.7, 1);
     expect(type.maxW / type.size, "max ~68ch").toBeGreaterThan(25);
     expect(type.maxW / type.size, "max ~68ch").toBeLessThan(45);
@@ -274,7 +274,7 @@ test.describe("article page", () => {
       });
       expect(colors.bg, "primary button = scheme teal").toBe(TEAL);
       expect(contrast(colors.fg, colors.bg)).toBeGreaterThanOrEqual(4.5);
-      expect(colors.h).toBeGreaterThanOrEqual(51);
+      expect(colors.h).toBeGreaterThanOrEqual(46);
       const email = cta.first().locator('input[type="email"]');
       if ((await email.count()) > 0) {
         await expect(email).toHaveAttribute("placeholder", localeValue(loc, "blog.newsletter_placeholder"));

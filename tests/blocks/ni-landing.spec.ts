@@ -176,14 +176,16 @@ test.describe("NetImpulse deck (home)", () => {
       await page.evaluate(() => {
         const second = document.querySelectorAll("ni-deck .ni-deck-card")[1] as HTMLElement;
         const secondTop = second.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo(0, secondTop - 24 + 40);
+        const stickyTop = parseFloat(getComputedStyle(second).top);
+        window.scrollTo(0, secondTop - stickyTop + 40);
       });
       await page.waitForTimeout(300);
       const [firstTop, secondTop] = await cards.evaluateAll((els) =>
         els.slice(0, 2).map((el) => Math.round(el.getBoundingClientRect().top))
       );
-      expect(firstTop).toBe(24);
-      expect(secondTop).toBe(24);
+      // Sticky offset: 24px × --ui-scale 0.9 in #MainContent.
+      expect(firstTop).toBe(Math.round(24 * 0.9));
+      expect(secondTop).toBe(Math.round(24 * 0.9));
       // The second slab paints above the first (later in DOM, same stacking context).
       const onTop = await page.evaluate(() => {
         const [a, b] = document.querySelectorAll("ni-deck .ni-deck-card");
@@ -236,7 +238,7 @@ test.describe("NetImpulse deck (home)", () => {
       expect(label.trim().length).toBeGreaterThan(3);
     }
     const box = await arrows.first().boundingBox();
-    expect(Math.round(box?.width ?? 0)).toBe(56);
+    expect(Math.round(box?.width ?? 0)).toBe(Math.round(56 * 0.9)); // 56px × --ui-scale
     const pillRadius = await deck.locator(".ni-deck-card__tags li").first().evaluate(
       (el) => parseFloat(getComputedStyle(el).borderTopLeftRadius)
     );

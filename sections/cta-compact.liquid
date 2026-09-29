@@ -33,8 +33,8 @@
 {% style %}
   #shopify-section-{{ section.id }} .cta-compact {
     {%- if accent != blank %}--ctac-accent: {{ accent }};{% endif %}
-    --ctac-padding-top: {{ section.settings.padding_top }}px;
-    --ctac-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ctac-padding-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --ctac-padding-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }

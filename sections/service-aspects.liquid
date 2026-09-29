@@ -23,9 +23,9 @@
 {% style %}
   #shopify-section-{{ section.id }} .service-aspects {
     {%- if accent != blank %}--sa-accent: {{ accent }};{% endif %}
-    --sa-stagger: {{ section.settings.stagger }}px;
-    --sa-padding-top: {{ section.settings.padding_top }}px;
-    --sa-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --sa-stagger: calc({{ section.settings.stagger }}px * var(--ui-scale, 1));
+    --sa-padding-top: calc({{ section.settings.padding_top }}px * var(--ui-scale, 1));
+    --sa-padding-bottom: calc({{ section.settings.padding_bottom }}px * var(--ui-scale, 1));
     --fs-heading: {{ section.settings.heading_scale | default: 100 | divided_by: 100.0 }};
     --fs-text: {{ section.settings.text_scale | default: 100 | divided_by: 100.0 }};
   }

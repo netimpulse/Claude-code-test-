@@ -110,7 +110,7 @@ test.describe("Über uns – about-intro and about-values-thread (S7a)", () => {
     });
     expect(bg).toBe(TEAL);
     expect(contrast(fg, bg)).toBeGreaterThanOrEqual(4.5);
-    expect(h).toBeGreaterThanOrEqual(51);
+    expect(h).toBeGreaterThanOrEqual(46); // --btn-h at 90 % content scale
     expect(radius).toBeGreaterThan(20);
 
     const bodyColors = await section.locator(".about-intro__body p").evaluateAll((els) =>
