@@ -61,6 +61,16 @@
           "settings": {
             "text": "Schnelle Ladezeiten"
           }
+        },
+        "cta_Kq4mTz": {
+          "type": "cta",
+          "settings": {
+            "label": "Individuell",
+            "heading": "Nichts Passendes dabei?",
+            "text": "Wir entwickeln dein Shopify-Theme nach Maß – mit derselben Sorgfalt wie unsere fertigen Themes.",
+            "button_label": "Individuelles Theme anfragen",
+            "button_url": "shopify://pages/kontakt"
+          }
         }
       },
       "block_order": [
@@ -70,17 +80,23 @@
         "feature_neFzy6",
         "feature_6YQn7L",
         "feature_ppMLRj",
-        "feature_3PFBMP"
+        "feature_3PFBMP",
+        "cta_Kq4mTz"
       ],
-      "disabled": true,
       "name": "t:theme_store.name",
       "settings": {
-        "heading": "Theme Store",
-        "subheading": "Entwickelt für wachstumsstarken E-Commerce.",
-        "search_placeholder": "Themes durchsuchen …",
+        "kicker": "Theme Store",
+        "heading": "Fertige Themes, *eigene* Handschrift.",
+        "heading_tag": "h1",
+        "subheading": "Entwickelt für wachsende Onlineshops: schnell, suchmaschinenfreundlich und im Theme-Editor frei anpassbar – ohne nach Baukasten auszusehen.",
+        "featured_product": "forge",
+        "featured_label": "Empfohlen",
+        "featured_text": "<p>Ruhig, hochwertig und auf Produkte mit Erklärungsbedarf ausgelegt: große Bildflächen, klare Produktseiten und ein Aufbau, der Vertrauen schafft.</p>",
+        "featured_tags": "Große Bildflächen, Produktvergleich, Mega-Menü",
+        "search_placeholder": "Theme suchen, z. B. Quartz",
         "categories_heading": "Kategorien",
         "all_label": "",
-        "features_heading": "Funktionen",
+        "features_heading": "In jedem Theme enthalten",
         "color_scheme": "scheme-sand",
         "heading_font": "work_sans_n7",
         "body_font": "work_sans_n4",
@@ -91,6 +107,7 @@
     },
     "ni_text_hCDtRP": {
       "type": "ni-text",
+      "disabled": true,
       "name": "Text block",
       "settings": {
         "heading": "Bald verfügbar",
