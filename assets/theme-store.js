@@ -349,18 +349,36 @@
     const form = $('[data-ts-search-form]');
     const grid = $('[data-ts-product-grid]');
     const bar = $('.theme-store__bar');
+
+    // Space the sticky UI can cover at the top of the viewport: the filter bar
+    // plus the header (it may slide back in as soon as the user scrolls up).
+    function stickyOffset() {
+      let offset = 0;
+      if (bar && getComputedStyle(bar).position === 'sticky') offset += bar.offsetHeight;
+      if (document.querySelector('.shopify-section-group-header-group.is-sticky')) {
+        const h = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sqe-header-h'));
+        if (h > 0) offset += h;
+      }
+      return offset;
+    }
+
     if (form) {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        // Enter/"Search" on a phone: close the keyboard and bring the results
-        // into view. A single hit is not opened automatically.
-        if (input) input.blur();
+        // Enter/"Search": bring the results into view. A single hit is not
+        // opened automatically.
+        const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        if (coarse && countEl) {
+          // Touch: close the on-screen keyboard, keep focus on the result count.
+          if (!countEl.hasAttribute('tabindex')) countEl.setAttribute('tabindex', '-1');
+          countEl.focus({ preventScroll: true });
+          if (input && document.activeElement === input) input.blur();
+        } else if (coarse && input) {
+          input.blur();
+        }
         const target = empty && !empty.hidden ? empty : grid;
         if (!target) return;
-        // Keep the results clear of the sticky filter bar.
-        const barStyle = bar ? getComputedStyle(bar) : null;
-        const offset = barStyle && barStyle.position === 'sticky' ? bar.offsetHeight : 0;
-        const top = target.getBoundingClientRect().top + window.scrollY - offset - 16;
+        const top = target.getBoundingClientRect().top + window.scrollY - stickyOffset() - 16;
         const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
       });

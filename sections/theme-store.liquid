@@ -166,8 +166,8 @@
               {{- featured.price | money -}}
             </p>
             <a class="btn btn--primary theme-store__feature-btn" href="{{ featured.url }}">
-              {%- assign featured_title_safe = featured.title | escape -%}
-              <span>{{ 'theme_store.view_theme' | t: title: featured_title_safe }}</span>
+              {%- comment -%} t escapes interpolated values itself (key without _html) {%- endcomment -%}
+              <span>{{ 'theme_store.view_theme' | t: title: featured.title }}</span>
               <span class="btn__arrow" aria-hidden="true">&rarr;</span>
             </a>
           </div>

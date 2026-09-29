@@ -112,7 +112,7 @@
 .about-timeline__step-text {
   margin: calc(8px * var(--ui-scale, 1)) 0 0;
   color: var(--at-body, #3a3f45);
-  font-size: calc(0.98rem * var(--fs-text, 1) * var(--ui-scale, 1));
+  font-size: max(1rem, calc(0.98rem * var(--fs-text, 1) * var(--ui-scale, 1)));
   line-height: 1.55;
   max-width: 40ch;
 }

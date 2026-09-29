@@ -298,17 +298,35 @@ test.describe("Theme Store – JS behaviour under /en/ (local fixture)", () => {
     await expect(page.locator("[data-ts-hint] button")).toHaveText("Nova");
   });
 
-  test("Submit (Enter) closes the keyboard and keeps the page; a single hit is not opened", async ({ page }) => {
+  test("Submit (Enter) on desktop keeps focus in the search and the page; a single hit is not opened", async ({ page }) => {
     await mountFixture(page);
     const input = page.locator("[data-ts-search-input]");
     const before = page.url();
     await input.fill("quartz");
     await expect(visible(page)).toHaveCount(1);
     await input.press("Enter");
-    await expect(input).not.toBeFocused();
+    await expect(input).toBeFocused();
+    expect(await page.evaluate(() => document.activeElement === document.body)).toBe(false);
     await expect(visible(page)).toHaveCount(1);
     expect(page.url()).toBe(before);
-    await expect(page.locator("[data-ts-search-input]")).toHaveValue("quartz");
+    await expect(input).toHaveValue("quartz");
+  });
+
+  test("Submit on a touch device closes the keyboard; focus moves to the result count, not to body", async ({ browser }) => {
+    const ctx = await browser.newContext({ isMobile: true, hasTouch: true, viewport: { width: 390, height: 844 } });
+    const page = await ctx.newPage();
+    try {
+      await mountFixture(page);
+      expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
+      const input = page.locator("[data-ts-search-input]");
+      await input.fill("quartz");
+      await input.press("Enter");
+      await expect(input).not.toBeFocused();
+      await expect(page.locator("[data-ts-count]")).toBeFocused();
+      await expect(visible(page)).toHaveCount(1);
+    } finally {
+      await ctx.close();
+    }
   });
 
   test("Empty catalogue: no cards → empty state with the category message is visible", async ({ page }) => {
@@ -422,6 +440,32 @@ test.describe("Theme Store – Section on its real page", () => {
       .poll(async () => Math.abs((await barTop()) - (await headerBottom())), { timeout: 5000 })
       .toBeLessThan(0.5); // no 1px gap from the header's bottom border
     expect(await headerBottom()).toBeGreaterThan(40);
+  });
+
+  test("Enter scrolls the results into view below header + filter bar (desktop), focus stays off body", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const root = await openStore(page);
+    const firstTitle = (await root.locator(".theme-store__product-title").first().innerText()).trim();
+    const input = root.locator("[data-ts-search-input]");
+    await input.fill(firstTitle);
+    await expect(root.locator("[data-ts-product]:not([hidden])").first()).toBeVisible();
+    await input.press("Enter");
+    expect(await page.evaluate(() => document.activeElement === document.body)).toBe(false);
+
+    const geometry = () =>
+      page.evaluate(() => {
+        const card = document.querySelector<HTMLElement>("[data-ts-product]:not([hidden])")
+          ?? document.querySelector<HTMLElement>("[data-ts-empty]:not([hidden])");
+        const bar = document.querySelector(".theme-store__bar")!.getBoundingClientRect();
+        const header = document.querySelector(".shopify-section-group-header-group")!;
+        const hb = header.classList.contains("is-hidden") ? 0 : header.getBoundingClientRect().bottom;
+        return { top: card!.getBoundingClientRect().top, cover: Math.max(bar.bottom, hb), vh: innerHeight, y: scrollY };
+      });
+    await expect.poll(async () => (await geometry()).y, { timeout: 5000 }).toBeGreaterThan(100);
+    await page.waitForTimeout(800); // smooth scroll + header transition settle
+    const g = await geometry();
+    expect(g.top, `card top ${g.top} vs covered ${g.cover}`).toBeGreaterThanOrEqual(g.cover - 1);
+    expect(g.top).toBeLessThan(g.vh - 100);
   });
 
   test("Category filter shows only matching products and updates URL; ?cat= deep link works", async ({ page }) => {

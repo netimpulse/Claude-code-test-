@@ -81,3 +81,21 @@ for (const width of [1440, 390]) {
     });
   });
 }
+
+for (const width of [1440, 390]) {
+  test(`Skalierung Produktseite @ ${width}px: Titel = 0.9 × clamp(2rem, 4.5vw, 3.25rem)`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    const res = await page.goto(withTheme(QA.paths.product), { waitUntil: "load" });
+    expect(res?.status()).toBe(200);
+    const title = page.locator(".product-detail__title").first();
+    await expect(title).toBeVisible();
+    const m = await title.evaluate((el) => ({
+      size: parseFloat(getComputedStyle(el).fontSize),
+      scale: getComputedStyle(el).getPropertyValue("--ui-scale").trim(),
+      vw: document.documentElement.clientWidth,
+    }));
+    expect(Number(m.scale)).toBeCloseTo(0.9, 5);
+    const unscaled = Math.min(52, Math.max(32, 0.045 * m.vw));
+    expect(m.size).toBeCloseTo(unscaled * 0.9, 0);
+  });
+}

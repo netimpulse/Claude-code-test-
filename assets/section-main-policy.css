@@ -69,7 +69,7 @@
 /* --- Body --- */
 
 .policy__body {
-  font-size: calc(clamp(0.94rem, 1.1vw, 1.05rem) * var(--fs-text, 1) * var(--ui-scale, 1));
+  font-size: max(1rem, calc(clamp(0.94rem, 1.1vw, 1.05rem) * var(--fs-text, 1) * var(--ui-scale, 1)));
   line-height: 1.68;
   color: var(--policy-text);
 }
