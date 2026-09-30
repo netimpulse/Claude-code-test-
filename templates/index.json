@@ -11,7 +11,6 @@
   "sections": {
     "ni_hero_ErftzP": {
       "type": "ni-hero",
-      "disabled": true,
       "name": "NI Hero",
       "settings": {
         "label": "Digitalagentur · Gießen",
@@ -78,7 +77,6 @@
         "card_FiXcq3",
         "card_g3fG4Y"
       ],
-      "disabled": true,
       "name": "NI Intro",
       "settings": {
         "kicker": "Studio",
@@ -187,7 +185,6 @@
         "card_wLf4QD",
         "card_4abCHC"
       ],
-      "disabled": true,
       "name": "NI Deck",
       "settings": {
         "kicker": "",
@@ -301,7 +298,6 @@
         "member_f6tJfd",
         "member_Pd7ktn"
       ],
-      "disabled": true,
       "name": "t:team_compact.name",
       "settings": {
         "kicker": "Team",
@@ -320,7 +316,6 @@
     },
     "cta_compact_AHAeKj": {
       "type": "cta-compact",
-      "disabled": true,
       "name": "CTA compact",
       "settings": {
         "kicker": "Kontakt",
