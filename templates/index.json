@@ -11,6 +11,7 @@
   "sections": {
     "ni_hero_ErftzP": {
       "type": "ni-hero",
+      "disabled": true,
       "name": "NI Hero",
       "settings": {
         "label": "Digitalagentur · Gießen",
@@ -77,6 +78,7 @@
         "card_FiXcq3",
         "card_g3fG4Y"
       ],
+      "disabled": true,
       "name": "NI Intro",
       "settings": {
         "kicker": "Studio",
@@ -108,6 +110,7 @@
             "tag_1": "Keyword-Mapping",
             "tag_2": "Content",
             "tag_3": "Technik",
+            "visual": "auto",
             "device_label": "Search Visibility",
             "link_url": "shopify://pages/seo"
           }
@@ -123,6 +126,7 @@
             "tag_1": "Search",
             "tag_2": "Shopping",
             "tag_3": "Tracking",
+            "visual": "auto",
             "device_label": "Campaign System",
             "link_url": "shopify://pages/sea"
           }
@@ -138,6 +142,7 @@
             "tag_1": "Content",
             "tag_2": "Paid Social",
             "tag_3": "Brand",
+            "visual": "auto",
             "device_label": "Content Flow",
             "link_url": "shopify://pages/smm"
           }
@@ -153,6 +158,7 @@
             "tag_1": "UX",
             "tag_2": "Designsystem",
             "tag_3": "Conversion",
+            "visual": "auto",
             "device_label": "Interface",
             "link_url": "shopify://pages/web-design"
           }
@@ -168,6 +174,7 @@
             "tag_1": "Liquid",
             "tag_2": "OS 2.0",
             "tag_3": "Themes",
+            "visual": "auto",
             "device_label": "Theme System",
             "link_url": "shopify://pages/geo"
           }
@@ -180,6 +187,7 @@
         "card_wLf4QD",
         "card_4abCHC"
       ],
+      "disabled": true,
       "name": "NI Deck",
       "settings": {
         "kicker": "",
@@ -187,14 +195,14 @@
         "text": "",
         "show_intro": true,
         "note": "",
+        "link_label": "Alle Leistungen",
+        "link_url": "shopify://pages/leistungen",
         "color_scheme": "scheme-sand",
         "accent_color": "",
         "padding_top": 160,
         "padding_bottom": 160,
         "heading_scale": 100,
-        "text_scale": 100,
-        "link_label": "Alle Leistungen",
-        "link_url": "shopify://pages/leistungen"
+        "text_scale": 100
       }
     },
     "theme_store_preview_zMCVkD": {
@@ -243,8 +251,10 @@
         "theme_3",
         "store_cta"
       ],
+      "disabled": true,
       "name": "Theme store preview",
       "settings": {
+        "kicker": "Theme Store",
         "heading": "Hier geht es zum *Theme Store*.",
         "heading_highlight": "",
         "subheading": "Eine Auswahl unserer Premium-Themes.",
@@ -291,6 +301,7 @@
         "member_f6tJfd",
         "member_Pd7ktn"
       ],
+      "disabled": true,
       "name": "t:team_compact.name",
       "settings": {
         "kicker": "Team",
@@ -309,6 +320,7 @@
     },
     "cta_compact_AHAeKj": {
       "type": "cta-compact",
+      "disabled": true,
       "name": "CTA compact",
       "settings": {
         "kicker": "Kontakt",
@@ -317,6 +329,7 @@
         "show_intro": true,
         "button_label": "Jetzt anfragen",
         "button_url": "shopify://pages/kontakt",
+        "button_note": "",
         "color_scheme": "scheme-3176272d-e560-4898-86e2-ed9090bb1264",
         "accent_color": "",
         "padding_top": 160,
