@@ -59,13 +59,17 @@ zusätzlich anbieten, die Codex-Prüfung später nachzuholen.
 ## Gegenprüfer statt Codex
 
 Wenn Codex aus oder nicht verfügbar ist, übernimmt der Agent `gegenpruefer` dieselbe Rolle –
-gleiche Prompts, gleiche Kriterien, gleiche Schleife (max. 3 Runden), gleiche `VERDICT`-Zeile.
+gleiche Prompts, gleiche Kriterien, gleiche Schleife und Rundenregel, gleiche `VERDICT`-Zeile.
+Ist Codex aus, entfällt der separate `reviewer`-Lauf – der Gegenprüfer deckt dessen Prüfpunkte
+mit ab (außer im Modus „gründlich").
 Starte ihn mit:
 - Modus (`plan` oder `review`),
 - Prompt-Datei `${CLAUDE_SKILL_DIR}/prompts/plan.md` bzw. `${CLAUDE_SKILL_DIR}/prompts/review.md`,
 - im Modus review die Kriterien `${CLAUDE_SKILL_DIR}/kriterien.md`,
 - Plan-Pfad bzw. Aufgabenbeschreibung und was genau zu prüfen ist,
-- in Folgerunden: seine vorige Antwort plus Umgesetztes und Abgelehntes mit Begründung.
+- in Folgerunden: nur seine offenen Findings, was davon umgesetzt bzw. begründet abgelehnt wurde,
+  und den Diff seit der letzten Runde (`git diff` gegen den damaligen Stand) – keinen Neustart der
+  kompletten Prüfung.
 
 Gib ihm **nicht** Deine eigene Begründung oder Einschätzung mit – er soll unvoreingenommen prüfen.
 Im Abschlussbericht heißt es dann „Gegenprobe: gegenpruefer (Codex aus)", nicht „Codex".
@@ -102,12 +106,14 @@ Schleife:
 2. Übernommene beheben, Tests erneut laufen lassen.
 3. Folgerunde in derselben Codex-Session. Die Session-ID steht im Kopf der Codex-Ausgabe
    (`session id: …`). Feedback mit dem Write-Werkzeug nach `.werkbank-tmp/runde.md`:
-   „Umgesetzt: … Abgelehnt mit Begründung: … Bitte erneut prüfen, gleiches Format, gleiche
-   VERDICT-Zeile." Dann:
+   „Umgesetzt: … Abgelehnt mit Begründung: … Prüfe diese Änderungen und Deine offenen Findings;
+   schwere Fehler außerhalb davon trotzdem melden. Gleiches Format, gleiche VERDICT-Zeile." Dann:
    ```bash
    rm -f .werkbank-tmp/codex-out.md && codex exec resume <SESSION-ID> -c 'sandbox_mode="read-only"' -o .werkbank-tmp/codex-out.md - < .werkbank-tmp/runde.md && cat .werkbank-tmp/codex-out.md
    ```
-4. Ende bei `VERDICT: APPROVED` oder nach **3 Runden**. Offene Blocker/Major nach Runde 3
+4. Ende bei `VERDICT: APPROVED`. Nach einer Runde mit Blocker/Major folgt immer eine
+   Kontrollrunde; reine Minor-Diskussionen enden nach der Grundzahl (klein 1, mittel 2, groß 3).
+   Absolute Obergrenze 3 Runden. Offene Blocker/Major danach
    sind eine wichtige Entscheidung für den Nutzer: beide Sichtweisen nebeneinander, Empfehlung.
 
 ## Modus `rescue` – Übergabe bei Blockade

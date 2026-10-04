@@ -15,7 +15,8 @@ Eine Zeile pro Datei. Wird nach jeder Aufgabe nachgeführt.
 - (noch keine)
 
 ## Design (design/)
-- (noch keine – `system.md` entsteht mit der ersten Design-Wahl)
+- `DESIGN.md` im Projektstamm – Designsystem (entsteht mit `werkbank-design-richtung`).
+- (Entwürfe der Richtungs- und Variantenwahl)
 
 ## Ideen
 - `ideen.md` – Vorschläge des Brainstormers mit Status.

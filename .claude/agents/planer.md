@@ -52,3 +52,15 @@ verhältnismäßig ist; lehne den Rest mit einem Satz Begründung ab. Trag beide
 - Keine erfundenen APIs oder Pakete. Unsicher? Nachsehen oder als offene Frage markieren.
 - Gib dem Orchestrator am Ende zurück: Pfad der Plan-Datei, Größe, Anzahl Schritte, und die
   Liste „Wichtige Entscheidungen für den Nutzer" wörtlich.
+
+## Sparsam arbeiten
+
+- Lies, was der Orchestrator Dir im Kontextpaket nennt, und was davon direkt abhängt – keine
+  eigene Erkundung des ganzen Repos. Große Dateien gezielt (Zeilenbereiche, Grep) statt komplett.
+- Pflicht trotz Kontextpaket: Für alles, was der Plan ändert (Funktionen, Snippets, Sections,
+  Metafields, CSS-Klassen, Routen, Datenbankfelder), per Grep prüfen, wo es sonst noch genutzt
+  wird, und dokumentierte Abhängigkeiten lesen (z. B. Abhängigkeits-Log in `CLAUDE.md`,
+  `docs/werkbank/`). Betroffene Stellen außerhalb des Pakets gehören in den Plan.
+- Befehlsausgaben gekürzt lesen (nur Fehler, `| tail -n 40`).
+- Antworte knapp: Ergebnis zuerst, keine Wiederholung des Auftrags, keine Einleitung.
+- Der Plan selbst: so kurz wie möglich, so genau wie nötig – typisch 60–150 Zeilen.

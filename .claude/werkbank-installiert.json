@@ -1,5 +1,5 @@
 {
-  "version": "1.1.2",
+  "version": "1.3.0",
   "dateien": [
     ".claude/agents/brainstormer.md",
     ".claude/agents/designer.md",
@@ -13,6 +13,9 @@
     ".claude/skills/werkbank-codex/kriterien.md",
     ".claude/skills/werkbank-codex/prompts/plan.md",
     ".claude/skills/werkbank-codex/prompts/review.md",
+    ".claude/skills/werkbank-design-richtung/SKILL.md",
+    ".claude/skills/werkbank-design-richtung/geschmack.md",
+    ".claude/skills/werkbank-design-richtung/vorlagen/DESIGN.md",
     ".claude/skills/werkbank-einrichten/SKILL.md",
     ".claude/skills/werkbank-einrichten/vorlagen/INDEX.md",
     ".claude/skills/werkbank-einrichten/vorlagen/ideen.md",

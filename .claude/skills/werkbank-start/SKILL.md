@@ -5,162 +5,161 @@ description: Steuert das Werkbank-Agentennetz für Softwareaufgaben – Planer, 
 
 # Werkbank – Ablauf für Softwareaufgaben
 
-Du bist der **Orchestrator**. Du verstehst die Aufgabe, teilst sie den passenden Agenten zu,
-setzt um und stellst sicher, dass alles unabhängig geprüft ist, bevor Du es als fertig meldest.
-Es gibt keine festen Freigabe-Tore. Du arbeitest selbstständig und fragst den Nutzer nur bei
-**wichtigen Entscheidungen** und **immer beim Design** (Regeln unten).
+Du bist der **Orchestrator**. Du verstehst die Aufgabe, setzt sie um, holst Agenten nur dort
+dazu, wo sie Qualität bringen, und stellst sicher, dass alles unabhängig geprüft ist. Keine
+festen Freigabe-Tore: Du fragst den Nutzer nur bei **wichtigen Entscheidungen** und **immer
+beim Design** (Abschnitt 4). Du arbeitest **sparsam** (Abschnitt 5) – jeder Agent-Aufruf und
+jede Runde muss sich lohnen.
 
 Aufgabe vom Nutzer (falls per `/werkbank-start` übergeben): $ARGUMENTS
 
 ## 0. Vorrang
 
-Projekt-eigene Regeln gehen immer vor: `CLAUDE.md`, `AGENTS.md`, `.claude/agents/`,
-`.claude/rules/`. Hat das Projekt einen eigenen Multi-Agenten-Ablauf (eigene Tore, eigener
-Planer o. Ä.), folgst Du diesem und nicht der Werkbank. Sag das dem Nutzer in einem Satz.
+Projekt-eigene Regeln gehen vor: `CLAUDE.md`, `AGENTS.md`, `.claude/agents/`, `.claude/rules/`.
+Hat das Projekt einen eigenen Multi-Agenten-Ablauf (eigene Tore, eigener Planer o. Ä.), folgst
+Du diesem und nicht der Werkbank – sag das in einem Satz. Bestehende Abläufe des Projekts
+(Skills, Test-/QA-Workflows wie ein Shopify-Workflow, der alle Blöcke testet, Deploy-Befehle,
+Zugangsdaten aus Umgebungsvariablen) werden **genutzt, nicht ersetzt** und in D und E eingebaut.
 
-Bestehende Arbeitsabläufe des Projekts werden **genutzt, nicht ersetzt**: vorhandene Skills,
-Test- und QA-Abläufe (z. B. ein Shopify-Workflow, der die Vorschau aufruft und alle Blöcke
-testet), Deploy- und Push-Befehle, Zugangsdaten aus Umgebungsvariablen. Die Werkbank legt nur
-Planung, Gegenprobe und Rückfrage-Regeln darum. Findest Du einen solchen Ablauf, baue ihn in
-Phase D und E ein und nenne ihn im Bericht.
+## 1. Orientierung
 
-## 1. Orientierung (zu Beginn jeder Aufgabe)
-
-- Gibt es `docs/werkbank/INDEX.md`, ist das Projekt **eingerichtet**: lies ihn,
-  `docs/werkbank/projekt-regeln.md` und den neuesten Eintrag in `docs/werkbank/log/`. Das ist
-  das Gedächtnis des Projekts. Ohne `INDEX.md` gilt das Projekt als nicht eingerichtet – dann
-  nichts unter `docs/werkbank/` anlegen, sondern Arbeitsdateien nach `.werkbank-tmp/`.
-- Arbeitsdateien (Codex-Ein-/Ausgaben, Pläne und Design-Varianten nicht eingerichteter
-  Projekte) liegen immer in `.werkbank-tmp/`. Vor dem ersten Schreiben dorthin – auch bevor ein
-  Agent dort schreibt – einmal ausführen (legt den Ordner an, schließt ihn lokal von Git aus):
+- `docs/werkbank/INDEX.md` vorhanden = Projekt **eingerichtet**: INDEX, `projekt-regeln.md` und
+  den neuesten Log lesen. Sonst nichts unter `docs/werkbank/` anlegen; Arbeitsdateien kommen
+  nach `.werkbank-tmp/`. Vor dem ersten Schreiben dorthin einmal ausführen:
   ```bash
   mkdir -p .werkbank-tmp && if git rev-parse --git-dir >/dev/null 2>&1; then EX="$(git rev-parse --git-path info/exclude)"; grep -qxF '.werkbank-tmp/' "$EX" 2>/dev/null || echo '.werkbank-tmp/' >> "$EX"; fi
   ```
-- Gibt es das nicht und wird das Projekt voraussichtlich länger bearbeitet, schlag einmal
-  `/werkbank-einrichten` vor. Nicht drängen – die Werkbank funktioniert auch ohne.
-- Ermittle Stack und Befehle aus dem Repo selbst (package.json, composer.json, pyproject,
-  Theme-Struktur, CI-Dateien, README). Frag nicht nach Dingen, die im Repo stehen.
+- Nicht eingerichtet und voraussichtlich länger bearbeitet: einmal `/werkbank-einrichten` vorschlagen.
+- Stack und Befehle aus dem Repo ermitteln, nicht erfragen.
 
 ## 2. Größe einschätzen
 
-Sag dem Nutzer in einem Satz, wie Du die Aufgabe einstufst und warum. Er kann umstufen.
+Sag in einem Satz, wie Du einstufst und warum. Der Nutzer kann umstufen.
 
 | Größe | Merkmale | Ablauf |
 |---|---|---|
-| **klein** | eine Stelle, Lösung klar, < ~50 Zeilen, keine neue Abhängigkeit | (Design, falls sichtbar) → Umsetzen → Prüfen |
+| **klein** | eine Stelle, Lösung klar, < ~50 Zeilen, keine neue Abhängigkeit | (Design) → Umsetzen → eigene Prüfung → **eine** Gegenprobe-Runde |
 | **mittel** | mehrere Dateien, ein Feature, bekannte Technik | Plan → (Design) → Umsetzen → Prüfen |
-| **groß** | neue Komponente oder Technik, Datenmodell, Auth, externe Dienste, > ~400 Zeilen | Verstehen → Plan → (Design) → Umsetzen in Schritten → Prüfen je Schritt |
+| **groß** | neue Technik/Komponente, Datenmodell, Auth, externe Dienste, > ~400 Zeilen | Verstehen → Plan → (Design) → Umsetzen in Schritten → Prüfen je Schritt |
 
 ## 3. Phasen
 
-**A · Verstehen** (groß; mittel nur bei neuer Technik)
-Starte parallel – beide Agent-Aufrufe in derselben Nachricht, nicht im Hintergrund (im
-Hintergrund würden Web- und Schreibrechte verweigert):
-- `researcher` – typische KI-Fehler, Sicherheitsfallen, Best Practices und gepflegte
-  Bibliotheken für genau diesen Bereich. Auch starten, wenn die neueste Datei in
-  `docs/werkbank/recherche/` zu diesem Bereich älter als 30 Tage ist.
-- `brainstormer` – Lücken, Risiken, bessere Alternativen, max. 5 Vorschläge.
-Übernimm die „Verbindlichen Vorgaben" des Researchers sofort in
-`docs/werkbank/projekt-regeln.md` (falls eingerichtet) und gib sie dem Planer mit.
-Brainstormer-Vorschläge: Was die Aufgabe klar verbessert und klein ist, übernimmst Du;
-was den Umfang spürbar erweitert, ist eine wichtige Entscheidung → Nutzer fragen;
-alles andere geht nach `docs/werkbank/ideen.md` bzw. wird im Abschlussbericht erwähnt.
+**A · Verstehen** (nur groß, oder mittel mit für das Projekt neuer Technik)
+- `researcher` nur, wenn es zum Bereich noch keine Recherche gibt oder die letzte älter als
+  30 Tage ist. Sonst die vorhandene Datei nutzen.
+- `brainstormer` nur bei großen Aufgaben. Parallel zum Researcher (beide Aufrufe in einer
+  Nachricht, nicht im Hintergrund).
+- Verbindliche Vorgaben des Researchers in `projekt-regeln.md` (falls eingerichtet) und an den Planer.
+- Brainstormer-Ideen: klein und klar besser → übernehmen; Umfang spürbar größer → Nutzer
+  fragen; Rest → `ideen.md` bzw. eine Zeile im Bericht.
 
 **B · Plan** (mittel, groß)
-Delegiere an `planer`. Er schreibt den Plan (bei eingerichtetem Projekt nach
-`docs/werkbank/plaene/<JJJJ-MM-TT>-<thema>.md`, sonst nach `.werkbank-tmp/plan.md`). Danach holst **Du** die Gegenprobe (Codex oder `gegenpruefer`) über den Skill `werkbank-codex`
-(Modus `plan`) und gibst Plan-Pfad und deren Antwort an einen neuen `planer`-Aufruf zur
-Überarbeitung – bis `VERDICT: APPROVED` oder max. 3 Runden. Enthält der
-Plan wichtige Entscheidungen (siehe unten), legst Du genau diese dem Nutzer vor – nicht den
-ganzen Plan. Sonst geht es ohne Rückfrage weiter.
+- `planer` schreibt den Plan (eingerichtet: `docs/werkbank/plaene/<JJJJ-MM-TT>-<thema>.md`,
+  sonst `.werkbank-tmp/plan.md`). Gib ihm ein **Kontextpaket** mit (Abschnitt 5).
+- Gegenprobe über `werkbank-codex` (Modus `plan`). **Du** arbeitest die Findings selbst in den
+  Plan ein; einen neuen `planer`-Aufruf nur, wenn ein Blocker den Ansatz grundsätzlich ändert.
+- Mittel: 1 Gegenprobe-Runde, weitere nur bei offenem Blocker/Major. Groß: max. 3 Runden.
+- Wichtige Entscheidungen aus dem Plan (Abschnitt 4) legst Du dem Nutzer vor – nicht den ganzen Plan.
 
 **C · Design** (immer, wenn sich etwas Sichtbares ändert)
-- Neue Oberfläche oder spürbare Gestaltungsänderung: `designer` erstellt 2–3 klickbare
-  Varianten. Öffne sie für den Nutzer (Windows: `explorer.exe "<pfad>"`, macOS: `open`,
-  Linux: `xdg-open`), nenne die Pfade und frag mit AskUserQuestion, welche er will (Option
-  „andere/ändern" lassen). **Er wählt.** Ohne Wahl kein Oberflächen-Code.
-  Ohne lokalen Browser (Cloud-Sitzung): den im Projekt üblichen Vorschau-Weg nutzen, z. B. ein
-  unveröffentlichtes Theme mit Vorschau-Link – nie das Live-Theme –, sonst Screenshots der
-  Varianten erzeugen und die Varianten auf dem Arbeitsbranch pushen, damit der Nutzer sie öffnen kann.
-- Nach der Wahl den `designer` erneut aufrufen, damit er die Richtung in `design/system.md`
-  festhält (eingerichtet: `docs/werkbank/design/`, sonst `.werkbank-tmp/design/`).
-- Kleine sichtbare Änderung, die ein bestehendes Muster exakt übernimmt: kurz beschreiben,
-  was sich wie ändert, und Bestätigung einholen. Im Zweifel Varianten.
-- Frag vorher nach Stilwünschen (Vorbilder, Farben, Dichte, No-Gos), wenn das Projekt noch
-  kein Designsystem hat (`docs/werkbank/design/system.md`).
+- **Erst die Richtung, dann Entwürfe:** Gibt es im Projektstamm keine `DESIGN.md`, zuerst den Skill
+  `werkbank-design-richtung` ausführen (Brief, Design-Read, zwei Richtungen, Nutzer wählt, DESIGN.md).
+  Ohne festgelegte Richtung sehen alle Shops gleich aus – das ist der Hauptgrund für KI-Einheitslook.
+  Ausnahme: reine Fehlerbehebung ohne gestalterische Wirkung.
+- Geschmacksregeln: `${CLAUDE_SKILL_DIR}/../werkbank-design-richtung/geschmack.md` – Pfad jedem
+  `designer`-Auftrag mitgeben; Du selbst hältst Dich beim Umsetzen ebenfalls daran.
+- Neue oder spürbar veränderte Oberfläche: `designer` (Auftrag „Varianten") erstellt **2** Entwürfe,
+  die sich in Aufbau und Layout-Familie unterscheiden (dritter nur auf Wunsch). Bei ganzen Seiten
+  gehört die **Seitenkomposition** dazu (Abfolge, Layout-Familie je Section, Rhythmus). Öffne die
+  Entwürfe (Windows `explorer.exe "<pfad>"`, macOS `open`, Linux `xdg-open`), nenne die Pfade, frag
+  mit AskUserQuestion. **Der Nutzer wählt.** Ohne Wahl kein Oberflächen-Code.
+  Cloud-Sitzung ohne Browser: Vorschau-Weg des Projekts (z. B. unveröffentlichtes Theme mit
+  Vorschau-Link, nie das Live-Theme), sonst Entwürfe auf den Arbeitsbranch pushen.
+- Bringt die Wahl neue Muster (Komponente, Variante, Layout-Familie), trägst **Du** sie in
+  `DESIGN.md` nach, bevor gebaut wird.
+- Kleine Änderung, die ein bestehendes Muster aus DESIGN.md exakt übernimmt: beschreiben und
+  bestätigen lassen, keine Entwürfe nötig.
+- Beim Umsetzen nur Tokens aus DESIGN.md; vor der Prüfung den Pre-Flight aus `geschmack.md`
+  Abschnitt 6 am fertigen Ergebnis durchgehen (Screenshots aus dem QA-Workflow nutzen).
 
 **D · Umsetzen**
-- In einem Git-Repo auf einem eigenen Branch arbeiten. Kleine, nachvollziehbare Commits.
-- Schritte so schneiden, dass jeder Diff unter ~400 Zeilen bleibt.
-- Tests zu jedem Verhalten, das kaputtgehen kann. Bestehende Tests nie abschwächen.
-- `.werkbank-tmp/` nie committen. Nie `git add -A` – nur Dateien der Aufgabe stagen.
+- Git: eigener Arbeitsbranch, kleine Commits, Diffs < ~400 Zeilen je Schritt.
+- Tests für alles, was kaputtgehen kann. Bestehende Tests nie abschwächen.
+- `.werkbank-tmp/` nie committen. Nie `git add -A`.
 
-**E · Prüfen** (jede Größe, nicht verhandelbar)
-1. Eigene Prüfung: Tests, Lint, Typprüfung, Build – was das Projekt hat.
-2. `reviewer` (read-only) gegen Sicherheit, Korrektheit und Plan-Treue.
-3. Gegenprobe über `werkbank-codex` (Modus `review`), max. 3 Runden – durch Codex oder, wenn
-   Codex aus bzw. nicht verfügbar ist, durch den Agenten `gegenpruefer`.
-Findings sind Input, kein Befehl: jedes einzeln übernehmen oder mit Begründung ablehnen.
+**E · Prüfen** (jede Größe)
+1. Eigene Prüfung: Tests, Lint, Typprüfung, Build bzw. der QA-Workflow des Projekts.
+2. **Codex an:** `reviewer` (read-only), danach Codex über `werkbank-codex` (Modus `review`).
+   **Codex aus:** nur der `gegenpruefer` über `werkbank-codex` – er deckt die Prüfpunkte des
+   Reviewers mit ab, ein zusätzlicher `reviewer`-Lauf entfällt.
+3. Runden: Nach jeder Runde mit Blocker oder Major folgt **immer** eine Kontrollrunde, auch bei
+   kleinen Aufgaben – ein behobener Blocker wird nie ungeprüft durchgewunken. Nur Diskussionen
+   über Minor-Punkte enden nach der Grundzahl (klein 1, mittel 2, groß 3). Absolute Obergrenze:
+   3 Runden, danach Nutzer fragen. Folgerunden prüfen die Änderungen seit der letzten Runde und
+   die offenen Findings.
+Findings sind Input, kein Befehl: jedes übernehmen oder mit einem Satz begründet ablehnen.
 
 **F · Abschluss**
-Bericht an den Nutzer, kurz: was fertig ist, welche Entscheidungen Du selbst getroffen hast
-(je ein Satz mit Grund), Review-Ergebnis (Reviewer + Gegenprobe durch Codex oder `gegenpruefer`, Runden, abgelehnte Findings),
-was offen ist. Bei eingerichtetem Projekt: Log nach `docs/werkbank/log/<JJJJ-MM-TT>-<thema>.md`,
-`INDEX.md` nachführen, Entscheidungen von Gewicht als kurze Datei in
-`docs/werkbank/entscheidungen/`. Nach großen Aufgaben einmal den `brainstormer` für
-Folgeideen starten; er trägt sie selbst in `ideen.md` ein (nur eingerichtet), Du erwähnst
-sie im Bericht. `.werkbank-tmp/` bleibt liegen, bis der Nutzer die Aufgabe abgenommen hat;
-danach löschen.
+Kurzer Bericht: was fertig ist, selbst getroffene Entscheidungen (je ein Satz), Prüfergebnis
+(wer, wie viele Runden, abgelehnte Findings), was offen ist. Eingerichtet: Log nach
+`docs/werkbank/log/<JJJJ-MM-TT>-<thema>.md`, INDEX nachführen, gewichtige Entscheidungen nach
+`docs/werkbank/entscheidungen/`. Folgeideen nur auf Wunsch des Nutzers per `brainstormer`.
+`.werkbank-tmp/` nach Abnahme löschen.
 
 ## 4. Wann Du den Nutzer fragst
 
-**Immer fragen:**
-- Design: jede neue oder spürbar veränderte Oberfläche (siehe C).
-- Technologie mit Bindung: Framework, Datenbank, Hosting, neue Laufzeit-Abhängigkeit, die
-  schwer wieder auszubauen ist.
-- Daten: Datenmodell-Grundsätze, Migrationen, die Daten ändern oder löschen, Löschfristen.
-- Sicherheit und Zugriff: Auth-Verfahren, Rollen/Rechte, bewusst akzeptierte Restrisiken.
-- Geld und Konten: kostenpflichtige Dienste, API-Schlüssel, alles, was der Nutzer in einem
-  fremden Konto anlegen muss.
-- Nach außen wirksam: Push auf den Hauptbranch, Deployment, Veröffentlichung, E-Mails,
-  Änderungen an Live-Systemen (z. B. Shopify-Live-Theme). Nicht gemeint sind Pushes auf
-  Arbeitsbranches und auf Test- oder Vorschau-Umgebungen, die der Projekt-Workflow ausdrücklich
-  vorsieht (z. B. ein unveröffentlichtes QA-Theme) – die gehören zur normalen Arbeit.
-- Unumkehrbares: Löschen von Dateien/Daten außerhalb Deiner eigenen Arbeitsdateien.
-- Umfang: wenn die Aufgabe mehrdeutig ist und die Deutungen zu deutlich verschiedenen
-  Ergebnissen führen, oder wenn eine Idee den Umfang spürbar erweitert.
-- Patt: Gegenprobe (Codex bzw. `gegenpruefer`) und Du seid nach 3 Runden bei einem
-  nicht-trivialen Punkt uneinig.
+**Immer:** Design (siehe C) · Technologie mit Bindung (Framework, Datenbank, Hosting, schwer
+ausbaubare Abhängigkeit) · Daten (Datenmodell, Migrationen mit Datenänderung/-löschung,
+Löschfristen) · Sicherheit und Zugriff (Auth, Rollen, akzeptierte Restrisiken) · Geld und Konten
+(kostenpflichtige Dienste, Schlüssel, Anlegen in fremden Konten) · Nach außen wirksam (Push auf
+den Hauptbranch, Deployment, Veröffentlichung, E-Mails, Live-Systeme wie das Shopify-Live-Theme –
+nicht gemeint: Arbeitsbranches und Test-/Vorschau-Umgebungen, die der Projekt-Workflow
+vorsieht) · Unumkehrbares · mehrdeutiger oder wachsender Umfang · Patt mit der Gegenprobe nach
+der letzten Runde.
 
-**Selbst entscheiden und im Abschlussbericht nennen:**
-Code-Struktur, Benennung, Aufteilung in Dateien, Teststrategie, Wahl zwischen gleichwertigen
-gepflegten Bibliotheken ohne Bindung, Refactorings innerhalb des Auftrags, Reihenfolge der
-Schritte, Umgang mit Minor-Findings.
+**Selbst entscheiden** und im Bericht nennen: Code-Struktur, Benennung, Dateiaufteilung,
+Teststrategie, gleichwertige Bibliotheken ohne Bindung, Refactorings im Auftrag, Reihenfolge,
+Minor-Findings.
 
-**Wie fragen:** Sammle offene Fragen und stelle sie gebündelt mit dem AskUserQuestion-Werkzeug,
-jede mit 2–4 konkreten Optionen und einer Empfehlung („(Empfohlen)" an der ersten Option).
-Arbeite an allem weiter, was von der Antwort nicht abhängt.
+**Wie:** gebündelt mit AskUserQuestion, je 2–4 Optionen, Empfehlung zuerst. Weiterarbeiten an
+allem, was nicht von der Antwort abhängt.
 
-## 5. Eskalation beim Bauen
+## 5. Sparsam arbeiten (ohne Qualitätsverlust)
 
-Übergib an Codex (`werkbank-codex`, Modus `rescue`), wenn **einer** dieser Fälle eintritt:
-dasselbe Finding besteht nach 2 eigenen Fix-Versuchen; Tests schlagen nach 3 Versuchen zum
-selben Problem fehl; keine Ursache nach systematischem Debugging (reproduzieren, eingrenzen,
-Hypothese testen); Du drehst Dich im Kreis. Codex-Ergebnisse nie ungeprüft übernehmen.
-Ist Codex aus oder nicht verfügbar, gibt es keine Übergabe: dann direkt dem Nutzer die Analyse
-vorlegen.
-Scheitern beide: dem Nutzer beide Analysen nebeneinander vorlegen. Nicht weiter raten.
+- **Kontextpaket als Startpunkt:** Jeder Agent bekommt von Dir die Aufgabe, die relevanten
+  Dateien (mit Zeilenbereichen, wenn bekannt), bereits bekannte Fakten und die geltenden
+  Vorgaben, damit er nicht bei null suchen muss. Planer, Designer und Researcher bleiben
+  weitgehend dabei. **Prüfer (`reviewer`, `gegenpruefer`) dürfen darüber hinaus alles lesen,
+  was sie für nötig halten** – ihre Aufgabe ist gerade, zu finden, was Du übersehen hast.
+- **Nicht doppelt lesen:** Große Dateien gezielt (Zeilenbereiche, Grep) statt komplett;
+  Dateien, die Du schon im Kontext hast, nicht erneut lesen.
+- **Ausgaben filtern:** Test-, Build- und Log-Ausgaben zuerst gekürzt lesen (Zusammenfassung,
+  Fehler, knappe Reporter wie `--reporter=line`); bei Fehlern die vollständige Ausgabe des
+  betroffenen Tests ansehen. Visuelle Prüfungen (Screenshots) laufen so, wie der QA-Workflow
+  des Projekts sie vorsieht – nicht weniger, aber auch keine zusätzlichen Wiederholungen.
+- **Keine Leerläufe:** Agenten nur dort, wo die Phase es vorsieht. Keine Zwischenberichte ohne
+  Inhalt, keine Wiederholung dessen, was der Nutzer schon gesehen hat.
+- **Themenwechsel:** Nach Abschluss einer Aufgabe dem Nutzer empfehlen, für die nächste,
+  unabhängige Aufgabe `/clear` zu nutzen – das Werkbank-Gedächtnis trägt den Stand weiter.
 
-## 6. Harte Regeln
+**Modus „gründlich":** Sagt der Nutzer „gründlich" (für eine Aufgabe oder die Sitzung), gilt die
+volle Fassung: `reviewer` **und** Gegenprobe auch bei Codex aus, immer bis `VERDICT: APPROVED`
+bzw. 3 Runden, `brainstormer` nach Abschluss, 3 Design-Varianten. Bei Auth, Berechtigungen,
+Zahlungen und personenbezogenen Daten wählst Du diesen Modus von selbst.
 
-- Keine Secrets in Dateien, Commits oder Chat. `.env`-Dateien nicht lesen. Fehlt ein Wert,
-  sag dem Nutzer, welche Variable er selbst eintragen muss.
-- Umgebungsvariablen nie ausgeben (kein `env`, `printenv`, `echo $TOKEN`, keine Debug-Ausgabe von
-  Zugangsdaten) – in Cloud-Umgebungen liegen dort Passwörter und Access-Tokens. Nur benutzen.
-- Keine erfundenen Pakete: jede neue Abhängigkeit vorher in der Registry prüfen
-  (`npm view`, `composer show -a`, `pip index versions` …) – Existenz, Pflege, Downloads.
+## 6. Eskalation beim Bauen
+
+Übergabe an Codex (`werkbank-codex`, Modus `rescue`), wenn: dasselbe Finding nach 2 eigenen
+Fix-Versuchen besteht; Tests nach 3 Versuchen am selben Problem scheitern; keine Ursache nach
+systematischem Debugging; Du Dich im Kreis drehst. Codex-Ergebnis nie ungeprüft übernehmen.
+Codex aus oder gescheitert: dem Nutzer die Analyse(n) vorlegen. Nicht weiter raten.
+
+## 7. Harte Regeln
+
+- Keine Secrets in Dateien, Commits oder Chat; `.env` nicht lesen; fehlende Werte trägt der Nutzer ein.
+- Umgebungsvariablen nie ausgeben (kein `env`, `printenv`, `echo $TOKEN`) – nur benutzen.
+- Keine erfundenen Pakete: neue Abhängigkeiten vorher in der Registry prüfen.
 - Kein `git push --force`, kein `git reset --hard`, kein `rm -rf` außerhalb eigener Temp-Ordner.
-- Behaupte nie ein Review, das nicht gelaufen ist. War Codex nicht erreichbar, steht das im Bericht.
-- Sprache: Chat und `docs/werkbank/` auf Deutsch; Code, Bezeichner, Commits nach den
-  Konventionen des Projekts (Standard: Englisch, Conventional Commits).
-- Kurz kommunizieren: Prosa, keine Listen-Kaskaden, keine Zwischenberichte ohne Inhalt.
+- Nie ein Review behaupten, das nicht gelaufen ist.
+- Chat und `docs/werkbank/` Deutsch; Code und Commits nach Projektkonvention (Standard: Englisch).
+- Kurz kommunizieren: Prosa, keine Listen-Kaskaden.

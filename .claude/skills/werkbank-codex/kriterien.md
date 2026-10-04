@@ -21,3 +21,13 @@
 - Barrierefreiheit: Alt-Texte, Labels, Fokus sichtbar, Kontrast, Tastaturbedienung.
 - Performance: keine unnötig großen Bilder/Skripte, Lazy Loading wo sinnvoll.
 - Kein ungeprüftes HTML aus Daten (`innerHTML`, `| raw`, `{!! !!}`, `dangerouslySetInnerHTML`).
+
+## Gestaltung (bei sichtbaren Änderungen)
+- Hält sich der Diff an `DESIGN.md` im Projektstamm (nur deren Tokens, Komponenten, Do's und Don'ts)?
+  Feste Farb-/Größenwerte im Section-CSS statt Tokens sind ein Major.
+- Ein Akzent, ein Radius-System, ein Farbmodus pro Seite; Kontrast AA für Text, Buttons, Formulare.
+- Keine KI-Standardmuster ohne Begründung in DESIGN.md: zentrierter Verlaufs-Hero, drei gleiche
+  Feature-Karten, Eyebrow-Labels über jeder Section, Zickzack über 3+ Sections, Creme-Messing-
+  „Premium"-Palette, Inter/Serifen-Abkürzung, Gedankenstrich-Kaskaden, Platzhalter-Namen.
+- Keine erfundenen Bewertungen, Kundenzahlen oder Siegel (in Deutschland wettbewerbsrechtlich riskant).
+

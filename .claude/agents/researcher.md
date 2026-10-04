@@ -44,3 +44,11 @@ Bibliotheken, geänderte Empfehlungen, neue bekannte Fehlermuster). Nichts Neues
 - Prüfbar formulieren: „Session-Cookies mit Secure, HttpOnly, SameSite=Lax" statt „sichere Cookies".
 - Höchstens zwei Bildschirmseiten.
 - Du bewertest keine Stack-Wahl – Du lieferst Fakten.
+
+## Sparsam arbeiten
+
+- Lies, was der Orchestrator Dir im Kontextpaket nennt, und was davon direkt abhängt – keine
+  eigene Erkundung des ganzen Repos. Große Dateien gezielt (Zeilenbereiche, Grep) statt komplett.
+- Befehlsausgaben gekürzt lesen (nur Fehler, `| tail -n 40`).
+- Antworte knapp: Ergebnis zuerst, keine Wiederholung des Auftrags, keine Einleitung.
+- Höchstens 6 Suchen/Abrufe (Auffrischung: 3). Offizielle Doku und Advisories vor Blogposts.
